@@ -1,0 +1,227 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-gutena-forms {
+
+	.is-vertical.is-layout-flex.wp-block-group {
+		.gutena-forms-field,
+		.heading-input-label-gutena {
+			min-width: 100%;
+		}
+		
+	}
+
+	.gutena-forms-field,
+	.heading-input-label-gutena {
+		background-color: transparent;
+	}
+
+	//Hide form labels
+	&.not-show-form-labels .heading-input-label-gutena {
+		display:none;
+	}
+
+	.heading-input-label-gutena {
+		color: var(--wp--gutena-forms--label-color);
+		font-size: var(--wp--gutena-forms--label-font-size,13px);
+		line-height: var(--wp--gutena-forms--label-line-height);
+		font-weight: var(--wp--gutena-forms--label-font-weight);
+	}
+
+	.gutena-forms-field {
+		color: var(--wp--gutena-forms--label-color);
+		background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
+	}
+
+	/**********************************
+		Placeholder styles : start
+	**********************************/ 
+	.gutena-forms-field::-webkit-input-placeholder { /* Edge */
+		color: var(--wp--gutena-forms--placeholder-color);
+		font-size: var(--wp--gutena-forms--placeholder-font-size);
+		line-height: var(--wp--gutena-forms--placeholder-line-height);
+		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+	}
+	
+	.gutena-forms-field:-ms-input-placeholder { /* Internet Explorer */
+		color: var(--wp--gutena-forms--placeholder-color);
+		font-size: var(--wp--gutena-forms--placeholder-font-size);
+		line-height: var(--wp--gutena-forms--placeholder-line-height);
+		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+	}
+	
+	.gutena-forms-field::placeholder {
+		color: var(--wp--gutena-forms--placeholder-color);
+		font-size: var(--wp--gutena-forms--placeholder-font-size);
+		line-height: var(--wp--gutena-forms--placeholder-line-height);
+		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+	}
+
+	/**********************************
+		Placeholder styles : end
+	**********************************/
+
+	.wp-block-columns {
+		margin-bottom: var( --wp--style--block-gap, 2em );
+	}
+
+	//Input Field padding
+	.wp-block-gutena-form-field .gutena-forms-field {
+		width: 100%;
+		padding: 13px calc( 18px + var(--wp--gutena-forms--input-border-radius, 0px )/2 );
+	}
+
+	//Full width input field block
+	.wp-block-gutena-form-field {
+		width: 100%;
+	}
+
+	/**********************************
+		Field block border : start
+	**********************************/
+
+	&:not(.input-box-border-bottom-only) .wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field) {
+		border-style: solid;
+		border-width: var(--wp--gutena-forms--input-border-width, 1px );
+		border-color: var(--wp--gutena-forms--input-border-color, #D7DBE7);
+		border-radius: var(--wp--gutena-forms--input-border-radius, 0px );
+
+		:focus-within {
+			width: 100%;
+			border-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 )) ;
+		}
+	}
+
+	&.input-box-border-bottom-only
+	{
+		.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field) {
+			border-bottom: var(--wp--gutena-forms--input-border-width, 1px ) solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+
+			&:focus-within {
+				width: 100%;
+				border-bottom: var(--wp--gutena-forms--input-border-width, 1px ) solid var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 )) ;
+			}
+		}
+
+		.wp-block-gutena-form-field .gutena-forms-field {
+			padding-left: 0;
+			padding-right: 0;
+		}
+
+	} 
+
+
+	.wp-block-gutena-form-field {
+		.gutena-forms-field, .gutena-forms-field:focus {
+			border: 0;
+			outline: 0 !important;
+			box-shadow: none !important;
+			margin: 0 !important;
+		}
+
+	}
+
+	/**********************************
+		Field block border : end
+	**********************************/
+
+	.gutena-forms-confirmation-columns {
+		display: none;
+	}
+
+	//error messages
+	.wp-block-gutena-field-group{
+
+		.gutena-forms-field-error-msg {
+			font-size: 12px;
+			color:  #FD3E3E;
+		}
+
+		&:not(.display-error) {
+			.gutena-forms-field-error-msg {
+				display: none;
+			}
+		}
+
+		&.display-error {
+			.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field) {
+				border-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+			}
+		} 
+
+	}
+
+	//Progress button 
+	&.form-progress .wp-block-button__link {
+		box-shadow: inset 0 0 0 100px var(--wp--preset--color--primary, rgba(63, 109, 228, .8));
+		opacity: 0.8;
+	}
+
+	.gutena-forms-btn-progress { 
+		display: inline-block; 
+		position: relative; 
+		width: 60px; 
+		height: 22px; 
+	} 
+	.gutena-forms-btn-progress div { 
+		position: absolute; 
+		top: 11px; 
+		width: 7px; 
+		height: 7px; 
+		border-radius: 50%; 
+		background: #fff; 
+		animation-timing-function: cubic-bezier(0, 1, 1, 0); 
+	} 
+	.gutena-forms-btn-progress div:nth-child(1) { 
+		left: 5px; 
+		animation: submit-progress1 0.6s infinite; 
+	} 
+	.gutena-forms-btn-progress div:nth-child(2) { 
+		left: 5px; 
+		animation: submit-progress2 0.6s infinite; 
+	} 
+	.gutena-forms-btn-progress div:nth-child(3) { 
+		left: 25px; 
+		animation: submit-progress2 0.6s infinite; 
+	} 
+	.gutena-forms-btn-progress div:nth-child(4) { 
+		left: 45px; animation: submit-progress3 0.6s infinite; 
+	} 
+	@keyframes submit-progress1 { 
+		0% { transform: scale(0); } 
+		100% { transform: scale(1); } 
+	} 
+	@keyframes submit-progress3 { 
+		0% { transform: scale(1); } 
+		100% { transform: scale(0); } 
+	} 
+	@keyframes submit-progress2 { 
+		0% { transform: translate(0, 0); } 
+		100% { transform: translate(24px, 0); } 
+	}
+
+	//Form Submit messages
+	&:not(.display-success-message) .wp-block-gutena-form-confirm-msg:not(.block-editor-block-list__block) {
+		display: none;
+	}
+
+	&:not(.display-error-message) .wp-block-gutena-form-error-msg:not(.block-editor-block-list__block) {
+		display: none;
+	}
+
+	&.hide-form-now > {
+		.wp-block-columns,
+		.wp-block-gutena-field-group,
+		.wp-block-buttons {
+			visibility: hidden;
+    		height: 0;
+			-webkit-transition: height 2s;
+			transition: height 2s;
+		}
+	}
+
+}

@@ -1,0 +1,38 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-gutena-forms {
+	//BlockVariationPicker ul
+	> .block-editor-block-variation-picker {
+		padding: 1.5rem;
+
+		.block-editor-block-variation-picker__variations {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(16rem,1fr));
+			grid-gap: 1.5rem;
+			grid-auto-rows: 12rem;
+		}
+
+		//BlockVariationPicker li
+		.block-editor-block-variation-picker__variations > li {
+			margin: 0;
+			width: auto;
+			display: flex;
+			flex-direction: column;
+		}
+
+		//BlockVariationPicker height
+		.block-editor-block-variation-picker__variation.components-button.has-icon.is-secondary {
+			height: 10rem;
+			padding: 0;
+		}
+
+	} 
+	
+	.form-message-icon .components-resizable-box__container:not(.has-show-handle) img {
+		display: inherit;
+	}
+}
