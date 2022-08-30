@@ -1,0 +1,8 @@
+node_modules/
+languages/
+output/
+.npm
+.eslintcache
+.env
+*-lock.json
+phpcs.xml
