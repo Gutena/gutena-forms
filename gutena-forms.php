@@ -2,9 +2,9 @@
 /**
  * Plugin Name:       Gutena Forms
  * Description:       Gutena Forms is a native form block for Gutenberg. Built for Look, Speed and Functionality.
- * Requires at least: 5.9
+ * Requires at least: 6.0
  * Requires PHP:      5.6
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            ExpressTech
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -23,7 +23,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 	class Gutena_Forms {
 
-		public $version = '1.0.0';
+		public $version = '1.0.1';
 		// The instance of this class
 		private static $instance = null;
 
