@@ -30,6 +30,11 @@
 			padding: 0;
 		}
 
+		.block-editor-block-variation-picker__variation.components-button.has-icon.is-secondary > svg {
+			width: 250px !important;
+			height: 150px !important;
+		}
+
 	} 
 	
 	.form-message-icon .components-resizable-box__container:not(.has-show-handle) img {
