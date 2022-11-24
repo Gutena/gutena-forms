@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is a native form block for Gutenberg. Built for Look, Speed and Functionality.
  * Requires at least: 6.0
  * Requires PHP:      5.6
- * Version:           1.0.1
+ * Version:           1.0.2
  * Author:            ExpressTech
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -168,6 +168,18 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			);
 		}
 
+		//Replace last occurance of a string
+		public function str_last_replace( $search, $replace, $str ) {
+			//finds the position of the last occurrence of a string
+			$pos = strripos($str, $search);
+		
+			if ( $pos !== false ) {
+				$str = substr_replace($str, $replace, $pos, strlen($search));
+			}
+		
+			return $str;
+		}
+
 		// render_callback : form
 		public function render_form( $attributes, $content, $block ) {
 			// No changes if attributes is empty
@@ -189,6 +201,19 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					1
 				);
 			}
+
+			//Submit Button HTML markup : change link to button tag
+			$content = $this->str_last_replace(
+				'<a', 
+				'<button',
+				$content
+			); 
+
+			$content = $this->str_last_replace(
+				'</a>', 
+				'</button>',
+				$content
+			); 
 
 			// Enqueue block styles
 			$this->enqueue_block_styles( $attributes['formStyle'] );
@@ -351,6 +376,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			// Email Subject
 			$subject = sanitize_text_field( empty( $formSchema['form_attrs']['adminEmailSubject'] ) ? __( 'Form received', 'gutena-forms' ) . '- ' . $blog_title : $formSchema['form_attrs']['adminEmailSubject'] );
 
+			//Form submit Data for filter
+			$form_submit_data = array(
+				'formName' => empty( $formSchema['form_attrs']['formName'] ) ? '': $formSchema['form_attrs']['formName'],
+				'formID' => $formSchema['form_attrs']['formID']
+			);
+
 			$fieldSchema = $formSchema['form_fields'];
 			$body        = '';
 
@@ -363,14 +394,21 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 				$field_name = sanitize_text_field( empty( $fieldSchema[ $name_attr ]['fieldName'] ) ? str_ireplace( '_', ' ', $name_attr ) : $fieldSchema[ $name_attr ]['fieldName'] );
 
+				//Form submit Data for filter
+				$form_submit_data['submit_data'][ $field_name ] = $field_value;
+
 				$body .= '<p><strong>' . esc_html( $field_name ) . '</strong> <br />' . esc_html( $field_value ) . ' </p>';
 
 			}
 
+			//Email headers
 			$headers = array(
 				'Content-Type: text/html; charset=UTF-8',
 				'From: ' . esc_html( $blog_title ) . ' <' . $admin_email . '>',
 			);
+
+			//Apply filter for admin email notification
+			$body    = apply_filters( 'gutena_forms_submit_admin_notification', $body, $form_submit_data );
 
 			$body    = wpautop( $body, true );
 			$subject = esc_html( $subject );

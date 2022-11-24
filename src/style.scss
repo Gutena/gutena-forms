@@ -61,6 +61,18 @@
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
 	}
 
+	.wp-block-gutena-form-field > input {
+		font-size: var(--wp--gutena-forms--placeholder-font-size);
+		line-height: var(--wp--gutena-forms--placeholder-line-height);
+		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+	}
+
+	.wp-block-gutena-form-field > textarea {
+		font-size: var(--wp--gutena-forms--placeholder-font-size);
+		line-height: var(--wp--gutena-forms--placeholder-line-height);
+		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+	}
+
 	/**********************************
 		Placeholder styles : end
 	**********************************/
