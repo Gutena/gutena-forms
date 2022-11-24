@@ -378,7 +378,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//Form submit Data for filter
 			$form_submit_data = array(
-				'formName' => $formSchema['form_attrs']['formName'],
+				'formName' => empty( $formSchema['form_attrs']['formName'] ) ? '': $formSchema['form_attrs']['formName'],
 				'formID' => $formSchema['form_attrs']['formID']
 			);
 

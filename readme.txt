@@ -24,7 +24,7 @@ Gutena Forms is a native form block for Gutenberg. Built for Look, Speed and Fun
 
 == Changelog ==
 
-= 1.0.2 | 16th November 2022 =
+= 1.0.2 | 24th November 2022 =
 * Added filter gutena_forms_submit_admin_notification 
 * Fixed submit button markup
 * Fixed form picker preview
