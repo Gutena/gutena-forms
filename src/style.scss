@@ -7,6 +7,11 @@
 
 .wp-block-gutena-forms {
 
+	/*Inside row make image block flex for fix alignment issue*/
+	.wp-block-group.is-layout-flex > .wp-block-image {
+		display: flex;
+	}
+
 	.is-vertical.is-layout-flex.wp-block-group {
 		.gutena-forms-field,
 		.heading-input-label-gutena {
@@ -27,6 +32,7 @@
 
 	.heading-input-label-gutena {
 		color: var(--wp--gutena-forms--label-color);
+		font-family: var(--wp--gutena-forms--label-font-family);
 		font-size: var(--wp--gutena-forms--label-font-size,13px);
 		line-height: var(--wp--gutena-forms--label-line-height);
 		font-weight: var(--wp--gutena-forms--label-font-weight);
@@ -37,11 +43,16 @@
 		background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
 	}
 
+	.wp-block-gutena-form-field {
+		background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
+	}
+
 	/**********************************
 		Placeholder styles : start
 	**********************************/ 
 	.gutena-forms-field::-webkit-input-placeholder { /* Edge */
 		color: var(--wp--gutena-forms--placeholder-color);
+		font-family: var(--wp--gutena-forms--placeholder-font-family);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
@@ -49,6 +60,7 @@
 	
 	.gutena-forms-field:-ms-input-placeholder { /* Internet Explorer */
 		color: var(--wp--gutena-forms--placeholder-color);
+		font-family: var(--wp--gutena-forms--placeholder-font-family);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
@@ -56,21 +68,26 @@
 	
 	.gutena-forms-field::placeholder {
 		color: var(--wp--gutena-forms--placeholder-color);
+		font-family: var(--wp--gutena-forms--placeholder-font-family);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
 	}
 
-	.wp-block-gutena-form-field > input {
-		font-size: var(--wp--gutena-forms--placeholder-font-size);
-		line-height: var(--wp--gutena-forms--placeholder-line-height);
-		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+	.wp-block-gutena-form-field > select.gutena-forms-field {
+		padding-top: 18px;
+		padding-bottom: 18px;
 	}
 
-	.wp-block-gutena-form-field > textarea {
+	//Input Field padding
+	.wp-block-gutena-form-field .gutena-forms-field {
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
+		font-family: var(--wp--gutena-forms--placeholder-font-family);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+		width: 100%;
+		padding: 13px calc( 18px + var(--wp--gutena-forms--input-border-radius, 0px )/2 );
+		box-sizing: border-box;
 	}
 
 	/**********************************
@@ -79,12 +96,6 @@
 
 	.wp-block-columns {
 		margin-bottom: var( --wp--style--block-gap, 2em );
-	}
-
-	//Input Field padding
-	.wp-block-gutena-form-field .gutena-forms-field {
-		width: 100%;
-		padding: 13px calc( 18px + var(--wp--gutena-forms--input-border-radius, 0px )/2 );
 	}
 
 	//Full width input field block
@@ -147,6 +158,10 @@
 
 	//error messages
 	.wp-block-gutena-field-group{
+
+		.is-layout-flex {
+			gap: var(--wp--style--block-gap,1.5rem);
+		}
 
 		.gutena-forms-field-error-msg {
 			font-size: 12px;

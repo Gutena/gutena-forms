@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is a native form block for Gutenberg. Built for Look, Speed and Functionality.
  * Requires at least: 6.0
  * Requires PHP:      5.6
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            ExpressTech
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -223,7 +223,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		// Enqueue Block local styles in head
 		public function enqueue_block_styles( $style, $priority = 10 ) {
 
-			if ( empty( $style ) ) {
+			if ( empty( $style ) || ! function_exists( 'wp_strip_all_tags' ) ) {
 				return;
 			}
 
@@ -234,7 +234,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action(
 				$action_hook_name,
 				static function () use ( $style ) {
-					echo '<style>' . esc_html( $style ) . "</style>\n";
+					echo '<style>' . wp_strip_all_tags( $style ) . "</style>\n";
 				},
 				$priority
 			);
