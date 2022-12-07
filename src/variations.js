@@ -184,7 +184,7 @@ const variations = [
 										bottom: '12px',
 										right: '12px',
 										left: '12px',
-										top: '0px',
+										top: '12px',
 									},
 								},
 								color: { background: '#d8eacc' },
@@ -213,7 +213,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										spacing: { padding: { top: '12px' } },
+										
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -247,7 +247,7 @@ const variations = [
 										bottom: '12px',
 										right: '12px',
 										left: '12px',
-										top: '0px',
+										top: '12px',
 									},
 								},
 								color: { background: '#ffd3d3' },
@@ -276,7 +276,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										spacing: { padding: { top: '12px' } },
+										
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -469,7 +469,7 @@ const variations = [
 										bottom: '12px',
 										right: '12px',
 										left: '12px',
-										top: '0px',
+										top: '12px',
 									},
 								},
 								color: { background: '#d8eacc' },
@@ -498,7 +498,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										spacing: { padding: { top: '12px' } },
+										
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -532,7 +532,7 @@ const variations = [
 										bottom: '12px',
 										right: '12px',
 										left: '12px',
-										top: '0px',
+										top: '12px',
 									},
 								},
 								color: { background: '#ffd3d3' },
@@ -561,7 +561,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										spacing: { padding: { top: '12px' } },
+										
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -914,7 +914,7 @@ const variations = [
 										bottom: '12px',
 										right: '12px',
 										left: '12px',
-										top: '0px',
+										top: '12px',
 									},
 								},
 								color: { background: '#d8eacc' },
@@ -943,7 +943,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										spacing: { padding: { top: '12px' } },
+										
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -977,7 +977,7 @@ const variations = [
 										bottom: '12px',
 										right: '12px',
 										left: '12px',
-										top: '0px',
+										top: '12px',
 									},
 								},
 								color: { background: '#ffd3d3' },
@@ -1006,7 +1006,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										spacing: { padding: { top: '12px' } },
+										
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -1372,7 +1372,7 @@ const variations = [
 										bottom: '12px',
 										right: '12px',
 										left: '12px',
-										top: '0px',
+										top: '12px',
 									},
 								},
 								color: { background: '#d8eacc' },
@@ -1401,7 +1401,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										spacing: { padding: { top: '12px' } },
+										
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -1435,7 +1435,7 @@ const variations = [
 										bottom: '12px',
 										right: '12px',
 										left: '12px',
-										top: '0px',
+										top: '12px',
 									},
 								},
 								color: { background: '#ffd3d3' },
@@ -1464,7 +1464,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										spacing: { padding: { top: '12px' } },
+										
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
