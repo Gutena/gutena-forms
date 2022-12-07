@@ -11,6 +11,7 @@ import {
 	LineHeightControl,
 	PanelColorSettings,
 	FontSizePicker,
+	__experimentalFontFamilyControl as FontFamilyControl,
 } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
 import { store as coreStore } from '@wordpress/core-data';
@@ -268,6 +269,13 @@ export default function Edit( props ) {
 						  ';'
 				}
 				${
+					gfIsEmpty( labelTypography?.fontFamily )
+						? ''
+						: '--wp--gutena-forms--label-font-family:' +
+						labelTypography?.fontFamily +
+						  ';'
+				}
+				${
 					gfIsEmpty( labelTypography )
 						? ''
 						: '--wp--gutena-forms--label-font-size:' +
@@ -286,6 +294,13 @@ export default function Edit( props ) {
 						? ''
 						: '--wp--gutena-forms--label-font-weight:' +
 						  labelTypography?.fontWeight +
+						  ';'
+				}
+				${
+					gfIsEmpty( placeholderTypography?.fontFamily )
+						? ''
+						: '--wp--gutena-forms--placeholder-font-family:' +
+						  placeholderTypography?.fontFamily +
 						  ';'
 				}
 				${
@@ -515,6 +530,7 @@ export default function Edit( props ) {
 							disableCustomColors: false,
 						},
 					] }
+					enableAlpha={ true }
 				/>
 				{ showLabel ? (
 					<ToolsPanel
@@ -526,10 +542,38 @@ export default function Edit( props ) {
 									fontSize: undefined,
 									lineHeight: undefined,
 									fontWeight: undefined,
+									fontFamily: undefined,
 								},
 							} )
 						}
 					>
+						<ToolsPanelItem
+							hasValue={ () => !! labelTypography?.fontFamily }
+							label={ __( 'Font Family' ) }
+							onDeselect={ () =>
+								setAttributes( {
+									labelTypography: {
+										...labelTypography,
+										fontFamily: undefined,
+									},
+								} )
+							}
+						>
+						<FontFamilyControl
+							value={ labelTypography?.fontFamily }
+							onChange={ ( fontFamily ) =>
+								setAttributes( {
+									labelTypography: {
+										...labelTypography,
+										fontFamily: fontFamily,
+									},
+								} )
+							}
+							size="__unstable-large"
+							__nextHasNoMarginBottom
+						/>
+						</ToolsPanelItem>
+
 						<ToolsPanelItem
 							hasValue={ () => !! labelTypography?.fontSize }
 							label={ __( 'Font size' ) }
@@ -625,10 +669,38 @@ export default function Edit( props ) {
 								fontSize: undefined,
 								lineHeight: undefined,
 								fontWeight: undefined,
+								fontFamily: undefined,
 							},
 						} )
 					}
 				>
+					<ToolsPanelItem
+							hasValue={ () => !! placeholderTypography?.fontFamily }
+							label={ __( 'Font Family' ) }
+							onDeselect={ () =>
+								setAttributes( {
+									placeholderTypography: {
+										...placeholderTypography,
+										fontFamily: undefined,
+									},
+								} )
+							}
+						>
+						<FontFamilyControl
+							value={ placeholderTypography?.fontFamily }
+							onChange={ ( fontFamily ) =>
+								setAttributes( {
+									placeholderTypography: {
+										...placeholderTypography,
+										fontFamily: fontFamily,
+									},
+								} )
+							}
+							size="__unstable-large"
+							__nextHasNoMarginBottom
+						/>
+					</ToolsPanelItem>
+
 					<ToolsPanelItem
 						hasValue={ () => !! placeholderTypography?.fontSize }
 						label={ __( 'Font size' ) }
@@ -712,7 +784,7 @@ export default function Edit( props ) {
 						/>
 					</ToolsPanelItem>
 				</ToolsPanel>
-				<PanelBody title="Input settings" initialOpen={ false }>
+				<PanelBody title="Input settings" className="gutena-forms-panel" initialOpen={ false }>
 					<PanelRow>
 						<fieldset className="components-border-radius-control">
 							<legend>
@@ -974,6 +1046,7 @@ export default function Edit( props ) {
 			</InspectorControls>
 			{ hasInnerBlocks ? (
 				<form method="post" { ...blockProps }>
+					<input type="hidden" name="formid" value={ formID } />
 					<InnerBlocks
 						template={ TEMPLATE }
 						allowedBlocks={ ALLOWED_BLOCKS }
