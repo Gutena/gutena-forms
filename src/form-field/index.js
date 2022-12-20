@@ -13,11 +13,11 @@ const formFieldIcon = () => (
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"
 			>
-				<rect x="2" y="4" width="8" height="2" fill="#3F6DE4" />
-				<rect x="2" y="11" width="8" height="2" fill="#3F6DE4" />
-				<rect x="14" y="4" width="8" height="2" fill="#3F6DE4" />
-				<rect x="14" y="11" width="8" height="2" fill="#3F6DE4" />
-				<rect x="2" y="18" width="20" height="2" fill="#3F6DE4" />
+				<rect x="2" y="4" width="8" height="2" fill="#0EA489" />
+				<rect x="2" y="11" width="8" height="2" fill="#0EA489" />
+				<rect x="14" y="4" width="8" height="2" fill="#0EA489" />
+				<rect x="14" y="11" width="8" height="2" fill="#0EA489" />
+				<rect x="2" y="18" width="20" height="2" fill="#0EA489" />
 			</svg>
 		) }
 	/>
