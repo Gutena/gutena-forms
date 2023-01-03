@@ -30,9 +30,12 @@
 		display:none;
 	}
 
+	&.has-label-font-family .heading-input-label-gutena {
+		font-family: var(--wp--gutena-forms--label-font-family);
+	}
+
 	.heading-input-label-gutena {
 		color: var(--wp--gutena-forms--label-color);
-		font-family: var(--wp--gutena-forms--label-font-family);
 		font-size: var(--wp--gutena-forms--label-font-size,13px);
 		line-height: var(--wp--gutena-forms--label-line-height);
 		font-weight: var(--wp--gutena-forms--label-font-weight);
@@ -52,7 +55,6 @@
 	**********************************/ 
 	.gutena-forms-field::-webkit-input-placeholder { /* Edge */
 		color: var(--wp--gutena-forms--placeholder-color);
-		font-family: var(--wp--gutena-forms--placeholder-font-family);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
@@ -60,7 +62,6 @@
 	
 	.gutena-forms-field:-ms-input-placeholder { /* Internet Explorer */
 		color: var(--wp--gutena-forms--placeholder-color);
-		font-family: var(--wp--gutena-forms--placeholder-font-family);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
@@ -68,7 +69,6 @@
 	
 	.gutena-forms-field::placeholder {
 		color: var(--wp--gutena-forms--placeholder-color);
-		font-family: var(--wp--gutena-forms--placeholder-font-family);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
@@ -80,9 +80,15 @@
 	}
 
 	//Input Field padding
+	//input placeholder font family
+	&.has-placeholder-font-family {
+		.wp-block-gutena-form-field .gutena-forms-field {
+			font-family: var(--wp--gutena-forms--placeholder-font-family);
+		}
+	}
+	
 	.wp-block-gutena-form-field .gutena-forms-field {
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
-		font-family: var(--wp--gutena-forms--placeholder-font-family);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
 		width: 100%;

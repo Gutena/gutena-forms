@@ -297,7 +297,7 @@ export default function edit( {
 							) }
 							value={ nameAttr }
 							onChange={ ( nameAttr ) =>
-								setAttributes( { nameAttr } )
+								setAttributes( { nameAttr: nameAttr.toLowerCase().replace( / /g, '_' ) } )
 							}
 						/>
 					</PanelRow>

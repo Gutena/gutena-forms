@@ -10,8 +10,35 @@ Light-weight and easy plugin create forms inside the block editor.
 
 == Description ==
 
-Welcome to Gutena Forms, the easiest way to create forms inside the WordPress block editor.
-Our lightweight plugin uses no jQuery, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor. You can add as many core blocks as you like, giving you complete control over the look and feel of your forms.
+Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our lightweight plugin uses no jQuery, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor. 
+
+You can add as many core blocks as you like, giving you complete control over the look and feel of your forms. With Gutena Forms, you can create contact forms, registration forms, payment forms, and more in just a few clicks. 
+
+The plugin is built with the latest WordPress block editor, so you can easily add and customize your forms directly within the editor. It comes with a variety of form fields, including text fields, email fields, dropdown menus, and more, as well as the ability to add custom fields.
+
+The gutena form plugin allows you to select various form variations/pre-built form templates to start with you can choose any of them or create your own custom form from scratch. Thanks to its seamless integration with the WordPress editor you can customize it as per your like.
+
+Gutena Forms is fully responsive and mobile-friendly, so your forms will look great on any device. It also integrates with popular email marketing and CRM platforms, making it easy to manage and track your form submissions.
+
+== No jQuery Used ==
+
+It is essential to have a fast website, and Gutena forms assure your site’s performance won’t be affected as we’re using just javascript rather than JQuery library, so your website's performance will remain optimal.
+
+
+== Multiple Pre-built form templates ==
+
+Just call out the Form block by typing /form or adding a new form block, you are then asked to select a form variation. Select the variation of your choice and move further for more customizations.
+
+
+== Various form input fields ==
+
+Whether you want to capture the user’s name, email address, business information, comments, or other information. You have the freedom to set up various input fields with complete control over the form.
+
+
+== Form Confirmation Messages ==
+
+Whether you want to display a success message or an error message, the gutena form allows you to set custom confirmation messages. Notify your users that the form has been successfully submitted & their details have been captured or set an error message to be displayed when there’s a problem saving the form.
+
 
 == Features ==
 
@@ -62,7 +89,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 [Booking Ultra](https://wordpress.org/plugins/booking-ultra-pro/) - Appointment Booking plugin for WordPress - Show a quick form to accept bookings for your services with pre-set booking slots. Ideal for salons, medical professionals, lawyers, consultants, etc.
 
-[InstaWP](https://instawp.io/) - Launch a quick WordPress site with this sandbox service. Create New WordPress instance within a second.
+[InstaWP](https://instawp.com/) - Launch a quick WordPress site with this sandbox service. Create New WordPress instance within a second.
 
 == Screenshots ==
 
@@ -76,6 +103,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+
+= 1.0.5 | Beta =
+* Fixed default input label and placeholder font-family
 
 = 1.0.4 | 20th December 2022 =
 * Updated readme.txt file content
