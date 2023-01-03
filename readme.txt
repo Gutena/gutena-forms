@@ -10,7 +10,7 @@ Light-weight and easy plugin create forms inside the block editor.
 
 == Description ==
 
-Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our lightweight plugin uses no jQuery, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor. 
+Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
 
 You can add as many core blocks as you like, giving you complete control over the look and feel of your forms. With Gutena Forms, you can create contact forms, registration forms, payment forms, and more in just a few clicks. 
 
