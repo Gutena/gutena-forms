@@ -6,8 +6,8 @@
 	"title": "Form",
 	"category": "gutena",
 	"icon": "feedback",
-	"description": "Create simple forms",
-	"keywords": [ "form", "forms", "gutena forms", "contact form" ],
+	"description": "Light-weight forms inside the block editor",
+	"keywords": [ "form", "block", "contact form", "form block", "forms" ],
 	"attributes": {
 		"formID": {
 			"type": "string",
