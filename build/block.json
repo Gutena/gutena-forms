@@ -6,12 +6,13 @@
   "title": "Form",
   "category": "gutena",
   "icon": "feedback",
-  "description": "Create simple forms",
+  "description": "Light-weight forms inside the block editor",
   "keywords": [
     "form",
-    "forms",
-    "gutena forms",
-    "contact form"
+    "block",
+    "contact form",
+    "form block",
+    "forms"
   ],
   "attributes": {
     "formID": {

@@ -418,6 +418,8 @@ export default function Edit( props ) {
 			formClassName += afterSubmitAction
 				? ' after_submit_' + afterSubmitAction
 				: '';
+			formClassName += gfIsEmpty( labelTypography?.fontFamily ) ? '': ' has-label-font-family';
+			formClassName += gfIsEmpty( placeholderTypography?.fontFamily ) ? '': ' has-placeholder-font-family';
 			setAttributes( { formClasses: formClassName } );
 		}
 
@@ -432,6 +434,8 @@ export default function Edit( props ) {
 		formID,
 		afterSubmitHide,
 		afterSubmitAction,
+		labelTypography,
+		placeholderTypography
 	] );
 
 	const ALLOWED_BLOCKS = [
