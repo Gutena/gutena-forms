@@ -1,4 +1,4 @@
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", function(){
 	const ready = () => {
 		form_sumbit();
 		field_validation_on_input();
@@ -290,4 +290,4 @@ window.onload = () => {
 	};
 
 	ready();
-};
+});
