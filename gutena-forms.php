@@ -271,7 +271,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 					wp_enqueue_script( 
 						'google-recaptcha', 
-						'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. sanitize_key( $grecaptcha['site_key'] )  ), 
+						esc_url( 'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. esc_attr( $grecaptcha['site_key'] )  ) ), 
 						array(), 
 						$this->$version, 
 						true 
