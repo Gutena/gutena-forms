@@ -139,6 +139,16 @@
 		"formStyle": {
 			"type": "string",
 			"default": ""
+		},
+		"recaptcha": {
+			"type": "object",
+			"default": {
+				"enable": false,
+				"type": "v3",
+				"site_key": "",
+				"secret_key": "",
+				"thresholdScore":"0.50"
+			}
 		}
 	},
 	"supports": {

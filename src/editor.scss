@@ -46,3 +46,9 @@
 .gutena-forms-panel .components-border-radius-control {
 	width:100%;
 }
+
+.gutena-forms-horizontal-radio.components-radio-control .components-flex {
+	flex-direction: row;
+	gap: 1.25rem;
+	justify-content: flex-start;
+}

@@ -22,11 +22,13 @@ import {
 	TextControl,
 	ToggleControl,
 	RangeControl,
+	RadioControl,
 	SelectControl,
 	__experimentalUseCustomUnits as useCustomUnits,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
 	__experimentalUnitControl as UnitControl,
+	__experimentalVStack as VStack,
 	__experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue,
 } from '@wordpress/components';
 import {
@@ -125,6 +127,7 @@ export default function Edit( props ) {
 		messages,
 		formStyle,
 		style,
+		recaptcha,
 	} = attributes;
 
 	//Get Post ID
@@ -485,6 +488,62 @@ export default function Edit( props ) {
 							}
 						/>
 					</PanelRow>
+				</PanelBody>
+				<PanelBody title="Google reCAPTCHA" initialOpen={ false }>
+				<VStack >
+					<p><a href="https://developers.google.com/recaptcha/intro" target="_blank">{ __( 'reCAPTCHA', 'gutena-forms' ) }</a> { __( ' v3 and v2 help you protect your sites from fraudulent activities, spam, and abuse. By using this integration in your forms, you can block spam form submissions.', 'gutena-forms' ) } </p>
+
+					<ToggleControl
+						label={ __( 'Enable', 'gutena-forms' ) }
+						checked={ recaptcha?.enable }
+						onChange={ ( recaptcha_status ) =>
+							setAttributes( { recaptcha:{
+								...recaptcha,
+								enable:recaptcha_status
+							} } )
+						}
+					/>	
+					{ ( ! gfIsEmpty( recaptcha?.enable ) && recaptcha?.enable ) &&
+					<>
+						<RadioControl
+							className="gutena-forms-horizontal-radio"
+							label={ __( 'reCAPTCHA Type', 'gutena-forms' ) }
+							selected={ recaptcha?.type }
+							options={ [
+								{ label: 'v2', value: 'v2' },
+								{ label: 'v3', value: 'v3' },
+							] }
+							onChange={ ( type ) =>
+								setAttributes( { recaptcha:{
+									...recaptcha,
+									type
+								} } )
+							}
+						/>
+					
+						<TextControl
+							label={ __( 'Site Key', 'gutena-forms' ) }
+							value={ recaptcha?.site_key }
+							onChange={ ( site_key ) =>
+								setAttributes( { recaptcha:{
+									...recaptcha,
+									site_key
+								} } )
+							}
+						/>
+						<TextControl
+							label={ __( 'Secret key', 'gutena-forms' ) }
+							value={ recaptcha?.secret_key }
+							onChange={ ( secret_key ) =>
+								setAttributes( { recaptcha:{
+									...recaptcha,
+									secret_key
+								} } )
+							}
+						/>
+					</>
+					}
+					</VStack>
 				</PanelBody>
 				<PanelColorSettings
 					title={ __( 'Form colors', 'gutena-forms' ) }
