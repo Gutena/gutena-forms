@@ -271,7 +271,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 					wp_enqueue_script( 
 						'google-recaptcha', 
-						'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='.$grecaptcha['site_key'] ), 
+						'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. sanitize_key( $grecaptcha['site_key'] )  ), 
 						array(), 
 						$this->$version, 
 						true 
@@ -417,7 +417,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					array(
 						'status'  => 'error',
 						'message' => __( 'Invalid reCAPTCHA', 'gutena-forms' ),
-						'recaptcha_error'	  => isset( $_POST['recaptcha_error'] ) ? $_POST['recaptcha_error'] : ''
+						'recaptcha_error'	  => isset( $_POST['recaptcha_error'] ) ? sanitize_text_field( $_POST['recaptcha_error'] ) : ''
 					)
 				);
 			}
@@ -520,7 +520,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				$response = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', array(
 					'body'        => array(
 						'secret' => $recaptcha_settings['secret_key'],
-						'response' => $_POST['g-recaptcha-response']
+						'response' => sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) )
 					)
 				));
 
