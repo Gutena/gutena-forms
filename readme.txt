@@ -106,6 +106,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 = 1.0.7 | Beta =
 * Added Google reCAPTCHA
+* Fixed missing form identity issue
 
 = 1.0.6 | 13th January 2023 =
 * Fixed input box on focus border color

@@ -134,41 +134,41 @@ export default function Edit( props ) {
 	const currentPostId = useSelect( ( select ) => {
 		return select( editorStore ).getCurrentPostId();
 	}, [] );
+
+	
 	//Set Form ID
 	useEffect( () => {
 		let shouldRunFormID = true;
-		if ( shouldRunFormID ) {
-			if (
-				'undefined' !== typeof currentPostId &&
-				null !== currentPostId &&
-				( '' == formID ||
-					-1 === formID.indexOf( '_' + currentPostId + '_' ) )
-			) {
-				const d = new Date();
-				let GutenaFormsID =
-					'gutena_forms_ID_' +
-					currentPostId +
-					'_' +
-					d.getDate() +
-					'' +
-					( d.getMonth() + 1 ) +
-					'' +
-					d.getFullYear() +
-					'' +
-					d.getHours() +
-					'' +
-					d.getMinutes() +
-					'' +
-					d.getSeconds();
-				setAttributes( { formID: GutenaFormsID } );
-			}
+		if ( shouldRunFormID && gfIsEmpty( formID ) ) {
+			const d = new Date();
+			let randomID = Math.random().toString(16).slice(5);
+
+			/* \W is the equivalent of [^0-9a-zA-Z_] - it includes the underscore character */
+			randomID = randomID.replace(/\W/g, '');
+
+			let GutenaFormsID =
+				( 'gutena_forms_ID_' +
+				randomID +
+				'_' +
+				d.getDate() +
+				'' +
+				( d.getMonth() + 1 ) +
+				'' +
+				d.getFullYear() +
+				'' +
+				d.getHours() +
+				'' +
+				d.getMinutes() +
+				'' +
+				d.getSeconds() );
+			setAttributes( { formID: GutenaFormsID } );
 		}
 
 		//cleanup
 		return () => {
 			shouldRunFormID = false;
 		};
-	}, [ currentPostId ] );
+	}, [] );
 
 	//Check Inner Blocks
 	const hasInnerBlocks = useSelect(
@@ -488,6 +488,13 @@ export default function Edit( props ) {
 							}
 						/>
 					</PanelRow>
+					<p ><span className="block-editor-block-card__title" >{ __( 'Note : ', 'gutena-forms' ) }</span>
+					<span className="gf-text-muted" >
+					{ __( 'To reuse this form, please make it a', 'gutena-forms' ) } 
+					<a href="https://gutena.io/reuse-gutena-forms-on-multiple-pages" target="_blank">{ __( ' reusable block. ', 'gutena-forms' ) } </a>
+					{ __( 'Avoid copying or duplicating this block.', 'gutena-forms' ) }
+					</span>
+					</p>
 				</PanelBody>
 				<PanelBody title="Google reCAPTCHA" initialOpen={ false }>
 				<VStack >

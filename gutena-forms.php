@@ -284,8 +284,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		// save form schema
 		public function save_gutena_forms_schema( $post_id, $post, $update ) {
-
-			if ( empty( $post_id ) || empty( $post ) || ! function_exists( 'parse_blocks' ) || ! in_array( $post->post_type, array( 'post', 'page' ), true ) || ! function_exists( 'wp_is_post_revision' ) || wp_is_post_revision( $post_id ) || ! has_block( 'gutena/forms', $post ) ) {
+			
+			if ( empty( $post_id ) || empty( $post ) || ! function_exists( 'parse_blocks' ) || ! function_exists( 'wp_is_post_revision' ) || wp_is_post_revision( $post_id ) || ! has_block( 'gutena/forms', $post ) ) {
 				return;
 			}
 
