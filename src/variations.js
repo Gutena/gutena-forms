@@ -1071,7 +1071,7 @@ const variations = [
 							height="0.5"
 							fill="white"
 							stroke="#7090E5"
-							stroke-width="0.5"
+							strokeWidth="0.5"
 						/>
 						<rect
 							opacity="0.7"
@@ -1089,7 +1089,7 @@ const variations = [
 							height="0.5"
 							fill="white"
 							stroke="#7090E5"
-							stroke-width="0.5"
+							strokeWidth="0.5"
 						/>
 						<rect
 							opacity="0.7"
@@ -1107,7 +1107,7 @@ const variations = [
 							height="0.5"
 							fill="white"
 							stroke="#7090E5"
-							stroke-width="0.5"
+							strokeWidth="0.5"
 						/>
 						<rect
 							opacity="0.7"
@@ -1125,7 +1125,7 @@ const variations = [
 							height="0.5"
 							fill="white"
 							stroke="#7090E5"
-							stroke-width="0.5"
+							strokeWidth="0.5"
 						/>
 						<rect
 							opacity="0.7"
@@ -1143,7 +1143,7 @@ const variations = [
 							height="0.5"
 							fill="white"
 							stroke="#7090E5"
-							stroke-width="0.5"
+							strokeWidth="0.5"
 						/>
 						<rect
 							opacity="0.7"
@@ -1161,7 +1161,7 @@ const variations = [
 							height="0.5"
 							fill="white"
 							stroke="#7090E5"
-							stroke-width="0.5"
+							strokeWidth="0.5"
 						/>
 						<rect
 							opacity="0.7"

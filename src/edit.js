@@ -130,11 +130,6 @@ export default function Edit( props ) {
 		recaptcha,
 	} = attributes;
 
-	//Get Post ID
-	const currentPostId = useSelect( ( select ) => {
-		return select( editorStore ).getCurrentPostId();
-	}, [] );
-
 	
 	//Set Form ID
 	useEffect( () => {
@@ -161,7 +156,21 @@ export default function Edit( props ) {
 				d.getMinutes() +
 				'' +
 				d.getSeconds() );
-			setAttributes( { formID: GutenaFormsID } );
+
+			//set recaptcha and formID if not set initially as per data available 
+			if ( ! gfIsEmpty( recaptcha ) && gfIsEmpty( recaptcha.secret_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_type ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_site_key ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_secret_key ) ) {
+				setAttributes( { 
+					recaptcha: {
+						...recaptcha,
+						type: gutenaFormsBlock.grecaptcha_type,
+						site_key: gutenaFormsBlock.grecaptcha_site_key,
+						secret_key: gutenaFormsBlock.grecaptcha_secret_key,
+					},
+					formID: GutenaFormsID 
+				} );
+			} else {
+				setAttributes( { formID: GutenaFormsID } );
+			}
 		}
 
 		//cleanup

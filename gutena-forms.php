@@ -91,7 +91,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
 					'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
 					'grecaptcha_type'	  => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
-					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key']
+					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
+					'grecaptcha_secret_key' => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
 				)
 			);
 		}
