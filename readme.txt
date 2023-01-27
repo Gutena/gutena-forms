@@ -2,7 +2,7 @@
 Contributors:      expresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.1
-Stable tag:        1.0.6
+Stable tag:        1.0.7
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ Gutena Forms is fully responsive and mobile-friendly, so your forms will look gr
 
 It is essential to have a fast website, and Gutena forms assure your site’s performance won’t be affected as we’re using just javascript rather than JQuery library, so your website's performance will remain optimal.
 
+== Google reCAPTCHA Integration ==
+
+Google reCAPTCHA v3 and v2 help you protect your sites from fraudulent activities, spam, and abuse. By using this integration in your forms, you can block spam form submissions.
 
 == Multiple Pre-built form templates ==
 
@@ -44,6 +47,7 @@ Whether you want to display a success message or an error message, the gutena fo
 
 * Easy form creation inside the WordPress block editor
 * No jQuery, so it won’t slow down your website
+* Google reCAPTCHA Integration
 * Complete control over the look and feel of your forms
 * Add as many core blocks as you like
 * Pre-built templates baked in for even easier form creation
@@ -104,8 +108,8 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
-= 1.0.7 | Beta =
-* Added Google reCAPTCHA
+= 1.0.7 | 27th January 2023 =
+* Added Google reCAPTCHA Integration
 * Fixed missing form identity issue
 
 = 1.0.6 | 13th January 2023 =
