@@ -490,7 +490,9 @@ export default function Edit( props ) {
 					</PanelRow>
 					<p ><span className="block-editor-block-card__title" >{ __( 'Note : ', 'gutena-forms' ) }</span>
 					<span className="gf-text-muted" >
-					{ __( 'To reuse this form, please make it a reusable block. Please avoid copying or duplicating this block.', 'gutena-forms' ) }
+					{ __( 'To reuse this form, please make it a', 'gutena-forms' ) } 
+					<a href="https://gutena.io/reuse-gutena-forms-on-multiple-pages" target="_blank">{ __( ' reusable block. ', 'gutena-forms' ) } </a>
+					{ __( 'Avoid copying or duplicating this block.', 'gutena-forms' ) }
 					</span>
 					</p>
 				</PanelBody>
