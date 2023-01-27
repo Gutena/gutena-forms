@@ -22,11 +22,13 @@ import {
 	TextControl,
 	ToggleControl,
 	RangeControl,
+	RadioControl,
 	SelectControl,
 	__experimentalUseCustomUnits as useCustomUnits,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
 	__experimentalUnitControl as UnitControl,
+	__experimentalVStack as VStack,
 	__experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue,
 } from '@wordpress/components';
 import {
@@ -125,38 +127,48 @@ export default function Edit( props ) {
 		messages,
 		formStyle,
 		style,
+		recaptcha,
 	} = attributes;
 
-	//Get Post ID
-	const currentPostId = useSelect( ( select ) => {
-		return select( editorStore ).getCurrentPostId();
-	}, [] );
+	
 	//Set Form ID
 	useEffect( () => {
 		let shouldRunFormID = true;
-		if ( shouldRunFormID ) {
-			if (
-				'undefined' !== typeof currentPostId &&
-				null !== currentPostId &&
-				( '' == formID ||
-					-1 === formID.indexOf( '_' + currentPostId + '_' ) )
-			) {
-				const d = new Date();
-				let GutenaFormsID =
-					'gutena_forms_ID_' +
-					currentPostId +
-					'_' +
-					d.getDate() +
-					'' +
-					( d.getMonth() + 1 ) +
-					'' +
-					d.getFullYear() +
-					'' +
-					d.getHours() +
-					'' +
-					d.getMinutes() +
-					'' +
-					d.getSeconds();
+		if ( shouldRunFormID && gfIsEmpty( formID ) ) {
+			const d = new Date();
+			let randomID = Math.random().toString(16).slice(5);
+
+			/* \W is the equivalent of [^0-9a-zA-Z_] - it includes the underscore character */
+			randomID = randomID.replace(/\W/g, '');
+
+			let GutenaFormsID =
+				( 'gutena_forms_ID_' +
+				randomID +
+				'_' +
+				d.getDate() +
+				'' +
+				( d.getMonth() + 1 ) +
+				'' +
+				d.getFullYear() +
+				'' +
+				d.getHours() +
+				'' +
+				d.getMinutes() +
+				'' +
+				d.getSeconds() );
+
+			//set recaptcha and formID if not set initially as per data available 
+			if ( ! gfIsEmpty( recaptcha ) && gfIsEmpty( recaptcha.secret_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_type ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_site_key ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_secret_key ) ) {
+				setAttributes( { 
+					recaptcha: {
+						...recaptcha,
+						type: gutenaFormsBlock.grecaptcha_type,
+						site_key: gutenaFormsBlock.grecaptcha_site_key,
+						secret_key: gutenaFormsBlock.grecaptcha_secret_key,
+					},
+					formID: GutenaFormsID 
+				} );
+			} else {
 				setAttributes( { formID: GutenaFormsID } );
 			}
 		}
@@ -165,7 +177,7 @@ export default function Edit( props ) {
 		return () => {
 			shouldRunFormID = false;
 		};
-	}, [ currentPostId ] );
+	}, [] );
 
 	//Check Inner Blocks
 	const hasInnerBlocks = useSelect(
@@ -485,6 +497,69 @@ export default function Edit( props ) {
 							}
 						/>
 					</PanelRow>
+					<p ><span className="block-editor-block-card__title" >{ __( 'Note : ', 'gutena-forms' ) }</span>
+					<span className="gf-text-muted" >
+					{ __( 'To reuse this form, please make it a', 'gutena-forms' ) } 
+					<a href="https://gutena.io/reuse-gutena-forms-on-multiple-pages" target="_blank">{ __( ' reusable block. ', 'gutena-forms' ) } </a>
+					{ __( 'Avoid copying or duplicating this block.', 'gutena-forms' ) }
+					</span>
+					</p>
+				</PanelBody>
+				<PanelBody title="Google reCAPTCHA" initialOpen={ false }>
+				<VStack >
+					<p><a href="https://gutena.io/how-to-generate-google-recaptcha-site-key-and-secret-key" target="_blank">{ __( 'reCAPTCHA', 'gutena-forms' ) }</a> { __( ' v3 and v2 help you protect your sites from fraudulent activities, spam, and abuse. By using this integration in your forms, you can block spam form submissions.', 'gutena-forms' ) } </p>
+
+					<ToggleControl
+						label={ __( 'Enable', 'gutena-forms' ) }
+						checked={ recaptcha?.enable }
+						onChange={ ( recaptcha_status ) =>
+							setAttributes( { recaptcha:{
+								...recaptcha,
+								enable:recaptcha_status
+							} } )
+						}
+					/>	
+					{ ( ! gfIsEmpty( recaptcha?.enable ) && recaptcha?.enable ) &&
+					<>
+						<RadioControl
+							className="gutena-forms-horizontal-radio"
+							label={ __( 'reCAPTCHA Type', 'gutena-forms' ) }
+							selected={ recaptcha?.type }
+							options={ [
+								{ label: 'v2', value: 'v2' },
+								{ label: 'v3', value: 'v3' },
+							] }
+							onChange={ ( type ) =>
+								setAttributes( { recaptcha:{
+									...recaptcha,
+									type
+								} } )
+							}
+						/>
+					
+						<TextControl
+							label={ __( 'Site Key', 'gutena-forms' ) }
+							value={ recaptcha?.site_key }
+							onChange={ ( site_key ) =>
+								setAttributes( { recaptcha:{
+									...recaptcha,
+									site_key
+								} } )
+							}
+						/>
+						<TextControl
+							label={ __( 'Secret key', 'gutena-forms' ) }
+							value={ recaptcha?.secret_key }
+							onChange={ ( secret_key ) =>
+								setAttributes( { recaptcha:{
+									...recaptcha,
+									secret_key
+								} } )
+							}
+						/>
+					</>
+					}
+					</VStack>
 				</PanelBody>
 				<PanelColorSettings
 					title={ __( 'Form colors', 'gutena-forms' ) }

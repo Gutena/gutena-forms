@@ -114,101 +114,129 @@ document.addEventListener("DOMContentLoaded", function(){
 					gutena_forms.classList.remove( 'display-error-message' );
 					gutena_forms.classList.remove( 'display-success-message' );
 
-					fetch( gutenaFormsBlock.ajax_url, {
-						method: 'POST',
-						credentials: 'same-origin', // <-- make sure to include credentials
-						body: form_data,
-					} )
-						.then( ( response ) => response.json() )
-						.then( ( response ) => {
-							submitButton[ i ].disabled = false;
-							submitBtnLink.innerHTML = submitBtnLinkHtml;
-							gutena_forms.classList.remove( 'form-progress' );
-							if (
-								! isEmpty( response ) &&
-								'error' === response.status
-							) {
-								gutena_forms.classList.add(
-									'display-error-message'
-								);
 
-								//Get form error message block first paragraph
-								let errorMsgElement =
-									gutena_forms.querySelector(
-										'.wp-block-gutena-form-error-msg .gutena-forms-error-text'
-									);
+					//Google recaptcha
+					if ( ! isEmpty( gutenaFormsBlock.grecaptcha_type ) && 'v3' === gutenaFormsBlock.grecaptcha_type && ! isEmpty( gutenaFormsBlock.grecaptcha_site_key ) ) {
+						let grecaptcha_enable  = gutena_forms.querySelector(
+							'input[name="recaptcha_enable"]'
+						);
+						if ( 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
+							grecaptcha.ready(function() {
+								grecaptcha.execute( gutenaFormsBlock.grecaptcha_site_key, {action: 'submit'}).then( function( token ) {
+									/* for v3 - append g-recaptcha-response input 
+									 for v2 - already present */
+									form_data.append('g-recaptcha-response', token);
 
-								//check if element is exist
-								if (
-									isEmpty( errorMsgElement ) ||
-									0 === errorMsgElement.length
-								) {
-									console.log( 'errorMsgElement not found' );
-								}
-
-								//Insert message
-								errorMsgElement.innerHTML = response.message;
-
-								console.log( 'Form Message', response );
-							} else {
-								//Reset Form
-								gutena_forms.reset();
-
-								gutena_forms.classList.add(
-									'display-success-message'
-								);
-
-								if (
-									hasClass(
-										gutena_forms,
-										'hide-form-after-submit'
-									)
-								) {
-									gutena_forms.classList.add(
-										'hide-form-now'
-									);
-								}
-
-								//Check for redirection
-								if (
-									hasClass(
-										gutena_forms,
-										'after_submit_redirect_url'
-									)
-								) {
-									//get redirect_url
-									let redirect_url =
-										gutena_forms.querySelector(
-											'input[name="redirect_url"]'
-										);
-									//check if element is exist
-									if (
-										isEmpty( redirect_url ) ||
-										0 === redirect_url.length
-									) {
-										console.log( 'redirect_url not found' );
-									}
-
-									redirect_url = redirect_url.value;
-
-									if ( ! isEmpty( redirect_url ) ) {
-										//redirect to redirect_url
-										setTimeout( () => {
-											location.href = redirect_url;
-										}, 2000 );
-									} else {
-										console.log(
-											'redirect_url',
-											redirect_url
-										);
-									}
-								}
-							}
-						} );
+									// Add your logic to submit to your backend server here.
+									save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+								});
+							});
+						} else {
+							save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+						}
+					} else {
+						//recaptcha not enabled or configured
+						save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+					}
 				} );
 			}
 		}
 	};
+
+	const save_gutena_forms = ( gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml ) => { 
+		console.log( "gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml");
+		fetch( gutenaFormsBlock.ajax_url, {
+			method: 'POST',
+			credentials: 'same-origin', // <-- make sure to include credentials
+			body: form_data,
+		} )
+		.then( ( response ) => response.json() )
+		.then( ( response ) => {
+			submitButton.disabled = false;
+			submitBtnLink.innerHTML = submitBtnLinkHtml;
+			gutena_forms.classList.remove( 'form-progress' );
+			if (
+				! isEmpty( response ) &&
+				'error' === response.status
+			) {
+				gutena_forms.classList.add(
+					'display-error-message'
+				);
+
+				//Get form error message block first paragraph
+				let errorMsgElement =
+					gutena_forms.querySelector(
+						'.wp-block-gutena-form-error-msg .gutena-forms-error-text'
+					);
+
+				//check if element is exist
+				if (
+					isEmpty( errorMsgElement ) ||
+					0 === errorMsgElement.length
+				) {
+					console.log( 'errorMsgElement not found' );
+				}
+
+				//Insert message
+				errorMsgElement.innerHTML = response.message;
+
+				console.log( 'Form Message', response );
+			} else {
+				//Reset Form
+				gutena_forms.reset();
+
+				gutena_forms.classList.add(
+					'display-success-message'
+				);
+
+				if (
+					hasClass(
+						gutena_forms,
+						'hide-form-after-submit'
+					)
+				) {
+					gutena_forms.classList.add(
+						'hide-form-now'
+					);
+				}
+
+				//Check for redirection
+				if (
+					hasClass(
+						gutena_forms,
+						'after_submit_redirect_url'
+					)
+				) {
+					//get redirect_url
+					let redirect_url =
+						gutena_forms.querySelector(
+							'input[name="redirect_url"]'
+						);
+					//check if element is exist
+					if (
+						isEmpty( redirect_url ) ||
+						0 === redirect_url.length
+					) {
+						console.log( 'redirect_url not found' );
+					}
+
+					redirect_url = redirect_url.value;
+
+					if ( ! isEmpty( redirect_url ) ) {
+						//redirect to redirect_url
+						setTimeout( () => {
+							location.href = redirect_url;
+						}, 2000 );
+					} else {
+						console.log(
+							'redirect_url',
+							redirect_url
+						);
+					}
+				}
+			}
+		} );
+	}
 
 	const field_validation_on_input = () => {
 		let formField = document.querySelectorAll(

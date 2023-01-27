@@ -46,3 +46,15 @@
 .gutena-forms-panel .components-border-radius-control {
 	width:100%;
 }
+
+.gutena-forms-horizontal-radio.components-radio-control .components-flex {
+	flex-direction: row;
+	gap: 1.25rem;
+	justify-content: flex-start;
+}
+
+.gf-text-muted {
+    font-size: 12px;
+    font-style: normal;
+    color: rgb(117, 117, 117);
+}
