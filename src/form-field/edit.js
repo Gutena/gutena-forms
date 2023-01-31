@@ -36,7 +36,9 @@ export default function edit( {
 		autoCapitalize,
 		textAreaRows,
 		maxlength,
+		minMaxStep,
 		selectOptions,
+		optionsColumns,
 		optionsInline,
 		multiSelect,
 		errorRequiredMsg,
@@ -52,9 +54,12 @@ export default function edit( {
 
 	const fieldTypes = [
 		{ label: 'Text', value: 'text' },
+		{ label: 'Number', value: 'number' },
 		{ label: 'TextArea', value: 'textarea' },
 		{ label: 'Email', value: 'email' },
-		{ label: 'Select', value: 'select' },
+		{ label: 'Dropdown', value: 'select' },
+		{ label: 'Radio', value: 'radio' },
+		{ label: 'Checkbox', value: 'checkbox' },
 	];
 
 	const [ selectInputOption, setSelectInputOption ] = useState(
@@ -155,6 +160,9 @@ export default function edit( {
 			let InputClassName = `gutena-forms-field ${ fieldType }-field ${
 				isRequired ? 'required-field' : ''
 			}`;
+			if ( -1 !== ['radio', 'checkbox'].indexOf( fieldType ) ) {
+				InputClassName += optionsInline ? ' inline-options' : ' has-'+optionsColumns+'-col';
+			}
 			setAttributes( { fieldClasses: InputClassName } );
 		}
 
@@ -162,7 +170,7 @@ export default function edit( {
 		return () => {
 			shouldRunFieldClassnames = false;
 		};
-	}, [ fieldType, isRequired ] );
+	}, [ fieldType, isRequired, optionsInline, optionsColumns ] );
 
 	/********************************
 	 Input Field Component : START
@@ -214,6 +222,32 @@ export default function edit( {
 				</select>
 			);
 		}
+
+		if ( 'radio' === fieldType || 'checkbox' === fieldType ) {
+			return (
+				<div
+					className={ fieldClasses }
+				>
+				{ 
+				selectOptions.map( ( item, index ) => {
+					return (
+						<label key={ index } className={ fieldType+'-container' } > 
+							{ item }
+							<input 
+							type={ fieldType } 
+							name={ fieldName } 
+							value={ item }
+							checked={ item === selectInputOption}
+							onChange={ ( e ) => setSelectInputOption( e.target.value ) }
+							/>
+							<span class="checkmark"></span>
+						</label>
+					);
+				} ) 
+				}
+				</div>
+			);
+		}
 	};
 
 	/********************************
@@ -242,7 +276,43 @@ export default function edit( {
 							__nextHasNoMarginBottom
 						/>
 					</PanelRow>
-					{ 'select' !== fieldType && (
+					{ -1 !== ['radio', 'checkbox'].indexOf( fieldType ) && (
+						<>
+						<ToggleControl
+							label={ __( 'Show Inline', 'gutena-forms' ) }
+							className="gf-mt-1"
+							help={
+								optionsInline
+									? __(
+											'Toggle to make options show in columns',
+											'gutena-forms'
+									)
+									: __(
+											'Toggle to make options show inline',
+											'gutena-forms'
+									)
+							}
+							checked={ optionsInline }
+							onChange={ ( optionsInline ) =>
+								setAttributes( { optionsInline } )
+							}
+						/>
+						{
+							! optionsInline &&
+							<RangeControl
+								label={ __( 'Columns', 'gutena-forms' ) }
+								value={ optionsColumns }
+								onChange={ ( optionsColumns ) =>
+									setAttributes( { optionsColumns } )
+								}
+								min={ 1 }
+								max={ 6 }
+								step={ 1 }
+							/>
+						}
+						</>
+					) }
+					{ -1 !== ['text', 'textarea'].indexOf( fieldType ) && (
 						<RangeControl
 							label={ __( 'Maxlength', 'gutena-forms' ) }
 							value={ maxlength }
@@ -253,6 +323,46 @@ export default function edit( {
 							max={ 500 }
 							step={ 25 }
 						/>
+					) }
+					{ ( 'number' === fieldType || 'range' === fieldType ) && (
+						<>
+						<h2 className="block-editor-block-card__title gf-mt-1 ">{ __( 'Value', 'gutena-forms' ) }</h2>
+						<PanelRow className="gf-child-mb-0 gf-mb-24">
+						<TextControl
+							label={ __( 'Minimum', 'gutena-forms' ) }
+							value={ minMaxStep?.min }
+							type="number"
+							onChange={ ( min ) =>
+								setAttributes( { minMaxStep:{
+									...minMaxStep,
+									min
+								} } )
+							}
+						/>
+						<TextControl
+							label={ __( 'Maximum', 'gutena-forms' ) }
+							value={ minMaxStep?.max }
+							type="number"
+							onChange={ ( max ) =>
+								setAttributes( { minMaxStep:{
+									...minMaxStep,
+									max
+								} } )
+							}
+						/>
+						<TextControl
+							label={ __( 'Step', 'gutena-forms' ) }
+							value={ minMaxStep?.step }
+							type="number"
+							onChange={ ( step ) =>
+								setAttributes( { minMaxStep:{
+									...minMaxStep,
+									step
+								} } )
+							}
+						/>
+						</PanelRow>
+						</>
 					) }
 					{ 'textarea' === fieldType && (
 						<RangeControl

@@ -44,6 +44,159 @@
 	.gutena-forms-field {
 		color: var(--wp--gutena-forms--label-color);
 		background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
+
+		&.checkbox-field, &.radio-field {
+			&.inline-options{
+				display: flex;
+				flex-wrap: wrap;
+			}
+	
+			@for $i from 1 through 6 {
+				&.has-#{$i}-col {
+					display: grid;
+					grid-template-columns: repeat(#{$i},1fr);
+				}
+			}
+		}
+
+		/* Input checkbox style */
+		&.checkbox-field {
+			/* The container */
+			.checkbox-container {
+				display: block;
+				position: relative;
+				padding-left: 35px;
+				margin-bottom: 12px;
+				cursor: pointer;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+
+
+				/* Hide the browser's default checkbox */
+				input {
+					position: absolute;
+					opacity: 0;
+					cursor: pointer;
+					height: 0;
+					width: 0;
+				}
+
+				/* On mouse-over, add a grey background color */
+				&:hover input ~ .checkmark {
+					background-color: #ccc;
+				}
+				
+				/* When the checkbox is checked, add a blue background */
+				input:checked ~ .checkmark {
+					background-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 )) ;
+				}
+
+				/* Show the checkmark when checked */
+				input:checked ~ .checkmark:after {
+					display: block;
+				}
+			
+				/* Style the checkmark/indicator */
+				.checkmark:after {
+					left: 9px;
+					top: 5px;
+					width: 5px;
+					height: 10px;
+					border: solid white;
+					border-width: 0 3px 3px 0;
+					-webkit-transform: rotate(45deg);
+					-ms-transform: rotate(45deg);
+					transform: rotate(45deg);
+				}
+			}
+			
+			/* Create a custom checkbox */
+			.checkmark {
+				position: absolute;
+				left: 0;
+				height: 25px;
+				width: 25px;
+				background-color: #eee;
+				top: 50%;
+    			transform: translateY(-50%);
+			}
+			
+			/* Create the checkmark/indicator (hidden when not checked) */
+			.checkmark:after {
+				content: "";
+				position: absolute;
+				display: none;
+			}
+		}
+
+		/* Input radio style */
+		&.radio-field {
+			/* The container */
+			.radio-container {
+				display: block;
+				position: relative;
+				padding-left: 35px;
+				margin-bottom: 12px;
+				cursor: pointer;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+
+				/* Hide the browser's default radio button */
+				input {
+					position: absolute;
+					opacity: 0;
+					cursor: pointer;
+				}
+
+				/* On mouse-over, add a grey background color */
+				&:hover input ~ .checkmark {
+					background-color: #ccc;
+				}
+
+				/* When the radio button is checked, add a blue background */
+				input:checked ~ .checkmark {
+					background-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 )) ;
+				}
+
+				/* Show the indicator (dot/circle) when checked */
+				input:checked ~ .checkmark:after {
+					display: block;
+				}
+				  
+				/* Style the indicator (dot/circle) */
+				.checkmark:after {
+					top: 9px;
+					left: 9px;
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					background: white;
+				}
+			}
+		  
+		  /* Create a custom radio button */
+		  .checkmark {
+			position: absolute;
+			left: 0;
+			height: 25px;
+			width: 25px;
+			background-color: #eee;
+			border-radius: 50%;
+			top: 50%;
+			transform: translateY(-50%);
+		  }
+		  
+		  /* Create the indicator (the dot/circle - hidden when not checked) */
+		  .checkmark:after {
+			content: "";
+			position: absolute;
+			display: none;
+		  }
+		}
 	}
 
 	.wp-block-gutena-form-field {
@@ -94,6 +247,13 @@
 		width: 100%;
 		padding: 13px calc( 18px + var(--wp--gutena-forms--input-border-radius, 0px )/2 );
 		box-sizing: border-box;
+
+		&.checkbox-field, &.radio-field {
+			padding-left: 0;
+			padding-right: 0;
+			row-gap: 0.5rem;
+    		column-gap: 3rem;
+		}
 	}
 
 	/**********************************
@@ -257,4 +417,17 @@
 		}
 	}
 
+}
+
+@media only screen and (max-width: 600px) {
+	.wp-block-gutena-forms {
+		.gutena-forms-field {
+			&.checkbox-field, &.radio-field {
+				&:not(.inline-options){
+					grid-template-columns: repeat(1,1fr);
+				}
+			}
+		}
+		
+	}
 }

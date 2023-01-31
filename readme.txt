@@ -108,6 +108,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+= 1.0.8 | Beta =
+* Added numbers, radio and checkboxes form fields
+
 = 1.0.7 | 27th January 2023 =
 * Added Google reCAPTCHA Integration
 * Fixed missing form identity issue

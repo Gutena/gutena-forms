@@ -55,14 +55,21 @@
       "type": "number",
       "default": ""
     },
+    "minMaxStep": {
+      "type": "object",
+      "default": {}
+    },
     "selectOptions": {
       "type": "array",
       "default": [
-        "select",
         "Big",
         "Medium",
         "Small"
       ]
+    },
+    "optionsColumns": {
+      "type": "number",
+      "default": 1
     },
     "optionsInline": {
       "type": "boolean",
@@ -89,6 +96,9 @@
       "default": {}
     }
   },
+  "usesContext": [
+    "gutena-forms/formID"
+  ],
   "supports": {
     "__experimentalSettings": true,
     "align": [
@@ -114,7 +124,13 @@
     "spacing": {
       "margin": true,
       "padding": true,
-      "blockGap": true
+      "blockGap": {
+        "__experimentalDefault": "2em",
+        "sides": [
+          "horizontal",
+          "vertical"
+        ]
+      }
     },
     "html": false
   },

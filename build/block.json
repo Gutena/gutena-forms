@@ -157,6 +157,9 @@
       }
     }
   },
+  "providesContext": {
+    "gutena-forms/formID": "formID"
+  },
   "supports": {
     "__experimentalSettings": true,
     "align": [

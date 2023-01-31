@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	//Check Empty
 	const isEmpty = ( data ) => {
-		return 'undefined' === data || null === data || '' == data;
+		return 'undefined' === typeof data || null === data || '' == data;
 	};
 
 	//Check class
@@ -257,9 +257,29 @@ document.addEventListener("DOMContentLoaded", function(){
 			return false;
 		}
 
-		let input_value = form_field.value;
+		
+		let input_value = '';
 		let is_required = hasClass( form_field, 'required-field' );
 		let field_group = form_field.parentNode.parentNode.parentNode;
+		let isCheckboxOrRadio =  hasClass( form_field, 'checkbox-field' ) || hasClass( form_field, 'radio-field' );
+
+		if ( isCheckboxOrRadio ) {
+			let	checkboxRadioHtml =	form_field.querySelectorAll('input');
+			
+			if ( isEmpty( checkboxRadioHtml ) ) {
+				console.log( 'checkboxRadioHtml not defined' );
+				return false;
+			}
+			//Check for value
+			for ( let k = 0; k < checkboxRadioHtml.length; k++ ) {
+				if ( checkboxRadioHtml[k].checked ) {
+					input_value = checkboxRadioHtml[k].value;
+					break;
+				}
+			}
+		} else {
+			input_value = form_field.value;
+		}
 
 		if ( isEmpty( field_group ) ) {
 			console.log( 'field_group not defined' );
@@ -294,6 +314,11 @@ document.addEventListener("DOMContentLoaded", function(){
 			if ( hasClass( form_field, 'select-field' ) ) {
 				error_msg = gutenaFormsBlock.required_msg_select;
 			}
+
+			if ( isCheckboxOrRadio ) {
+				error_msg = gutenaFormsBlock.required_msg_check;
+			}
+
 			errorHTML.innerHTML = error_msg;
 
 			return false;
