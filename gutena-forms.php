@@ -264,8 +264,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				/>';
 			}
 
-			//Input Range
-			// Textarea type Input
+			//Input Range slider
 			if ( 'range' === $attributes['fieldType'] ) {
 				$output = '<div class="gf-range-container">
 				<input 
@@ -659,7 +658,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					$field_value = sanitize_text_field( $fieldSchema[ $name_attr ][ 'preFix' ] ).' '.$field_value;
 				}
 
-				//Add auffix in value if set
+				//Add suffix in value if set
 				if ( ! empty( $fieldSchema[ $name_attr ][ 'sufFix' ] ) ) {
 					$field_value =  $field_value . ' ' . sanitize_text_field( $fieldSchema[ $name_attr ][ 'sufFix' ] );
 				}
