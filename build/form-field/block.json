@@ -4,7 +4,7 @@
   "name": "gutena/form-field",
   "version": "1.0.0",
   "title": "Form field",
-  "parent": [
+  "ancestor": [
     "gutena/forms"
   ],
   "category": "gutena",
