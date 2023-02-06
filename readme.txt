@@ -20,6 +20,14 @@ The gutena form plugin allows you to select various form variations/pre-built fo
 
 Gutena Forms is fully responsive and mobile-friendly, so your forms will look great on any device. It also integrates with popular email marketing and CRM platforms, making it easy to manage and track your form submissions.
 
+
+== Demos ==
+* [Contact Form](https://gutena.io/forms-block#contact-form)
+* [Enquiry Form](https://gutena.io/forms-block#enquiry-form)
+* [Booking Form](https://gutena.io/forms-block#booking-form)
+* [Appointment Form](https://gutena.io/forms-block#appointment-form)
+
+
 == No jQuery Used ==
 
 It is essential to have a fast website, and Gutena forms assure your site’s performance won’t be affected as we’re using just javascript rather than JQuery library, so your website's performance will remain optimal.
@@ -75,6 +83,10 @@ If you like this plugin, consider exploring our other block plugins:
 
 [Gutena Accordion](https://wordpress.org/plugins/gutena-accordion/) - Easily and instantly add Accordion Block to your Gutenberg Editor.
 
+[Gutena Video Lightbox](https://wordpress.org/plugins/gutena-lightbox/) – Easily and instantly add Lightbox Video Popup Block to your Gutenberg Editor.
+
+[Gutena Tabs](https://wordpress.org/plugins/gutena-tabs/) – Easily and instantly add beautiful Tabs Block to your Gutenberg Editor.
+
 [Gutena PhotoFeed](https://wordpress.org/plugins/photofeed-block-by-gutena/) - Display Instagram Photos from your Instagram accounts, either in the same single feed or in multiple different ones.
 
 [Gutena Recent Post Tag](https://wordpress.org/plugins/post-featured-tag-block-by-gutena/) - Post Featured Tag Block use to add custom featured or new tag on post based on post date.
@@ -109,7 +121,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 == Changelog ==
 
 = 1.0.8 | Beta =
-* Added numbers, radio and checkboxes form fields
+* Added numbers, radio, range slider and checkboxes form fields
 
 = 1.0.7 | 27th January 2023 =
 * Added Google reCAPTCHA Integration

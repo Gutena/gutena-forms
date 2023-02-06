@@ -57,6 +57,14 @@
 			"type": "object",
 			"default": {}
 		},
+		"preFix": {
+			"type": "string",
+			"default": ""
+		},
+		"sufFix": {
+			"type": "string",
+			"default": ""
+		},
 		"selectOptions": {
 			"type": "array",
 			"default": [ "Big", "Medium", "Small" ]

@@ -38,6 +38,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		public function __construct() {
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
+			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
 			add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
 
@@ -91,11 +92,65 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
 					'required_msg_check' => __( 'Please check an option', 'gutena-forms' ),
 					'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
+					'min_value_msg'=>  __( 'Input value should be greater than', 'gutena-forms' ),
+					'max_value_msg'=>  __( 'Input value should be less than', 'gutena-forms' ),
 					'grecaptcha_type'	  => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
 					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
 					'grecaptcha_secret_key' => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
 				)
 			);
+		}
+
+		public function register_blocks_styles() {
+			if ( function_exists( 'register_block_style' ) ) {
+
+				//Range Slider single
+				register_block_style(
+					'gutena/form-field',
+					array(
+						'name'         => 'round-range-slider',
+						'label'        => __( 'Border Style', 'gutena-forms' ),
+						'is_default'   => false,
+						'inline_style' => '.wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field { 
+							-webkit-appearance: none;
+							width: 100%;
+							height: 8px;
+							border: 1px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+							border-radius: 5px;
+							background: var(--wp--gutena-forms--input-bg-color,"transparent");
+							outline: none;
+							-webkit-transition: .2s;
+							transition: opacity .2s;
+						 }
+						 .wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field:hover{
+							border: 1px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+							opacity: 1;
+						 }
+						 .wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field:focus {
+							border: 1px solid var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+						 }
+						 .wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field::-webkit-slider-thumb {
+							-webkit-appearance: none;
+							appearance: none;
+							width: 20px;
+							height: 20px;
+							border: 2px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+							border-radius: 50%;
+							background: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+							cursor: pointer;
+						  }
+						  .wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field::-moz-range-thumb {
+							width: 20px;
+							height: 20px;
+							border: 2px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+							border-radius: 50%;
+							background: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+							cursor: pointer;
+						  }
+						',
+					)
+				);
+			}
 		}
 
 		// Register Gutena category if not exists
@@ -135,19 +190,37 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			foreach ( $check_attr as $check => $input_attr ) {
 				//continue loop if empty except zero value
-				if ( ( empty( $attributes[$check] ) && ( isset( $attributes[$check] ) && '0' != $attributes[$check] ) ) || empty( $input_attr ) ) {
+				if ( ! isset( $attributes[$check] ) || ( empty( $attributes[$check] ) && '0' != $attributes[$check]  ) || empty( $input_attr ) ) {
 					continue;
 				}
 
 				//if input attr is also an array then check recursively
 				if ( is_array( $input_attr ) ) {
 					$field_attr .= $this->get_field_attribute( $attributes[$check], $input_attr );
+					continue;
 				}
 
 				$field_attr .= ' ' . sanitize_key( $input_attr ) . '="' . esc_attr( $attributes[$check] ) .'"';
 			}
 
 			return $field_attr;
+		}
+
+		/**
+		 * Escape attributes after checking if isset.
+		 *
+		 * @param array $attributes The block attributes.
+		 * @param array $key key to check for existance e.g. isset( $attributes[$key] ).
+		 *
+		 * @return string escaped or empty string.
+		 */
+		private function check_esc_attr( $attributes, $key = '' ) {
+			
+			if ( empty( $key ) ) {
+				return ( isset( $attributes ) && ! is_array( $attributes ) ) ? esc_attr( $attributes ): '';
+			}
+
+			return isset( $attributes[ $key ] ) ? esc_attr( $attributes[ $key ] ): '';
 		}
 
 		// render_callback : form field
@@ -165,8 +238,6 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			);
 			// Output Html
 			$output = '';
-
-			//echo "<pre>";print_r($attributes);
 
 			$inputAttr = '';
 
@@ -191,6 +262,54 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				) ) . 
 				' ' . esc_attr( $inputAttr ) . ' 
 				/>';
+			}
+
+			//Input Range
+			// Textarea type Input
+			if ( 'range' === $attributes['fieldType'] ) {
+				$output = '<div class="gf-range-container">
+				<input 
+				' . $this->get_field_attribute( $attributes, array(
+					'nameAttr' 		=> 'name',
+					'fieldType' 	=> 'type',
+					'fieldClasses' 	=> 'class',
+					'minMaxStep' 	=> array(
+						'min'=>'min',
+						'max'=>'max',
+						'step'=>'step',
+					),
+				) ) . 
+				' ' . esc_attr( $inputAttr ) . ' 
+				/><p class="gf-range-values"> ';
+
+				//Range min value
+				if ( ! empty( $attributes['minMaxStep'] ) && isset( $attributes['minMaxStep']['min'] ) ) {
+					$output .= '
+					<span class="gf-prefix-value-wrapper">
+						<span class="gf-prefix">' . $this->check_esc_attr( $attributes, 'preFix' ) . '</span>
+						<span class="gf-value">' . $this->check_esc_attr( $attributes['minMaxStep'], 'min' ) . '</span>
+						<span class="gf-suffix">' . $this->check_esc_attr( $attributes, 'sufFix' ) . '</span>
+					</span>';
+				}
+
+				//range input value
+				$output .= '<span class="gf-prefix-value-wrapper">
+					<span class="gf-prefix">' . $this->check_esc_attr( $attributes, 'preFix' ) . '</span>
+					<span class="gf-value range-input-value"></span>
+					<span class="gf-suffix">' . $this->check_esc_attr( $attributes, 'sufFix' ) . '</span>
+				</span>';
+
+				//Range max value
+				if ( ! empty( $attributes['minMaxStep'] ) && ! empty( $attributes['minMaxStep']['max'] ) ) {	
+					$output .= '<span class="gf-prefix-value-wrapper">
+						<span class="gf-prefix">' . $this->check_esc_attr( $attributes, 'preFix' ) . '</span>
+						<span class="gf-value">' . $this->check_esc_attr( $attributes['minMaxStep'], 'max' ) . '</span>
+						<span class="gf-suffix">' . $this->check_esc_attr( $attributes, 'sufFix' ) . '</span>
+					</span>
+					';
+				}
+
+				$output .='</p></div>';
 			}
 
 			// Textarea type Input
@@ -266,7 +385,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		// render_callback : form
 		public function render_form( $attributes, $content, $block ) {
-
+			
 			// No changes if attributes is empty
 			if ( empty( $attributes ) || empty( $attributes['adminEmails'] ) ) {
 				return $content;
@@ -350,7 +469,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						'google-recaptcha', 
 						esc_url( 'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. esc_attr( $grecaptcha['site_key'] )  ) ), 
 						array(), 
-						$this->$version, 
+						$this->version, 
 						true 
 					);
 				}
@@ -428,12 +547,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				}
 
 				if ( ! empty( $block['blockName'] ) && 'gutena/form-field' === $block['blockName'] && ! empty( $block['attrs']['nameAttr'] ) ) {
-					$form_schema[ $formID ]['form_fields'][ $block['attrs']['nameAttr'] ] = array(
-						'nameAttr'  => $block['attrs']['nameAttr'],
-						'fieldName' => empty( $block['attrs']['fieldName'] ) ? '' : $block['attrs']['fieldName'],
-						'fieldType' => empty( $block['attrs']['fieldType'] ) ? 'text' : $block['attrs']['fieldType'],
-						'maxlength' => empty( $block['attrs']['maxlength'] ) ? '' : $block['attrs']['maxlength'],
-					);
+					$form_schema[ $formID ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
 				}
 
 				if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {

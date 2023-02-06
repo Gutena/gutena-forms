@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function(){
 	const ready = () => {
-		form_sumbit();
+		range_slider_onchange();
 		field_validation_on_input();
+		form_sumbit();
 	};
 
 	//Check Empty
@@ -251,16 +252,31 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	};
 
+	//Form field validation
 	const field_validation = ( form_field ) => {
+		
 		if ( isEmpty( form_field ) ) {
 			console.log( 'No input fields found' );
 			return false;
 		}
-
 		
 		let input_value = '';
 		let is_required = hasClass( form_field, 'required-field' );
-		let field_group = form_field.parentNode.parentNode.parentNode;
+		
+		//get field group 
+		let field_group = getParents(
+			form_field,
+			'.wp-block-gutena-field-group'
+		);
+		
+		//return false if field group not exists
+		if ( isEmpty( field_group ) ) {
+			console.log( 'field_group not defined' );
+			return false;
+		}
+
+		field_group = field_group[0];
+		
 		let isCheckboxOrRadio =  hasClass( form_field, 'checkbox-field' ) || hasClass( form_field, 'radio-field' );
 
 		if ( isCheckboxOrRadio ) {
@@ -279,11 +295,6 @@ document.addEventListener("DOMContentLoaded", function(){
 			}
 		} else {
 			input_value = form_field.value;
-		}
-
-		if ( isEmpty( field_group ) ) {
-			console.log( 'field_group not defined' );
-			return false;
 		}
 
 		let errorHTML = field_group.querySelector(
@@ -339,8 +350,63 @@ document.addEventListener("DOMContentLoaded", function(){
 			return false;
 		}
 
+		//Number Validation : Minimum and maximum value
+		if ( ! isEmpty( input_value ) && hasClass( form_field, 'number-field' ) ) {
+			let minValue = form_field.getAttribute('min');
+			let maxValue = form_field.getAttribute('max');
+
+			//if input value is less than minimum
+			if ( ! isEmpty( minValue ) && input_value < minValue ) {
+				//Add class in field_group element to display error contained in child element
+				field_group.classList.add( 'display-error' );
+				//error message
+				errorHTML.innerHTML = gutenaFormsBlock.min_value_msg+' '+minValue;
+			}
+
+			//if input value is greater than maximum
+			if ( ! isEmpty( maxValue ) && input_value > maxValue ) {
+				//Add class in field_group element to display error contained in child element
+				field_group.classList.add( 'display-error' );
+				//error message
+				errorHTML.innerHTML = gutenaFormsBlock.max_value_msg+' '+maxValue;
+			}
+
+			return false;
+		}
+
 		return true;
 	};
+
+	const show_range_value = ( field_group, value ) => {
+		//check if exist
+		if ( ! isEmpty( field_group ) ) {
+			let rangeValueElement = field_group.querySelector(
+				'.range-input-value'
+			);
+			//check if exist
+			if ( ! isEmpty( field_group ) ) {
+				rangeValueElement.innerHTML = value;
+			}
+		}
+	}
+
+	//Htnl input range slider on change show value
+	const range_slider_onchange = () => {
+		let rangeField = document.querySelectorAll(
+			'.wp-block-gutena-forms .range-field'
+		);
+		if ( 0 < rangeField.length ) {
+			for ( let i = 0; i < rangeField.length; i++ ) {
+				//show initially
+				show_range_value( rangeField[ i ].parentNode, rangeField[ i ].value );
+				
+				//show on change
+				rangeField[ i ].addEventListener( 'input', function () {
+					show_range_value( this.parentNode, this.value );
+				} );
+			}
+		}
+	}	
 
 	ready();
 });
