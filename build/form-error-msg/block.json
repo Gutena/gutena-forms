@@ -4,7 +4,7 @@
   "name": "gutena/form-error-msg",
   "version": "1.0.0",
   "title": "Error Message",
-  "parent": [
+  "ancestor": [
     "gutena/forms"
   ],
   "category": "gutena",

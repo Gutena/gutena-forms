@@ -43,10 +43,175 @@
 
 	.gutena-forms-field {
 		color: var(--wp--gutena-forms--label-color);
-		background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
+		/*Background color not for radio, checkbox */
+		&:not(.checkbox-field):not(.radio-field) {
+			background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
+		}
+
+		&.checkbox-field, &.radio-field {
+			&.inline-options{
+				display: flex;
+				flex-wrap: wrap;
+			}
+	
+			@for $i from 1 through 6 {
+				&.has-#{$i}-col {
+					display: grid;
+					grid-template-columns: repeat(#{$i},1fr);
+				}
+			}
+		}
+
+		/* Input checkbox style */
+		&.checkbox-field {
+			/* The container */
+			.checkbox-container {
+				display: block;
+				position: relative;
+				padding-left: 25px;
+				cursor: pointer;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+
+
+				/* Hide the browser's default checkbox */
+				input {
+					position: absolute;
+					opacity: 0;
+					cursor: pointer;
+					height: 0;
+					width: 0;
+				}
+
+				/* On mouse-over, add a grey background color */
+				// &:hover input ~ .checkmark {
+				// 	background-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+				// }
+				
+				/* When the checkbox is checked, add a blue background */
+				input:checked ~ .checkmark {
+					background-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 )) ;
+					border-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 )) ;
+				}
+
+				/* Show the checkmark when checked */
+				input:checked ~ .checkmark:after {
+					display: block;
+				}
+			
+				/* Style the checkmark/indicator */
+				.checkmark:after {
+					left: 5px;
+					top: 2px;
+					width: 3px;
+					height: 7px;
+					border: solid white;
+					border-width: 0 3px 3px 0;
+					-webkit-transform: rotate(45deg);
+					-ms-transform: rotate(45deg);
+					transform: rotate(45deg);
+				}
+			}
+			
+			/* Create a custom checkbox */
+			.checkmark {
+				position: absolute;
+				left: 0;
+				height: 16px;
+				width: 16px;
+				border: 1px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+				border-radius: 2px;
+				background-color: #ffffff;
+				top: 50%;
+    			transform: translateY(-50%);
+			}
+			
+			/* Create the checkmark/indicator (hidden when not checked) */
+			.checkmark:after {
+				content: "";
+				position: absolute;
+				display: none;
+			}
+		}
+
+		/* Input radio style */
+		&.radio-field {
+			/* The container */
+			.radio-container {
+				display: block;
+				position: relative;
+				padding-left: 25px;
+				cursor: pointer;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+
+				/* Hide the browser's default radio button */
+				input {
+					position: absolute;
+					opacity: 0;
+					cursor: pointer;
+				}
+
+				/* On mouse-over, add a grey background color */
+				&:hover input ~ .checkmark {
+					background-color: #ffffff;
+				}
+
+				/* When the radio button is checked, add a blue background */
+				input:checked ~ .checkmark {
+					background-color: #ffffff;
+					border-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+				}
+
+				/* Show the indicator (dot/circle) when checked */
+				input:checked ~ .checkmark:after {
+					display: block;
+				}
+				  
+				/* Style the indicator (dot/circle) */
+				.checkmark:after {
+					top: 3px;
+					left: 3px;
+					width: 10px;
+					height: 10px;
+					border-radius: 50%;
+					background: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+				}
+			}
+		  
+		  /* Create a custom radio button */
+		  .checkmark {
+			position: absolute;
+			left: 0;
+			height: 16px;
+			width: 16px;
+			background-color: #ffffff;
+			border: 1px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+			border-radius: 50%;
+			top: 50%;
+			transform: translateY(-50%);
+		  }
+		  
+		  /* Create the indicator (the dot/circle - hidden when not checked) */
+		  .checkmark:after {
+			content: "";
+			position: absolute;
+			display: none;
+		  }
+		}
+
+		&.range-field {
+			accent-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+		}
+
 	}
 
-	.wp-block-gutena-form-field {
+	/* Field background color*/
+	.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field) {
 		background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
 	}
 
@@ -87,13 +252,38 @@
 		}
 	}
 	
-	.wp-block-gutena-form-field .gutena-forms-field {
-		font-size: var(--wp--gutena-forms--placeholder-font-size);
-		line-height: var(--wp--gutena-forms--placeholder-line-height);
-		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
-		width: 100%;
-		padding: 13px calc( 18px + var(--wp--gutena-forms--input-border-radius, 0px )/2 );
-		box-sizing: border-box;
+	.wp-block-gutena-form-field  {
+		.gutena-forms-field{
+			font-size: var(--wp--gutena-forms--placeholder-font-size);
+			line-height: var(--wp--gutena-forms--placeholder-line-height);
+			font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+			width: 100%;
+			padding: 13px calc( 18px + var(--wp--gutena-forms--input-border-radius, 0px )/2 );
+			box-sizing: border-box;
+
+			&.checkbox-field, &.radio-field {
+				padding-left: 0;
+				padding-right: 0;
+				row-gap: 0.5rem;
+				column-gap: 3rem;
+			}
+
+			&.range-field {
+				padding: 0;
+			}
+		}
+
+		/*Input range min max and value*/
+		.gf-range-values{
+			font-size: var(--wp--gutena-forms--placeholder-font-size);
+			line-height: var(--wp--gutena-forms--placeholder-line-height);
+			font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+			color: var(--wp--gutena-forms--label-color);
+			display: flex;
+			justify-content: space-between;
+			margin: 0;
+			padding: 0;
+		}
 	}
 
 	/**********************************
@@ -113,7 +303,7 @@
 		Field block border : start
 	**********************************/
 
-	&:not(.input-box-border-bottom-only) .wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field) {
+	&:not(.input-box-border-bottom-only) .wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field) {
 		border-style: solid;
 		border-width: var(--wp--gutena-forms--input-border-width, 1px );
 		border-color: var(--wp--gutena-forms--input-border-color, #D7DBE7);
@@ -127,7 +317,7 @@
 
 	&.input-box-border-bottom-only
 	{
-		.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field) {
+		.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field) {
 			border-bottom: var(--wp--gutena-forms--input-border-width, 1px ) solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
 
 			&:focus-within {
@@ -170,6 +360,7 @@
 		}
 
 		.gutena-forms-field-error-msg {
+			margin-top: 0.5rem;
 			font-size: 12px;
 			color:  #FD3E3E;
 		}
@@ -181,7 +372,7 @@
 		}
 
 		&.display-error {
-			.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field) {
+			.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field) {
 				border-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
 			}
 		} 
@@ -257,4 +448,17 @@
 		}
 	}
 
+}
+
+@media only screen and (max-width: 600px) {
+	.wp-block-gutena-forms {
+		.gutena-forms-field {
+			&.checkbox-field, &.radio-field {
+				&:not(.inline-options){
+					grid-template-columns: repeat(1,1fr);
+				}
+			}
+		}
+		
+	}
 }

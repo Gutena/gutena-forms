@@ -38,6 +38,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		public function __construct() {
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
+			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
 			add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
 
@@ -89,12 +90,67 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'nonce'               => wp_create_nonce( 'gutena_Forms' ),
 					'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
 					'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
+					'required_msg_check' => __( 'Please check an option', 'gutena-forms' ),
 					'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
+					'min_value_msg'=>  __( 'Input value should be greater than', 'gutena-forms' ),
+					'max_value_msg'=>  __( 'Input value should be less than', 'gutena-forms' ),
 					'grecaptcha_type'	  => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
 					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
 					'grecaptcha_secret_key' => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
 				)
 			);
+		}
+
+		public function register_blocks_styles() {
+			if ( function_exists( 'register_block_style' ) ) {
+
+				//Range Slider single
+				register_block_style(
+					'gutena/form-field',
+					array(
+						'name'         => 'round-range-slider',
+						'label'        => __( 'Border Style', 'gutena-forms' ),
+						'is_default'   => false,
+						'inline_style' => '.wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field { 
+							-webkit-appearance: none;
+							width: 100%;
+							height: 8px;
+							border: 1px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+							border-radius: 5px;
+							background: var(--wp--gutena-forms--input-bg-color,"transparent");
+							outline: none;
+							-webkit-transition: .2s;
+							transition: opacity .2s;
+						 }
+						 .wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field:hover{
+							border: 1px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+							opacity: 1;
+						 }
+						 .wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field:focus {
+							border: 1px solid var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+						 }
+						 .wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field::-webkit-slider-thumb {
+							-webkit-appearance: none;
+							appearance: none;
+							width: 20px;
+							height: 20px;
+							border: 2px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+							border-radius: 50%;
+							background: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+							cursor: pointer;
+						  }
+						  .wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field::-moz-range-thumb {
+							width: 20px;
+							height: 20px;
+							border: 2px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+							border-radius: 50%;
+							background: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+							cursor: pointer;
+						  }
+						',
+					)
+				);
+			}
 		}
 
 		// Register Gutena category if not exists
@@ -114,10 +170,63 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			return $block_categories;
 		}
 
+		/**
+		 * Prepare attributes for form input field.
+		 *
+		 * @param array $attributes The block attributes.
+		 * @param array $check_attr attribute to check for existance e.g. array('nameAttr'=>'name').
+		 *
+		 * @return string Rendered HTML attributes.
+		 */
+		public function get_field_attribute( $attributes , $check_attr = array() ) {
+			
+			//field_attr to render inside field
+			$field_attr = '';
+
+			//check if values are empty
+			if ( empty( $attributes ) || empty( $check_attr ) ) {
+				return $field_attr;
+			}
+
+			foreach ( $check_attr as $check => $input_attr ) {
+				//continue loop if empty except zero value
+				if ( ! isset( $attributes[$check] ) || ( empty( $attributes[$check] ) && '0' != $attributes[$check]  ) || empty( $input_attr ) ) {
+					continue;
+				}
+
+				//if input attr is also an array then check recursively
+				if ( is_array( $input_attr ) ) {
+					$field_attr .= $this->get_field_attribute( $attributes[$check], $input_attr );
+					continue;
+				}
+
+				$field_attr .= ' ' . sanitize_key( $input_attr ) . '="' . esc_attr( $attributes[$check] ) .'"';
+			}
+
+			return $field_attr;
+		}
+
+		/**
+		 * Escape attributes after checking if isset.
+		 *
+		 * @param array $attributes The block attributes.
+		 * @param array $key key to check for existance e.g. isset( $attributes[$key] ).
+		 *
+		 * @return string escaped or empty string.
+		 */
+		private function check_esc_attr( $attributes, $key = '' ) {
+			
+			if ( empty( $key ) ) {
+				return ( isset( $attributes ) && ! is_array( $attributes ) ) ? esc_attr( $attributes ): '';
+			}
+
+			return isset( $attributes[ $key ] ) ? esc_attr( $attributes[ $key ] ): '';
+		}
+
 		// render_callback : form field
 		public function render_form_field( $attributes, $content, $block ) {
 			// No changes if fieldType is empty
-			if ( empty( $attributes ) || empty( $attributes['fieldType'] ) ) {
+			if ( empty( $attributes ) || empty( $attributes['fieldType'] ) || empty( $attributes['nameAttr'] ) ) {
 				return $content;
 			}
 
@@ -130,35 +239,100 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			// Output Html
 			$output = '';
 
-			$required = empty( $attributes['fieldType'] ) ? '' : 'required';
+			$inputAttr = '';
+
+			//Check for required attribute
+			$inputAttr .= empty( $attributes['isRequired'] ) ? '' : ' required';
+
 
 			// Text type Input
 			if ( in_array( $attributes['fieldType'], array( 'text', 'email', 'number', 'hidden', 'tel', 'url' ) ) ) {
 				$output = '<input 
-				name="' . esc_attr( $attributes['nameAttr'] ) . '" 
-				type="' . esc_attr( $attributes['fieldType'] ) . '" 
-				 class="' . esc_attr( $attributes['fieldClasses'] ) . '" 
-				placeholder="' . esc_attr( $attributes['placeholder'] ) . '" 
-				' . esc_attr( $required ) . ' 
-				' . ( empty( $attributes['maxlength'] ) ? '' : 'maxlength="' . esc_attr( $attributes['maxlength'] ) . '"' ) . ' />';
+				' . $this->get_field_attribute( $attributes, array(
+					'nameAttr' 		=> 'name',
+					'fieldType' 	=> 'type',
+					'fieldClasses' 	=> 'class',
+					'placeholder' 	=> 'placeholder',
+					'maxlength' 	=> 'maxlength',
+					'minMaxStep' 	=> array(
+						'min'=>'min',
+						'max'=>'max',
+						'step'=>'step',
+					),
+				) ) . 
+				' ' . esc_attr( $inputAttr ) . ' 
+				/>';
+			}
+
+			//Input Range slider
+			if ( 'range' === $attributes['fieldType'] ) {
+				$output = '<div class="gf-range-container">
+				<input 
+				' . $this->get_field_attribute( $attributes, array(
+					'nameAttr' 		=> 'name',
+					'fieldType' 	=> 'type',
+					'fieldClasses' 	=> 'class',
+					'minMaxStep' 	=> array(
+						'min'=>'min',
+						'max'=>'max',
+						'step'=>'step',
+					),
+				) ) . 
+				' ' . esc_attr( $inputAttr ) . ' 
+				/><p class="gf-range-values"> ';
+
+				//Range min value
+				if ( ! empty( $attributes['minMaxStep'] ) && isset( $attributes['minMaxStep']['min'] ) ) {
+					$output .= '
+					<span class="gf-prefix-value-wrapper">
+						<span class="gf-prefix">' . $this->check_esc_attr( $attributes, 'preFix' ) . '</span>
+						<span class="gf-value">' . $this->check_esc_attr( $attributes['minMaxStep'], 'min' ) . '</span>
+						<span class="gf-suffix">' . $this->check_esc_attr( $attributes, 'sufFix' ) . '</span>
+					</span>';
+				}
+
+				//range input value
+				$output .= '<span class="gf-prefix-value-wrapper">
+					<span class="gf-prefix">' . $this->check_esc_attr( $attributes, 'preFix' ) . '</span>
+					<span class="gf-value range-input-value"></span>
+					<span class="gf-suffix">' . $this->check_esc_attr( $attributes, 'sufFix' ) . '</span>
+				</span>';
+
+				//Range max value
+				if ( ! empty( $attributes['minMaxStep'] ) && ! empty( $attributes['minMaxStep']['max'] ) ) {	
+					$output .= '<span class="gf-prefix-value-wrapper">
+						<span class="gf-prefix">' . $this->check_esc_attr( $attributes, 'preFix' ) . '</span>
+						<span class="gf-value">' . $this->check_esc_attr( $attributes['minMaxStep'], 'max' ) . '</span>
+						<span class="gf-suffix">' . $this->check_esc_attr( $attributes, 'sufFix' ) . '</span>
+					</span>
+					';
+				}
+
+				$output .='</p></div>';
 			}
 
 			// Textarea type Input
 			if ( 'textarea' === $attributes['fieldType'] ) {
 				$output = '<textarea 
-				name="' . esc_attr( $attributes['nameAttr'] ) . '"  
-				class="' . esc_attr( $attributes['fieldClasses'] ) . '" 
-				rows="' . esc_attr( $attributes['textAreaRows'] ) . '" 
-				' . esc_attr( $required ) . ' 
-				placeholder="' . esc_attr( $attributes['placeholder'] ) . '" 
-				' . ( empty( $attributes['maxlength'] ) ? '' : 'maxlength="' . esc_attr( $attributes['maxlength'] ) . '"' ) . ' ></textarea>';
+				' . $this->get_field_attribute( $attributes, array(
+					'nameAttr' 		=> 'name',
+					'textAreaRows' 	=> 'rows',
+					'fieldClasses' 	=> 'class',
+					'placeholder'	=> 'placeholder',
+					'maxlength' 	=> 'maxlength',
+				) ) . 
+				' ' . esc_attr( $inputAttr ) . ' 
+				></textarea>';
 			}
 
 			// Select type Input
 			if ( 'select' === $attributes['fieldType'] ) {
 				$output = '<select  
-				class="' . esc_attr( $attributes['fieldClasses'] ) . '"  
-				' . esc_attr( $required ) . ' 
+				' . $this->get_field_attribute( $attributes, array(
+					'nameAttr' 		=> 'name',
+					'fieldClasses' 	=> 'class',
+				) ) . 
+				' ' . esc_attr( $inputAttr ) . ' 
 				 >';
 				if ( ! empty( $attributes['selectOptions'] ) && is_array( $attributes['selectOptions'] ) ) {
 					foreach ( $attributes['selectOptions'] as $option ) {
@@ -166,6 +340,26 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					}
 				}
 				$output .= '</select>';
+			}
+
+			// radio type Input
+			if ( in_array( $attributes['fieldType'], array( 'radio', 'checkbox' ) ) ) {
+				$output = '<div  
+				' . $this->get_field_attribute( $attributes, array(
+					'fieldClasses' 	=> 'class',
+				) ) . 
+				' 
+				>';
+				if ( ! empty( $attributes['selectOptions'] ) && is_array( $attributes['selectOptions'] ) ) {
+					foreach ( $attributes['selectOptions'] as $option ) {
+						$output .= '<label class="' . esc_attr( $attributes['fieldType'] ) . '-container">' . esc_attr( $option ) . '
+						<input type="' . esc_attr( $attributes['fieldType'] ) . '" name="' . esc_attr( 'radio' === $attributes['fieldType'] ? $attributes['nameAttr'] : $attributes['nameAttr'].'[]'  ) . 
+						'" value="' . esc_attr( $option ) . '" >
+						<span class="checkmark"></span>
+					  </label>';
+					}
+				}
+				$output .= '</div>';
 			}
 
 			// output
@@ -190,7 +384,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		// render_callback : form
 		public function render_form( $attributes, $content, $block ) {
-
+			
 			// No changes if attributes is empty
 			if ( empty( $attributes ) || empty( $attributes['adminEmails'] ) ) {
 				return $content;
@@ -274,7 +468,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						'google-recaptcha', 
 						esc_url( 'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. esc_attr( $grecaptcha['site_key'] )  ) ), 
 						array(), 
-						$this->$version, 
+						$this->version, 
 						true 
 					);
 				}
@@ -352,12 +546,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				}
 
 				if ( ! empty( $block['blockName'] ) && 'gutena/form-field' === $block['blockName'] && ! empty( $block['attrs']['nameAttr'] ) ) {
-					$form_schema[ $formID ]['form_fields'][ $block['attrs']['nameAttr'] ] = array(
-						'nameAttr'  => $block['attrs']['nameAttr'],
-						'fieldName' => empty( $block['attrs']['fieldName'] ) ? '' : $block['attrs']['fieldName'],
-						'fieldType' => empty( $block['attrs']['fieldType'] ) ? 'text' : $block['attrs']['fieldType'],
-						'maxlength' => empty( $block['attrs']['maxlength'] ) ? '' : $block['attrs']['maxlength'],
-					);
+					$form_schema[ $formID ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
 				}
 
 				if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
@@ -374,13 +563,13 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		}
 
 		// sanitize_array
-		private function sanitize_array( $array ) {
-			if ( ! empty( $array ) ) {
+		private function sanitize_array( $array, $textarea_sanitize = false ) {
+			if ( ! empty( $array ) && is_array( $array ) ) {
 				foreach ( (array) $array as $key => $value ) {
 					if ( is_array( $value ) ) {
 						$array[ $key ] = $this->sanitize_array( $value );
 					} else {
-						$array[ $key ] = sanitize_text_field( $value );
+						$array[ $key ] = true === $textarea_sanitize ? sanitize_textarea_field( $value )  : sanitize_text_field( $value );
 					}
 				}
 			}
@@ -452,10 +641,28 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			foreach ( $_POST as $name_attr => $field_value ) {
 				$name_attr   = sanitize_key( wp_unslash( $name_attr ) );
-				$field_value = sanitize_textarea_field( wp_unslash( $field_value ) );
+
+				if ( is_array( $field_value ) ) {
+					$field_value =	$this->sanitize_array( wp_unslash( $field_value ), true );
+					$field_value = implode(", ", $field_value );
+				} else {
+					$field_value = sanitize_textarea_field( wp_unslash( $field_value ) );
+				}
+				
 				if ( empty( $fieldSchema[ $name_attr ] ) ) {
 					continue;
 				}
+
+				//Add prefix in value if set
+				if ( ! empty( $fieldSchema[ $name_attr ][ 'preFix' ] ) ) {
+					$field_value = sanitize_text_field( $fieldSchema[ $name_attr ][ 'preFix' ] ).' '.$field_value;
+				}
+
+				//Add suffix in value if set
+				if ( ! empty( $fieldSchema[ $name_attr ][ 'sufFix' ] ) ) {
+					$field_value =  $field_value . ' ' . sanitize_text_field( $fieldSchema[ $name_attr ][ 'sufFix' ] );
+				}
+
 
 				$field_name = sanitize_text_field( empty( $fieldSchema[ $name_attr ]['fieldName'] ) ? str_ireplace( '_', ' ', $name_attr ) : $fieldSchema[ $name_attr ]['fieldName'] );
 

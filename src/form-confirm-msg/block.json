@@ -4,7 +4,7 @@
 	"name": "gutena/form-confirm-msg",
 	"version": "1.0.0",
 	"title": "Confirmation Message",
-	"parent": [ "gutena/forms" ],
+	"ancestor": [ "gutena/forms" ],
 	"category": "gutena",
 	"icon": "feedback",
 	"description": "Form Confirmation Message. It will show after form submission.",
