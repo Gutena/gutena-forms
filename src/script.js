@@ -361,6 +361,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				field_group.classList.add( 'display-error' );
 				//error message
 				errorHTML.innerHTML = gutenaFormsBlock.min_value_msg+' '+minValue;
+				return false;
 			}
 
 			//if input value is greater than maximum
@@ -369,9 +370,8 @@ document.addEventListener("DOMContentLoaded", function(){
 				field_group.classList.add( 'display-error' );
 				//error message
 				errorHTML.innerHTML = gutenaFormsBlock.max_value_msg+' '+maxValue;
+				return false;
 			}
-
-			return false;
 		}
 
 		return true;

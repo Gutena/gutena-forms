@@ -453,9 +453,7 @@ export default function edit( {
 							}
 						/>
 						</PanelRow>
-						{
-							( 'range' === fieldType ) && (
-							<PanelRow className="gf-child-mb-0 gf-mb-24">
+						<PanelRow className="gf-child-mb-0 gf-mb-24">
 							<TextControl
 								label={ __( 'Prefix', 'gutena-forms' ) }
 								value={ preFix }
@@ -470,9 +468,7 @@ export default function edit( {
 									setAttributes( { sufFix } )
 								}
 							/>
-							</PanelRow>
-							)
-						}
+						</PanelRow>
 						</>
 					) }
 					{ 'textarea' === fieldType && (

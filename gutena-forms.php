@@ -654,6 +654,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					continue;
 				}
 
+				//Add prefix in value if set
+				if ( ! empty( $fieldSchema[ $name_attr ][ 'preFix' ] ) ) {
+					$field_value = sanitize_text_field( $fieldSchema[ $name_attr ][ 'preFix' ] ).' '.$field_value;
+				}
+
+				//Add auffix in value if set
+				if ( ! empty( $fieldSchema[ $name_attr ][ 'sufFix' ] ) ) {
+					$field_value =  $field_value . ' ' . sanitize_text_field( $fieldSchema[ $name_attr ][ 'sufFix' ] );
+				}
+
+
 				$field_name = sanitize_text_field( empty( $fieldSchema[ $name_attr ]['fieldName'] ) ? str_ireplace( '_', ' ', $name_attr ) : $fieldSchema[ $name_attr ]['fieldName'] );
 
 				//Form submit Data for filter
