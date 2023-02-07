@@ -169,7 +169,6 @@ export default function edit( {
 		//Input type range styles
 		let remove_button = document.querySelector('.block-editor-block-styles__variants [aria-label="Border Style"]');
 		if ( ! gfIsEmpty( remove_button ) ) {
-			console.log("fieldType",fieldType);
 			remove_button.style.display = ( isSelected && 'range' === fieldType ) ? 'inline-block': 'none';
 		}
 	}

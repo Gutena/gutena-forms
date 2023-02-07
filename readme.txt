@@ -120,7 +120,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
-= 1.0.8 | 6th February 2023 =
+= 1.0.8 | 7th February 2023 =
 * Added numbers, radio, range slider and checkboxes form fields
 * Make gutena-forms parent to ancestor in all child blocks
 
