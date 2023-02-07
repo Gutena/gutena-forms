@@ -36,7 +36,11 @@ export default function edit( {
 		autoCapitalize,
 		textAreaRows,
 		maxlength,
+		minMaxStep,
+		preFix,
+		sufFix,
 		selectOptions,
+		optionsColumns,
 		optionsInline,
 		multiSelect,
 		errorRequiredMsg,
@@ -46,20 +50,26 @@ export default function edit( {
 		style,
 	} = attributes;
 
-	const fieldTypeOptions = [ 'text', 'textarea', 'email', 'tel', 'url' ];
-
+	//Fields which use input tag
 	const textLikeInput = [ 'text', 'email', 'number', 'hidden', 'tel', 'url' ];
 
+	//Field types
 	const fieldTypes = [
 		{ label: 'Text', value: 'text' },
+		{ label: 'Number', value: 'number' },
+		{ label: 'Range', value: 'range' },
 		{ label: 'TextArea', value: 'textarea' },
 		{ label: 'Email', value: 'email' },
-		{ label: 'Select', value: 'select' },
+		{ label: 'Dropdown', value: 'select' },
+		{ label: 'Radio', value: 'radio' },
+		{ label: 'Checkbox', value: 'checkbox' },
 	];
 
 	const [ selectInputOption, setSelectInputOption ] = useState(
 		selectOptions[ 0 ]
 	);
+
+	const [ htmlInputValue, setHtmlInputValue ] = useState('');
 
 	/********************************
 	 Set Field Name : START
@@ -112,18 +122,24 @@ export default function edit( {
 		}
 	}, [] );
 
-	const setFieldNameAttr = ( fieldName, onChange = false ) => {
-		if ( gfIsEmpty( fieldName ) ) {
-			return;
-		}
+	//Prepare field name attribute: replace space with underscore and remove unwanted characters
+	const prepareFieldNameAttr = ( fieldName ) => {
+		fieldName = fieldName.toLowerCase().replace( / /g, '_' );
+		fieldName = fieldName.replace(/\W/g, '');
+		return fieldName;
+	}
 
-		//Set form field name
-		setAttributes( { fieldName } );
+	const setFieldNameAttr = ( fieldName, onChange = false ) => {
 
 		//Set form attribute name
-		if ( NameAttrFromFieldName ) {
-			let inputNameAttr = fieldName.toLowerCase().replace( / /g, '_' );
-			setAttributes( { nameAttr: inputNameAttr } );
+		if ( NameAttrFromFieldName && ! gfIsEmpty( fieldName ) ) {
+			setAttributes( { 
+				fieldName: fieldName,
+				nameAttr: prepareFieldNameAttr( fieldName )
+			 } );
+		} else {
+			//Set form field name
+			setAttributes( { fieldName } );
 		}
 
 		//On change from setting sidebar : set label content in label paragraph block
@@ -148,13 +164,42 @@ export default function edit( {
 	 Set Field Name : END
 	 *******************************/
 
+	// Remove unwanted field syles
+	const remove_unnecessary_styles = ( ) => {
+		//Input type range styles
+		let remove_button = document.querySelector('.block-editor-block-styles__variants [aria-label="Border Style"]');
+		if ( ! gfIsEmpty( remove_button ) ) {
+			remove_button.style.display = ( isSelected && 'range' === fieldType ) ? 'inline-block': 'none';
+		}
+	}
+
+	//Run on select block
+	useEffect( () => {
+		let shouldRunRemoveStyle = true;
+		if ( shouldRunRemoveStyle ) {
+			// Remove unwanted field syles
+			remove_unnecessary_styles();
+		}
+
+		//cleanup
+		return () => {
+			shouldRunRemoveStyle = false;
+		};
+	}, [ isSelected ] );
+
 	//Save form field Classnames for gutena forms field block
 	useEffect( () => {
 		let shouldRunFieldClassnames = true;
 		if ( shouldRunFieldClassnames ) {
+			// Remove unwanted field syles
+			remove_unnecessary_styles();
+
 			let InputClassName = `gutena-forms-field ${ fieldType }-field ${
 				isRequired ? 'required-field' : ''
 			}`;
+			if ( -1 !== ['radio', 'checkbox'].indexOf( fieldType ) ) {
+				InputClassName += optionsInline ? ' inline-options' : ' has-'+optionsColumns+'-col';
+			}
 			setAttributes( { fieldClasses: InputClassName } );
 		}
 
@@ -162,7 +207,7 @@ export default function edit( {
 		return () => {
 			shouldRunFieldClassnames = false;
 		};
-	}, [ fieldType, isRequired ] );
+	}, [ fieldType, isRequired, optionsInline, optionsColumns ] );
 
 	/********************************
 	 Input Field Component : START
@@ -179,6 +224,49 @@ export default function edit( {
 					}
 					required={ isRequired ? 'required' : '' }
 				/>
+			);
+		}
+
+		//Input Field range
+		if ( 'range' === fieldType ) {
+			return (
+				<div className='gf-range-container'>
+					<input
+						type={ fieldType }
+						className={ fieldClasses }
+						required={ isRequired ? 'required' : '' }
+						value={ htmlInputValue }
+						onChange={
+							(e) => setHtmlInputValue(e.target.value)
+						}
+					/>
+					<p className='gf-range-values' >
+						{
+							! gfIsEmpty( minMaxStep?.min ) && 
+							<span className='gf-prefix-value-wrapper'>
+								<span className='gf-prefix'>{ gfIsEmpty( preFix ) ? '': preFix }</span>
+								<span className='gf-value'>{ minMaxStep?.min }</span>
+								<span className='gf-suffix'>{ gfIsEmpty( sufFix ) ? '': sufFix }</span>
+							</span> 
+						}
+						{
+							! gfIsEmpty( htmlInputValue ) && 
+							<span className='gf-prefix-value-wrapper'>
+								<span className='gf-prefix'>{ gfIsEmpty( preFix ) ? '': preFix }</span>
+								<span className='gf-value range-input-value'>{ htmlInputValue }</span>
+								<span className='gf-suffix'>{ gfIsEmpty( sufFix ) ? '': sufFix }</span>
+							</span> 
+						}
+						{
+							! gfIsEmpty( minMaxStep?.max ) && 
+							<span className='gf-prefix-value-wrapper'>
+								<span className='gf-prefix'>{ gfIsEmpty( preFix ) ? '': preFix }</span>
+								<span className='gf-value'>{ minMaxStep?.max }</span>
+								<span className='gf-suffix'>{ gfIsEmpty( sufFix ) ? '': sufFix }</span>
+							</span> 
+						}
+					</p>
+				</div>
 			);
 		}
 
@@ -214,6 +302,32 @@ export default function edit( {
 				</select>
 			);
 		}
+
+		if ( 'radio' === fieldType || 'checkbox' === fieldType ) {
+			return (
+				<div
+					className={ fieldClasses }
+				>
+				{ 
+				selectOptions.map( ( item, index ) => {
+					return (
+						<label key={ index } className={ fieldType+'-container' } > 
+							{ item }
+							<input 
+							type={ fieldType } 
+							name={ fieldName } 
+							value={ item }
+							checked={ item === selectInputOption}
+							onChange={ ( e ) => setSelectInputOption( e.target.value ) }
+							/>
+							<span className="checkmark"></span>
+						</label>
+					);
+				} ) 
+				}
+				</div>
+			);
+		}
 	};
 
 	/********************************
@@ -242,7 +356,53 @@ export default function edit( {
 							__nextHasNoMarginBottom
 						/>
 					</PanelRow>
-					{ 'select' !== fieldType && (
+					{ -1 !== ['select', 'checkbox', 'radio'].indexOf( fieldType ) && (
+						<FormTokenField
+							label={ __( 'Options', 'gutena-forms' ) }
+							value={ selectOptions }
+							suggestions={ selectOptions }
+							onChange={ ( selectOptions ) =>
+								setAttributes( { selectOptions } )
+							}
+						/>
+					) }
+					{ -1 !== ['radio', 'checkbox'].indexOf( fieldType ) && (
+						<>
+						<ToggleControl
+							label={ __( 'Show Inline', 'gutena-forms' ) }
+							className="gf-mt-1"
+							help={
+								optionsInline
+									? __(
+											'Toggle to make options show in columns',
+											'gutena-forms'
+									)
+									: __(
+											'Toggle to make options show inline',
+											'gutena-forms'
+									)
+							}
+							checked={ optionsInline }
+							onChange={ ( optionsInline ) =>
+								setAttributes( { optionsInline } )
+							}
+						/>
+						{
+							! optionsInline &&
+							<RangeControl
+								label={ __( 'Columns', 'gutena-forms' ) }
+								value={ optionsColumns }
+								onChange={ ( optionsColumns ) =>
+									setAttributes( { optionsColumns } )
+								}
+								min={ 1 }
+								max={ 6 }
+								step={ 1 }
+							/>
+						}
+						</>
+					) }
+					{ -1 !== ['text', 'textarea'].indexOf( fieldType ) && (
 						<RangeControl
 							label={ __( 'Maxlength', 'gutena-forms' ) }
 							value={ maxlength }
@@ -253,6 +413,62 @@ export default function edit( {
 							max={ 500 }
 							step={ 25 }
 						/>
+					) }
+					{ ( 'number' === fieldType || 'range' === fieldType ) && (
+						<>
+						<h2 className="block-editor-block-card__title gf-mt-1 ">{ __( 'Value', 'gutena-forms' ) }</h2>
+						<PanelRow className="gf-child-mb-0 gf-mb-24">
+						<TextControl
+							label={ __( 'Minimum', 'gutena-forms' ) }
+							value={ minMaxStep?.min }
+							type="number"
+							onChange={ ( min ) =>
+								setAttributes( { minMaxStep:{
+									...minMaxStep,
+									min
+								} } )
+							}
+						/>
+						<TextControl
+							label={ __( 'Maximum', 'gutena-forms' ) }
+							value={ minMaxStep?.max }
+							type="number"
+							onChange={ ( max ) =>
+								setAttributes( { minMaxStep:{
+									...minMaxStep,
+									max
+								} } )
+							}
+						/>
+						<TextControl
+							label={ __( 'Step', 'gutena-forms' ) }
+							value={ minMaxStep?.step }
+							type="number"
+							onChange={ ( step ) =>
+								setAttributes( { minMaxStep:{
+									...minMaxStep,
+									step
+								} } )
+							}
+						/>
+						</PanelRow>
+						<PanelRow className="gf-child-mb-0 gf-mb-24">
+							<TextControl
+								label={ __( 'Prefix', 'gutena-forms' ) }
+								value={ preFix }
+								onChange={ ( preFix ) =>
+									setAttributes( { preFix } )
+								}
+							/>
+							<TextControl
+								label={ __( 'Suffix', 'gutena-forms' ) }
+								value={ sufFix }
+								onChange={ ( sufFix ) =>
+									setAttributes( { sufFix } )
+								}
+							/>
+						</PanelRow>
+						</>
 					) }
 					{ 'textarea' === fieldType && (
 						<RangeControl
@@ -266,16 +482,7 @@ export default function edit( {
 							step={ 1 }
 						/>
 					) }
-					{ 'select' === fieldType && (
-						<FormTokenField
-							label={ __( 'Options', 'gutena-forms' ) }
-							value={ selectOptions }
-							suggestions={ selectOptions }
-							onChange={ ( selectOptions ) =>
-								setAttributes( { selectOptions } )
-							}
-						/>
-					) }
+					
 					<PanelRow>
 						<TextControl
 							label={ __( 'Field Name', 'gutena-forms' ) }
@@ -297,7 +504,7 @@ export default function edit( {
 							) }
 							value={ nameAttr }
 							onChange={ ( nameAttr ) =>
-								setAttributes( { nameAttr: nameAttr.toLowerCase().replace( / /g, '_' ) } )
+								setAttributes( { nameAttr: prepareFieldNameAttr( nameAttr ) } )
 							}
 						/>
 					</PanelRow>

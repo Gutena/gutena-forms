@@ -4,7 +4,7 @@
 	"name": "gutena/form-error-msg",
 	"version": "1.0.0",
 	"title": "Error Message",
-	"parent": [ "gutena/forms" ],
+	"ancestor": [ "gutena/forms" ],
 	"category": "gutena",
 	"icon": "feedback",
 	"description": "Form Error Message. It will show after form submission.",

@@ -2,7 +2,7 @@
 Contributors:      expresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.1
-Stable tag:        1.0.7
+Stable tag:        1.0.8
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,14 @@ The plugin is built with the latest WordPress block editor, so you can easily ad
 The gutena form plugin allows you to select various form variations/pre-built form templates to start with you can choose any of them or create your own custom form from scratch. Thanks to its seamless integration with the WordPress editor you can customize it as per your like.
 
 Gutena Forms is fully responsive and mobile-friendly, so your forms will look great on any device. It also integrates with popular email marketing and CRM platforms, making it easy to manage and track your form submissions.
+
+
+== Demos ==
+* [Contact Form](https://gutena.io/forms-block#contact-form)
+* [Enquiry Form](https://gutena.io/forms-block#enquiry-form)
+* [Booking Form](https://gutena.io/forms-block#booking-form)
+* [Appointment Form](https://gutena.io/forms-block#appointment-form)
+
 
 == No jQuery Used ==
 
@@ -75,6 +83,10 @@ If you like this plugin, consider exploring our other block plugins:
 
 [Gutena Accordion](https://wordpress.org/plugins/gutena-accordion/) - Easily and instantly add Accordion Block to your Gutenberg Editor.
 
+[Gutena Video Lightbox](https://wordpress.org/plugins/gutena-lightbox/) – Easily and instantly add Lightbox Video Popup Block to your Gutenberg Editor.
+
+[Gutena Tabs](https://wordpress.org/plugins/gutena-tabs/) – Easily and instantly add beautiful Tabs Block to your Gutenberg Editor.
+
 [Gutena PhotoFeed](https://wordpress.org/plugins/photofeed-block-by-gutena/) - Display Instagram Photos from your Instagram accounts, either in the same single feed or in multiple different ones.
 
 [Gutena Recent Post Tag](https://wordpress.org/plugins/post-featured-tag-block-by-gutena/) - Post Featured Tag Block use to add custom featured or new tag on post based on post date.
@@ -107,6 +119,10 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+
+= 1.0.8 | 7th February 2023 =
+* Added numbers, radio, range slider and checkboxes form fields
+* Make gutena-forms parent to ancestor in all child blocks
 
 = 1.0.7 | 27th January 2023 =
 * Added Google reCAPTCHA Integration
