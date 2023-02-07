@@ -122,7 +122,6 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 = 1.0.8 | 7th February 2023 =
 * Added numbers, radio, range slider and checkboxes form fields
-* Make gutena-forms parent to ancestor in all child blocks
 
 = 1.0.7 | 27th January 2023 =
 * Added Google reCAPTCHA Integration
