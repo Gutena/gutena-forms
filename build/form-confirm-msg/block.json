@@ -4,7 +4,7 @@
   "name": "gutena/form-confirm-msg",
   "version": "1.0.0",
   "title": "Confirmation Message",
-  "ancestor": [
+  "parent": [
     "gutena/forms"
   ],
   "category": "gutena",
