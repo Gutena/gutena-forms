@@ -768,4 +768,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 	}
 
 	Gutena_Forms::get_instance();
+
+	//Gutena Ecosys
+	if ( file_exists( __DIR__ . '/includes/gutena/gutena-ecosys-onboard/gutena-ecosys-onboard.php' ) ) {
+		require_once  __DIR__ . '/includes/gutena/gutena-ecosys-onboard/gutena-ecosys-onboard.php';
+	}
 }
