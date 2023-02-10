@@ -2,7 +2,7 @@
 Contributors:      expresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.1
-Stable tag:        1.0.8
+Stable tag:        1.0.9
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,8 +120,12 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+= 1.0.9 | 10th February 2023 =
+* Made gutena-forms parent from ancestor in all child blocks
+
 = 1.0.8 | 7th February 2023 =
 * Added numbers, radio, range slider and checkboxes form fields
+* Made gutena-forms ancestor from parent in all child blocks
 
 = 1.0.7 | 27th January 2023 =
 * Added Google reCAPTCHA Integration
