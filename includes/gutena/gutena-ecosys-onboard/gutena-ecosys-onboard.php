@@ -102,7 +102,7 @@ if ( ! class_exists( 'Gutena_Ecosys_Onboard' ) && ! class_exists('Gutena_Kit') )
 					'dismiss_action'       	=> 'dismiss_gutena_kit_cta',
 					'ajax_url'            	=> admin_url( 'admin-ajax.php' ),
 					'nonce'               	=> wp_create_nonce( 'updates' ),
-					'gk_dashboard_url' => esc_url( admin_url( 'themes.php?page=gutenakit_admin_dashboard' ) ),
+					'gk_dashboard_url' => esc_url( admin_url( 'themes.php?page=gutenakit_admin_dashboard&tab=blocksettings' ) ),
 					'gutena_weblink'        => esc_url( 'https://gutena.io/' ),
 					'icons'					=> array(
 						'logo_img'			=> $this->plugin_url.'assets/cta/logo.svg',
