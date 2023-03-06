@@ -233,7 +233,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			// Get Block Supports like styles or classNames
 			$wrapper_attributes = get_block_wrapper_attributes(
 				array(
-					'class' => 'gutena-forms-' . esc_attr( $attributes['fieldType'] ) . '-field',
+					'class' => 'gutena-forms-' . esc_attr( $attributes['fieldType'] ) . '-field field-name-' .esc_attr( $attributes['nameAttr'] ),
 				)
 			);
 			// Output Html
@@ -362,6 +362,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				$output .= '</div>';
 			}
 
+			//filter output field
+			$output = apply_filters( 'gutena_forms_render_field', $output, $attributes, $inputAttr );
+
 			// output
 			return sprintf(
 				'<div %1$s>%2$s</div>',
@@ -431,7 +434,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				'</button>',
 				$content
 			); 
-
+			//filter content
+			$content = apply_filters( 'gutena_forms_render_form', $content, $attributes );
 			// Enqueue block styles
 			$this->enqueue_block_styles( $attributes['formStyle'] );
 			return $content;
@@ -642,15 +646,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			foreach ( $_POST as $name_attr => $field_value ) {
 				$name_attr   = sanitize_key( wp_unslash( $name_attr ) );
 
+				if ( empty( $fieldSchema[ $name_attr ] ) ) {
+					continue;
+				}
+
+				$field_value = apply_filters( 'gutena_forms_field_value_for_email', $field_value, $fieldSchema[ $name_attr ] );
+
 				if ( is_array( $field_value ) ) {
 					$field_value =	$this->sanitize_array( wp_unslash( $field_value ), true );
 					$field_value = implode(", ", $field_value );
 				} else {
 					$field_value = sanitize_textarea_field( wp_unslash( $field_value ) );
-				}
-				
-				if ( empty( $fieldSchema[ $name_attr ] ) ) {
-					continue;
 				}
 
 				//Add prefix in value if set

@@ -120,6 +120,15 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+= 1.1.0 | Beta =
+* Added gutena_forms_render_form filter to filter form render content
+* Added gutena_forms_render_field filter to filter field render content
+* Added gutena_forms_field_value_for_email to filter value for email notification to admin
+* Added gutenaforms.field.types filter to add new fields
+* Made Field block nameAttr unique and added warning accordingly
+* Added warning in case form label is empty
+* Moved Field block form type settings at top panel after block styles
+
 = 1.0.9 | 10th February 2023 =
 * Made gutena-forms parent from ancestor in all child blocks
 

@@ -1,12 +1,13 @@
 import { __ } from '@wordpress/i18n';
+import { applyFilters, hasFilter } from '@wordpress/hooks';
 import { useState, useEffect } from '@wordpress/element';
 import {
 	useBlockProps,
 	InspectorControls,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { gfIsEmpty } from '../helper';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { gfIsEmpty, gfSanitizeName } from '../helper';
+import { useDispatch, useSelect, select } from '@wordpress/data';
 import {
 	PanelBody,
 	PanelRow,
@@ -17,13 +18,26 @@ import {
 	FormTokenField,
 } from '@wordpress/components';
 
+//check for duplicate name attr
+const isFieldNameAttrReserved = ( nameAttrCheck, clientIdCheck ) => {
+    const blocksClientIds = select( 'core/block-editor' ).getClientIdsWithDescendants();
+    return gfIsEmpty( blocksClientIds ) ? false : blocksClientIds.some( ( blockClientId ) => {
+        const { nameAttr  } = select( 'core/block-editor' ).getBlockAttributes( blockClientId );
+		//different Client Id but same name attribute means duplicate
+        return clientIdCheck !== blockClientId && nameAttr === nameAttrCheck;
+    } );
+};
+
 export default function edit( {
 	className,
 	attributes,
 	setAttributes,
 	isSelected,
 	clientId,
+	context,
+	gutenaExtends={}
 } ) {
+
 	const {
 		nameAttr,
 		fieldName,
@@ -53,8 +67,9 @@ export default function edit( {
 	//Fields which use input tag
 	const textLikeInput = [ 'text', 'email', 'number', 'hidden', 'tel', 'url' ];
 
+	
 	//Field types
-	const fieldTypes = [
+	const formfieldTypes = [
 		{ label: 'Text', value: 'text' },
 		{ label: 'Number', value: 'number' },
 		{ label: 'Range', value: 'range' },
@@ -64,6 +79,20 @@ export default function edit( {
 		{ label: 'Radio', value: 'radio' },
 		{ label: 'Checkbox', value: 'checkbox' },
 	];
+
+	let addNewFieldTypes = [];
+	if ( hasFilter( 'gutenaforms.field.types' ) ) {
+		addNewFieldTypes = applyFilters(
+			'gutenaforms.field.types',
+			addNewFieldTypes
+		);
+	}
+
+	const fieldTypes = ( gfIsEmpty( addNewFieldTypes ) || 0 ===  addNewFieldTypes.length ) ? formfieldTypes: [...formfieldTypes, ...addNewFieldTypes];
+
+	//get new field types
+	const newFieldTypes = ( gfIsEmpty( addNewFieldTypes ) || 0 ===  addNewFieldTypes.length ) ? [] : addNewFieldTypes.map(field => field.value);
+	
 
 	const [ selectInputOption, setSelectInputOption ] = useState(
 		selectOptions[ 0 ]
@@ -114,11 +143,31 @@ export default function edit( {
 	const [ NameAttrFromFieldName, setNameAttrFromFieldName ] =
 		useState( false );
 
-	//Update Styles
+
+	//Check if block is getting duplicate or name attr need to connect with label for new field
 	useEffect( () => {
 		//Set name attribute if empty or default
 		if ( 'input_1' == nameAttr || '' == nameAttr ) {
+			//on change label name attr also change
 			setNameAttrFromFieldName( true );
+		} else if ( ! gfIsEmpty( nameAttr ) && isFieldNameAttrReserved( nameAttr, clientId ) ) {
+			//Check if block is getting duplicate
+			setNameAttrFromFieldName( true );
+			let newNameAttr = nameAttr+'_copy_1';
+			let newfieldName = fieldName+' copy 1';
+			if ( nameAttr.includes('_copy_') ) {
+				let copyNumber = nameAttr.split('_copy_');
+				newNameAttr = copyNumber[0]+'_copy_';
+				copyNumber = parseInt( copyNumber[1] ) + 1;
+				newNameAttr += copyNumber;
+				newfieldName = fieldName.split(' copy ');
+				newfieldName = newfieldName[0]+' copy '+copyNumber;
+			}
+			//rename label and name attribute
+			setAttributes( { 
+				nameAttr: newNameAttr,
+				fieldName: newfieldName
+			} );
 		}
 	}, [] );
 
@@ -194,9 +243,8 @@ export default function edit( {
 			// Remove unwanted field syles
 			remove_unnecessary_styles();
 
-			let InputClassName = `gutena-forms-field ${ fieldType }-field ${
-				isRequired ? 'required-field' : ''
-			}`;
+			let InputClassName = `gutena-forms-field ${ fieldType }-field ${ isRequired ? 'required-field' : ''
+			} ${ autocomplete ? 'autocomplete': '' } `;
 			if ( -1 !== ['radio', 'checkbox'].indexOf( fieldType ) ) {
 				InputClassName += optionsInline ? ' inline-options' : ' has-'+optionsColumns+'-col';
 			}
@@ -328,6 +376,10 @@ export default function edit( {
 				</div>
 			);
 		}
+
+		if ( ! gfIsEmpty( gutenaExtends?.inputFieldComponent ) && 0 <= newFieldTypes.indexOf( fieldType ) ) {
+		   return gutenaExtends.inputFieldComponent();
+		}
 	};
 
 	/********************************
@@ -335,30 +387,30 @@ export default function edit( {
 	 *******************************/
 
 	const blockProps = useBlockProps( {
-		className: `gutena-forms-${ fieldType }-field`,
+		className: `gutena-forms-${ fieldType }-field field-name-${ nameAttr }`,
 	} );
+
+	
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title="Form Field" initialOpen={ true }>
-					<PanelRow>
-						<SelectControl
-							label="Field Type"
-							value={ fieldType }
-							options={ fieldTypes }
-							onChange={ ( fieldType ) =>
-								setAttributes( { fieldType } )
-							}
-							help={ __(
-								'Select appropriate field type for input',
-								'gutena-forms'
-							) }
-							__nextHasNoMarginBottom
-						/>
-					</PanelRow>
-					{ -1 !== ['select', 'checkbox', 'radio'].indexOf( fieldType ) && (
+				<PanelBody title={ __( 'Field Type', 'gutena-forms' ) } initialOpen={ true }>
+					<SelectControl
+						value={ fieldType }
+						options={ fieldTypes }
+						onChange={ ( fieldType ) =>
+							setAttributes( { fieldType } )
+						}
+						help={ __(
+							'Select appropriate field type for input',
+							'gutena-forms'
+						) }
+						__nextHasNoMarginBottom
+					/>
+					{ ! gfIsEmpty( gutenaExtends?.gfcontrols ) && gutenaExtends.gfcontrols() }
+					{ ( -1 !== ['select', 'checkbox', 'radio'].indexOf( fieldType ) ) && (
 						<FormTokenField
-							label={ __( 'Options', 'gutena-forms' ) }
+							label={ autocomplete ? __( 'Preferences', 'gutena-forms' ) : __( 'Options', 'gutena-forms' ) }
 							value={ selectOptions }
 							suggestions={ selectOptions }
 							onChange={ ( selectOptions ) =>
@@ -401,18 +453,6 @@ export default function edit( {
 							/>
 						}
 						</>
-					) }
-					{ -1 !== ['text', 'textarea'].indexOf( fieldType ) && (
-						<RangeControl
-							label={ __( 'Maxlength', 'gutena-forms' ) }
-							value={ maxlength }
-							onChange={ ( maxlength ) =>
-								setAttributes( { maxlength } )
-							}
-							min={ 0 }
-							max={ 500 }
-							step={ 25 }
-						/>
 					) }
 					{ ( 'number' === fieldType || 'range' === fieldType ) && (
 						<>
@@ -470,6 +510,50 @@ export default function edit( {
 						</PanelRow>
 						</>
 					) }
+				</PanelBody>
+				<PanelBody title={ __( 'Field settings', 'gutena-forms' ) } initialOpen={ true }>
+					<TextControl
+						label={ __( 'Label', 'gutena-forms' )+' * ' }
+						className={ gfIsEmpty( fieldName ) ? ' gf-required-field':'' }
+						help={ gfIsEmpty( fieldName ) ? __(
+							'Please add label to the field',
+							'gutena-forms'
+						):'' }
+						value={ fieldName }
+						onChange={ ( fieldName ) =>
+							setFieldNameAttr( fieldName, true )
+						}
+					/>
+					<TextControl
+						label={ __(
+							'Unique Name Attribute',
+							'gutena-forms'
+						)+' * ' }
+						className={ ( isFieldNameAttrReserved( nameAttr, clientId ) ) ? ' gf-required-field':'' }
+						help={ isFieldNameAttrReserved( nameAttr, clientId ) ? __(
+							'Duplicate field name. Please provide unique name',
+							'gutena-forms'
+						): __(
+							'Contains only letters, numbers, and underscore. e.g. first_name',
+							'gutena-forms'
+						) }
+						value={ nameAttr }
+						onChange={ ( nameAttr ) =>
+							setAttributes( { nameAttr: prepareFieldNameAttr( nameAttr ) } )
+						}
+					/>
+					{ -1 !== ['text', 'textarea'].indexOf( fieldType ) && (
+						<RangeControl
+							label={ __( 'Maxlength', 'gutena-forms' ) }
+							value={ maxlength }
+							onChange={ ( maxlength ) =>
+								setAttributes( { maxlength } )
+							}
+							min={ 0 }
+							max={ 500 }
+							step={ 25 }
+						/>
+					) }
 					{ 'textarea' === fieldType && (
 						<RangeControl
 							label={ __( 'Textarea Rows', 'gutena-forms' ) }
@@ -482,32 +566,6 @@ export default function edit( {
 							step={ 1 }
 						/>
 					) }
-					
-					<PanelRow>
-						<TextControl
-							label={ __( 'Field Name', 'gutena-forms' ) }
-							value={ fieldName }
-							onChange={ ( fieldName ) =>
-								setFieldNameAttr( fieldName, true )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label={ __(
-								'Field Name Attribute',
-								'gutena-forms'
-							) }
-							help={ __(
-								'Contains only letters, numbers, and underscore',
-								'gutena-forms'
-							) }
-							value={ nameAttr }
-							onChange={ ( nameAttr ) =>
-								setAttributes( { nameAttr: prepareFieldNameAttr( nameAttr ) } )
-							}
-						/>
-					</PanelRow>
 					<PanelRow>
 						<TextControl
 							label={ __( 'Placeholder', 'gutena-forms' ) }

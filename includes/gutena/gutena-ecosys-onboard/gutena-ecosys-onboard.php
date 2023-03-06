@@ -71,6 +71,8 @@ if ( ! class_exists( 'Gutena_Ecosys_Onboard' ) && ! class_exists('Gutena_Kit') )
 				'gutena/lightbox',
 				'gutena/tabs',
 				'gutena/post-featured-tag',
+				'gutena/star-ratings',
+				'gutena/testimonials'
 			);
 			
 			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_styles_and_script' ) );

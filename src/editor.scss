@@ -59,13 +59,21 @@
     color: rgb(117, 117, 117);
 }
 
-.block-editor-block-inspector .gf-child-mb-0 > .components-base-control{
-	margin-bottom: 0;
-}
-.block-editor-block-inspector .gf-mb-24 {
-	margin-bottom: 24px;
-}
+.block-editor-block-inspector {
+	.gf-child-mb-0 > .components-base-control{
+		margin-bottom: 0;
+	}
 
-.block-editor-block-inspector .gf-mt-1 {
-	margin-top: 1rem;
+	.gf-mb-24 {
+		margin-bottom: 24px;
+	}
+
+	.gf-mt-1 {
+		margin-top: 1rem;
+	}
+
+	.gf-required-field .components-base-control__help{
+		color: red;
+	}
+
 }
