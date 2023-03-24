@@ -233,7 +233,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			// Get Block Supports like styles or classNames
 			$wrapper_attributes = get_block_wrapper_attributes(
 				array(
-					'class' => 'gutena-forms-' . esc_attr( $attributes['fieldType'] ) . '-field field-name-' .esc_attr( $attributes['nameAttr'] ),
+					'class' => 'gutena-forms-' . esc_attr( $attributes['fieldType'] ) . '-field field-name-' . esc_attr( $attributes['nameAttr'] ) .' '. ( empty( $attributes['optionsInline'] ) ? '':'gf-inline-content'  ),
 				)
 			);
 			// Output Html
@@ -246,7 +246,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 
 			// Text type Input
-			if ( in_array( $attributes['fieldType'], array( 'text', 'email', 'number', 'hidden', 'tel', 'url' ) ) ) {
+			if ( in_array( $attributes['fieldType'], array( 'text', 'email', 'number' ) ) ) {
 				$output = '<input 
 				' . $this->get_field_attribute( $attributes, array(
 					'nameAttr' 		=> 'name',
@@ -363,7 +363,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 			//filter output field
-			$output = apply_filters( 'gutena_forms_render_field', $output, $attributes, $inputAttr );
+			$output = apply_filters( 'gutena_forms_render_field', $output, $attributes, $inputAttr, $block );
 
 			// output
 			return sprintf(
@@ -675,7 +675,20 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				//Form submit Data for filter
 				$form_submit_data['submit_data'][ $field_name ] = $field_value;
 
-				$body .= '<p><strong>' . esc_html( $field_name ) . '</strong> <br />' . esc_html( $field_value ) . ' </p>';
+				$field_email_html = '<p><strong>' . esc_html( $field_name ) . '</strong> <br />' . esc_html( $field_value ) . ' </p>';
+
+				$field_email_html = apply_filters( 
+					'gutena_forms_field_email_html', 
+					$field_email_html, 
+					array(
+						'field_name' => $field_name,
+						'field_value' => $field_value,
+						'fieldSchema' => $fieldSchema[ $name_attr ],
+						'formID' => $formID,
+					) 
+				);
+
+				$body .= $field_email_html;
 
 			}
 

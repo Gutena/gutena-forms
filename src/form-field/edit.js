@@ -65,7 +65,7 @@ export default function edit( {
 	} = attributes;
 
 	//Fields which use input tag
-	const textLikeInput = [ 'text', 'email', 'number', 'hidden', 'tel', 'url' ];
+	const textLikeInput = [ 'text', 'email', 'number' ];
 
 	
 	//Field types
@@ -255,7 +255,7 @@ export default function edit( {
 		return () => {
 			shouldRunFieldClassnames = false;
 		};
-	}, [ fieldType, isRequired, optionsInline, optionsColumns ] );
+	}, [ fieldType, isRequired, optionsInline, optionsColumns, autocomplete ] );
 
 	/********************************
 	 Input Field Component : START
@@ -267,6 +267,10 @@ export default function edit( {
 				<input
 					type={ fieldType }
 					className={ fieldClasses }
+					value={ htmlInputValue ?? '' }
+					onChange={
+						(e) => setHtmlInputValue(e.target.value)
+					}
 					placeholder={
 						placeholder ? placeholder : __( 'Placeholder…' )
 					}
@@ -387,7 +391,7 @@ export default function edit( {
 	 *******************************/
 
 	const blockProps = useBlockProps( {
-		className: `gutena-forms-${ fieldType }-field field-name-${ nameAttr }`,
+		className: `gutena-forms-${ fieldType }-field field-name-${ nameAttr } ${ optionsInline ? 'gf-inline-content' : '' }`,
 	} );
 
 	
@@ -542,6 +546,7 @@ export default function edit( {
 							setAttributes( { nameAttr: prepareFieldNameAttr( nameAttr ) } )
 						}
 					/>
+					{ ! gfIsEmpty( gutenaExtends?.gfSettings ) && gutenaExtends.gfSettings() }
 					{ -1 !== ['text', 'textarea'].indexOf( fieldType ) && (
 						<RangeControl
 							label={ __( 'Maxlength', 'gutena-forms' ) }

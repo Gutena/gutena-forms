@@ -128,6 +128,8 @@ If you like this plugin, consider exploring our other themes and plugins:
 * Made Field block nameAttr unique and added warning accordingly
 * Added warning in case form label is empty
 * Moved Field block form type settings at top panel after block styles
+* Fixed select input height
+* Fixed label color render in editor
 
 = 1.0.9 | 10th February 2023 =
 * Made gutena-forms parent from ancestor in all child blocks
