@@ -1,7 +1,7 @@
 //Check if undefined, null, empty
 
 export const gfIsEmpty = ( data ) => {
-	return 'undefined' === typeof data || null === data || '' == data;
+	return 'undefined' === typeof data || null === data || '' === data;
 };
 
 export const gfSanitizeName = ( name ) => {

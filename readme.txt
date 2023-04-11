@@ -130,6 +130,8 @@ If you like this plugin, consider exploring our other themes and plugins:
 * Moved Field block form type settings at top panel after block styles
 * Fixed select input height
 * Fixed label color render in editor
+* Updated editor FontSizePicker component
+* Added select parent form block control in toolbar for child field block 
 
 = 1.0.9 | 10th February 2023 =
 * Made gutena-forms parent from ancestor in all child blocks

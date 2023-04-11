@@ -4,7 +4,7 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-.editor-styles-wrapper .wp-block-gutena-forms {
+.editor-styles-wrapper .wp-block-gutena-forms, .wp-block-gutena-forms {
 	.heading-input-label-gutena {
 		color: var(--wp--gutena-forms--label-color);
 		font-size: var(--wp--gutena-forms--label-font-size, 13px);

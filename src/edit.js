@@ -676,6 +676,7 @@ export default function Edit( props ) {
 								}
 								value={ labelTypography?.fontSize }
 								withReset={ false }
+								__nextHasNoMarginBottom
 							/>
 						</ToolsPanelItem>
 
@@ -803,6 +804,7 @@ export default function Edit( props ) {
 							}
 							value={ placeholderTypography?.fontSize }
 							withReset={ false }
+							__nextHasNoMarginBottom
 						/>
 					</ToolsPanelItem>
 

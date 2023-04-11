@@ -5,6 +5,7 @@ import {
 	useBlockProps,
 	InspectorControls,
 	store as blockEditorStore,
+	BlockControls,
 } from '@wordpress/block-editor';
 import { gfIsEmpty, gfSanitizeName } from '../helper';
 import { useDispatch, useSelect, select } from '@wordpress/data';
@@ -16,7 +17,10 @@ import {
 	RangeControl,
 	SelectControl,
 	FormTokenField,
+	ToolbarGroup, 
+	ToolbarButton
 } from '@wordpress/components';
+import { gutenaFormsIcon } from '../icon';
 
 //check for duplicate name attr
 const isFieldNameAttrReserved = ( nameAttrCheck, clientIdCheck ) => {
@@ -100,6 +104,18 @@ export default function edit( {
 
 	const [ htmlInputValue, setHtmlInputValue ] = useState('');
 
+	const {
+		selectBlock,
+	} = useDispatch( blockEditorStore );
+
+	const gutenaFormClientID = useSelect(
+		( select ) => {
+			//get parent gutena form clientIds
+			return select( blockEditorStore ).getBlockParentsByBlockName( clientId,'gutena/forms', true );
+		},
+		[ clientId ]
+	);
+
 	/********************************
 	 Set Field Name : START
 	 *******************************/
@@ -139,36 +155,29 @@ export default function edit( {
 	//Use to to update block attributes using clientId
 	const { updateBlockAttributes } = useDispatch( blockEditorStore );
 
-	//For First time field name attribute generation
-	const [ NameAttrFromFieldName, setNameAttrFromFieldName ] =
-		useState( false );
-
-
-	//Check if block is getting duplicate or name attr need to connect with label for new field
+	//set name attribute if default or duplicate
 	useEffect( () => {
-		//Set name attribute if empty or default
-		if ( 'input_1' == nameAttr || '' == nameAttr ) {
-			//on change label name attr also change
-			setNameAttrFromFieldName( true );
-		} else if ( ! gfIsEmpty( nameAttr ) && isFieldNameAttrReserved( nameAttr, clientId ) ) {
-			//Check if block is getting duplicate
-			setNameAttrFromFieldName( true );
-			let newNameAttr = nameAttr+'_copy_1';
-			let newfieldName = fieldName+' copy 1';
-			if ( nameAttr.includes('_copy_') ) {
-				let copyNumber = nameAttr.split('_copy_');
-				newNameAttr = copyNumber[0]+'_copy_';
-				copyNumber = parseInt( copyNumber[1] ) + 1;
-				newNameAttr += copyNumber;
-				newfieldName = fieldName.split(' copy ');
-				newfieldName = newfieldName[0]+' copy '+copyNumber;
+		let shouldSetNameAttr = true;
+		if ( shouldSetNameAttr ) {
+			if ( 'input_1' == nameAttr || '' == nameAttr || ( ! gfIsEmpty( nameAttr ) && isFieldNameAttrReserved( nameAttr, clientId ) ) ) {
+				for ( let index = 0; index < 5000; index++ ) {
+					let newNameAttr = 'f_'+index;
+					if ( ! isFieldNameAttrReserved( newNameAttr, clientId ) ) {
+						//rename label and name attribute
+						setAttributes( { 
+							nameAttr: newNameAttr
+						} );
+						break;
+					}
+				}
 			}
-			//rename label and name attribute
-			setAttributes( { 
-				nameAttr: newNameAttr,
-				fieldName: newfieldName
-			} );
 		}
+		
+		//cleanup
+		return () => {
+			shouldSetNameAttr = false;
+		};
+		
 	}, [] );
 
 	//Prepare field name attribute: replace space with underscore and remove unwanted characters
@@ -179,18 +188,9 @@ export default function edit( {
 	}
 
 	const setFieldNameAttr = ( fieldName, onChange = false ) => {
-
-		//Set form attribute name
-		if ( NameAttrFromFieldName && ! gfIsEmpty( fieldName ) ) {
-			setAttributes( { 
-				fieldName: fieldName,
-				nameAttr: prepareFieldNameAttr( fieldName )
-			 } );
-		} else {
-			//Set form field name
-			setAttributes( { fieldName } );
-		}
-
+		//Set form field name
+		setAttributes( { fieldName } );
+		
 		//On change from setting sidebar : set label content in label paragraph block
 		if ( onChange && ! gfIsEmpty( labelClientId ) ) {
 			updateBlockAttributes( labelClientId, { content: fieldName } );
@@ -287,7 +287,7 @@ export default function edit( {
 						type={ fieldType }
 						className={ fieldClasses }
 						required={ isRequired ? 'required' : '' }
-						value={ htmlInputValue }
+						value={ htmlInputValue ?? '' }
 						onChange={
 							(e) => setHtmlInputValue(e.target.value)
 						}
@@ -397,6 +397,19 @@ export default function edit( {
 	
 	return (
 		<>
+			<BlockControls>
+				<ToolbarGroup>
+					<ToolbarButton
+						icon={ gutenaFormsIcon }
+						label={ __( 'Select form block', 'gutena-forms' ) }
+						onClick={ () => {
+							if ( ! gfIsEmpty( gutenaFormClientID ) ) {
+								selectBlock( gutenaFormClientID[0] );
+							}
+						} }
+					/>
+				</ToolbarGroup>
+			</BlockControls>
 			<InspectorControls>
 				<PanelBody title={ __( 'Field Type', 'gutena-forms' ) } initialOpen={ true }>
 					<SelectControl
@@ -523,29 +536,12 @@ export default function edit( {
 							'Please add label to the field',
 							'gutena-forms'
 						):'' }
-						value={ fieldName }
+						value={ fieldName ?? '' }
 						onChange={ ( fieldName ) =>
 							setFieldNameAttr( fieldName, true )
 						}
 					/>
-					<TextControl
-						label={ __(
-							'Unique Name Attribute',
-							'gutena-forms'
-						)+' * ' }
-						className={ ( isFieldNameAttrReserved( nameAttr, clientId ) ) ? ' gf-required-field':'' }
-						help={ isFieldNameAttrReserved( nameAttr, clientId ) ? __(
-							'Duplicate field name. Please provide unique name',
-							'gutena-forms'
-						): __(
-							'Contains only letters, numbers, and underscore. e.g. first_name',
-							'gutena-forms'
-						) }
-						value={ nameAttr }
-						onChange={ ( nameAttr ) =>
-							setAttributes( { nameAttr: prepareFieldNameAttr( nameAttr ) } )
-						}
-					/>
+					
 					{ ! gfIsEmpty( gutenaExtends?.gfSettings ) && gutenaExtends.gfSettings() }
 					{ -1 !== ['text', 'textarea'].indexOf( fieldType ) && (
 						<RangeControl
