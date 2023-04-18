@@ -53,16 +53,18 @@
 			return false;
 		}
 
-		
+		public function get_form_name( $form_schema ) {
+			$form_schema = $this->maybe_unserialize( $form_schema );
+			return ( empty( $form_schema ) || empty( $form_schema['form_attrs'] ) || empty( $form_schema['form_attrs']['formName'] ) ) ? __( 'Contact Form', 'gutena-forms' ) : sanitize_text_field( $form_schema['form_attrs']['formName'] );
+		}
 
 		//save new form
 		protected function save_new_form( $form_id, $form_schema ) {
 			//return if form id or data not available
-			if ( empty( $form_id ) || empty( $form_schema ) ) {
+			global $wpdb; 
+			if ( empty( $wpdb ) || empty( $form_id ) || empty( $form_schema ) || ! is_array( $form_schema ) || empty( $form_schema['form_attrs'] ) ) {
 				return;
 			}
-
-			global $wpdb;
 			//$wpdb->insert( $table_name, $data, $data_format );
 			//Insert query
 			$wpdb->insert(
@@ -70,12 +72,14 @@
 				array(
 					'user_id' => $this->current_user_id(),
 					'block_form_id' => sanitize_key( $form_id ),
+					'form_name' => $this->get_form_name( $form_schema ),
 					'form_schema' => $this->sanitize_serialize_data( $form_schema ) ,
 				),
 				array(
 					'%d',
 					'%s',
 					'%s',
+					'%s'
 				)
 			);
 
@@ -90,10 +94,11 @@
 		 */
 		protected function add_form_or_enries_meta( $meta = array() ) {
 			//return if form id or data not available
-			if ( $this->is_empty( $meta, array( 'form_id', 'data_type', 'metadata'  ) ) ) {
+			global $wpdb; 
+			if ( empty( $wpdb ) || $this->is_empty( $meta, array( 'form_id', 'data_type', 'metadata'  ) ) ) {
 				return;
 			}
-			global $wpdb;
+			
 			//$wpdb->insert( $table_name, $data, $data_format );
 			//Insert query
 			$wpdb->insert(
@@ -120,9 +125,11 @@
 		 * 
 		 */
 		protected function get_form_details( $block_form_id = '' ) {
-			if ( empty( $block_form_id ) ) {
+			global $wpdb; 
+			if ( empty( $wpdb ) || empty( $block_form_id ) ) {
 				return false;
 			}
+			
 			//form table 
 			$table_forms = $wpdb->prefix .''. $this->table_gutenaforms;
 			//get form details
@@ -160,48 +167,47 @@
 			}
 			$block_form_id = sanitize_key( $block_form_id );
 			$error = '';
-			//form table
+			//getting existing schema 
+			$fom_schema_row = $this->get_form_details( $block_form_id );
+			
 			$table_forms = $wpdb->prefix .''. $this->table_gutenaforms;
-			if ( empty( $gutena_form_ids ) || ! in_array( $block_form_id, $gutena_form_ids ) ) {
+			if (  empty( $fom_schema_row ) ) {
 				$this->save_new_form( $block_form_id, $form_schema );
-			} else {
+			} else if ( ! empty( $fom_schema_row->form_id ) ) {
 				/**
 				 * Update table
-				 * step1: Get existing form schema from database
-				 * step2: Backup of existing schema in gutenaforms_meta table
-				 * step3: Update gutenaforms table row
+				 * step1: Backup of existing schema in gutenaforms_meta table
+				 * step2: Update gutenaforms table row
 				 */
-				//step1:getting existing schema 
-				$fom_schema_row = $this->get_form_details( $block_form_id );
-				if ( ! empty( $fom_schema_row ) ) {
-					//step2:Creating backup of existing schema 
-					$form_schema_serialize = $this->sanitize_serialize_data( $form_schema );
-					//take backup if form schema is different
-					if ( $form_schema_serialize !==  $fom_schema_row->form_schema ) {
-						$this->add_form_or_enries_meta( array(
-							'form_id' => $fom_schema_row->form_id,
-							'user_id' => $fom_schema_row->user_id,
-							'data_type' => 'form_schema_backup',
-							'metadata' => $fom_schema_row->form_schema,
-						) );
-					}
-					
-					//step3: Update gutenaforms table row
-					//$wpdb->update( $table_name, $data, $where, $data_format, $where_format );
-					$wpdb->update(
-						$table_forms,
-						array(
-							'user_id' => $this->current_user_id(),
-							'form_schema' => $form_schema_serialize
-						),
-						array(
-							'form_id' => $form_schema['form_id']
-						),
-						array( '%d', '%s' ), 
-						array( '%d' )
-					);
+				//step1:Creating backup of existing schema 
+				$form_schema_serialize = $this->sanitize_serialize_data( $form_schema );
+				//take backup if form schema is different
+				if ( $form_schema_serialize !==  $fom_schema_row->form_schema ) {
+					$this->add_form_or_enries_meta( array(
+						'form_id' => $fom_schema_row->form_id,
+						'user_id' => $fom_schema_row->user_id,
+						'data_type' => 'form_schema_backup',
+						'metadata' => $fom_schema_row->form_schema,
+					) );
 				}
-			}
+				
+				//step2: Update gutenaforms table row
+				//$wpdb->update( $table_name, $data, $where, $data_format, $where_format );
+				$wpdb->update(
+					$table_forms,
+					array(
+						'user_id' => $this->current_user_id(),
+						'form_name' => $this->get_form_name( $form_schema ) ,
+						'form_schema' => $form_schema_serialize
+					),
+					array(
+						'form_id' => $fom_schema_row->form_id
+					),
+					array( '%d', '%s', '%s' ), 
+					array( '%d' )
+				);
+			} 
+			
 			return $form_schema;
 		}
 
@@ -213,21 +219,20 @@
 		 * 
 		 */
 		public function save_form_entry( $form_data, $block_form_id, $fieldSchema ) {
-			if ( empty( $form_data ) || ! is_array( $form_data ) || ! empty( $block_form_id ) || ! empty( $fieldSchema ) ) {
+			global $wpdb; 
+			if ( empty( $wpdb ) || empty( $form_data ) || ! is_array( $form_data ) || empty( $block_form_id ) || empty( $fieldSchema ) ) {
 				return false;
 			}
 			/**
 			 * Step1: check if schema existing
 			 * Step2: Create form entry in table_gutenaforms_entries
-			 * Step3: Create meta entry for admin editing in table_gutenaforms_meta
+			 * Step3: Step3: Create meta entry for submiited data for record in table_gutenaforms_meta
 			 * Step4: Create field name values entries for each form fields
 			 */
 			//step1: check if schema existing 
 			$fom_schema_row = $this->get_form_details( $block_form_id );
 			if ( ! empty( $fom_schema_row ) ) {
-				global $wpdb;
 				$fieldSchema['form_id'] = sanitize_key( $fom_schema_row->form_id );
-				$form_data = $this->sanitize_serialize_data( $form_data );
 				$fieldSchema['user_id'] = $this->current_user_id();
 				//Step2: Create form entry in table_gutenaforms_entries
 				$wpdb->insert(
@@ -235,7 +240,7 @@
 					array(
 						'form_id' => $fieldSchema['form_id'],
 						'user_id' => $fieldSchema['user_id'],
-						'entry_data' => $form_data,
+						'entry_data' => $this->sanitize_serialize_data( $form_data ),
 					),
 					array(
 						'%d',
@@ -251,13 +256,13 @@
 					return;
 				}
 				
-				//Step3: Create meta entry for admin editing in table_gutenaforms_meta
+				//Step3: Create meta entry for submiited data for record in table_gutenaforms_meta
 				$this->add_form_or_enries_meta( array(
 					'form_id' => $fieldSchema['form_id'],
 					'entry_id' => $fieldSchema['entry_id'],
 					'user_id' => $fieldSchema['user_id'],
-					'data_type' => 'admin_form_entry',
-					'metadata' => $form_data,
+					'data_type' => 'submit_entry_data',
+					'metadata' => $this->sanitize_serialize_data( $form_data ),
 				) );
 
 				//Step4: Create field name values entries for each form fields

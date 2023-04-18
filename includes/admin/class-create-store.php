@@ -111,6 +111,7 @@
                 form_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 user_id bigint(20) unsigned NOT NULL,
                 block_form_id varchar(256)  NOT NULL,
+                form_name varchar(256)  NOT NULL,
                 form_schema longtext  NOT NULL,
                 added_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 modified_time timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -129,12 +130,10 @@
          * form_id : form_id
          * user_id : user id who submitted this form if any
          * entry_data : form submit data with label
-         * added_time : time creation
-         * deleted : deleted or not
+         * modified_time : row modification time 
+         * entry_status : status: 0:deleted, 1:not deleted
          * 
          * 
-         * Notes:
-         * only deleted field can be updated 
          * 
          */
         private function create_table_gutenaforms_entries( $charset_collate ) {
@@ -145,8 +144,8 @@
                 form_id bigint(20) unsigned NOT NULL,
                 user_id bigint(20) unsigned NOT NULL DEFAULT '0',
                 entry_data longtext  NOT NULL,
-                added_time timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-                deleted tinyint(1) NOT NULL DEFAULT '0',
+                modified_time timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                entry_status int(11)  NOT NULL DEFAULT '1',
                 PRIMARY KEY  (entry_id),
                 KEY form_id (form_id)
                ) {$charset_collate};";
@@ -168,7 +167,7 @@
             $main_sql_create = "CREATE TABLE {$table_name} (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 entry_id bigint(20) unsigned NOT NULL,
-                field_name varchar(100)  NOT NULL,
+                field_name varchar(256)  NOT NULL,
                 field_value longtext  NOT NULL,
                 PRIMARY KEY  (id),
                 KEY entry_id (entry_id)
@@ -183,20 +182,13 @@
          * form_id : form_id
          * entry_id : entry_id, it will be 0 in case of form meta
          * user_id : user id who created or modified this data
-         * data_type : log, note, admin_form_entry, form_schema_backup, form_settings
-         * status_term_id, term_id
+         * data_type : log, note, submit_entry_data, form_schema_backup, form_settings
          * metadata : entry meta data
-         * updated_time : time creation or updation
-         * deleted : deleted or not
+         * modified_time : time creation or updation
          * 
          * Notes:
-         * admin_entry_data: form entry data edited by admin
-         * on delete entry, only row where data_type = admin_entry_data  will be updated for
-         * delete column
-         * tags : term_id
-         * status : status_term_id
+         * submit_entry_data: submitted form entry data. It will not be modified
          * note : admin notes
-         * admin_form_data: form data edited by admin
          * 
          * entry_id = 0 : means form related data
          * 
@@ -211,8 +203,7 @@
                 user_id bigint(20) unsigned NOT NULL,
                 data_type varchar(100)  NOT NULL,
                 metadata longtext  NOT NULL,
-                updated_time timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                deleted tinyint(1) NOT NULL DEFAULT '0',
+                modified_time timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY  (id),
                 KEY form_id (form_id)
                ) {$charset_collate};";    
