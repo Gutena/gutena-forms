@@ -42,7 +42,7 @@
 				return false;
 			}
 
-			foreach ( array( "activate-deactivate", "store", "create-store" ) as $key => $filename) {
+			foreach ( array( "activate-deactivate", "store", "create-store", "manage-store" ) as $key => $filename) {
 				if ( file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-' . $filename .'.php' ) ) {
 					require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-' . $filename .'.php';
 				}
@@ -86,6 +86,8 @@
 			if ( ! empty( $page_hook_suffix ) ) {
 				add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'forms_listing_styles' ) );
 				add_action( 'admin_print_scripts-' . $page_hook_suffix, array( $this, 'forms_listing_scripts' ) );
+				//Action after register_admin_menu
+				do_action( 'gutena_forms_register_admin_menu');
 		   }
 		}
 
@@ -118,14 +120,13 @@
 		}
 
 		public function forms_listing_page() {
-			if ( ! $this->is_gfadmin() ) {
-				return;
+			if ( ! $this->is_gfadmin() || ! class_exists( 'Gutena_Forms_Store' ) ) {
+				//return;
 			}
 			if ( empty( $_GET['formid'] ) || ! is_numeric( $_GET['formid'] ) ) {
 				if ( file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-list-table.php' ) ) {
 					require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-list-table.php';
 					if ( class_exists( 'Gutena_Forms_List_Table' ) ) {
-						add_thickbox();
 						$form_table = new Gutena_Forms_List_Table();
 						$form_table->prepare_items();
 						echo '<div class="gutena-forms-dashboard">';
@@ -150,11 +151,11 @@
 				require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-entries-table.php';
 				if ( class_exists( 'Gutena_Forms_Entries_Table' ) ) {
 					$form_id = sanitize_key( $_GET['formid'] );
-					add_thickbox();
-					$entries_table = new Gutena_Forms_Entries_Table();
+					$entries_table = new Gutena_Forms_Entries_Table( );
+					
 					$entries_table->prepare_items();
 					
-					echo '<div class="gutena-forms-dashboard">';
+					echo '<div class="gutena-forms-dashboard entries">';
 					echo $this->get_dashboard_header( $entries_table->get_form_list() );
 					echo '<div class="gf-body">';
 						
@@ -177,6 +178,16 @@
 
 		public function forms_listing_scripts() {
 			wp_enqueue_script( 'gutena-forms-dashboard', GUTENA_FORMS_PLUGIN_URL . 'assets/minify/js/entries-list.min.js', array(), GUTENA_FORMS_VERSION, true );
+			//Provide data for form submission script
+			wp_localize_script(
+				'gutena-forms-dashboard',
+				'gutenaFormsDashboard',
+				array(
+					'read_status_action'       => 'gutena_forms_entries_read',
+					'ajax_url'            => admin_url( 'admin-ajax.php' ),
+					'nonce'               => wp_create_nonce( 'gutena_Forms' ),
+				)
+			);
 		}
 
 		/**

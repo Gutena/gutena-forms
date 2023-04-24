@@ -27,6 +27,7 @@
 		}
 
 		public function __construct() {
+            parent::__construct();
 			//On activate tables.
 			add_action( 'gutena_forms_activation_begins', array( $this, 'create_tables' ) );
             //On activate tables.
@@ -41,7 +42,7 @@
             if ( empty( $wpdb ) || ! $this->include_db_upgrade_file() || empty( $gutena_form_ids ) || ! is_array( $gutena_form_ids ) ) {
                 return;
             }
-            $table_name = $wpdb->prefix .''. $this->table_gutenaforms; 
+            $table_name = $this->table_gutenaforms; 
             //check if table exist
             $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
             if ( $wpdb->get_var( $query ) === $table_name ) {
@@ -85,7 +86,7 @@
             $this->create_table_gutenaforms_meta( $charset_collate );
             
             //check if table created successfully
-            $table_name = $wpdb->prefix .''. $this->table_gutenaforms; 
+            $table_name =  $this->table_gutenaforms; 
             //check if table exist
             $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
             if ( $wpdb->get_var( $query ) !== $table_name ) {
@@ -106,7 +107,7 @@
          */
         private function create_table_gutenaforms( $charset_collate ) {
             global $wpdb;
-            $table_name = $wpdb->prefix .''. $this->table_gutenaforms; 
+            $table_name =  $this->table_gutenaforms; 
             $main_sql_create = "CREATE TABLE {$table_name} (
                 form_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 user_id bigint(20) unsigned NOT NULL,
@@ -131,20 +132,20 @@
          * user_id : user id who submitted this form if any
          * entry_data : form submit data with label
          * modified_time : row modification time 
-         * entry_status : status: 0:deleted, 1:not deleted
+         * entry_status : status: 0:deleted, 1:unread, 2: read
          * 
          * 
          * 
          */
         private function create_table_gutenaforms_entries( $charset_collate ) {
             global $wpdb;
-            $table_name = $wpdb->prefix .''. $this->table_gutenaforms_entries; 
+            $table_name = $this->table_gutenaforms_entries; 
             $main_sql_create = "CREATE TABLE {$table_name} (
                 entry_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 form_id bigint(20) unsigned NOT NULL,
                 user_id bigint(20) unsigned NOT NULL DEFAULT '0',
                 entry_data longtext  NOT NULL,
-                modified_time timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                modified_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 entry_status int(11)  NOT NULL DEFAULT '1',
                 PRIMARY KEY  (entry_id),
                 KEY form_id (form_id)
@@ -163,7 +164,7 @@
          */
         private function create_table_gutenaforms_field_value( $charset_collate ) {
             global $wpdb;
-            $table_name = $wpdb->prefix .''. $this->table_gutenaforms_field_value; 
+            $table_name =  $this->table_gutenaforms_field_value; 
             $main_sql_create = "CREATE TABLE {$table_name} (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 entry_id bigint(20) unsigned NOT NULL,
@@ -195,7 +196,7 @@
          */
         private function create_table_gutenaforms_meta( $charset_collate ) {
             global $wpdb;
-            $table_name = $wpdb->prefix .''. $this->table_gutenaforms_meta; 
+            $table_name = $this->table_gutenaforms_meta; 
             $main_sql_create = "CREATE TABLE {$table_name} (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 form_id bigint(20) unsigned NOT NULL,

@@ -131,6 +131,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 * Fixed select input height
 * Fixed label color render in editor
 * Updated editor FontSizePicker component
+* Updated block editor range control component
 * Added select parent form block control in toolbar for child field block 
 * Added admin dashboard
 * Added form submission view in admin dashboard

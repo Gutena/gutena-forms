@@ -35,6 +35,7 @@ import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
 } from '@wordpress/blocks';
+import RangeControlUnit from './components/RangeControlUnit';
 import './editor.scss';
 import variations from './variations';
 /** Hook that retrieves the given setting for the block instance in use.
@@ -866,127 +867,45 @@ export default function Edit( props ) {
 					</ToolsPanelItem>
 				</ToolsPanel>
 				<PanelBody title="Input settings" className="gutena-forms-panel" initialOpen={ false }>
-					<PanelRow>
-						<fieldset className="components-border-radius-control">
-							<legend>
-								{ __( 'Label gap', 'gutena-forms' ) }
-							</legend>
-							<div className="components-border-radius-control__wrapper">
-								<RangeControl
-									className="components-border-radius-control__range-control"
-									value={ getQtyOrunit(
-										inputLabelGap,
-										'Qty'
-									) }
-									withInputField={ false }
-									onChange={ ( qty ) => {
-										setAttributes( {
-											inputLabelGap:
-												qty +
-												getQtyOrunit( inputLabelGap ),
-										} );
-									} }
-									min={ 0 }
-									max={
-										MAX_SPACE_VALUES[
-											getQtyOrunit( inputLabelGap )
-										]
-									}
-									step={ 1 }
-								/>
-								<UnitControl
-									className="components-border-radius-control__unit-control"
-									units={ units }
-									value={ inputLabelGap }
-									onChange={ ( inputLabelGap ) => {
-										setAttributes( { inputLabelGap } );
-									} }
-								/>
-							</div>
-						</fieldset>
-					</PanelRow>
-					<PanelRow>
-						<fieldset className="components-border-radius-control">
-							<legend>
-								{ __( 'Border width', 'gutena-forms' ) }
-							</legend>
-							<div className="components-border-radius-control__wrapper">
-								<RangeControl
-									className="components-border-radius-control__range-control"
-									value={ getQtyOrunit(
-										inputBorderWidth,
-										'Qty'
-									) }
-									withInputField={ false }
-									onChange={ ( qty ) => {
-										setAttributes( {
-											inputBorderWidth:
-												qty +
-												getQtyOrunit(
-													inputBorderWidth
-												),
-										} );
-									} }
-									min={ 1 }
-									max={
-										MAX_SPACE_VALUES[
-											getQtyOrunit( inputBorderWidth )
-										]
-									}
-									step={ 1 }
-								/>
-								<UnitControl
-									className="components-border-radius-control__unit-control"
-									units={ units }
-									value={ inputBorderWidth }
-									onChange={ ( inputBorderWidth ) => {
-										setAttributes( { inputBorderWidth } );
-									} }
-								/>
-							</div>
-						</fieldset>
-					</PanelRow>
-					<PanelRow>
-						<fieldset className="components-border-radius-control">
-							<legend>
-								{ __( 'Border radius', 'gutena-forms' ) }
-							</legend>
-							<div className="components-border-radius-control__wrapper">
-								<RangeControl
-									className="components-border-radius-control__range-control"
-									value={ getQtyOrunit(
-										inputBorderRadius,
-										'Qty'
-									) }
-									withInputField={ false }
-									onChange={ ( qty ) =>
-										setAttributes( {
-											inputBorderRadius:
-												qty +
-												getQtyOrunit(
-													inputBorderRadius
-												),
-										} )
-									}
-									min={ 0 }
-									max={
-										MAX_SPACE_VALUES[
-											getQtyOrunit( inputBorderRadius )
-										]
-									}
-									step={ 1 }
-								/>
-								<UnitControl
-									className="components-border-radius-control__unit-control"
-									units={ units }
-									value={ inputBorderRadius }
-									onChange={ ( inputBorderRadius ) => {
-										setAttributes( { inputBorderRadius } );
-									} }
-								/>
-							</div>
-						</fieldset>
-					</PanelRow>
+					<RangeControlUnit
+                        rangeLabel={ __("Label gap", "gutena-kit")  }
+                        attrValue={ inputLabelGap }
+                        onChangeFunc={ ( inputLabelGap ) => setAttributes( { inputLabelGap } ) }
+                        rangeMin={ 0 }
+                        rangeMax={ {
+                            px: 200,
+                            em: 10,
+                            rem: 5,
+                        } }
+                        rangeStep={ 1 }
+                    />
+
+					<RangeControlUnit
+                        rangeLabel={ __("Border width", "gutena-kit")  }
+                        attrValue={ inputBorderWidth }
+                        onChangeFunc={ ( inputBorderWidth ) => setAttributes( { inputBorderWidth } ) }
+                        rangeMin={ 1 }
+                        rangeMax={ {
+                            px: 200,
+                            em: 10,
+                            rem: 5,
+                        } }
+                        rangeStep={ 1 }
+                    />
+
+					<RangeControlUnit
+                        rangeLabel={ __("Border radius", "gutena-kit")  }
+                        attrValue={ inputBorderRadius }
+                        onChangeFunc={ ( inputBorderRadius ) => setAttributes( { inputBorderRadius } ) }
+                        rangeMin={ 0 }
+                        rangeMax={ {
+                            px: 200,
+                            em: 10,
+                            rem: 5,
+                        } }
+                        rangeStep={ 1 }
+                    />
+				
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Bottom border only', 'gutena-forms' ) }

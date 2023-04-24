@@ -56,9 +56,7 @@
 			
 			//get total rows count
 			$total_rows = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT COUNT( form_id ) FROM {$this->table_gutenaforms} WHERE published = 1"
-				)
+				"SELECT COUNT( form_id ) FROM {$this->table_gutenaforms} WHERE published = 1"
 			);
 			//per page 
 			$per_page = absint( apply_filters( 'gutena_forms_tables_per_page', 20 ) ) ;
@@ -83,11 +81,14 @@
 			);
 
 			$this->items = $form_rows;
-
+			
+			//$this->_column_headers = array( $columns, $hidden, $sortable, $primary );
+			//Add $primary column name to make table responsive
 			$this->_column_headers = array( 
 				$this->get_columns(),
 				$this->get_hidden_columns(),
 				$this->get_sortable_columns(),
+				'form_name'
 			);
 		}
 
