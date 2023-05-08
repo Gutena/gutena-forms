@@ -24,6 +24,8 @@
 		//Number of entries received in a time interval 
 		protected $interval = 7;
 
+		protected $store;
+
 		public function __construct() {
 			parent::__construct(
 				array(
@@ -32,10 +34,6 @@
 					'ajax'     => false
 				)
 			);
-			global $wpdb; 
-			$this->table_gutenaforms = $wpdb->prefix .''. $this->table_gutenaforms;
-			$this->table_gutenaforms_entries = $wpdb->prefix .''. $this->table_gutenaforms_entries;
-
 			if ( ! empty( $_GET['interval'] ) && is_numeric( $_GET['interval'] ) ) {
 				$this->interval = sanitize_text_field( wp_unslash( $_GET['interval'] ) ) ;
 			}
@@ -56,7 +54,7 @@
 			
 			//get total rows count
 			$total_rows = $wpdb->get_var(
-				"SELECT COUNT( form_id ) FROM {$this->table_gutenaforms} WHERE published = 1"
+				"SELECT COUNT( form_id ) FROM {$this->store->table_gutenaforms} WHERE published = 1"
 			);
 			//per page 
 			$per_page = absint( apply_filters( 'gutena_forms_tables_per_page', 20 ) ) ;
@@ -66,7 +64,7 @@
 			//get form details
 			$form_rows = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT f.*, COUNT(e.entry_id) AS total_entries, (SELECT COUNT(en.entry_id) FROM {$this->table_gutenaforms_entries} en WHERE en.form_id = f.form_id AND en.entry_status > 0 AND en.modified_time >= DATE(NOW() - INTERVAL %d DAY) ) AS entries_in_interval FROM {$this->table_gutenaforms} f LEFT JOIN {$this->table_gutenaforms_entries} e ON f.form_id = e.form_id AND f.published = 1 AND e.entry_status > 0 GROUP BY f.form_id ORDER BY f.".$orderby." {$order} LIMIT %d OFFSET %d",
+					"SELECT f.*, COUNT(e.entry_id) AS total_entries, (SELECT COUNT(en.entry_id) FROM {$this->store->table_gutenaforms_entries} en WHERE en.form_id = f.form_id AND en.trash = 0 AND en.modified_time >= DATE(NOW() - INTERVAL %d DAY) ) AS entries_in_interval FROM {$this->store->table_gutenaforms} f LEFT JOIN {$this->store->table_gutenaforms_entries} e ON f.form_id = e.form_id AND f.published = 1 AND e.trash = 0 GROUP BY f.form_id ORDER BY f.".$orderby." {$order} LIMIT %d OFFSET %d",
 					$this->interval,
 					$per_page,
 					( $current_page - 1 ) * $per_page
@@ -166,7 +164,36 @@
 			return $column_value;
 		}
 
-		
+		public function render_list_table( $store = '' ) {
+			if ( empty( $store ) ) {
+				return;
+			}
+			$this->store = $store;
+			echo '<div class="gutena-forms-dashboard">';
+			echo wp_kses_post(  $this->store->get_dashboard_header() );
+			//filter check if custom page loaded
+			if ( true === apply_filters( 'gutena_forms_entries_custom_page', false ) ) {
+				do_action( 'gutena_forms_entries_load_custom_page' );
+				echo '</div>';
+				return;
+			}
+
+			$this->prepare_items();
+			echo '<div class="gf-body">';
+			
+			echo '<div class="gf-list-flex-space-bw">
+			<div> <h3 class="gf-heading">'.__( 'Entries by Forms', 'gutena-forms' ).'</h3> </div>
+			<div class="time-interval-dropdown">
+			<select class="select-change-url" url="' . esc_url( admin_url( 'admin.php?page=gutena-forms&interval=' ) ) . '" >
+				<option value="7"  >'. __( 'Last 7 Days', 'gutena-forms' ).'</option>
+				<option value="30" '.( ( ! empty( $_GET['interval'] ) && '30' === $_GET['interval'] ) ? 'selected':'' ).' >'. __( 'Last 30 Days', 'gutena-forms' ).'</option>
+			</select>
+			</div>
+			</div>';
+			$this->display();
+			echo '</div>';
+			echo '</div>';
+		}
 		
 	}
 }

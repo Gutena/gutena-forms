@@ -34,15 +34,16 @@ document.addEventListener("DOMContentLoaded", function(){
 	 */
 	const read_entries_status_update = () => {
 		let viewEl = document.querySelectorAll(
-			'.gutena-forms-dashboard .quick-view-form-entry-1'
+			'.gutena-forms-dashboard .quick-view-form-entry-unread'
 		);
 		if ( 0 < viewEl.length &&  'undefined' !== typeof gutenaFormsDashboard && null !== gutenaFormsDashboard  ) {
 			for ( let i = 0; i < viewEl.length; i++ ) {
 				viewEl[ i ].addEventListener( 'click', function () {
                     let entry_id = this.getAttribute('entryid');
-					let entry_status = this.getAttribute('status');
-					console.log("entry_status "+entry_status+" entry_id"+entry_id);
-                    if ( 'undefined' !== typeof entry_status && '1' === entry_status && 'undefined' !== typeof entry_id && null !== entry_id && 0 < entry_id ) { 
+					let table_row = this.getParents( this, 'tr' );
+					let entry_status = false === table_row ? '' : table_row.getAttribute('currentstatus');
+					//console.log("entry_status "+entry_status+" entry_id"+entry_id);
+                    if ( 'undefined' !== typeof entry_status && 'unread' === entry_status && 'undefined' !== typeof entry_id && null !== entry_id && 0 < entry_id ) { 
 						let el = this;
                         fetch( gutenaFormsDashboard.ajax_url, {
 							method: 'POST',
@@ -60,14 +61,15 @@ document.addEventListener("DOMContentLoaded", function(){
 						} )
 						.then( ( response ) => response.json() )
 						.then( ( response ) => {
-							let tableRowEl = el.parentNode.parentNode;
-							tableRowEl.classList.remove( 'unread' );
-							tableRowEl.classList.add( 'read' );
-							el.setAttribute('status',2);
+							if ( false !== table_row ) {	
+								table_row.classList.remove( 'unread' );
+								table_row.classList.add( 'read' );
+								table_row.setAttribute('currentstatus', 'read');
+							}
 						} ).catch((error) => {
 							console.error('Error:', error);
 							return false;
-						});;
+						});
                     }
 				} );
 			}
@@ -102,8 +104,9 @@ document.addEventListener("DOMContentLoaded", function(){
 		let modalBtn = document.querySelectorAll(
 			'.gutena-forms-dashboard .gutena-forms-modal-btn'
 		);
+		let i = 0;
 		if ( 0 < modalBtn.length ) {
-			for ( let i = 0; i < modalBtn.length; i++ ) {
+			for ( i = 0; i < modalBtn.length; i++ ) {
 				modalBtn[ i ].addEventListener( 'click', function (e) {
 					e.preventDefault();
                     let modalEl = this.parentNode.querySelector('.gutena-forms-modal');
@@ -118,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			'.gutena-forms-modal .gf-close-btn'
 		);
 		if ( 0 < closeBtn.length ) {
-			for ( let i = 0; i < closeBtn.length; i++ ) {
+			for ( i = 0; i < closeBtn.length; i++ ) {
 				closeBtn[ i ].addEventListener( 'click', function (e) {
 					e.preventDefault();
 					//get field group 
@@ -139,11 +142,29 @@ document.addEventListener("DOMContentLoaded", function(){
 		);
 		if ( 0 < modalEls.length ) {
 			window.onclick = function(event) {
-				for ( let i = 0; i < modalEls.length; i++ ) {
+				for ( i = 0; i < modalEls.length; i++ ) {
 					if (event.target == modalEls[i]) {
 						modalEls[i].style.display = "none";
 					}
 				}
+			}
+		}
+
+		//Action button
+		let modalActionBtn = document.querySelectorAll(
+			'.gutena-forms-modal .gf-action-btn'
+		);
+		if ( 0 < modalActionBtn.length ) {
+			for ( i = 0; i < modalActionBtn.length; i++ ) {
+				modalActionBtn[ i ].addEventListener( 'click', function () {
+					//action drop down 
+					let dropdownEl = this.nextElementSibling;
+					if (dropdownEl.style.display === "none") {
+						dropdownEl.style.display = "block";
+					} else {
+						dropdownEl.style.display = "none";
+					}
+				} );
 			}
 		}
 	};

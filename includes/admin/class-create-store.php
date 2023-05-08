@@ -130,10 +130,12 @@
          * entry_id : primary id
          * form_id : form_id
          * user_id : user id who submitted this form if any
+         * modified_by : user id (admin ) who edited this form
          * entry_data : form submit data with label
-         * modified_time : row modification time 
-         * entry_status : status: 0:deleted, 1:unread, 2: read
-         * 
+         * added_time : row added time 
+         * modified_time : entry_data modification time 
+         * entry_status : unread, read
+         * trash: 1: true, 0: false
          * 
          * 
          */
@@ -143,10 +145,14 @@
             $main_sql_create = "CREATE TABLE {$table_name} (
                 entry_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 form_id bigint(20) unsigned NOT NULL,
-                user_id bigint(20) unsigned NOT NULL DEFAULT '0',
+                user_id bigint(20) unsigned NOT NULL,
+                modified_by bigint(20) unsigned NOT NULL,
                 entry_data longtext  NOT NULL,
+                ip_address varchar(128) DEFAULT NULL,
+                added_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 modified_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                entry_status int(11)  NOT NULL DEFAULT '1',
+                entry_status varchar(100)  NOT NULL DEFAULT 'unread',
+                trash tinyint(1) NOT NULL DEFAULT '0',
                 PRIMARY KEY  (entry_id),
                 KEY form_id (form_id)
                ) {$charset_collate};";

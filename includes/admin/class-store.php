@@ -15,16 +15,16 @@
 	class Gutena_Forms_Store extends Gutena_Forms_Admin {
 
 		//Table to store forms
-        protected $table_gutenaforms = 'gutenaforms';
+        public $table_gutenaforms = 'gutenaforms';
 
         //Table to store form enteries
-        protected $table_gutenaforms_entries = 'gutenaforms_entries';
+        public $table_gutenaforms_entries = 'gutenaforms_entries';
 
         //Table to store form field value
-        protected $table_gutenaforms_field_value = 'gutenaforms_field_value';
+        public $table_gutenaforms_field_value = 'gutenaforms_field_value';
 
         //Table to store data related to forms and form enteries table
-        protected $table_gutenaforms_meta = 'gutenaforms_meta';
+        public $table_gutenaforms_meta = 'gutenaforms_meta';
 
 		public function __construct() {	
 			global $wpdb; 
@@ -104,6 +104,23 @@
 			);
 
 			return $wpdb->insert_id;
+		}
+
+		/**
+		 * Admin dashboard header
+		 * @param array $form_list list of form name with respective id
+		 * 
+		 * @return HTML 
+		 */
+		public function get_dashboard_header( ) {
+			//logo title
+			return apply_filters( 'gutena_forms_dashboard_header', 
+				'<div class="gf-header">
+				<div class="gf-logo-title">
+				<img src="'.GUTENA_FORMS_PLUGIN_URL . 'assets/img/logo.png'.'" />
+				<h2 class="gf-heading" >'.__( 'Gutena Forms', 'gutena-forms' ).' </h2>
+				</div></div>' 
+			);
 		}
 	}
  }

@@ -45,8 +45,7 @@
             if ( ! empty( $wpdb ) && ! empty( $_POST['form_entry_id'] ) && is_numeric( $_POST['form_entry_id'] ) && function_exists( 'absint' ) ) {
 				$wpdb->query(
 					$wpdb->prepare(
-						"UPDATE {$this->table_gutenaforms_entries} SET entry_status = %d WHERE entry_id = %d",
-						2,
+						"UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'read' WHERE entry_id = %d",
 						absint( wp_unslash( $_POST['form_entry_id'] ) )
 					)
 				);
@@ -178,15 +177,18 @@
 				
 				$fieldSchema['form_id'] = sanitize_key( $fom_schema_row->form_id );
 				$fieldSchema['user_id'] = $this->current_user_id();
+				
 				//Step2: Create form entry in table_gutenaforms_entries
 				$wpdb->insert(
 					$this->table_gutenaforms_entries,
 					array(
 						'form_id' => $fieldSchema['form_id'],
 						'user_id' => $fieldSchema['user_id'],
+						'modified_by' => $fieldSchema['user_id'],
 						'entry_data' => $this->sanitize_serialize_data( $form_data ),
 					),
 					array(
+						'%d',
 						'%d',
 						'%d',
 						'%s'
