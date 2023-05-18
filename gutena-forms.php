@@ -519,7 +519,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						esc_url( 'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. esc_attr( $grecaptcha['site_key'] )  ) ), 
 						array(), 
 						GUTENA_FORMS_VERSION, 
-						true 
+						false 
 					);
 				}
 
@@ -634,8 +634,28 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				foreach ( (array) $array as $key => $value ) {
 					if ( is_array( $value ) ) {
 						$array[ $key ] = $this->sanitize_array( $value );
-					} else if ( 'block_markup' === $key ) {
-						$array[ $key ] = wp_kses_post( $value );
+					} else if ( 'block_markup' === $key && function_exists( 'wp_kses' ) ) {
+						
+						$array[ $key ] = wp_kses(
+							$value,
+							array_merge(
+								wp_kses_allowed_html( 'post' ),
+								array(
+									'form' => array(
+										'method'=> 1,
+										'class'	=> 1,
+										'style'	=> 1,
+									),
+									'input' => array(
+										'type'=> 1,
+										'name'	=> 1,
+										'class'	=> 1,
+										'value'	=> 1,
+									),
+								)
+							)
+						);
+						//$array[ $key ] = wp_kses_post( $value );
 					} else {
 						$array[ $key ] = true === $textarea_sanitize ? sanitize_textarea_field( $value )  : sanitize_text_field( $value );
 					}

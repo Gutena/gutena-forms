@@ -54,7 +54,7 @@
 			
 			//get total rows count
 			$total_rows = $wpdb->get_var(
-				"SELECT COUNT( form_id ) FROM {$this->store->table_gutenaforms} WHERE published = 1"
+				"SELECT COUNT( DISTINCT form_id ) FROM {$this->store->table_gutenaforms_entries} WHERE trash = 0"
 			);
 			//per page 
 			$per_page = absint( apply_filters( 'gutena_forms_tables_per_page', 20 ) ) ;
@@ -64,7 +64,7 @@
 			//get form details
 			$form_rows = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT f.*, COUNT(e.entry_id) AS total_entries, (SELECT COUNT(en.entry_id) FROM {$this->store->table_gutenaforms_entries} en WHERE en.form_id = f.form_id AND en.trash = 0 AND en.modified_time >= DATE(NOW() - INTERVAL %d DAY) ) AS entries_in_interval FROM {$this->store->table_gutenaforms} f LEFT JOIN {$this->store->table_gutenaforms_entries} e ON f.form_id = e.form_id AND f.published = 1 AND e.trash = 0 GROUP BY f.form_id ORDER BY f.".$orderby." {$order} LIMIT %d OFFSET %d",
+					"SELECT f.*, COUNT(e.entry_id) AS total_entries, (SELECT COUNT(en.entry_id) FROM {$this->store->table_gutenaforms_entries} en WHERE en.form_id = f.form_id AND en.trash = 0 AND en.modified_time >= DATE(NOW() - INTERVAL %d DAY) ) AS entries_in_interval FROM {$this->store->table_gutenaforms} f LEFT JOIN {$this->store->table_gutenaforms_entries} e ON f.form_id = e.form_id GROUP BY f.form_id HAVING f.form_id IN ( SELECT DISTINCT form_id FROM {$this->store->table_gutenaforms_entries} WHERE trash = 0 ) AND f.published = 1 ORDER BY f.".$orderby." {$order} LIMIT %d OFFSET %d",
 					$this->interval,
 					$per_page,
 					( $current_page - 1 ) * $per_page

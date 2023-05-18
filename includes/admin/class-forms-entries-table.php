@@ -17,6 +17,9 @@
 
 		protected $form_id = 0;
 
+		protected $total_rows = 0;
+		protected $total_unread_rows = 0;
+
 		protected $entry_columns = array();
 
 		protected $store;
@@ -43,33 +46,56 @@
 			if ( empty( $this->form_id ) ) {
 				return;
 			}
+			global $wpdb;
 			
 			$this->process_bulk_action();
+		
+			$this->total_unread_rows = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT( entry_id ) FROM {$this->store->table_gutenaforms_entries} WHERE  form_id = %d AND trash = 0 AND entry_status = %s",
+					$this->form_id,
+					'unread'
+				)
+			);
+
+			//get total rows count
+			$this->total_rows = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT( entry_id ) FROM {$this->store->table_gutenaforms_entries} WHERE  form_id = %d AND trash = 0",
+					$this->form_id
+				)
+			);
+
 			$table_data = apply_filters( 'gutena_forms_entries_table_list_prepare', array(
-				'current_page' => $this->get_pagenum()
+				'current_page' => $this->get_pagenum(),
+				'total_unread_rows' => $this->total_unread_rows,
 			) );
+			
 			if ( ! isset( $table_data['total_rows'] ) && ! isset( $table_data['form_rows'] ) ) {
-				global $wpdb;
-				$table_data['orderby'] = ( empty( $_GET['orderby'] ) || ! in_array( $_GET['orderby'], array( 'entry_id', 'modified_time' ) ) )? 'entry_id' : sanitize_text_field( $_GET['orderby'] )  ;
+				
+				$table_data['orderby'] = ( empty( $_GET['orderby'] ) || ! in_array( $_GET['orderby'], array( 'entry_id', 'added_time' ) ) )? 'entry_id' : sanitize_text_field( $_GET['orderby'] )  ;
 				$table_data['order'] = ( empty( $_GET['order'] ) || 'desc' === $_GET['order'] ) ? 'DESC' : 'ASC' ;
+				
 				//get total rows count
-				$table_data['total_rows'] = $wpdb->get_var(
-					$wpdb->prepare(
-						"SELECT COUNT( entry_id ) FROM {$this->store->table_gutenaforms_entries} WHERE  form_id = %d AND trash = 0",
-						$this->form_id
-					)
-				);
+				$table_data['total_rows'] = $this->total_rows;
 
 				//per page 
 				$table_data['per_page'] = absint( apply_filters( 'gutena_forms_tables_per_page', 20 ) ) ;
+				
 				//current page
 				$table_data['current_page'] = $this->get_pagenum();
-				$query_0 = "SELECT * FROM {$this->store->table_gutenaforms_entries} WHERE form_id = %d AND trash = 0 ";
-				$query_1 = " ORDER BY ".$table_data['orderby']." {$table_data['order']} LIMIT %d OFFSET %d"; 
+				$query = "SELECT * FROM {$this->store->table_gutenaforms_entries} WHERE form_id = %d AND trash = 0 ";
+
+				//unread entries
+				if ( ! empty( $_GET['entry_view'] ) && 'unread' === sanitize_key( wp_unslash( $_GET['entry_view'] ) ) ) {
+					$table_data['total_rows'] = $this->total_unread_rows;
+					$query .= " AND entry_status = 'unread'";
+				}
+				$query .= " ORDER BY ".$table_data['orderby']." {$table_data['order']} LIMIT %d OFFSET %d"; 
 				//get form details
 				$table_data['form_rows'] = $wpdb->get_results(
 					$wpdb->prepare(
-						$query_0." ".$query_1,
+						$query,
 						$this->form_id,
 						$table_data['per_page'],
 						( $table_data['current_page'] - 1 ) * $table_data['per_page']
@@ -141,9 +167,44 @@
 		public function get_columns() {
 			return apply_filters( 'gutena_forms_entries_table_list_get_columns', array(
 				"entry_id" => __( 'ID', 'gutena-forms' ),
-				"modified_time" => __( 'Date', 'gutena-forms' ),
+				"added_time" => __( 'Date', 'gutena-forms' ),
 				"entry_action" => __( 'Action', 'gutena-forms' ),
 			) );
+		}
+
+		/**
+		 * Gets the list of views available on this table.
+		 *
+		 * The format is an associative array:
+		 * - `'id' => 'link'`
+		 *
+		 *
+		 * @return array
+		 */
+		protected function get_views() { 
+			$entry_view = empty( $_GET['entry_view'] ) ? 'all': sanitize_key( wp_unslash( $_GET['entry_view'] ) );
+
+			$views = apply_filters( 
+				'gutena_forms_entries_get_views', 
+				array(
+					'all' => array(
+						'label' => __( 'All', 'gutena-forms' ),
+						'total' => $this->total_rows
+					),
+					'unread' => array(
+						'label' => __( 'Unread', 'gutena-forms' ),
+						'total' => $this->total_unread_rows
+					),
+				) 
+			);
+
+			$view_links = array();
+			
+			foreach ( $views as $view_id => $view ) {
+				$view_links[ $view_id ] = '<a href="'. esc_url( admin_url( 'admin.php?page=gutena-forms&entry_view='. esc_attr( $view_id ) .'&formid='.esc_attr( $this->form_id ) )).'" class="'.( ( $view_id === $entry_view ) ? 'current':'' ).'" >'. esc_html( $view['label'] ) .' <span class="count">('. esc_html( $view['total'] ) .')</span></a>';
+			}
+
+			return $view_links;
 		}
 
 		/**
@@ -172,7 +233,7 @@
 		public function get_sortable_columns() {
 			return array( 
 				'entry_id' => array( 'entry_id' ),
-				'modified_time' => array( 'date' )
+				'added_time' => array( 'date' )
 			);
 		}
 
@@ -202,13 +263,19 @@
 				case 'entry_id':
 					$column_value = $form_entry->entry_id;
 				break;
-				case 'modified_time':
-					$column_value = date_format( date_create( $form_entry->modified_time ),"M d, Y");
-					//.' '.__( 'at', 'gutena-forms' ).' '.date_format( date_create( $form_entry->modified_time ),"g:i a");
+				case 'added_time':
+					$column_value = date_format( date_create( $form_entry->added_time ),"M d, Y");
+					//.' '.__( 'at', 'gutena-forms' ).' '.date_format( date_create( $form_entry->added_time ),"g:i a");
 				break;
 				case 'entry_action':
+					//add new actions
 					$add_action_link = apply_filters( 'gutena_forms_entries_table_list_add_action_link', '', $form_entry );
-					$column_value = $this->form_entry_view( $form_entry ).' | '. wp_kses_post( $add_action_link ) .' | <a href="'. esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.esc_attr( $form_entry->form_id ).'&action=trash&gfnonce='.wp_create_nonce( 'gutena_Forms' ).'&form_entry_id='.$form_entry->entry_id ) ) .'" class="gf-delete" >'.__( 'Trash', 'gutena-forms' ).'</a>';
+					//Quick view entries
+					$column_value = $this->form_entry_view( $form_entry ).''. wp_kses_post( $add_action_link );
+					//delete entries
+					if ( apply_filters( 'gutena_forms_check_user_access', true, 'delete_entries' ) ) {
+						$column_value .= ' | <a href="'. esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.esc_attr( $form_entry->form_id ).'&action=trash&gfnonce='.wp_create_nonce( 'gutena_Forms' ).'&form_entry_id='.$form_entry->entry_id ) ) .'" class="gf-delete" >'.__( 'Trash', 'gutena-forms' ).'</a>';
+					}
 				break;
 				default:
 					if ( ! empty( $form_entry->entry_data[$column_name] ) &&  ! empty( $form_entry->entry_data[$column_name]['value'] ) ) {
@@ -320,35 +387,40 @@
 			}
 		}
 
+		/**
+		 * Render page with this table
+		 * 
+		 * @param class $store
+		 */
 		public function render_list_table( $store = '' ) {
 			if ( empty( $store ) && function_exists('wp_kses_post') ) {
 				return;
 			}
 			$this->store = $store;
-			//header
-			echo '<div class="gutena-forms-dashboard entries">';
-			echo wp_kses_post(  $this->store->get_dashboard_header() );
-			//body
-			
 			$this->prepare_items();
 			$form_list = $this->get_form_list();
 			//form list
-			$header = '';
+			$dropdown = '';
 			if ( ! empty( $form_list ) ) {
-				$header .= '<div class="gf-sub-header"> 
-				<div class="gf-select-form-wrapper"> 
-				<label>'.__( 'Select Form', 'gutena-forms' ).'</label>
-				<select  class="gf-heading select-change-url" url="' . esc_url( admin_url( 'admin.php?page=gutena-forms&formid=' ) ) . '"  >';
+				$dropdown .= '<select  class="gf-heading select-change-url" url="' . esc_url( admin_url( 'admin.php?page=gutena-forms&formid=' ) ) . '"  >';
 				foreach ($form_list as $form) {
-					$header .='<option value="' . esc_attr( $form->form_id ) . '" '.( ( ! empty( $_GET['formid'] ) && $form->form_id === $_GET['formid'] ) ? 'selected':''  ).' >'.esc_attr( $form->form_name ).'</option>';
+					$dropdown .='<option value="' . esc_attr( $form->form_id ) . '" '.( ( ! empty( $_GET['formid'] ) && $form->form_id === $_GET['formid'] ) ? 'selected':''  ).' >'.esc_attr( $form->form_name ).'</option>';
 				}
-				$header .= '</select></div></div>';
+				$dropdown .= '</select>';
 			}
-			echo $header;
+			//header
+			echo '<div class="gutena-forms-dashboard entries">';
+			echo  $this->store->get_dashboard_header( $dropdown );
+			//body
 			echo '<div class="gf-body">';
+			
 			echo "<form method='post' name='search_form' action='" . esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.$this->form_id ) ) . "'>";
 
-			echo apply_filters( 'gutena_forms_entries_table_list_render_filter', "<h3>Gutena Form Entries</h3>" );
+			echo '<div class="entries-filter-wrapper" >';
+			$this->views();
+			do_action( 'gutena_forms_dashboard_entries_table_topbar', array() );
+			echo '</div>';
+
 			echo '<input type="hidden" name="gutena_forms_formid" value="'.esc_attr( $this->form_id ).'" />
 			<input type="hidden" name="gfnonce" value="'.wp_create_nonce( 'gutena_Forms' ).'" />';
 			$this->display();
@@ -357,5 +429,14 @@
 			echo '</div>';
 		}
 		
+		/**
+		 * Extra controls to be displayed between bulk actions and pagination.
+		 *
+		 *
+		 * @param string $which postion of navigation
+		 */
+		protected function extra_tablenav( $which ) {
+			do_action( 'gutena_forms_dashboard_extra_tablenav', $which );
+		}
 	}
 }

@@ -112,15 +112,20 @@
 		 * 
 		 * @return HTML 
 		 */
-		public function get_dashboard_header( ) {
+		public function get_dashboard_header( $dropdown = '' ) {
+			if ( ! function_exists( 'wp_kses_post' ) ) {
+				return false;
+			}
 			//logo title
-			return apply_filters( 'gutena_forms_dashboard_header', 
+			return 
 				'<div class="gf-header">
 				<div class="gf-logo-title">
 				<img src="'.GUTENA_FORMS_PLUGIN_URL . 'assets/img/logo.png'.'" />
-				<h2 class="gf-heading" >'.__( 'Gutena Forms', 'gutena-forms' ).' </h2>
-				</div></div>' 
-			);
+				<h2 class="gf-heading" >'.__( 'Forms', 'gutena-forms' ).' </h2>
+				' . $dropdown . '
+				</div>
+				'.wp_kses_post( apply_filters( 'gutena_forms_dashboard_header_navigation','') ).'
+				</div>';
 		}
 	}
  }

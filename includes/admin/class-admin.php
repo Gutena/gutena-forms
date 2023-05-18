@@ -83,7 +83,7 @@
 			$page_hook_suffix = add_menu_page(
 				__( 'Gutena Forms', 'gutena-forms' ),
 				__( 'GutenaForms', 'gutena-forms' ),
-				'manage_options',
+				'delete_posts',
 				'gutena-forms',
 				array( $this, 'forms_listing_page' ),
 				'dashicons-tagcloud',
@@ -100,7 +100,8 @@
 		
 
 		public function forms_listing_page() {
-			if ( ! $this->is_gfadmin() || ! class_exists( 'Gutena_Forms_Store' ) ) {
+			if ( ( ! has_filter( 'gutena_forms_check_user_access' ) && ! $this->is_gfadmin() )  || ! class_exists( 'Gutena_Forms_Store' ) || ! apply_filters( 'gutena_forms_check_user_access', true, 'view_entries' ) ) {
+				esc_html_e( 'Access forbidden! Please contact admin to view this page.', 'gutena-forms' );
 				return;
 			}
 			$form_table = '';
