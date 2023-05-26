@@ -42,6 +42,10 @@ export default function edit( {
 						placeholder: attributes.placeholder,
 						textAreaRows: attributes.textAreaRows,
 						isRequired: attributes.isRequired,
+						lock: {
+							remove: true,
+							move: true,
+						}
 					},
 				],
 			],
@@ -50,6 +54,10 @@ export default function edit( {
 			'core/paragraph',
 			{
 				className: 'gutena-forms-field-error-msg',
+				lock: {
+					remove: true,
+					move: true,
+				}
 			},
 		],
 	];

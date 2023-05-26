@@ -135,6 +135,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 * Added select parent form block control in toolbar for child field block 
 * Added admin dashboard
 * Added form submission view in admin dashboard
+* Lock form field and error message block inside field group template
 
 = 1.0.9 | 10th February 2023 =
 * Made gutena-forms parent from ancestor in all child blocks
