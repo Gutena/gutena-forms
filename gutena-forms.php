@@ -734,7 +734,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					continue;
 				}
 
-				$field_value = apply_filters( 'gutena_forms_field_value_for_email', $field_value, $fieldSchema[ $name_attr ] );
+				$field_value = apply_filters( 'gutena_forms_field_value_for_email', $field_value, $fieldSchema[ $name_attr ], $formID );
 
 				if ( is_array( $field_value ) ) {
 					$field_value =	$this->sanitize_array( wp_unslash( $field_value ), true );
@@ -760,7 +760,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				$form_submit_data['raw_data'][ $name_attr ] = array(
 					'label' => $field_name,
 					'value'	=> $field_value,
-					'raw_value' => wp_unslash( $_POST[ $name_attr ] )
+					'fieldType' => $fieldSchema[ $name_attr ][ 'fieldType' ],
+					'raw_value' => apply_filters( 
+						'gutena_forms_field_raw_value', 
+						wp_unslash( $_POST[ $name_attr ] ), 
+						array(
+							'field_name' => $field_name,
+							'field_value' => $field_value,
+							'fieldSchema' => $fieldSchema[ $name_attr ],
+							'formID' => $formID,
+						) 
+					)
 				);
 
 				$field_email_html = '<p><strong>' . esc_html( $field_name ) . '</strong> <br />' . esc_html( $field_value ) . ' </p>';

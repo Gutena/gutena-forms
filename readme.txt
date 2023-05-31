@@ -121,6 +121,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 == Changelog ==
 
 = 1.1.0 | Beta =
+* Added gutena_forms_view_field_value filter to filter view of field value
 * Added gutena_forms_render_form filter to filter form render content
 * Added gutena_forms_render_field filter to filter field render content
 * Added gutena_forms_field_value_for_email to filter value for email notification to admin

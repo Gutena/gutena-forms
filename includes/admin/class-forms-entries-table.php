@@ -279,7 +279,11 @@
 				break;
 				default:
 					if ( ! empty( $form_entry->entry_data[$column_name] ) &&  ! empty( $form_entry->entry_data[$column_name]['value'] ) ) {
-						$column_value = substr( $form_entry->entry_data[$column_name]['value'] , 0, 20 );
+						$column_value = wp_kses_post( apply_filters( 
+							'gutena_forms_view_field_value', 
+							substr( $form_entry->entry_data[$column_name]['value'] , 0, 20 ),
+							$form_entry->entry_data[$column_name]
+						) );
 					}
 				break;
 			}
@@ -312,11 +316,15 @@
 			
 			<div class="gf-body" >
 			';
-			foreach ($form_entry->entry_data as $name_attr => $name_value) {
+			foreach ($form_entry->entry_data as $name_attr => $fieldData) {
 				$html .='<div class="gf-row" >
-				<div class="gf-field-label">'.esc_html( $name_value['label'] ).'</div>
+				<div class="gf-field-label">'.esc_html( $fieldData['label'] ).'</div>
 				<div  >:</div>
-				<div class="gf-field-value">'.esc_html( $name_value['value'] ).'</div>
+				<div class="gf-field-value">'.wp_kses_post( apply_filters( 
+					'gutena_forms_view_field_value', 
+					$fieldData['value'],
+					$fieldData
+				) ).'</div>
 				</div>';
 			}
 			$html .= '</div><div class="gf-footer" ></div></div></div><a modalid="' . esc_attr( $class_id ) . '" href="#" class="gutena-forms-modal-btn quick-view-form-entry-'.esc_attr( $form_entry->entry_status ).'" entryid="'.esc_attr( $form_entry->entry_id ).'" > '.__( 'Quick View', 'gutena-forms' ).'</a>';
