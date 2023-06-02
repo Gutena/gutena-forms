@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			for ( let i = 0; i < viewEl.length; i++ ) {
 				viewEl[ i ].addEventListener( 'click', function () {
                     let entry_id = this.getAttribute('entryid');
-					let table_row = this.getParents( this, 'tr' );
+					let table_row = getParents( this, 'tr' );
 					let entry_status = false === table_row ? '' : table_row.getAttribute('currentstatus');
 					//console.log("entry_status "+entry_status+" entry_id"+entry_id);
                     if ( 'undefined' !== typeof entry_status && 'unread' === entry_status && 'undefined' !== typeof entry_id && null !== entry_id && 0 < entry_id ) { 

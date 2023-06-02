@@ -390,7 +390,9 @@
 					
 				}
 				
-				wp_redirect( esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.$this->form_id ) ) );
+				if ( function_exists( 'wp_safe_redirect' ) && wp_safe_redirect( esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.$this->form_id ) ) ) ){
+					exit;
+				}
 			}
 		}
 
