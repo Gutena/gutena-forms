@@ -760,7 +760,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				$form_submit_data['raw_data'][ $name_attr ] = array(
 					'label' => $field_name,
 					'value'	=> $field_value,
-					'fieldType' => $fieldSchema[ $name_attr ][ 'fieldType' ],
+					'fieldType' =>  empty( $fieldSchema[ $name_attr ][ 'fieldType' ] ) ? 'text': $fieldSchema[ $name_attr ][ 'fieldType' ],
 					'raw_value' => apply_filters( 
 						'gutena_forms_field_raw_value', 
 						wp_unslash( $_POST[ $name_attr ] ), 

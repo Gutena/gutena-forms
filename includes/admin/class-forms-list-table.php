@@ -46,7 +46,7 @@
 		 */
 		public function prepare_items() {
 
-			$orderby = ( empty( $_GET['orderby'] ) || ! in_array( $orderby, array( 'form_name', 'date' ) ) )? 'form_id' : sanitize_text_field( $_GET['orderby'] )  ;
+			$orderby = ( empty( $_GET['orderby'] ) || ! in_array( $_GET['orderby'], array( 'form_name', 'date' ) ) )? 'form_id' : sanitize_text_field( $_GET['orderby'] )  ;
 			$orderby =  'date' === $orderby ? 'modified_time': $orderby;
 			$order = ( empty( $_GET['order'] ) || 'desc' === $_GET['order'] ) ? 'DESC' : 'ASC' ;
 			
@@ -134,8 +134,7 @@
 		 */
 		public function get_sortable_columns() {
 			return array( 
-				'form_name' => array( 'form_name' ),
-				'date' => array( 'date' )
+				'date' => array( 'date', true )
 			);
 		}
 

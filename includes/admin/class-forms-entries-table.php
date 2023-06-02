@@ -151,7 +151,7 @@
 		public function get_form_list() {
 			global $wpdb;
 			return  empty( $wpdb ) ? '': $wpdb->get_results(
-				"SELECT form_id, form_name FROM {$this->store->table_gutenaforms} WHERE published = 1"
+				"SELECT form_id, form_name FROM {$this->store->table_gutenaforms} WHERE form_id IN (SELECT  DISTINCT form_id  FROM {$this->store->table_gutenaforms_entries} WHERE trash = 0)"
 			);
 		}
 
@@ -232,8 +232,7 @@
 		 */
 		public function get_sortable_columns() {
 			return array( 
-				'entry_id' => array( 'entry_id' ),
-				'added_time' => array( 'date' )
+				'added_time' => array( 'added_time', true )
 			);
 		}
 

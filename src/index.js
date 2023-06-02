@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType, registerBlockVariation } from '@wordpress/blocks';
+import domReady from '@wordpress/dom-ready';
 import './style.scss';
 import variations from './variations';
 import edit from './edit';
@@ -157,3 +158,12 @@ registerBlockVariation( 'core/paragraph', {
 		null !== typeof className &&
 		0 <= className.indexOf( variationAttributes.className ),
 } );
+
+//hide field block
+domReady( () => {
+    //check wp
+    if ( typeof wp !== 'undefined' && typeof wp.data !== 'undefined' ){
+		/** https://github.com/WordPress/gutenberg/issues/14139 **/
+        wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( [ 'gutena/form-field' ] );
+    }
+});
