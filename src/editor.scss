@@ -4,7 +4,13 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-.wp-block-gutena-forms {
+.editor-styles-wrapper .wp-block-gutena-forms, .wp-block-gutena-forms {
+	.heading-input-label-gutena {
+		color: var(--wp--gutena-forms--label-color);
+		font-size: var(--wp--gutena-forms--label-font-size, 13px);
+		line-height: var(--wp--gutena-forms--label-line-height);
+		font-weight: var(--wp--gutena-forms--label-font-weight);
+	}
 	//BlockVariationPicker ul
 	> .block-editor-block-variation-picker {
 		padding: 1.5rem;
@@ -59,13 +65,21 @@
     color: rgb(117, 117, 117);
 }
 
-.block-editor-block-inspector .gf-child-mb-0 > .components-base-control{
-	margin-bottom: 0;
-}
-.block-editor-block-inspector .gf-mb-24 {
-	margin-bottom: 24px;
-}
+.block-editor-block-inspector {
+	.gf-child-mb-0 > .components-base-control{
+		margin-bottom: 0;
+	}
 
-.block-editor-block-inspector .gf-mt-1 {
-	margin-top: 1rem;
+	.gf-mb-24 {
+		margin-bottom: 24px !important;
+	}
+
+	.gf-mt-1 {
+		margin-top: 1rem;
+	}
+
+	.gf-required-field .components-base-control__help{
+		color: red;
+	}
+
 }
