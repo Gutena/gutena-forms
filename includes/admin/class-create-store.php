@@ -86,12 +86,27 @@
             $this->create_table_gutenaforms_meta( $charset_collate );
             
             //check if table created successfully
-            $table_name =  $this->table_gutenaforms; 
-            //check if table exist
-            $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
-            if ( $wpdb->get_var( $query ) !== $table_name ) {
-                update_option( 'gutena_forms_activation_failed', '1' );
+            $table_names =  array(
+                $this->table_gutenaforms,
+                $this->table_gutenaforms_entries,
+                $this->table_gutenaforms_field_value,
+                $this->table_gutenaforms_meta,
+            );
+            $all_tables_craeted = true;
+            foreach ( $table_names as $table_name ) {
+                //check if table exist
+                $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
+                if ( $wpdb->get_var( $query ) !== $table_name ) {
+                    $all_tables_craeted = false;
+                    break;
+                }
             }
+
+            //delete failed flag if all tables created successfully
+            if ( true === $all_tables_craeted ) {
+                update_option( 'gutena_forms_store_version', GUTENA_FORMS_VERSION );
+            }
+           
 		}
 
 

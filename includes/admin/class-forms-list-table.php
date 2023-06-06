@@ -169,7 +169,7 @@
 			}
 			$this->store = $store;
 			echo '<div class="gutena-forms-dashboard">';
-			echo wp_kses_post(  $this->store->get_dashboard_header() );
+			echo  $this->store->get_dashboard_header();
 			//filter check if custom page loaded
 			if ( true === apply_filters( 'gutena_forms_entries_custom_page', false ) ) {
 				do_action( 'gutena_forms_entries_load_custom_page' );

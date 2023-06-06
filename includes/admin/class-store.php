@@ -124,8 +124,10 @@
 				<h2 class="gf-heading" >'.__( 'Forms', 'gutena-forms' ).' </h2>
 				' . $dropdown . '
 				</div>
+				'.( defined( 'GUTENA_KIT_PRO_VERSION' ) ? '': '<a href="https://gutena.io/pricing" class="gf-btn gf-wp-primary-btn" target="_blank" > <span class="gf-btn-text">'.__( 'Go Pro', 'gutena-forms' ).'</span> <span class="gf-btn-icon"> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><g clip-path="url(#clip0_3561_1553)"><path d="M16.0039 9.414L7.39691 18.021L5.98291 16.607L14.5889 8H7.00391V6H18.0039V17H16.0039V9.414Z" fill="#ffffff"></path></g><defs><clipPath id="clip0_3561_1553"><rect width="20" height="20" fill="white"></rect></clipPath></defs></svg> </span> </a>' ).'
 				'.wp_kses_post( apply_filters( 'gutena_forms_dashboard_header_navigation','') ).'
 				</div>';
 		}
+
 	}
  }

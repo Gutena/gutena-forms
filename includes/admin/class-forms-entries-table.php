@@ -36,6 +36,7 @@
 			if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
 				$this->form_id = sanitize_key( $_GET['formid'] );
 			}
+			//process_bulk_action : in Gutena_Forms_Manage_Store
 		}
 
 		/**
@@ -47,8 +48,6 @@
 				return;
 			}
 			global $wpdb;
-			
-			$this->process_bulk_action();
 		
 			$this->total_unread_rows = $wpdb->get_var(
 				$wpdb->prepare(
@@ -336,64 +335,6 @@
 				"unread" => __( 'Mark Unread', 'gutena-forms' ),
 				"trash" => __( 'Delete', 'gutena-forms' ),
 			) );
-		}
-
-		
-
-		private function process_bulk_action() {
-			//print_r($_POST);exit;
-			if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['form_entry_id'] ) && function_exists( 'absint' ) ) {
-				//check nonce
-				check_ajax_referer( 'gutena_Forms', 'gfnonce' );
-				$form_entry_id = wp_unslash( $_REQUEST['form_entry_id'] );
-				$form_entry_ids = array();
-				if ( is_array( $form_entry_id ) ) {
-					foreach ( $form_entry_id as $id) {
-						if ( ! empty( $id ) && is_numeric( $id ) ) {
-							$form_entry_ids[] = absint( $id );
-						}
-					}
-				} else if ( ! empty( $form_entry_id ) && is_numeric( $form_entry_id ) ) {
-					$form_entry_ids[] = absint( $form_entry_id );
-				}
-				
-				global $wpdb;
-				$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
-				
-				//check for valid action
-				if ( ! empty( $action ) && ! empty( $wpdb ) && ! empty( $form_entry_ids ) ) {
-					//Admin Action 
-					do_action( 'gutena_forms_entries_admin_action', $this->form_id, $action, $form_entry_ids );
-					//comma separated string id1,id2,...
-					$form_entry_ids = implode( ",", $form_entry_ids );
-					//Update status
-					//Wpdb add single quotes for string 
-					$action_query = '';
-					
-					switch ( $action ) {
-						case 'read':
-							$action_query = "UPDATE {$this->store->table_gutenaforms_entries} SET entry_status = 'read' WHERE entry_id IN ({$form_entry_ids})";
-						break;
-						case 'unread':
-							$action_query = "UPDATE {$this->store->table_gutenaforms_entries} SET entry_status = 'unread' WHERE entry_id IN ({$form_entry_ids})";
-						break;
-						case 'trash':
-							$action_query = "UPDATE {$this->store->table_gutenaforms_entries} SET trash = 1 WHERE entry_id IN ({$form_entry_ids})";
-						break;
-						default:
-						break;
-					}
-
-					if ( ! empty( $action_query ) && 25 < strlen( $action_query ) ) {
-						$wpdb->query( $action_query );
-					}
-					
-				}
-				
-				if ( function_exists( 'wp_safe_redirect' ) && wp_safe_redirect( esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.$this->form_id ) ) ) ){
-					exit;
-				}
-			}
 		}
 
 		/**

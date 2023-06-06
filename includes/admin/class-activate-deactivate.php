@@ -30,10 +30,22 @@
 			register_activation_hook( GUTENA_FORMS_FILE, array( $this, 'activate' ) );
 			//on deactivate
 			register_deactivation_hook( GUTENA_FORMS_FILE, array( $this, 'deactivate' ) );
+			//on plugin update
+			add_action( 'admin_init', array( $this, 'check_and_create_store' ));
 			//Fires when a site initialization routine should be executed.
 			add_action( 'wp_initialize_site', array( $this, 'new_site_in_multisite' ), 10, 2 );
+
 		}
 
+		//trigger activation if form entries store was not created 
+		public function check_and_create_store() {
+			if ( $this->is_gfadmin() && ! $this->is_forms_store_exists() ) {
+				echo "hello";exit;
+				$this->activate();
+			}
+		}
+
+		//cretae form entries store on plugin activation
 		public function activate() {
 			//check for multisite if plugin is activated 
 			if ( function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( plugin_basename( GUTENA_FORMS_FILE ) ) ) {
