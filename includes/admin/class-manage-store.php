@@ -34,7 +34,77 @@
 
             //Update form entry status to read
 			add_action( 'wp_ajax_gutena_forms_entries_read', array( $this, 'entries_read_status_update' ) );
+
+			add_action( 'wp_loaded', array($this, 'process_bulk_action') );
 			
+		}
+
+		//form entries table bulk action
+		public function process_bulk_action() { 
+
+			if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['form_entry_id'] ) && function_exists( 'absint' ) && ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
+
+				//check nonce
+				check_ajax_referer( 'gutena_Forms', 'gfnonce' );
+				$form_id = sanitize_key( $_GET['formid'] );
+
+				//check user access 
+				if ( ( ! has_filter( 'gutena_forms_check_user_access' ) && ! $this->is_gfadmin() )  || ! apply_filters( 'gutena_forms_check_user_access', true, 'edit_entries' ) ) {
+					wp_redirect( esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.$form_id ) ) );
+				}
+
+				$form_entry_id = wp_unslash( $_REQUEST['form_entry_id'] );
+				$form_entry_ids = array();
+				if ( is_array( $form_entry_id ) ) {
+					foreach ( $form_entry_id as $id) {
+						if ( ! empty( $id ) && is_numeric( $id ) ) {
+							$form_entry_ids[] = absint( $id );
+						}
+					}
+				} else if ( ! empty( $form_entry_id ) && is_numeric( $form_entry_id ) ) {
+					$form_entry_ids[] = absint( $form_entry_id );
+				}
+				
+				global $wpdb;
+				$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
+				
+				//check for valid action
+				if ( ! empty( $action ) && ! empty( $wpdb ) && ! empty( $form_entry_ids ) ) {
+					//Admin Action 
+					do_action( 'gutena_forms_entries_admin_action', $form_id, $action, $form_entry_ids );
+					//comma separated string id1,id2,...
+					$form_entry_ids = implode( ",", $form_entry_ids );
+					//Update status
+					//Wpdb add single quotes for string 
+					$action_query = '';
+					
+					switch ( $action ) {
+						case 'read':
+							$action_query = "UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'read' WHERE entry_id IN ({$form_entry_ids})";
+						break;
+						case 'unread':
+							$action_query = "UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'unread' WHERE entry_id IN ({$form_entry_ids})";
+						break;
+						case 'trash':
+							$action_query = "UPDATE {$this->table_gutenaforms_entries} SET trash = 1 WHERE entry_id IN ({$form_entry_ids})";
+						break;
+						default:
+						break;
+					}
+
+					if ( ! empty( $action_query ) && 25 < strlen( $action_query ) ) {
+						$wpdb->query( $action_query );
+					}
+					
+				}
+				
+				wp_safe_redirect( add_query_arg( 
+					array( 
+						'page' => 'gutena-forms',
+						'formid' => $form_id,
+					), admin_url( 'admin.php' ) ) 
+				);
+			}
 		}
 
         //Update form entry status to read 
@@ -102,7 +172,7 @@
 		 */
 		public function save_form_schema( $form_schema, $block_form_id, $gutena_form_ids ) {
 			global $wpdb; 
-			if ( empty( $wpdb ) || empty( $block_form_id ) ) {
+			if ( empty( $wpdb ) || empty( $block_form_id ) || ! $this->is_forms_store_exists() ) {
 				return $form_schema;
 			}
 			$block_form_id = sanitize_key( $block_form_id );
@@ -160,7 +230,7 @@
 		 */
 		public function save_form_entry( $form_data, $block_form_id, $fieldSchema ) {
 			global $wpdb; 
-			if ( empty( $wpdb ) || empty( $form_data ) || ! is_array( $form_data ) || empty( $block_form_id ) || empty( $fieldSchema ) ) {
+			if ( empty( $wpdb ) || empty( $form_data ) || ! is_array( $form_data ) || empty( $block_form_id ) || empty( $fieldSchema ) || ! $this->is_forms_store_exists() ) {
 				return false;
 			}
 			

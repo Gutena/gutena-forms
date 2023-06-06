@@ -211,6 +211,10 @@
 			//current user id
 			return intval( function_exists( 'get_current_user_id' ) ? get_current_user_id() : 0 );
 		}
+
+		public function is_forms_store_exists() {
+			return empty(  get_option( 'gutena_forms_store_version', false ) ) ? false : true;
+		}
 	}
 
 	Gutena_Forms_Admin::get_instance();
