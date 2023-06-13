@@ -40,7 +40,6 @@
 		//trigger activation if form entries store was not created 
 		public function check_and_create_store() {
 			if ( $this->is_gfadmin() && ! $this->is_forms_store_exists() ) {
-				echo "hello";exit;
 				$this->activate();
 			}
 		}
