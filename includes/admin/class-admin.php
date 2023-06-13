@@ -80,9 +80,15 @@
 
 
 		public function register_admin_menu() {
+			//check for proper permission
+			if ( ( ! has_filter( 'gutena_forms_check_user_access' ) && ! $this->is_gfadmin() )  || ! class_exists( 'Gutena_Forms_Store' ) || ! apply_filters( 'gutena_forms_check_user_access', true, 'view_entries' ) ) {
+				return;
+			}
+
+			//register menu
 			$page_hook_suffix = add_menu_page(
 				__( 'Gutena Forms', 'gutena-forms' ),
-				__( 'GutenaForms', 'gutena-forms' ),
+				__( 'Gutena Forms', 'gutena-forms' ),
 				'delete_posts',
 				'gutena-forms',
 				array( $this, 'forms_listing_page' ),
