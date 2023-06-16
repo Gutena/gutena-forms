@@ -14,15 +14,15 @@ $gfp_heading_color: #2C3338;
 			border-radius: 5px;
 			text-decoration: none;
 			text-shadow: none;
-			padding: 6px 15px;
+			padding: 8px 15px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			gap: 6px;
 		}
-		.gf-wp-primary-btn {
-			background: #2271b1;
-			border-color: #2271b1;
+		.gf-pro-btn {
+			background: #E35D3F;
+			border-color: #E35D3F;
 			color: #fff;
 			font-weight: 600;
 		}
@@ -100,7 +100,7 @@ $gfp_heading_color: #2C3338;
 		background-color: rgb(0,0,0); 
 		background-color: rgba(0,0,0,0.4);
 		.gf-close-btn{
-			color: #aaaaaa;
+			color: $gfp_heading_color;
 			float: right;
 			font-size: 28px;
 			font-weight: bold;
@@ -120,7 +120,7 @@ $gfp_heading_color: #2C3338;
 			margin: auto;
 			padding: 20px;
 			border: 1px solid #888;
-			width: 70%;
+			width: 58%;
 			height: 75%;
 			.gf-header {
 				.gf-title{
@@ -165,13 +165,13 @@ $gfp_heading_color: #2C3338;
 				display: flex;
 				padding: 0.5rem 1rem 0.5rem 0;
 				margin: 0;
-				gap:2rem;
+				gap:1.5rem;
 				color: $gfp_body_color;
 				.gf-field-label{
 					color: $gfp_heading_color;
 					display: flex;
 					justify-content: space-between;
-					min-width: 8rem;
+					min-width: 5rem;
 				}
 				
 			}
