@@ -124,7 +124,7 @@
 				<h2 class="gf-heading" >'.__( 'Forms', 'gutena-forms' ).' </h2>
 				' . $dropdown . '
 				</div>
-				'.( defined( 'GUTENA_KIT_PRO_VERSION' ) ? '': '<a href="https://gutena.io/pricing" class="gf-btn gf-pro-btn" target="_blank" > <span class="gf-btn-text">'.__( 'Go Premium', 'gutena-forms' ).'</span> <span class="gf-btn-icon"> </span> </a>' ).'
+				'.( defined( 'GUTENA_KIT_PRO_VERSION' ) ? '': '<a href="https://gutena.io/pricing" class="gf-btn gf-pro-btn" target="_blank" > <span class="gf-btn-text">'.__( 'Go Premium', 'gutena-forms' ).'</span> </a>' ).'
 				'.wp_kses_post( apply_filters( 'gutena_forms_dashboard_header_navigation','') ).'
 				</div>';
 		}
