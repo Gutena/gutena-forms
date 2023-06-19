@@ -3,7 +3,7 @@
   "apiVersion": 2,
   "name": "gutena/form-field",
   "version": "1.0.0",
-  "title": "Form field",
+  "title": "Form Field",
   "parent": [
     "gutena/forms"
   ],
