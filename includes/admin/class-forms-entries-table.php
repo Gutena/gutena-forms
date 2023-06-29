@@ -36,7 +36,14 @@
 			if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
 				$this->form_id = sanitize_key( $_GET['formid'] );
 			}
+
 			//process_bulk_action : in Gutena_Forms_Manage_Store
+			
+			if ( ! is_gutena_forms_pro() ) {
+				//Extra controls to be displayed between bulk actions and pagination.
+				add_action( 'gutena_forms_dashboard_entries_table_topbar', array( $this, 'table_topbar_filters' ), 10, 1 );
+			}
+			
 		}
 
 		/**
@@ -147,13 +154,6 @@
 			}
 		}
 
-		public function get_form_list() {
-			global $wpdb;
-			return  empty( $wpdb ) ? '': $wpdb->get_results(
-				"SELECT form_id, form_name FROM {$this->store->table_gutenaforms} WHERE form_id IN (SELECT  DISTINCT form_id  FROM {$this->store->table_gutenaforms_entries} WHERE trash = 0)"
-			);
-		}
-
 		/**
 		 * Gets a list of columns.
 		 *
@@ -167,6 +167,7 @@
 			return apply_filters( 'gutena_forms_entries_table_list_get_columns', array(
 				"entry_id" => __( 'ID', 'gutena-forms' ),
 				"added_time" => __( 'Date', 'gutena-forms' ),
+				"status"	=> __( 'Status', 'gutena-forms' ) .'  '. $this->lock_svg(),
 				"entry_action" => __( 'Action', 'gutena-forms' ),
 			) );
 		}
@@ -243,7 +244,7 @@
 		 * @param object|array $item The current item
 		 */
 		public function single_row( $form_entry ) {
-			echo '<tr class="'.esc_attr( $form_entry->entry_status ).'" currentstatus="'.esc_attr( $form_entry->entry_status ).'" >';
+			echo '<tr class="'.esc_attr( $form_entry->entry_status ).'" currentstatus="'.esc_attr( $form_entry->entry_status ).'" entryid="'.esc_attr( $form_entry->entry_id ).'" >';
 			$this->single_row_columns( $form_entry );
 			echo '</tr>';
 		}
@@ -265,13 +266,22 @@
 					$column_value = date_format( date_create( $form_entry->added_time ),"M d, Y");
 					//.' '.__( 'at', 'gutena-forms' ).' '.date_format( date_create( $form_entry->added_time ),"g:i a");
 				break;
+				case 'status':
+					$column_value = '<div class="gfp-entries-status">
+					<a modalid="gutena-forms-go-pro-modal" href="#" class="gutena-forms-modal-btn"  >
+					<span class="status-title-icon-wrapper" style="background-color:#7b68ee33;">
+						<span class="status-title">'.__( 'Hot', 'gutena-forms' ).'</span>
+						<span class="status-change-icon"></span>
+					</span>
+					</a>
+					</div>';
+				break;
 				case 'entry_action':
-					//add new actions
-					$add_action_link = apply_filters( 'gutena_forms_entries_table_list_add_action_link', '', $form_entry );
+					
 					//Quick view entries
-					$column_value = $this->form_entry_view( $form_entry ).''. wp_kses_post( $add_action_link );
+					$column_value = $this->form_entry_view( $form_entry );
 					//delete entries
-					if ( apply_filters( 'gutena_forms_check_user_access', true, 'delete_entries' ) ) {
+					if ( apply_filters( 'gutena_forms_check_user_access', $this->store->is_gfadmin(), 'delete_entries' ) ) {
 						$column_value .= ' | <a href="'. esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.esc_attr( $form_entry->form_id ).'&action=trash&gfnonce='.wp_create_nonce( 'gutena_Forms' ).'&form_entry_id='.$form_entry->entry_id ) ) .'" class="gf-delete" >'.__( 'Trash', 'gutena-forms' ).'</a>';
 					}
 				break;
@@ -289,6 +299,7 @@
 			return apply_filters( 'gutena_forms_entries_table_list_column_default', $column_value, $form_entry, $column_name );
 		}
 
+		//Quick Entry View
 		public function form_entry_view( $form_entry ) {
 			if ( empty( $form_entry->entry_data ) ) {
 				return '';
@@ -348,19 +359,9 @@
 			}
 			$this->store = $store;
 			$this->prepare_items();
-			$form_list = $this->get_form_list();
-			//form list
-			$dropdown = '';
-			if ( ! empty( $form_list ) ) {
-				$dropdown .= '<select  class="gf-heading select-change-url" url="' . esc_url( admin_url( 'admin.php?page=gutena-forms&formid=' ) ) . '"  >';
-				foreach ($form_list as $form) {
-					$dropdown .='<option value="' . esc_attr( $form->form_id ) . '" '.( ( ! empty( $_GET['formid'] ) && $form->form_id === $_GET['formid'] ) ? 'selected':''  ).' >'.esc_attr( $form->form_name ).'</option>';
-				}
-				$dropdown .= '</select>';
-			}
 			//header
-			echo '<div class="gutena-forms-dashboard entries">';
-			echo  $this->store->get_dashboard_header( $dropdown );
+			echo '<div class="entries">';
+			
 			//body
 			echo '<div class="gf-body">';
 			
@@ -377,6 +378,40 @@
 			echo "</form>";
 			echo '</div>';
 			echo '</div>';
+			
+		}
+
+		/**
+		 * Entries filters
+		 */
+		public function table_topbar_filters( $args ) {
+			
+			echo '<div class="gfp-entries-table-filter">
+			<span class="title title-with-icon "> '.  __( 'Filter by', 'gutena-forms' )  . ' ' . $this->lock_svg() .' </span>
+			<a modalid="gutena-forms-go-pro-modal" href="#" class="gutena-forms-modal-btn"  >
+			<input type="date" name="date_search" class="gfp-filter date-filter" disabled  >
+			<select name="tag_search" class="gfp-filter tag-filter" disabled >
+				<option value="">'.  __( 'Tag', 'gutena-forms' )  . '</option>
+			</select>
+			<select name="entry_status" class="gfp-filter status-filter" disabled>
+			<option value="">'.  __( 'Status', 'gutena-forms' )  . '</option>
+			</select>
+			<input type="submit" id="filter-submit" class="button" value="'.  __( 'Filter', 'gutena-forms' )  . '" disabled >
+			</a>
+			<a href="#" class="button" disabled >'.  __( 'Reset', 'gutena-forms' )  . '</a></div>
+			<p class="search-box">
+				<label class="screen-reader-text">'.  __( 'Search', 'gutena-forms' )  . ':</label>
+				<a modalid="gutena-forms-go-pro-modal" href="#" class="gutena-forms-modal-btn"  >
+				<input type="search" name="s" value="" placeholder="'.  __( 'Search', 'gutena-forms' )  . '" disabled>
+					<input type="submit" id="search-submit" class="button" value="'.  __( 'Search', 'gutena-forms' )  . '" disabled>
+				</a>
+			</p> ';
+		}
+
+		public function lock_svg() {
+			return '<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M8.57143 4H9.71428C10.0299 4 10.2857 4.25584 10.2857 4.57143V11.4286C10.2857 11.7442 10.0299 12 9.71428 12H0.571429C0.25584 12 0 11.7442 0 11.4286V4.57143C0 4.25584 0.25584 4 0.571429 4H1.71429V3.42857C1.71429 1.53502 3.24931 0 5.14286 0C7.0364 0 8.57143 1.53502 8.57143 3.42857V4ZM4.57143 8.41851V9.71429H5.71429V8.41851C6.05589 8.22091 6.28571 7.8516 6.28571 7.42857C6.28571 6.79737 5.77406 6.28571 5.14286 6.28571C4.51166 6.28571 4 6.79737 4 7.42857C4 7.8516 4.22983 8.22091 4.57143 8.41851ZM7.42857 4V3.42857C7.42857 2.16621 6.4052 1.14286 5.14286 1.14286C3.88049 1.14286 2.85714 2.16621 2.85714 3.42857V4H7.42857Z" fill="#606060"/>
+			</svg>';
 		}
 		
 		/**
