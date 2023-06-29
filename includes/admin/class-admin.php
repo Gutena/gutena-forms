@@ -79,19 +79,22 @@
 		}
 
 
+		/**
+		 * Admin Menu
+		 */
 		public function register_admin_menu() {
 			//check for proper permission
 			if ( ( ! has_filter( 'gutena_forms_check_user_access' ) && ! $this->is_gfadmin() )  || ! class_exists( 'Gutena_Forms_Store' ) || ! apply_filters( 'gutena_forms_check_user_access', true, 'view_entries' ) ) {
 				return;
 			}
-
+			
 			//register menu
 			$page_hook_suffix = add_menu_page(
 				__( 'Gutena Forms', 'gutena-forms' ),
 				__( 'Gutena Forms', 'gutena-forms' ),
 				'delete_posts',
 				'gutena-forms',
-				array( $this, 'forms_listing_page' ),
+				array( $this, 'forms_dashboard' ),
 				'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuMzUyMTEgMTEuNDE1NUgwLjE1NzYyNUwxMS40MTcgMC4xNTU1NzJWNC4zMTc1TDQuMzUyMTEgMTEuNDE1NVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xOS44MDYxIDExLjQxNDFIMjQuMDAwNkwxMi43NDEyIDAuMTU0MTA3VjQuMzE2MDRMMTkuODA2MSAxMS40MTQxWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQuMzQ5MTggMTIuNzM5M0gwLjE1NDY5NkwxMS40MTQxIDIzLjk5OTJWMTkuODM3M0w0LjM0OTE4IDEyLjczOTNaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTkuODAzMiAxMi43NDAySDIzLjk5NzZMMTIuNzM4MyAyNC4wMDAyVjE5LjgzODNMMTkuODAzMiAxMi43NDAyWiIgZmlsbD0id2hpdGUiLz4KPHJlY3Qgd2lkdGg9IjguNzU3MjkiIGhlaWdodD0iMi41ODY4NiIgdHJhbnNmb3JtPSJtYXRyaXgoMSAwIDAgLTEgMTIuMDQxIDE1LjMyNjIpIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K',
 				6
 			);
@@ -103,52 +106,165 @@
 		   }
 		}
 
-		
-
-		public function forms_listing_page() {
-			if ( ( ! has_filter( 'gutena_forms_check_user_access' ) && ! $this->is_gfadmin() )  || ! class_exists( 'Gutena_Forms_Store' ) || ! apply_filters( 'gutena_forms_check_user_access', true, 'view_entries' ) ) {
+		/**
+		 * Form Dashboard pages: including form list, respective form entries etc
+		 */
+		public function forms_dashboard() {
+			if ( ! function_exists('wp_localize_script') && ( ! has_filter( 'gutena_forms_check_user_access' ) && ! $this->is_gfadmin() )  || ! class_exists( 'Gutena_Forms_Store' ) || ! apply_filters( 'gutena_forms_check_user_access', true, 'view_entries' ) ) {
 				esc_html_e( 'Access forbidden! Please contact admin to view this page.', 'gutena-forms' );
 				return;
 			}
+			
+			$form_store = new Gutena_Forms_Store();
 			$form_table = '';
-			if ( empty( $_GET['formid'] ) || ! is_numeric( $_GET['formid'] ) ) {
-				if ( file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-list-table.php' ) ) {
-					require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-list-table.php';
-					if ( class_exists( 'Gutena_Forms_List_Table' ) ) {
-						$form_table = new Gutena_Forms_List_Table();
+			$dashboard_html = '';
+			$form_id = '';
+			$dropdown = '';
+			echo '<div class="gutena-forms-dashboard '.( is_gutena_forms_pro() ? '':'gf-basic' ).' ">'; 
+			if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
+				$form_id = absint( sanitize_key( $_GET['formid'] ) );
+			} 
+			if ( empty( $_GET['pagetype'] ) ) {
+				if ( '' === $form_id ) {
+					if ( file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-list-table.php' ) ) {
+						require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-list-table.php';
+						if ( class_exists( 'Gutena_Forms_List_Table' ) ) {
+							$form_table = new Gutena_Forms_List_Table();
+						}
+					}
+				} else if ( file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-entries-table.php' ) ) {
+					require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-entries-table.php';
+					if ( class_exists( 'Gutena_Forms_Entries_Table' ) ) {
+						$form_list = $form_store->get_form_list();
+						//form list
+						if ( ! empty( $form_list ) ) {
+							$dropdown .= '<select  class="gf-heading select-change-url" url="' . esc_url( admin_url( 'admin.php?page=gutena-forms&formid=' ) ) . '"  >';
+							foreach ($form_list as $form) {
+								$dropdown .='<option value="' . esc_attr( $form->form_id ) . '" '.( ( ! empty( $_GET['formid'] ) && $form->form_id === $_GET['formid'] ) ? 'selected':''  ).' >'.esc_attr( $form->form_name ).'</option>';
+							}
+							$dropdown .= '</select>';
+						}
+						$form_table = new Gutena_Forms_Entries_Table();
 					}
 				}
-			} else if ( file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-entries-table.php' ) ) {
-				require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-entries-table.php';
-				if ( class_exists( 'Gutena_Forms_Entries_Table' ) ) {
-					$form_id = sanitize_key( $_GET['formid'] );
-					$form_table = new Gutena_Forms_Entries_Table( );
+			} else if ( ! is_gutena_forms_pro() ) {
+				$pagetype = sanitize_key( wp_unslash( $_GET['pagetype'] ) );
+				//Entry View Page
+				if ( ! empty( $_GET['form_entry_id'] ) && is_numeric( $_GET['form_entry_id'] ) && 'view' === $pagetype  ) {
+					
+					$dashboard_html .= '<div id="gfp-entry-view"></div>';
+					//Provide data for form submission script
+					wp_localize_script(
+						'gutena-forms-dashboard',
+						'gutenaFormsEntryDetails',
+						array(
+							'entry_data'       => $form_store->get_entry_details( absint( wp_unslash( $_GET['form_entry_id'] ) ) ),
+							'entry_view_url' => esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=view&form_entry_id=' ) ),
+							'entry_list_url' => esc_url( admin_url( 'admin.php?page=gutena-forms&formid=' ) ),
+						)
+					);
+				} else if ( $this->is_gfadmin() ) {
+					$dashboard_html .=  '<div id="gfp-page-' . esc_attr( $pagetype ) . '"></div>';
 				}
-			}
 
+				
+			} 
+			//Top header
+			echo  $form_store->get_dashboard_header( $dropdown );
+
+			//placeholder for react based dashboard
+			if ( '' === $dashboard_html ) {
+				do_action( 'gutena_forms_entries_load_custom_page' );
+			} else {
+				echo $dashboard_html;
+			}
+			
 			//render list
             if ( ! empty( $form_table ) ) {
-                $form_table->render_list_table( new Gutena_Forms_Store() );
+                $form_table->render_list_table( $form_store );
             }
+			//pro modal
+			$this->go_pro_modal();
+			$this->entry_delete_modal();
+			echo '</div>';
+		}
+
+		/**
+		 * Go Pro Modal: 
+		 * to open this modal use : <a modalid="gutena-forms-go-pro-modal" href="#" class="gutena-forms-modal-btn"  ></a> - anywhere in html document
+		 */
+		public function go_pro_modal() {
+			//Action Html
+			echo '
+			<div id="gutena-forms-go-pro-modal"  class="gutena-forms-modal gf-small-modal" >
+			<div class="gutena-forms-modal-content" >
+			<span class="gf-close-btn gf-close-icon">&times;</span>
+			<div class="gf-header" > 
+				<div class="gf-title" >'.__( 'Upgrade to Complete the Experience!', 'gutena-forms' ).'</div> 
+			</div>
 			
+			<div class="gf-body" >
+			<p class="gf-description"> '.__( 'Get Gutena Forms Pro Today and Unlock all the Features', 'gutena-forms' ).'</p>
+			<a href="https://gutena.io/pricing" class="gf-btn gf-pro-btn" target="_blank" > <span class="gf-btn-text">'.__( 'Go Premium - 14 Day Free Trial', 'gutena-forms' ).'</span> </a>
+			</div></div></div>';
+		}
+
+		/**
+		 * Delete a form entry modal: 
+		 * to open this modal use : <a modalid="gutena-forms-entry-delete-modal" href="#" class="gutena-forms-modal-btn"  ></a> - anywhere in html document
+		 */
+		public function entry_delete_modal() {
+			//Action Html
+			echo '
+			<div id="gutena-forms-entry-delete-modal"  class="gutena-forms-modal gf-small-modal" >
+			<div class="gutena-forms-modal-content" >
+			<span class="gf-close-btn gf-close-icon">&times;</span>
+			<div class="gf-header" > 
+				<div class="gf-title" >'.__( 'Trash Entry', 'gutena-forms' ).'</div> 
+			</div>
+			
+			<div class="gf-body" >
+			<p class="gf-description"> '.__( 'Do you really wanna trash this entry?', 'gutena-forms' ).'</p>
+			<div class="gf-action-btns">
+				<a href="#" class="gf-btn gf-close-btn" target="_blank" > <span class="gf-btn-text">'.__( 'Cancel', 'gutena-forms' ).'</span> </a>
+				<a href="#" class="gf-btn gf-entry-delete-btn" target="_blank" > <span class="gf-btn-text">'.__( 'Trash', 'gutena-forms' ).'</span> </a>
+			</div>
+			
+			</div></div></div>';
 		}
 
 		public function forms_listing_styles() {
-			wp_enqueue_style( 'gutena-forms-dashboard-style', GUTENA_FORMS_PLUGIN_URL . 'assets/minify/css/entries-list.min.css', array( ), GUTENA_FORMS_VERSION, 'all' );
+			
 		}
 
 		public function forms_listing_scripts() {
-			wp_enqueue_script( 'gutena-forms-dashboard', GUTENA_FORMS_PLUGIN_URL . 'assets/minify/js/entries-list.min.js', array(), GUTENA_FORMS_VERSION, true );
-			//Provide data for form submission script
-			wp_localize_script(
-				'gutena-forms-dashboard',
-				'gutenaFormsDashboard',
-				array(
-					'read_status_action'       => 'gutena_forms_entries_read',
-					'ajax_url'            => admin_url( 'admin-ajax.php' ),
-					'nonce'               => wp_create_nonce( 'gutena_Forms' ),
-				)
-			);
+
+			$asset_file = include_once( GUTENA_FORMS_DIR_PATH . 'includes/admin/dashboard/build/index.asset.php' );
+
+			if ( ! empty( $asset_file['dependencies'] ) ) {
+				if ( ! is_gutena_forms_pro() ) {
+					wp_enqueue_script( 'gutena-forms-dashboard', GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/index.js', $asset_file['dependencies'], $asset_file['version'], true );
+				}
+				
+				wp_enqueue_script( 'gutena-forms-dashboard-script', GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/script.js', array(), $asset_file['version'], true );
+
+				//Provide data for form submission script
+				wp_localize_script(
+					'gutena-forms-dashboard-script',
+					'gutenaFormsDashboard',
+					array(
+						'read_status_action'       => 'gutena_forms_entries_read',
+						'ajax_url'            => admin_url( 'admin-ajax.php' ),
+						'nonce'               => wp_create_nonce( 'gutena_Forms' ),
+						'entry_view_url' => esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=view&form_entry_id=' ) ),
+					)
+				);
+
+
+				wp_enqueue_style( 'gutena-forms-dashboard-style', GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/style-index.css', array( 'wp-components','wp-edit-blocks' ), $asset_file['version'], 'all' );
+			}
+			
+			
 		}
 
 		/**

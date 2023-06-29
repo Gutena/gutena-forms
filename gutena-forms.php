@@ -50,6 +50,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		define( 'GUTENA_FORMS_VERSION', '1.0.9' );
 	}
 
+	if ( ! function_exists( 'is_gutena_forms_pro' ) ) {
+		function is_gutena_forms_pro() {
+			return defined( 'GUTENA_FORMS_PRO_VERSION' );
+		}
+	}
+
 	class Gutena_Forms {
 
 		// The instance of this class
@@ -888,8 +894,4 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 	Gutena_Forms::get_instance();
 
-	//Gutena Ecosys
-	if ( file_exists( __DIR__ . '/includes/gutena/gutena-ecosys-onboard/gutena-ecosys-onboard.php' ) ) {
-		require_once  __DIR__ . '/includes/gutena/gutena-ecosys-onboard/gutena-ecosys-onboard.php';
-	}
 }

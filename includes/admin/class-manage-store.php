@@ -54,49 +54,12 @@
 				}
 
 				$form_entry_id = wp_unslash( $_REQUEST['form_entry_id'] );
-				$form_entry_ids = array();
-				if ( is_array( $form_entry_id ) ) {
-					foreach ( $form_entry_id as $id) {
-						if ( ! empty( $id ) && is_numeric( $id ) ) {
-							$form_entry_ids[] = absint( $id );
-						}
-					}
-				} else if ( ! empty( $form_entry_id ) && is_numeric( $form_entry_id ) ) {
-					$form_entry_ids[] = absint( $form_entry_id );
-				}
 				
 				global $wpdb;
 				$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
-				
-				//check for valid action
-				if ( ! empty( $action ) && ! empty( $wpdb ) && ! empty( $form_entry_ids ) ) {
-					//Admin Action 
-					do_action( 'gutena_forms_entries_admin_action', $form_id, $action, $form_entry_ids );
-					//comma separated string id1,id2,...
-					$form_entry_ids = implode( ",", $form_entry_ids );
-					//Update status
-					//Wpdb add single quotes for string 
-					$action_query = '';
-					
-					switch ( $action ) {
-						case 'read':
-							$action_query = "UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'read' WHERE entry_id IN ({$form_entry_ids})";
-						break;
-						case 'unread':
-							$action_query = "UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'unread' WHERE entry_id IN ({$form_entry_ids})";
-						break;
-						case 'trash':
-							$action_query = "UPDATE {$this->table_gutenaforms_entries} SET trash = 1 WHERE entry_id IN ({$form_entry_ids})";
-						break;
-						default:
-						break;
-					}
-
-					if ( ! empty( $action_query ) && 25 < strlen( $action_query ) ) {
-						$wpdb->query( $action_query );
-					}
-					
-				}
+				//Admin Action 
+				do_action( 'gutena_forms_entries_admin_action', $form_id, $action, $form_entry_id );
+				$this->update_entries_status( $action, $form_entry_id );
 				
 				wp_safe_redirect( add_query_arg( 
 					array( 
@@ -107,18 +70,14 @@
 			}
 		}
 
-        //Update form entry status to read 
+        //Update form entry status to read  mb
 		public function entries_read_status_update() {
 			check_ajax_referer( 'gutena_Forms', 'gfnonce' );
             global $wpdb;
             //Update status
             if ( ! empty( $wpdb ) && ! empty( $_POST['form_entry_id'] ) && is_numeric( $_POST['form_entry_id'] ) && function_exists( 'absint' ) ) {
-				$wpdb->query(
-					$wpdb->prepare(
-						"UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'read' WHERE entry_id = %d",
-						absint( wp_unslash( $_POST['form_entry_id'] ) )
-					)
-				);
+				
+				$this->update_entries_status( 'read', absint( wp_unslash( $_POST['form_entry_id'] ) ) );
 
 				wp_send_json_success( array(
                     'status'  => 'success',

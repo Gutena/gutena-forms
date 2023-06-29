@@ -22,7 +22,7 @@ const sass = require('gulp-sass')(require('sass'));
  */
 //Gutena Git repo array
 var GutenaRepos = [
-    'gutena-ecosys-onboard',
+    //'gutena-ecosys-onboard',
 ];
 
 //Clean gutena repos directory
@@ -98,8 +98,6 @@ var zipPath = [
 	'./**',
 	'./build',
 	'./build/**',
-	'!./src',
-	'!./src/**',
     '!./assets/css/**',
     '!./assets/js/**',
 	'!./output',
@@ -112,9 +110,15 @@ var zipPath = [
 	'!./package-lock.json',
 	'!./composer.json',
 	'!./composer.lock',
-	'!./phpcs.xml',
-	'!./node_modules',
-	'!./node_modules/**',
+    //'!**/src/**',
+	//'!**/src',
+	'!**/node_modules/**', 
+    '!**/node_modules',
+    '!**/package.json',
+    '!**/package-lock.json',
+    '!**/phpcs.xml',
+    '!**/README.md',
+    '!**/LICENSE.txt',
 ];
 
 // Clean CSS, JS and ZIP
@@ -175,7 +179,9 @@ function create_zip() {
 		.pipe( gulp.dest( './output/' ) );
 }
 
-exports.default = series( clean_files, css_minification, js_minification, clean_gutena_repos, clone_gutena_repos, clean_gutena_repos_files,create_pot, create_zip );
+//exports.default = series( clean_files, css_minification, js_minification, clean_gutena_repos, clone_gutena_repos, clean_gutena_repos_files,create_pot, create_zip );
+
+exports.default = series( clean_files, css_minification, js_minification, create_pot, create_zip );
 
 //(cmd: gulp watch): run for development. It retain src and all other files
 exports.watch = series( watch_and_minify_files );
