@@ -56,7 +56,7 @@ const UserAccessTab = (props) => {
     } 
 
     const accessOptions = [
-        { label: __( 'None', 'gutena-forms-pro' ), value: '' },
+        { label: __( 'None', 'gutena-forms' ), value: '' },
     ];
 
     const replaceUnderScoreWithSpace = ( data ) => gfpIsEmpty( data ) ? data :  data.toLowerCase().replace( /_/g, ' ' );
@@ -93,13 +93,13 @@ const UserAccessTab = (props) => {
             <div className="add-save-row">
                 <div>
                 <Button 
-                    label={ __( 'Save user access', 'gutena-forms-pro' ) }
+                    label={ __( 'Save user access', 'gutena-forms' ) }
                     variant="primary"
                     className='save-btn'
                     disabled={ true }
                     onClick={ () => {} }
                 >
-                        {  __( 'Save', 'gutena-forms-pro' ) }
+                        {  __( 'Save', 'gutena-forms' ) }
                 </Button> 
                 </div>
             </div>

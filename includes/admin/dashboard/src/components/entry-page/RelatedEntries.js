@@ -13,7 +13,7 @@ const RelatedEntries = (props) => {
             title={ __( 'Related Entries' ) } 
             initialOpen={ true }
         >
-            <p>{ __( 'The user who created this entry also submitted the entries below', 'gutena-forms-pro' ) }</p>
+            <p>{ __( 'The user who created this entry also submitted the entries below', 'gutena-forms' ) }</p>
             <ul className='details'>
                 <li>
                     <span >----------------</span>

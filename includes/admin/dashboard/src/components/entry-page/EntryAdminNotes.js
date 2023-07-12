@@ -9,12 +9,12 @@ const EntryAdminNotes = ( props ) => {
         <div className='notes-section no-panel-section' >
         <h2 className='title' >{ __( 'Notes' ) } { lockIcon() }</h2>
             <Button 
-                label={ __( 'Add Notes', 'gutena-forms-pro' ) }
+                label={ __( 'Add Notes', 'gutena-forms' ) }
                 variant="secondary"
                 onClick={ () => {} }
                 disabled={ true }
             >
-                    { __( 'Add Notes', 'gutena-forms-pro' ) }
+                    { __( 'Add Notes', 'gutena-forms' ) }
             </Button>
         </div>
     );

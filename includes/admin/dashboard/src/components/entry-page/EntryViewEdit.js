@@ -5,8 +5,8 @@ import { gfpIsEmpty } from '../../helper';
 const EntryViewEdit = (props) => {
     const entryData = gutenaFormsEntryDetails?.entry_data;
     const formID = entryData?.form_id;
-    const entryViewUrl = gutenaFormsEntryDetails?.entry_view_url;
-    const entry_list_url = gfpIsEmpty( gutenaFormsEntryDetails?.entry_list_url ) ? '#': gutenaFormsEntryDetails.entry_list_url+formID;
+    const entryViewUrl = gutenaFormsDashboard?.entry_view_url;
+    const entry_list_url = gfpIsEmpty( gutenaFormsDashboard?.entry_list_url ) ? '#': gutenaFormsDashboard.entry_list_url+formID;
     
     const getEntryValue = ( entryDetails ) => {
         let value = entryDetails.value;
@@ -35,7 +35,7 @@ const EntryViewEdit = (props) => {
     return(
         <div className='view-section no-panel-section' >
         <div className='entries-navigation' >
-            <span className='entries-count'> <a href={ entry_list_url } >{  __( 'Entry ', 'gutena-forms-pro' ) }</a> {  entryData.current_entry_sno + __( ' of ', 'gutena-forms-pro' ) + entryData.total_entries }</span>
+            <span className='entries-count'> <a href={ entry_list_url } >{  __( 'Entry ', 'gutena-forms' ) }</a> {  entryData.current_entry_sno + ' / ' + entryData.total_entries }</span>
             {
                 ! gfpIsEmpty( entryData.previous_entry_id ) && (
                     <a 

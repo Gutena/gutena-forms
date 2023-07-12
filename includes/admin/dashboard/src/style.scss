@@ -1,9 +1,14 @@
 $gfp_body_color: #50575E;
+$gfp_border_color:#E5E7EB;
 $gfp_heading_color: #2C3338;
-$gfp_primary_color: #1F7CBC;
+$gfp_primary_color: #0EA489;
+$gfp_secondary_color: #EEF8F6;
 $gfp_red_color: #E83737;
+$gfp_orange_color: #E35D3F;
 $gfp_white_color: #fff;
 $gfp_input_border: 1px solid rgba(0,0,0,.1);
+
+*{scroll-behavior: smooth;}
 
 .toplevel_page_gutena-forms{
 	#wpcontent{
@@ -13,8 +18,6 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 	.notice{
 		display: none;
 	}
-
-    
 
 	.gutena-forms-dashboard {
         .title-with-icon, .table-view-list.entry th.manage-column.column-status {
@@ -46,22 +49,16 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		}
 		
 		> .gf-header{
+            box-sizing: border-box;
 			position: relative;
-			padding: 0.6rem 0.8rem;
+			padding: 0rem 0.8rem;
 			display: flex;
+            flex-wrap: wrap;
 			align-items: center;
 			background-color:#ffffff;
 			justify-content: space-between;
 			box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
 			.gf-logo-title {
-				img{
-					width: 28px;
-					height: 28px;
-				}
-				h2{
-					font-size: 1.25rem;
-					line-height: 1.3;
-				}
 				.select-change-url{
 					margin-left: 1rem;
 				}
@@ -77,6 +74,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		.gf-list-flex-space-bw{
 			display: flex;
 			justify-content: space-between;
+            align-items: center;
 		}
 	
 		.entries {
@@ -117,26 +115,423 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 	}
 
     /* gfp dasboard */
-    .gutena-forms-dashboard.gf-basic {
-        .gutena-forms-modal-btn{
-            text-decoration-line: none;
-            .no-panel-section .title{
-                display: flex;
-                gap: 0.5rem;
+    .gutena-forms-dashboard {
+        &.gf-basic{
+            .gutena-forms-modal-btn{
+                text-decoration-line: none;
+                .no-panel-section .title{
+                    display: flex;
+                    gap: 0.5rem;
+                    align-items: baseline;
+                }
+            }
+    
+            .components-panel__body-title .components-button {
                 align-items: baseline;
+                .gf-lock-svg{
+                    margin-left: 0.5rem;
+                }
+            }
+    
+            .gfp-settings-section{
+                opacity: 0.5;
             }
         }
 
-        .components-panel__body-title .components-button {
-            align-items: baseline;
-            .gf-lock-svg{
-                margin-left: 0.5rem;
+        .tablenav{
+            margin-top: 0;
+        }
+
+        /*button*/
+        .gf-btn-group{
+            display: flex;
+            gap: 1rem;
+        }
+        .components-button{
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 0.7rem 1.3rem;
+
+            &.gf-primary-btn{
+                background-color: $gfp_primary_color;
+            }
+
+            &.gf-dark-btn{
+                background-color: $gfp_heading_color;
+            }                
+        }
+        
+
+        /* Introduction page*/
+        .gf-introduction-page{
+            
+            .gf-container{
+                max-width: 1150px;
+                margin: auto;
+                padding: clamp(5.5rem, 5.5rem + ((1vw - 0.48rem) * 3.846), 7.5rem) 1rem;
+            }
+            /*Flex*/
+            .gf-flex{
+                display: flex;
+                gap: 3.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+                &.equal-length > div {
+                    -ms-flex: 1; /* IE 10 */
+                    flex: 1;
+                }
+            }
+
+            /*title*/
+            .gf-title{
+                font-size: 2rem;
+                line-height: 1.3;
+                font-weight: 600;
+                color: $gfp_heading_color;
+                margin: 1.5rem 0;
+            }
+
+            /*description*/
+            .gf-description{
+                font-size: 15px;
+                line-height: 1.6;
+                font-weight: 400;
+                color: $gfp_body_color;
+            }
+
+            
+
+            /*Welcome section*/
+            .gutena-forms-welcome-section{
+                background-color: $gfp_white_color;
+                .gf-right-section{
+                    max-width: 432px;
+                }
+
+                .gf-btn-group{
+                    margin-top: 1.5rem;
+                }
+            }
+
+            /*Features section*/
+            .gutena-forms-features-section{
+                background-color: $gfp_secondary_color;
+                text-align: center;
+                .gf-title{
+                    margin: 0 0 3.5rem 0;
+                }
+
+                .gf-feature-card{
+                    border-radius: 10px;
+                    background: $gfp_white_color;
+                    box-shadow: 0px 25px 60px 0px rgba(0, 0, 0, 0.10);
+                    padding: 42px 32px 51px 32px;
+                    box-sizing: border-box;
+                    position: relative;
+                    width: 329px;
+                    height: 284px;
+                    .gf-pro-tag{
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        padding: 2px 7px;
+                        font-size: 11px;
+                        font-weight: 400;
+                        border-radius: 50px;
+                        background-color: $gfp_orange_color;
+                        color: $gfp_white_color;
+                    }
+
+                    .gf-title{
+                        font-size: 18px;
+                        margin: 36px 0 10px 0;
+                    }
+                    .gf-description{
+                        font-size: 17px;
+                    }
+                }
+            }
+
+            /*Fields section*/
+            .gutena-forms-fields-section{
+                background-color: #015D61;
+                text-align: center;
+                .gf-flex{
+                    gap: 3rem;
+                }
+                h2.gf-title{
+                    color: $gfp_white_color
+                }
+
+                .gf-title{
+                    margin: 0 0 3.5rem 0;
+                }
+
+                .gf-feature-card{
+                    border-radius: 10px;
+                    background: $gfp_white_color;
+                    box-shadow: 0px 6px 40px 10px rgba(33, 37, 71, 0.08);
+                    padding: 35px 15px;
+                    box-sizing: border-box;
+                    position: relative;
+                    width: 150px;
+                    height: 150px;
+                    .gf-pro-tag{
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        padding: 2px 7px;
+                        font-size: 11px;
+                        font-weight: 400;
+                        border-radius: 50px;
+                        background-color: $gfp_orange_color;
+                        color: $gfp_white_color;
+                    }
+
+                    .gf-title{
+                        font-size: 1rem;
+                        margin-top: 0.8rem;
+                        line-height: 1.5;
+                    }
+                }
+            }
+
+            /*Pricing section*/
+            .gutena-forms-pricing-section{
+                background-color: $gfp_secondary_color;
+                text-align: center;
+                color: $gfp_heading_color;
+
+                h3.gf-description{
+                    font-size: 17px;
+                    color: $gfp_heading_color;
+                    margin: 0 0 3.5rem 0;
+                }
+
+                .gf-flex{
+                    gap: 1.8rem;
+                }
+
+                .gf-feature-card{
+                    border-radius: 10px;
+                    background: $gfp_white_color;
+                    box-shadow: 0px 5px 20px 0px rgba(33, 37, 71, 0.10);
+                    padding: 25px 32px 25px 32px;
+                    box-sizing: border-box;
+                    position: relative;
+                    width: 249px;
+                    height: 455px;
+                    
+                    .gf-title{
+                        font-size: 16px;
+                        margin: 0;
+                        color: $gfp_primary_color;
+                    }
+
+                    .gf-price{
+                        font-size: 44px;
+                        font-weight: 600;
+                        margin: 0.5rem 0 0.8rem 0;
+                    }
+
+                    .gf-description{
+                        font-size: 16px;
+                        font-weight: 600;
+                        line-height: 1.5;
+                        color: $gfp_heading_color;
+                        padding: 3px 15px;
+                        border-radius: 100px;
+                        background: #FFE1AB;
+                    }
+
+                    .gf-features-list{
+                        padding: 0.3rem 0 0.2rem 0;
+
+                        li{
+                            display: flex;
+                            font-size: 14px;
+                            padding: 0.7rem 0;
+                            border-bottom: 1px solid rgba(44, 51, 56, 0.1);
+                            &:last-child{
+                                border-bottom: none;
+                            }
+
+                            .gf-icon{
+                                padding: 3px 8px 0 0;
+                            }
+                            
+                        }
+                        
+                    }
+
+                    .gf-primary-btn{
+                        justify-content: center;
+                        width: 100%;
+                    }
+                }
+            }
+
+            /* FAQ section */
+            .gutena-forms-faq-section{
+                background-color: $gfp_secondary_color;
+                text-align: center;
+                color: $gfp_heading_color;
+                .gf-container{
+                    max-width: 900px;
+                    padding-top: 0;
+                }
+
+                .gf-title{
+                    margin: 0 0 3.5rem 0;
+                }
+
+                .gf-accordions{
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.25rem;
+
+                    .gf-accordions-panel{
+                        border-radius: 5px;
+                        border: 1px solid #E0E8E6;
+                        padding: 1.5rem;
+                        background-color: $gfp_white_color;
+
+                    }
+
+                    .gf-title-icon{
+                        display: flex;
+                        justify-content: space-between;
+                        cursor: pointer;
+                        .gf-title{
+                            font-size: 16px;
+                            margin: 0;
+                        }
+                        transition: 0.4s;
+                    }
+
+                    .gf-description{
+                        text-align: left;
+                        max-width: 756px;
+                        max-height: 0;
+                        overflow: hidden;
+                        transition: max-height 0.2s ease-out;
+                        p{
+                            padding-top: 0.2rem;
+                            color: $gfp_body_color;
+                        }
+                    }
+                }
             }
         }
 
-        .gfp-settings-section{
-            opacity: 0.5;
+        /*Knowledge base page */
+        #gfp-page-doc{
+            background: $gfp_secondary_color;
+            padding: 2rem 0;
+            .gutena-forms-knowledge-base {
+                margin: auto;
+                max-width: 900px;
+                background: $gfp_white_color;
+                padding: 2.5rem 2.875rem;
+    
+                .gutena-title {
+                    font-size: 1.8rem;
+                    font-weight: 600;
+                    margin-bottom: 2rem;
+                }
+
+                .gutena-docs {
+                    margin-bottom: 30px;
+                    padding-bottom: 30px;
+                    border-bottom: 1px solid rgba(33, 34, 47, .1);
+    
+                    .gutena-topics {
+                        .gutena-topic {
+                            margin-bottom: 1rem;
+                            &::marker {
+                                color: $gfp_heading_color;
+                                font-weight: 600;
+                                font-size: 1rem;
+                                line-height: 1.6;
+                            }
+                            a {
+                                color: $gfp_heading_color;
+                                font-weight: 600;
+                                font-size: 1rem;
+                                line-height: 1.6;
+                                text-decoration-line: none;
+                            }
+                        }
+                    }
+                }
+    
+                .gutena-support {
+                    margin-bottom: 35px;
+                    padding-bottom: 35px;
+                    border-bottom: 1px solid rgba(33, 34, 47, .1);
+    
+                    .gutena-buttons {
+                        display: flex;
+                        gap: 21px;
+                        
+                        a:visited {
+                            color: $gfp_white_color;
+                        }
+                    }
+                    
+                    .gutena-details {
+                        max-width: 321px;
+                        .gutena-title {
+                            margin-bottom: 1rem;
+                        }
+                        .gutena-description {
+                            padding-bottom: 2rem;
+                            margin: 0;
+                            font-size: 17px;
+                            line-height: 1.8;
+                            color: $gfp_body_color;
+                        }
+                    }
+                }
+    
+                .gutena-changelog {
+                    white-space: pre;
+    
+                    .gutena-details {
+                        .gutena-title {
+                            margin-bottom: 30px;
+                        }
+    
+                        .gutena-description 
+                        {
+                            font-size: 15px;
+                            color: $gfp_body_color;
+                            line-height: 1.6;
+                            .version {
+                                display: block;
+                                color:$gfp_heading_color;
+                                font-weight: 600;
+                                font-size: 18px;
+                                padding-top: 25px;
+                                border-top: 1px solid rgba(33, 34, 47, .1);
+        
+                                &:first-of-type {
+                                    padding: 0;
+                                    border: 0;
+                                }
+                            }
+                        }
+                        
+                    }
+                }
+
+                .gf-btn-group .components-button{
+                    padding: 1.5rem 1.2rem;
+                }
+            }
         }
+        
     }
 
 	.gutena-forms-modal {
@@ -298,6 +693,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
             }
         }
     }
+
 }
 
 /*gfp start*/
@@ -315,28 +711,52 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
     
     .gutena-forms-dashboard {
         font-size: 14px;
-        line-height: 1.7;
+        line-height: 1.6;
         .gf-header {
             .gfp-dashboard-navigation {
                 ul {
                     list-style: none;
                     display: flex;
-                    gap: 1.5rem ;
                     margin: 0;
-                    li a{
-                        padding: 7px 10px;
-                        font-size: 14px;
-                        line-height: 1.3;
-                        font-weight: 600;
-                        text-decoration: none;
-                        color:$gfp_heading_color;
+                    padding-left: 2rem;
+                    li{
+                        padding: 1rem 0rem;
+                        border-left: 1px solid $gfp_border_color;
+                        margin-bottom: 0;
                         &.active{
-                            background-color: $gfp_primary_color;
-                            color: $gfp_white_color;
-                            border-radius: 5px;
+                            color: $gfp_primary_color;
+                            border-bottom: 2px solid $gfp_primary_color;
                         }
+
+                        a {
+                            padding: 1rem 1.5rem;
+                            font-size: 15px;
+                            line-height: 1.3;
+                            font-weight: 600;
+                            text-decoration-line: none ;
+                            outline: none;
+                            color:$gfp_heading_color;
+                            -webkit-tap-highlight-color: transparent;
+                            &:focus{
+                                outline: none !important;
+                                box-shadow: none;
+                            }
+                        }
+                       
                     }
                 }
+            }
+        }
+        #gfp-page-breadcrumb{
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 1.2rem 0.8rem;
+            border-bottom: 1px solid rgba(44, 51, 56, 0.1);
+            font-size: 14px;
+            font-weight: 600;
+            a {
+                text-decoration: none;
             }
         }
         .widefat .check-column {
@@ -709,4 +1129,3 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
         }
     }
 }
-

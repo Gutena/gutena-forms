@@ -9,9 +9,53 @@ document.addEventListener("DOMContentLoaded", function(){
                 this.goToEntryViewPage();
                 setTimeout(() => {
                     this.gutenaFormsModal();
+                    this.accordions();
+                    this.scrollToSectionFromUrl();
                 }, 500);
+                
+                this.makeDashboardVisible();
             } else {
                 console.log(" gutenaFormsDashboard not found");
+            }
+        }
+        
+        //scroll to section from url in case react component may not appear bedore call
+        scrollToSectionFromUrl() {
+            let elId = window.location.hash;
+            if ('undefined' !== typeof elId ) {
+                let el = document.querySelector( elId );
+                if ( 'undefined' !== typeof el ) {
+                    location.hash = '#';
+                    location.hash = elId;
+                }
+            }
+        }
+
+        //make page visible after fully loaded
+        makeDashboardVisible(){
+           let domID = document.getElementById("gutena-forms-dashboard-page");
+            domID.style.display="block";
+        }
+        
+        //accordions: panel open close
+        accordions(){
+            let panels = document.querySelectorAll(
+                '#gutena-forms-dashboard-page .gf-accordions .gf-title-icon'
+            );
+            
+            if ( 0 < panels.length ) {
+                
+                for ( let i = 0; i < panels.length; i++ ) {
+                    panels[ i ].addEventListener( 'click', function () {
+                        
+                        let panel = this.nextElementSibling;
+                        if (panel.style.maxHeight) {
+                            panel.style.maxHeight = null;
+                        } else {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                        } 
+                    })
+                }
             }
         }
 

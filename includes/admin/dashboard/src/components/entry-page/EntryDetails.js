@@ -11,32 +11,32 @@ const EntryDetails = (props) => {
             <ul className='details'>
                 <li>
                     <span className='icon'>{ formIcon() }</span>
-                    <span className='label'>{ __( 'Form :', 'gutena-forms-pro' ) }</span>
+                    <span className='label'>{ __( 'Form :', 'gutena-forms' ) }</span>
                     <span className='description'>{ entryData.form_name }</span>
                 </li>
                 <li>
                     <span className='icon'>{ listIcon() }</span>
-                    <span className='label'>{ __( 'Entry ID :', 'gutena-forms-pro' ) }</span>
+                    <span className='label'>{ __( 'Entry ID :', 'gutena-forms' ) }</span>
                     <span className='description'>{ entryData.entry_id }</span>
                 </li>
                 <li>
                     <span className='icon'>{ calenderCheckIcon() }</span>
-                    <span className='label'>{ __( 'Submitted :', 'gutena-forms-pro' ) }</span>
+                    <span className='label'>{ __( 'Submitted :', 'gutena-forms' ) }</span>
                     <span className='description'>{ gfpDateFormat( entryData.added_time, '@' ) }</span>
                 </li>
                 <li>
                     <span className='icon'>{ calenderEditedIcon() }</span>
-                    <span className='label'>{ __( 'Modified :', 'gutena-forms-pro' ) }</span>
+                    <span className='label'>{ __( 'Modified :', 'gutena-forms' ) }</span>
                     <span className='description'>{ gfpDateFormat( entryData.modified_time, '@' ) }</span>
                 </li>
                 <li>
                     <span className='icon'>{ userIcon() }</span>
-                    <span className='label'>{ __( 'User :', 'gutena-forms-pro' ) }</span>
+                    <span className='label'>{ __( 'User :', 'gutena-forms' ) }</span>
                     <span className='description'>{ entryData.user_display_name }</span>
                 </li>
                 {/* <li>
                     <span className='icon'>{ desktopIcon() }</span>
-                    <span className='label'>{ __( 'User IP', 'gutena-forms-pro' ) } :</span>
+                    <span className='label'>{ __( 'User IP', 'gutena-forms' ) } :</span>
                     <span className='description'>{ entryData.ip_address }192.258.521</span>
                 </li> */}
             </ul>

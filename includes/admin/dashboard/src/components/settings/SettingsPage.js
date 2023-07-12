@@ -17,22 +17,22 @@ const SettingsPage = (props) => {
                 tabs={ [
                     {
                         name:'status',
-                        title:__( 'Status', 'gutena-forms-pro' ),
-                        description:__( 'Manage status of your form entries from here', 'gutena-forms-pro' ),
+                        title:__( 'Status', 'gutena-forms' ),
+                        description:__( 'Manage status of your form entries from here', 'gutena-forms' ),
                         className: 'status',
                         component:StatusTab
                     },
                     {
                         name:'tags',
-                        title:__( 'Tags', 'gutena-forms-pro' ),
-                        description:__( 'Manage tags of your form entries from here', 'gutena-forms-pro' ),
+                        title:__( 'Tags', 'gutena-forms' ),
+                        description:__( 'Manage tags of your form entries from here', 'gutena-forms' ),
                         className: 'integrations',
                         component:TagsTab
                     },
                     {
                         name:'useraccess',
-                        title:__( 'User Access', 'gutena-forms-pro' ),
-                        description:__( 'Manage user access for your form entries from here', 'gutena-forms-pro' ),
+                        title:__( 'User Access', 'gutena-forms' ),
+                        description:__( 'Manage user access for your form entries from here', 'gutena-forms' ),
                         className: 'useraccess',
                         component:UserAccessTab
                     },
