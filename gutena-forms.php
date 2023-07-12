@@ -51,8 +51,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 	}
 
 	if ( ! function_exists( 'is_gutena_forms_pro' ) ) {
-		function is_gutena_forms_pro() {
-			return defined( 'GUTENA_FORMS_PRO_VERSION' );
+		function is_gutena_forms_pro( $valid = true ) {
+			return  true === $valid ? ( defined( 'GUTENA_FORMS_PRO_VALID' ) && GUTENA_FORMS_PRO_VALID ) : defined( 'GUTENA_FORMS_PRO_VERSION' );
 		}
 	}
 

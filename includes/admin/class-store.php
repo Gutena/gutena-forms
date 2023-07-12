@@ -244,44 +244,21 @@
 		 * 
 		 * @return HTML 
 		 */
-		public function get_dashboard_header( $dropdown = '' ) {
-			if ( ! function_exists( 'wp_kses_post' ) ) {
-				return false;
-			}
+		public function get_dashboard_header() {
 			//logo title
 			return 
 				'<div class="gf-header">
-				<div class="gf-logo-title">
+				<div id="gf-header-left-section" class="gf-logo-title">
+				<a href="'.esc_url( admin_url( 'admin.php?page=gutena-forms' ) ).'" >
 				<img src="'.GUTENA_FORMS_PLUGIN_URL . 'assets/img/logo.png'.'" />
-				<h2 class="gf-heading" >'.__( 'Forms', 'gutena-forms' ).' </h2>
-				' . $dropdown . '
+				</a>
+				<div id="gfp-dashboard-navigation" class="gfp-dashboard-navigation"></div>
 				</div>
-				'.( defined( 'GUTENA_KIT_PRO_VERSION' ) ? '': '<a href="https://gutena.io/pricing" class="gf-btn gf-pro-btn" target="_blank" > <span class="gf-btn-text">'.__( 'Go Premium', 'gutena-forms' ).'</span> </a>' ).'
-				' . $this->header_navigation() . '
+				
+				<div id="gf-header-right-section" >
+				' .( is_gutena_forms_pro( false ) ? '': '<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ) . '" class="gf-btn gf-pro-btn"  > <span class="gf-btn-text">'.__( 'Go Premium', 'gutena-forms' ).'</span> </a>' ). '
+				</div>
 				</div>';
-		}
-
-
-		/**
-		 * render custom header
-		 */
-		private function header_navigation( ) {
-			
-			if ( false === $this->is_gfadmin() ) {
-				return '';
-			}
-			
-			$pagetype = ( empty( $_GET['pagetype'] ) || ! in_array( $_GET['pagetype'], array( 'settings' ) ) ) ? '': sanitize_key( wp_unslash( $_GET['pagetype'] ) );
-			return '<div class="gfp-dashboard-navigation">
-				<ul>
-					<li>
-						<a class="'.( '' === $pagetype ? 'active':'' ).'" href="'.esc_url( admin_url( 'admin.php?page=gutena-forms' ) ).'" >'.__( 'Entries', 'gutena-forms-pro' ).'</a>
-					</li>
-					<li>
-						<a class="'.( 'settings' === $pagetype ? 'active':'' ).'" href="'.esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=settings' ) ).'" >'.__( 'Settings', 'gutena-forms-pro' ).'</a>
-					</li>
-				</ul>
-			</div>';
 		}
 
 	}

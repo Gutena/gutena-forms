@@ -49,7 +49,7 @@ const TagsTab = (props) => {
                         <TextControl
                             value={ itemTags?.title }
                             onChange={ ( title ) => {} }
-                            placeholder={ __( 'Tags Title', 'gutena-forms-pro' ) }
+                            placeholder={ __( 'Tags Title', 'gutena-forms' ) }
                             disabled={ true }
                         />
                         <Button 
@@ -57,7 +57,7 @@ const TagsTab = (props) => {
                         className='delete-btn'
                         isDestructive={ true }
                         onClick={ () => {} }
-                        title={ __( 'Delete tag', 'gutena-forms-pro' ) }
+                        title={ __( 'Delete tag', 'gutena-forms' ) }
                         icon={ trashIcon() }
                         disabled={ true }
                         >
@@ -70,12 +70,12 @@ const TagsTab = (props) => {
                     (
                         <div>
                             <Button 
-                                label={ __( 'Add Tags', 'gutena-forms-pro' ) }
+                                label={ __( 'Add Tags', 'gutena-forms' ) }
                                 variant="secondary"
                                 onClick={ () => {} }
                                 disabled={ true }
                             >
-                                    { __( 'Add Tags', 'gutena-forms-pro' ) }
+                                    { __( 'Add Tags', 'gutena-forms' ) }
                             </Button>
                         </div>
                     )
@@ -83,13 +83,13 @@ const TagsTab = (props) => {
             
                 <div>
                     <Button 
-                        label={ __( 'Save Tags', 'gutena-forms-pro' ) }
+                        label={ __( 'Save Tags', 'gutena-forms' ) }
                         variant="primary"
                         className='save-btn'
                         onClick={ () => {} }
                         disabled={ true }
                     >
-                            { __( 'Save', 'gutena-forms-pro' ) }
+                            { __( 'Save', 'gutena-forms' ) }
                     </Button> 
                 </div>
             </div>
