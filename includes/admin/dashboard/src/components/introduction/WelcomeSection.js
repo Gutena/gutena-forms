@@ -20,7 +20,7 @@ const WelcomeSection = () => {
                     </p>
                     <div className='gf-btn-group'>
                         <Button 
-                        href='#' 
+                        href='#gutena-forms-pricing' 
                         className='gf-primary-btn'
                         variant='primary'
                         >

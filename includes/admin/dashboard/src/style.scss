@@ -147,19 +147,22 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
             display: flex;
             gap: 1rem;
         }
-        .components-button{
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 600;
-            padding: 0.7rem 1.3rem;
 
-            &.gf-primary-btn{
-                background-color: $gfp_primary_color;
+        .gf-introduction-page, .gf-btn-group {
+            .components-button{
+                border-radius: 5px;
+                font-size: 16px;
+                font-weight: 600;
+                padding: 0.7rem 1.3rem;
+    
+                &.gf-primary-btn{
+                    background-color: $gfp_primary_color;
+                }
+    
+                &.gf-dark-btn{
+                    background-color: $gfp_heading_color;
+                }                
             }
-
-            &.gf-dark-btn{
-                background-color: $gfp_heading_color;
-            }                
         }
         
 

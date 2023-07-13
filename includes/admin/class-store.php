@@ -256,7 +256,7 @@
 				</div>
 				
 				<div id="gf-header-right-section" >
-				' .( is_gutena_forms_pro( false ) ? '': '<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ) . '" class="gf-btn gf-pro-btn"  > <span class="gf-btn-text">'.__( 'Go Premium', 'gutena-forms' ).'</span> </a>' ). '
+				' .( is_gutena_forms_pro( false ) ? '': '<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ) . '" class="gf-btn gf-pro-btn"  > <span class="gf-btn-text">'.__( 'Go Premium - 14 Day Free Trial', 'gutena-forms' ).'</span> </a>' ). '
 				</div>
 				</div>';
 		}
