@@ -91,6 +91,15 @@
 		}
 
 		/**
+		 * Message to be displayed when there are no items
+		 *
+		 * @since 3.1.0
+		 */
+		public function no_items() {
+			_e( 'No entries found.' );
+		}
+
+		/**
 		 * Gets a list of columns.
 		 *
 		 * The format is:

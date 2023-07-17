@@ -1085,6 +1085,9 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                             .components-base-control__field .components-text-control__input {
                                 border-right: $gfp_input_border;
                             }
+                            .block-editor-tools-panel-color-gradient-settings__item .block-editor-panel-color-gradient-settings__dropdown{
+                                padding-right: 19px;
+                            }
                         }
                         border: $gfp_input_border;
                         .block-editor-tools-panel-color-gradient-settings__item{
