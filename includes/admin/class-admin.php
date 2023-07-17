@@ -399,14 +399,14 @@
 									),
 									array(
 										'title' => __( 'DEVELOPER PLAN', 'gutena-forms' ),
-										'price'	=> '$59.00',
+										'price'	=> '$29.00',
 										'description' => __( '5 Site', 'gutena-forms' ),
 										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=2',
 									),
 									array(
 										'title' => __( 'AGENCY PLAN', 'gutena-forms' ),
-										'price'	=> '$119.00',
-										'description' => __( '25 Sites', 'gutena-forms' ),
+										'price'	=> '$99.00',
+										'description' => __( 'Unlimited Sites', 'gutena-forms' ),
 										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=3',
 									),
 								)
@@ -449,7 +449,6 @@
 								)
 							)
 						)
-						
 					)
 				);
 			}

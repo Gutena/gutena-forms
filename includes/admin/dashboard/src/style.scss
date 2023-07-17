@@ -3,6 +3,7 @@ $gfp_border_color:#E5E7EB;
 $gfp_heading_color: #2C3338;
 $gfp_primary_color: #0EA489;
 $gfp_secondary_color: #EEF8F6;
+$gfp_wp_primary_color: #2271b1;
 $gfp_red_color: #E83737;
 $gfp_orange_color: #E35D3F;
 $gfp_white_color: #fff;
@@ -76,12 +77,25 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			justify-content: space-between;
             align-items: center;
 		}
+
+        .wp-list-table tbody tr{
+            &:hover{
+                box-shadow: inset 1px 0 0 rgb(255 255 255 / 20%), inset -1px 0 0 rgb(255 255 255 / 20%), 0 0 4px 0 rgb(95 99 104 / 20%), 0 0 6px 2px rgb(95 99 104 / 20%);
+                position: relative;
+                z-index: 2;
+                cursor: pointer;
+            }
+
+            td {
+                vertical-align:middle;
+            }
+        }
 	
 		.entries {
 			.wp-list-table {
-				tr{
+				tbody tr{
 					background-color: #f6f7f7;
-					box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
+					//box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
 					&.unread {
 						background-color: #ffffff;
 						td {
@@ -92,24 +106,30 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 					td {
 						color:$gfp_body_color;
 					}
-					
-				}
-
-                tbody tr{
-                    &:hover{
-                        box-shadow: inset 1px 0 0 rgb(255 255 255 / 20%), inset -1px 0 0 rgb(255 255 255 / 20%), 0 0 4px 0 rgb(95 99 104 / 60%), 0 0 6px 2px rgb(95 99 104 / 60%);
-                        position: relative;
-                        z-index: 2;
-                        cursor: pointer;
-                    }
 
                     .check-column, .column-status , .column-entry_action {
                         &:hover{
                             position: relative;
                             z-index: 9;
                         }
+
+                        svg:hover{
+                            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+                        }
                     }
-                }
+     
+                    .check-column input:hover, .column-status:hover .status-title-icon-wrapper{
+                        border-color: $gfp_wp_primary_color;
+                        box-shadow: 0 0 0 1px $gfp_wp_primary_color;
+                        outline: 1px solid transparent;
+                    }
+
+                    a:hover{
+                        text-decoration-line: underline;
+                        text-underline-offset: 2px;
+                    }
+                    
+				}
 			}
 		}
 	}
@@ -148,6 +168,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
             gap: 1rem;
         }
 
+        /*Button*/
         .gf-introduction-page, .gf-btn-group {
             .components-button{
                 border-radius: 5px;
@@ -635,7 +656,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
             height: 163px;
             background-color: #1D2327;
             color:#fff;
-            padding: 15px;
+            padding: 20px;
             box-sizing: border-box;
 
             .gf-header {
@@ -750,6 +771,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 }
             }
         }
+        /*breadcrumb*/
         #gfp-page-breadcrumb{
             display: flex;
             gap: 0.5rem;
@@ -762,6 +784,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 text-decoration: none;
             }
         }
+
         .widefat .check-column {
             width: 7em;
         }
@@ -1005,6 +1028,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
         }
 
+        /*Setting page*/
         .gfp-settings-page {
             margin-bottom: 1.5rem;
             padding-right: 1.25rem;
@@ -1013,7 +1037,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 .components-tab-panel__tabs-item{
                     height: 5rem;
                     font-size: 15px;
-                    &.active-tab{
+                    &.active-tab, &:hover{
                         color:$gfp_primary_color;
                     }
                 }
@@ -1049,6 +1073,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                             display: flex;
                             flex-direction: column;
                             gap:1.25rem;
+                            padding-bottom: 1rem;
                             .delete-btn{
                                 padding: 14px 15px;
                             }
@@ -1103,14 +1128,19 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                             border-radius: 5px;
                         }
                         .save-btn{
-                            min-width: 100px;
+                            min-width: 120px;
+                            min-height: 40px;
+                            font-size: 14px;
                             justify-content: center;
                         }
+
+                        
                     }
                     
                     /*User Access Tab*/
                     .user-acess{
                         margin-top: 2rem;
+                        padding-bottom: 1rem;
                         display: flex;
                         flex-direction: column;
                         gap: 1rem;
@@ -1118,6 +1148,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                         max-width: 250px;
                         overflow-y: auto;
                         .username-role-row{
+                            padding-bottom: 0.5rem;
                             .username {
                                 font-weight: 500;
                             }

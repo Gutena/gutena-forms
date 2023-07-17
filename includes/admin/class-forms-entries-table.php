@@ -314,7 +314,7 @@
 			<div class="gutena-forms-modal-content" >
 			<span class="gf-close-btn">&times;</span>
 			<div class="gf-header" > 
-				<div class="gf-title" >'.__( 'Form Entry', 'gutena-forms' ).'</div> 
+				<div class="gf-title" >'.__( 'Entry', 'gutena-forms' ).'</div> 
 				<div class="gf-action" > 
 					<div class="gf-action-btn" >'.__( 'Actions', 'gutena-forms' ).' </div>
 					<div class="gf-action-content" style="display:none" >

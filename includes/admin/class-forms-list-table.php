@@ -138,6 +138,19 @@
 			);
 		}
 
+		/**
+		 * Generates content for a single row of the table.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param object|array $item The current item
+		 */
+		public function single_row( $form ) {
+			echo '<tr formid="'.esc_attr( $form->form_id ).'" >';
+			$this->single_row_columns( $form );
+			echo '</tr>';
+		}
+
 		public function column_default( $form, $column_name ) {
 			$column_value = $form->form_id;
 			switch ( $column_name ) {

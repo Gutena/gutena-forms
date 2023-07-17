@@ -91,7 +91,6 @@ const UserAccessTab = (props) => {
                 }
             </div>
             <div className="add-save-row">
-                <div>
                 <Button 
                     label={ __( 'Save user access', 'gutena-forms' ) }
                     variant="primary"
@@ -101,7 +100,6 @@ const UserAccessTab = (props) => {
                 >
                         {  __( 'Save', 'gutena-forms' ) }
                 </Button> 
-                </div>
             </div>
         </div>
     );
