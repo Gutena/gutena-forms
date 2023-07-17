@@ -35,7 +35,7 @@ const EntryViewEdit = (props) => {
     return(
         <div className='view-section no-panel-section' >
         <div className='entries-navigation' >
-            <span className='entries-count'> <a href={ entry_list_url } >{  __( 'Entry ', 'gutena-forms' ) }</a> {  entryData.current_entry_sno + ' / ' + entryData.total_entries }</span>
+            <span className='entries-count'> <span >{  __( 'Entry ', 'gutena-forms' ) }</span> {  entryData.current_entry_sno + ' / ' + entryData.total_entries }</span>
             {
                 ! gfpIsEmpty( entryData.previous_entry_id ) && (
                     <a 

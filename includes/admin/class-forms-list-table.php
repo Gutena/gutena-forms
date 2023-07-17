@@ -91,6 +91,15 @@
 		}
 
 		/**
+		 * Message to be displayed when there are no items
+		 *
+		 * @since 3.1.0
+		 */
+		public function no_items() {
+			_e( 'No entries found.' );
+		}
+
+		/**
 		 * Gets a list of columns.
 		 *
 		 * The format is:
@@ -136,6 +145,19 @@
 			return array( 
 				'date' => array( 'date', true )
 			);
+		}
+
+		/**
+		 * Generates content for a single row of the table.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param object|array $item The current item
+		 */
+		public function single_row( $form ) {
+			echo '<tr formid="'.esc_attr( $form->form_id ).'" >';
+			$this->single_row_columns( $form );
+			echo '</tr>';
 		}
 
 		public function column_default( $form, $column_name ) {

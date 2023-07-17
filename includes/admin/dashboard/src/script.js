@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 this.select_change_url();
                 this.confirm_delete();
                 this.read_entries_status_update();
+                this.goToEntryListPage();
                 this.goToEntryViewPage();
                 setTimeout(() => {
                     this.gutenaFormsModal();
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function(){
         //scroll to section from url in case react component may not appear bedore call
         scrollToSectionFromUrl() {
             let elId = window.location.hash;
-            if ('undefined' !== typeof elId ) {
+            if ( 'undefined' !== typeof elId  && null !== elId && '' !== elId ) {
                 let el = document.querySelector( elId );
                 if ( 'undefined' !== typeof el ) {
                     location.hash = '#';
@@ -291,6 +292,35 @@ document.addEventListener("DOMContentLoaded", function(){
         
         }
 
+         /**
+         * Go to form's Entry list page on click row 
+         */
+         goToEntryListPage(){
+            //Open modal
+            let tableRow = document.querySelectorAll(
+                '.toplevel_page_gutena-forms .gutena-forms-dashboard  .table-view-list.form  tbody tr'
+            );
+            let i = 0;
+            let obj = this;
+            if ( 0 < tableRow.length ) {
+                for ( i = 0; i < tableRow.length; i++ ) {
+                    tableRow[ i ].addEventListener( 'click', function (e) {
+                        let el = e.target;
+                        let column_name = el.getAttribute('data-colname');
+                        column_name = obj.isEmpty( column_name ) ? '': column_name.toLowerCase()
+                        if ( '' !== column_name && ! ['status','action'].includes( column_name ) ) {
+                            let formid = this.getAttribute('formid');
+                            if ( ! obj.isEmpty( formid ) ) {
+                                e.preventDefault();
+                                window.location = gutenaFormsDashboard.entry_list_url+formid;
+                            }
+                        }
+                        
+                    });
+                }
+            }
+        
+        }
     }
 
     const GfBasicDashboard1 = new GfBasicDashboard();
