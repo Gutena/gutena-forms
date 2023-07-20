@@ -4,24 +4,32 @@ import RelatedEntries from './RelatedEntries';
 import EntryAdminNotes from './EntryAdminNotes';
 import EntriesStatus from './EntriesStatus';
 import EntriesTags from './EntriesTags';
-
-const EntryPage = (props) => {
+const noop = () => {};
+const EntryPage = ({
+    onClickFunc = noop
+}) => {
     
     return(
         <div className='gfp-entry-page' >
             <div className='left-section'>
                 <EntryViewEdit />
-                <a modalid="gutena-forms-go-pro-modal" href="#" className="gutena-forms-modal-btn"  >
-                <EntryAdminNotes />
-                </a>
+                <div   
+                onClick={ () => onClickFunc() }
+                >
+                <EntryAdminNotes 
+                 onClickFunc={ onClickFunc }
+                />
+                </div>
             </div>
             <div className='right-section'>
                 <EntryDetails />
-                <a modalid="gutena-forms-go-pro-modal" href="#" className="gutena-forms-modal-btn"  >
+                <div   
+                onClick={ () => onClickFunc() }
+                >
                 <EntriesStatus />
                 <EntriesTags />
                 <RelatedEntries />
-                </a>
+                </div>
             </div>
         </div>
     );

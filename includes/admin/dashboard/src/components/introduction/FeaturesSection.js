@@ -20,7 +20,7 @@ const FeaturesSection = () => {
                                     )
                                 }
                                 <div className='gf-icon'>
-                                    <img src={ item?.icon } alt={ __( 'feature icon', 'gutena-forms' ) } />
+                                    <img src={ item?.icon } alt={ __( 'feature icon', 'gutena-forms' ) } width="50" height="50" />
                                 </div>
                                 <div className='gf-title'>
                                     { item?.title } 

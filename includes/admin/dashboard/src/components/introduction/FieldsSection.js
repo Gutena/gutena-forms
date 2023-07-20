@@ -20,7 +20,7 @@ const FieldsSection = () => {
                                     )
                                 }
                                 <div className='gf-icon'>
-                                    <img src={ item.icon } alt={ __( 'feature icon', 'gutena-forms' ) } />
+                                    <img src={ item.icon } alt={ __( 'feature icon', 'gutena-forms' ) } width="36" height="36" />
                                 </div>
                                 <div className='gf-title'>
                                     { item.title } 

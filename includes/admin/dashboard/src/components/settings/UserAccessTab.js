@@ -9,13 +9,10 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { gfpIsEmpty, gfpSanitizeName, gfpUcFirst, saveSettingsAjax } from '../../helper';
 import { trashIcon } from '../icon';
 
-/*
-    userAccessList[ userID ] = {
-        entries : ['view','edit','delete']
-    };
-*/
-
-const UserAccessTab = (props) => {
+const noop = () => {};
+const UserAccessTab = ({
+    onClickFunc = noop
+}) => {
     
     //Get users list
 	const users = useSelect( ( select ) => {
@@ -62,7 +59,7 @@ const UserAccessTab = (props) => {
     const replaceUnderScoreWithSpace = ( data ) => gfpIsEmpty( data ) ? data :  data.toLowerCase().replace( /_/g, ' ' );
 
     return (
-        <div className='user-acess-tab'>
+        <div className='user-acess-tab gfp-settings-section'>
             <div className='user-acess'>
                 {
                     users.map(( user, index )=>(
@@ -95,8 +92,8 @@ const UserAccessTab = (props) => {
                     label={ __( 'Save user access', 'gutena-forms' ) }
                     variant="primary"
                     className='save-btn'
-                    disabled={ true }
-                    onClick={ () => {} }
+                    disabled={ false }
+                    onClick={ () => onClickFunc() }
                 >
                         {  __( 'Save', 'gutena-forms' ) }
                 </Button> 

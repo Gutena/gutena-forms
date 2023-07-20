@@ -37,7 +37,7 @@ const KnowledgeBase = () => {
                             { gutenaFormsDoc?.support?.documentation_text }
                         </Button>
                         <Button 
-                        href={ gutenaFormsDoc?.support?.link_url }
+                        href={ gutenaFormsDashboard?.support_link }
                         target='_blank'
                         className='gf-primary-btn'
                         variant='primary'

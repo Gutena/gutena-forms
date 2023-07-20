@@ -70,23 +70,34 @@ domReady( () => {
     }
 
     if ( ! gfpIsEmpty( gutenaFormsDashboard?.is_gutena_forms_pro ) && '0' === gutenaFormsDashboard.is_gutena_forms_pro ) {
+        const openGoToProModal = () => {
+            let modalEl = document.querySelector('#gutena-forms-go-pro-modal');
+            if ( ! gfpIsEmpty( modalEl ) ) {
+                modalEl.style.display = "block";
+            }
+        }
+
         //Page: Entry View 
         if ( 'undefined' !== typeof gutenaFormsEntryDetails ) {
             domID = document.getElementById("gfp-page-viewentry");
             if ( ! gfpIsEmpty( domID ) ) {
                 const root = createRoot( domID );
                 root.render(
-                    <EntryPage />
+                    <EntryPage
+                    onClickFunc={ openGoToProModal }
+                    />
                 );
             }
         }
 
         //Page: Settings
         domID = document.getElementById("gfp-page-settings");
-        if ( ! gfpIsEmpty( domID ) ) {
+        if ( ! gfpIsEmpty( domID ) && 'undefined' !== typeof gutenaFormsSettingsTab && null !== gutenaFormsSettingsTab ) {
             const root = createRoot( domID );
             root.render(
-                <SettingsPage />
+                <SettingsPage
+                onClickFunc={ openGoToProModal }
+                />
             );
         }
         

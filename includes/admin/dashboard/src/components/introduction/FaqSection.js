@@ -52,6 +52,13 @@ const FaqSection = () => {
                         ))
                     }
                 </ul>
+
+                <p className='gf-contact-sales' >
+                    <span>{ faq?.sales?.title1 } </span>
+                    <a href={ faq?.sales?.link } target="_blank">
+                    { faq?.sales?.title2 } 
+                    </a>
+                </p>
             </div>
         </div>
     );

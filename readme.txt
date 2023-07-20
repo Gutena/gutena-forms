@@ -138,6 +138,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 * Added form submission view in admin dashboard
 * Lock form field and error message block inside field group template
 * Made form field block used by only field group block by hiding it from inserter
+* Added Reply To email and name features in form block
 
 = 1.0.9 | 10th February 2023 =
 * Made gutena-forms parent from ancestor in all child blocks

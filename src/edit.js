@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { useEffect } from '@wordpress/element';
-import { gfIsEmpty } from './helper';
+import { gfIsEmpty, getInnerBlocksbyNameAttr } from './helper';
 import {
 	InspectorControls,
 	__experimentalBlockVariationPicker,
@@ -122,6 +122,8 @@ export default function Edit( props ) {
 		afterSubmitHide,
 		redirectUrl,
 		adminEmails,
+		replyToEmail,
+		replyToName,
 		adminEmailSubject,
 		emailNotifyAdmin,
 		emailNotifyUser,
@@ -131,10 +133,49 @@ export default function Edit( props ) {
 		recaptcha,
 	} = attributes;
 
+	const {
+		getClientIdsOfDescendants,
+		getBlock
+	} = useSelect( blockEditorStore );
+
+	const getEmailFields = () => {
+		let emailOptions = [];
+		const blocks = getBlock( clientId ); 
+		if ( ! gfIsEmpty( blocks ) ) {
+			let emailFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'email' );
+			if ( 0 < emailFields.length  ) {
+				for (let i = 0; i < emailFields.length; i++) {
+					let emailAttr = emailFields[i].attributes;
+					if ( 'email' === emailAttr.fieldType && ! gfIsEmpty( emailAttr.nameAttr ) ) {
+						emailOptions.push({ label: emailAttr.fieldName, value: emailAttr.nameAttr });
+					}
+				}
+			}
+		}
+		return emailOptions;
+	}
+
+	const getTextFields = () => {
+		let textOptions = [];
+		const blocks = getBlock( clientId ); 
+		if ( ! gfIsEmpty( blocks ) ) {
+			let textFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'text' );
+			if ( 0 < textFields.length  ) {
+				for (let i = 0; i < textFields.length; i++) {
+					let fieldAttr = textFields[i].attributes;
+					if ( 'text' === fieldAttr.fieldType && ! gfIsEmpty( fieldAttr.nameAttr ) ) {
+						textOptions.push({ label: fieldAttr.fieldName, value: fieldAttr.nameAttr });
+					}
+				}
+			}
+		}
+		return textOptions;
+	}
 	
 	//Set Form ID
 	useEffect( () => {
 		let shouldRunFormID = true;
+		//set formID
 		if ( shouldRunFormID && gfIsEmpty( formID ) ) {
 			const d = new Date();
 			let randomID = Math.random().toString(16).slice(5);
@@ -173,7 +214,17 @@ export default function Edit( props ) {
 				setAttributes( { formID: GutenaFormsID } );
 			}
 		}
-
+		//set replyToEmailID
+		if ( shouldRunFormID && gfIsEmpty( replyToEmail ) && gfIsEmpty( replyToName ) ) {
+			let emailOptions = getEmailFields();
+			let textOptions = getTextFields();
+			if ( 0 < emailOptions.length && ! gfIsEmpty( emailOptions[0].value ) && 0 < textOptions.length && ! gfIsEmpty( textOptions[0].value ) ) {
+				setAttributes( { 
+					replyToEmail: emailOptions[0].value,
+					replyToName: textOptions[0].value
+				} );
+			}
+		}
 		//cleanup
 		return () => {
 			shouldRunFormID = false;
@@ -969,6 +1020,36 @@ export default function Edit( props ) {
 									onChange={ ( adminEmailSubject ) =>
 										setAttributes( { adminEmailSubject } )
 									}
+								/>
+							</PanelRow>
+							<PanelRow>
+								<SelectControl
+									label={ __( 'Reply To Email', 'gutena-forms' ) }
+									value={ replyToEmail }
+									options={ getEmailFields() }
+									onChange={ ( replyToEmail ) =>
+										setAttributes( { replyToEmail } )
+									}
+									help={ __(
+										'Select email field for reply to address',
+										'gutena-forms'
+									) }
+									__nextHasNoMarginBottom
+								/>
+							</PanelRow>
+							<PanelRow>
+								<SelectControl
+									label={ __( 'Reply To Name', 'gutena-forms' ) }
+									value={ replyToName }
+									options={ getTextFields() }
+									onChange={ ( replyToName ) =>
+										setAttributes( { replyToName } )
+									}
+									help={ __(
+										'Select name field for reply to address',
+										'gutena-forms'
+									) }
+									__nextHasNoMarginBottom
 								/>
 							</PanelRow>
 						</>

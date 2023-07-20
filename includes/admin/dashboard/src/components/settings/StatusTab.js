@@ -11,8 +11,10 @@ import {
 import {  useState } from '@wordpress/element';
 import { gfpIsEmpty } from '../../helper';
 import { trashIcon } from '../icon';
-
-const StatusTab = (props) => {
+const noop = () => {};
+const StatusTab = ({
+    onClickFunc = noop
+}) => {
 
     //status list 
     const [ statusList, setStatusList ] = useState ( 
@@ -99,10 +101,10 @@ const StatusTab = (props) => {
                                 variant="tertiary"
                                 className='delete-btn'
                                 isDestructive={ true }
-                                onClick={ () => {} }
+                                onClick={ () => onClickFunc() }
                                 title={ __( 'Delete status', 'gutena-forms' ) }
                                 icon={ trashIcon() }
-                                disabled={ true }
+                                disabled={ false }
                                 >
                                 </Button>
                             )
@@ -121,8 +123,8 @@ const StatusTab = (props) => {
                             <Button 
                                 label={ __( 'Add Status', 'gutena-forms' ) }
                                 variant="secondary"
-                                onClick={ () => {} }
-                                disabled={ true }
+                                onClick={ () => onClickFunc() }
+                                disabled={ false }
                             >
                                     { __( 'Add Status', 'gutena-forms' ) }
                             </Button>
@@ -135,8 +137,8 @@ const StatusTab = (props) => {
                         label={ __( 'Save Status', 'gutena-forms' ) }
                         variant="primary"
                         className='save-btn'
-                        disabled={ true }
-                        onClick={ () => { } }
+                        disabled={ false }
+                        onClick={ () => onClickFunc() }
                     >
                             {  __( 'Save', 'gutena-forms' ) }
                     </Button> 

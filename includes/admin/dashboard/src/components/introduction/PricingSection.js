@@ -28,7 +28,7 @@ const PricingSection = () => {
                                 </div>
                                 <ul className='gf-features-list'>
                                     {
-                                        pricing?.features?.map( ( feature, index ) => (
+                                        item?.features?.map( ( feature, index ) => (
                                             <li key={ 'features-list'+index } >
                                                 <span className='gf-icon'>
                                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
