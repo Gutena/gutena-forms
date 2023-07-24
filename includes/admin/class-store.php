@@ -204,6 +204,16 @@
 
 					$entry_data['current_entry_sno'] += 1; 
 				}
+
+				//related_entry
+				if ( ! empty( $entry_data['user_id'] ) && is_numeric( $entry_data['user_id'] )) {
+					$entry_data['related_entry'] = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT count(entry_id) FROM {$this->table_gutenaforms_entries} WHERE trash = 0 AND user_id=%d ",
+							$entry_data['user_id'],
+						)
+					);
+				}
 				
 			}
 			

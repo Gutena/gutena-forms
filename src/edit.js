@@ -919,7 +919,7 @@ export default function Edit( props ) {
 				</ToolsPanel>
 				<PanelBody title="Input settings" className="gutena-forms-panel" initialOpen={ false }>
 					<RangeControlUnit
-                        rangeLabel={ __("Label gap", "gutena-kit")  }
+                        rangeLabel={ __("Label gap", "gutena-forms")  }
                         attrValue={ inputLabelGap }
                         onChangeFunc={ ( inputLabelGap ) => setAttributes( { inputLabelGap } ) }
                         rangeMin={ 0 }
@@ -932,7 +932,7 @@ export default function Edit( props ) {
                     />
 
 					<RangeControlUnit
-                        rangeLabel={ __("Border width", "gutena-kit")  }
+                        rangeLabel={ __("Border width", "gutena-forms")  }
                         attrValue={ inputBorderWidth }
                         onChangeFunc={ ( inputBorderWidth ) => setAttributes( { inputBorderWidth } ) }
                         rangeMin={ 1 }
@@ -945,7 +945,7 @@ export default function Edit( props ) {
                     />
 
 					<RangeControlUnit
-                        rangeLabel={ __("Border radius", "gutena-kit")  }
+                        rangeLabel={ __("Border radius", "gutena-forms")  }
                         attrValue={ inputBorderRadius }
                         onChangeFunc={ ( inputBorderRadius ) => setAttributes( { inputBorderRadius } ) }
                         rangeMin={ 0 }

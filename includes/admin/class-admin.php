@@ -531,15 +531,19 @@
 							'title' => esc_html__( 'How to Topics and Tips', 'gutena-forms' ),
 							'items' => array(
 								array(
-									'heading' =>  esc_html__( 'How to reuse Gutena forms on Multiple Pages', 'gutena-forms' ),
+									'heading' =>  esc_html__( 'How to reuse Gutena forms on Multiple Pages?', 'gutena-forms' ),
 									'link' => esc_url( $gutena_url . '/reuse-gutena-forms-on-multiple-pages' ),
 								),
 								array(
-									'heading' =>  esc_html__( 'How to generate Google reCaptcha Site Key and Secret Key', 'gutena-forms' ),
+									'heading' =>  esc_html__( 'How to generate Google reCaptcha Site Key and Secret Key?', 'gutena-forms' ),
 									'link' => esc_url( $gutena_url . '/how-to-generate-google-recaptcha-site-key-and-secret-key' ),
 								),
+								array(
+									'heading' =>  esc_html__( 'How to start with Gutena Forms Pro?', 'gutena-forms' ),
+									'link' => esc_url( $gutena_url . '/how-to-start-with-gutena-forms-pro' ),
+								),
 							)
-
+							
 						),
 						'support' => array(
 							'title' => esc_html__( 'Need Help?', 'gutena-forms' ),
