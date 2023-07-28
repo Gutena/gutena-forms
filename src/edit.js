@@ -139,7 +139,9 @@ export default function Edit( props ) {
 	} = useSelect( blockEditorStore );
 
 	const getEmailFields = () => {
-		let emailOptions = [];
+		let emailOptions = [
+			{ label: __( 'Select', 'gutena-forms' ), value: '' }
+		];
 		const blocks = getBlock( clientId ); 
 		if ( ! gfIsEmpty( blocks ) ) {
 			let emailFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'email' );
@@ -156,7 +158,9 @@ export default function Edit( props ) {
 	}
 
 	const getTextFields = () => {
-		let textOptions = [];
+		let textOptions = [
+			{ label: __( 'Select', 'gutena-forms' ), value: '' }
+		];
 		const blocks = getBlock( clientId ); 
 		if ( ! gfIsEmpty( blocks ) ) {
 			let textFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'text' );
@@ -218,10 +222,10 @@ export default function Edit( props ) {
 		if ( shouldRunFormID && gfIsEmpty( replyToEmail ) && gfIsEmpty( replyToName ) ) {
 			let emailOptions = getEmailFields();
 			let textOptions = getTextFields();
-			if ( 0 < emailOptions.length && ! gfIsEmpty( emailOptions[0].value ) && 0 < textOptions.length && ! gfIsEmpty( textOptions[0].value ) ) {
+			if ( 1 < emailOptions.length && ! gfIsEmpty( emailOptions[1].value ) && 1 < textOptions.length && ! gfIsEmpty( textOptions[1].value ) ) {
 				setAttributes( { 
-					replyToEmail: emailOptions[0].value,
-					replyToName: textOptions[0].value
+					replyToEmail: emailOptions[1].value,
+					replyToName: textOptions[1].value
 				} );
 			}
 		}
