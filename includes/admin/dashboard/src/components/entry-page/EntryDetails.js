@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { formIcon, listIcon, calenderCheckIcon, calenderEditedIcon, userIcon, desktopIcon } from '../icon';
-import { gfpDateFormat } from '../../helper';
+import { gfpDateFormat, gfpIsEmpty } from '../../helper';
 
 const EntryDetails = (props) => {
     const entryData = gutenaFormsEntryDetails?.entry_data;
@@ -29,11 +29,13 @@ const EntryDetails = (props) => {
                     <span className='label'>{ __( 'Modified :', 'gutena-forms' ) }</span>
                     <span className='description'>{ gfpDateFormat( entryData.modified_time, '@' ) }</span>
                 </li>
-                <li>
-                    <span className='icon'>{ userIcon() }</span>
-                    <span className='label'>{ __( 'User :', 'gutena-forms' ) }</span>
-                    <span className='description'>{ entryData.user_display_name }</span>
-                </li>
+                { ! gfpIsEmpty( entryData.user_display_name ) && (
+                    <li>
+                        <span className='icon'>{ userIcon() }</span>
+                        <span className='label'>{ __( 'User :', 'gutena-forms' ) }</span>
+                        <span className='description'>{ entryData.user_display_name }</span>
+                    </li>
+                )}
                 {/* <li>
                     <span className='icon'>{ desktopIcon() }</span>
                     <span className='label'>{ __( 'User IP', 'gutena-forms' ) } :</span>

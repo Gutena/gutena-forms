@@ -103,6 +103,14 @@
       "type": "string",
       "default": ""
     },
+    "replyToName": {
+      "type": "string",
+      "default": ""
+    },
+    "replyToEmail": {
+      "type": "string",
+      "default": ""
+    },
     "adminEmailSubject": {
       "type": "string",
       "default": ""

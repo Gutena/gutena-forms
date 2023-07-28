@@ -27,7 +27,7 @@ const WelcomeSection = () => {
                             { intro?.pricing_btn_name }
                         </Button>
                         <Button 
-                        href={ intro?.help_btn_link } 
+                        href={ gutenaFormsDashboard?.support_link } 
                         target='_blank'
                         className='gf-dark-btn'
                         variant='primary'

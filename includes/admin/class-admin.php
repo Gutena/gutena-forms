@@ -94,13 +94,13 @@
 			
 			//register menu
 			$page_hook_suffix = add_menu_page(
-				__( 'Gutena Forms', 'gutena-forms' ),
-				__( 'Gutena Forms', 'gutena-forms' ),
+				__( 'Forms', 'gutena-forms' ),
+				__( 'Forms', 'gutena-forms' ),
 				'delete_posts',
 				'gutena-forms',
 				array( $this, 'forms_dashboard' ),
 				'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuMzUyMTEgMTEuNDE1NUgwLjE1NzYyNUwxMS40MTcgMC4xNTU1NzJWNC4zMTc1TDQuMzUyMTEgMTEuNDE1NVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xOS44MDYxIDExLjQxNDFIMjQuMDAwNkwxMi43NDEyIDAuMTU0MTA3VjQuMzE2MDRMMTkuODA2MSAxMS40MTQxWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQuMzQ5MTggMTIuNzM5M0gwLjE1NDY5NkwxMS40MTQxIDIzLjk5OTJWMTkuODM3M0w0LjM0OTE4IDEyLjczOTNaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTkuODAzMiAxMi43NDAySDIzLjk5NzZMMTIuNzM4MyAyNC4wMDAyVjE5LjgzODNMMTkuODAzMiAxMi43NDAyWiIgZmlsbD0id2hpdGUiLz4KPHJlY3Qgd2lkdGg9IjguNzU3MjkiIGhlaWdodD0iMi41ODY4NiIgdHJhbnNmb3JtPSJtYXRyaXgoMSAwIDAgLTEgMTIuMDQxIDE1LjMyNjIpIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K',
-				6
+				27
 			);
 			if ( ! empty( $page_hook_suffix ) ) {
 				add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'forms_listing_styles' ) );
@@ -148,7 +148,7 @@
 						$form_table = new Gutena_Forms_Entries_Table();
 					}
 				}
-			}
+			} 
 
 			//view-entry page
 			if ( ! is_gutena_forms_pro() ) {
@@ -198,7 +198,7 @@
 			if ( ! function_exists('wp_localize_script') ) {
 				return;
 			}
-
+			$gutena_url = 'https://gutena.io';
 			//introduction page data
 			if ( 'introduction' === $pagetype ) {
 				/**
@@ -213,85 +213,85 @@
 								'into_img'			=> esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/welcome.png' ),
 								'intro_video_link' => esc_url( 'https://www.youtube.com/watch?v=2ZVS3b_02CA' ),
 								'title'			=> __( 'Welcome to Gutena Forms!', 'gutena-forms' ),
-								'description' 	=> __( 'Gutena is a free block theme for WordPress with modern block patterns in-built. It comes packed with beautiful design patterns which suits a variety of use cases. Gutena aims to be at the forefront of WordPress FSE (Full Site Editing) philosophy.  Gutena is a free block theme for WordPress with modern block patterns in-built.', 'gutena-forms' ),
+								'description' 	=> __( "Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won't slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.", "gutena-forms" ),
 								'pricing_btn_name'	=> __( 'See Pricing', 'gutena-forms' ),
 								'help_btn_name'	=> __( 'Need Help?', 'gutena-forms' ),
-								'help_btn_link'	=> esc_url( 'https://wordpress.org/support/plugin/gutena-forms/' )
 							),
 							'features'	=> array(
 								'title' => __( 'Gutena Forms Features', 'gutena-forms' ),
 								'items' => array(
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/gutenberg.png' ),
 										'title' => __( 'Build form with WP Editor', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Build forms effortlessly with WP Editor for a seamless and user-friendly form creation experience.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/list.svg' ),
 										'title' => __( 'Entry Management', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Efficiently manage form submissions with comprehensive entry management and analysis capabilities.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/filter.svg' ),
 										'title' => __( 'Advance Filter for Entries', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Easily locate specific entries with an advanced filtering system for efficient entry search.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/notes.svg' ),
 										'title' => __( 'Entry Notes', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Collaborate and track progress by adding notes or comments to individual form entries.
+										', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/responsive.svg' ),
 										'title' => __( 'Responsive Mobile Friendly', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Ensure optimal user experience with fully responsive and mobile-friendly forms.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
-										'title' => __( 'Dashboard', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/support.svg' ),
+										'title' => __( 'Premium Support', 'gutena-forms' ),
+										'description' => __( 'Get premium customer support for prompt assistance and guidance in using the plugin effectively.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/status-management.svg' ),
 										'title' => __( 'Status Management', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Organize and track form submissions with customizable entry statuses for streamlined workflow.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/tags-management.svg' ),
 										'title' => __( 'Tags Management', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Categorize and sort form entries using tags for efficient organization and reporting.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/user-management.svg' ),
 										'title' => __( 'User Access Management', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Manage user access and permissions to control form data security and privacy.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/forbidden.svg' ),
 										'title' => __( 'No jQuery', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Enjoy improved performance and compatibility without jQuery dependencies.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/recaptcha.png' ),
 										'title' => __( 'Google reCAPTCHA', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Enhance form security with Google reCAPTCHA integration to prevent spam submissions.', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/feature.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/settings.svg' ),
 										'title' => __( 'Fully customizable', 'gutena-forms' ),
-										'description' => __( 'Dummy pages load in less than 3s and have very low bounce rates.', 'gutena-forms' ),
+										'description' => __( 'Customize your forms extensively with various options for field types, layout, and styling.', 'gutena-forms' ),
 									),
 								)
 							),
@@ -300,77 +300,78 @@
 								'items' => array(
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/text.svg' ),
 										'title' => __( 'Text', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/hash.svg' ),
 										'title' => __( 'Number', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/features/settings.svg' ),
 										'title' => __( 'Range', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/email.svg' ),
 										'title' => __( 'Email', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/dropdown.svg' ),
 										'title' => __( 'Dropdown', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => false,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/checkbox.svg' ),
 										'title' => __( 'Checkbox', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/phone.svg' ),
 										'title' => __( 'Phone', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/radio.svg' ),
 										'title' => __( 'Radio', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/calendar.svg' ),
 										'title' => __( 'Date', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/time.svg' ),
 										'title' => __( 'Time', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/rating.svg' ),
 										'title' => __( 'Rating', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
-										'title' => __( 'Country', 'gutena-forms' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/country.svg' ),
+										'title' => __( 'Country 
+										Dropdown ', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/state.svg' ),
 										'title' => __( 'State', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/file.svg' ),
 										'title' => __( 'File Upload', 'gutena-forms' ),
 									),
 									array(
 										'is_pro' => true,
-										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields.svg' ),
+										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/link.svg' ),
 										'title' => __( 'URL', 'gutena-forms' ),
 									),
 								)
@@ -378,23 +379,18 @@
 							'pricing'	=> array(
 								'title' => __( 'Achieve more with Premium', 'gutena-forms' ),
 								'subtitle' => __( 'Unlock the full potential of Gutena Form with Premium', 'gutena-forms' ),
+								'billed_frequency' =>  __( 'Yearly', 'gutena-forms' ),
 								'features' => array(
 									__( 'All Premium Input Fields', 'gutena-forms' ),
 									__( 'All Premium Features', 'gutena-forms' ),
-									__( 'One-on-One Support', 'gutena-forms' ),
+									__( 'Premium Support', 'gutena-forms' ),
 								),
-								'btn_name' => __( 'Get Started', 'gutena-forms' ),
 								'items' => array(
 									array(
-										'title' => __( 'TRIAL PLAN', 'gutena-forms' ),
-										'price'	=> '$0.00',
-										'description' => __( '1 Site - 14 Days Trial', 'gutena-forms' ),
-										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=4',
-									),
-									array(
-										'title' => __( 'ESSENTIAL PLAN', 'gutena-forms' ),
+										'title' => __( 'STARTER PLAN', 'gutena-forms' ),
 										'price'	=> '$9.00',
-										'description' => __( '1 Site', 'gutena-forms' ),
+										'description' => __( '1 Site - 14 Days Free Trial', 'gutena-forms' ),
+										'btn_name' => __( 'Start Trial', 'gutena-forms' ),
 										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=1',
 									),
 									array(
@@ -402,12 +398,14 @@
 										'price'	=> '$29.00',
 										'description' => __( '5 Site', 'gutena-forms' ),
 										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=2',
+										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 									array(
 										'title' => __( 'AGENCY PLAN', 'gutena-forms' ),
 										'price'	=> '$99.00',
 										'description' => __( 'Unlimited Sites', 'gutena-forms' ),
 										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=3',
+										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 								)
 								),
@@ -415,47 +413,98 @@
 								'title' => __( 'Frequently asked questions', 'gutena-forms' ),
 								'items' => array(
 									array(
-										'title' => __( 'Do you offer support?
+										'title' => __( 'What is Gutena Forms?
 										', 'gutena-forms' ),
-										'description' => __( 'Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.', 'gutena-forms' ),
+										'description' => __( 'Gutena Forms is a WordPress plugin that allows you to create custom forms easily within the block editor, without jQuery, ensuring superior performance.', 'gutena-forms' ),
 									),
 									array(
-										'title' => __( "What's special about your plugin?
-
-										", "gutena-forms" ),
-										'description' => __( 'Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.', 'gutena-forms' ),
+										'title' => __( "How does Gutena Forms differ from other form plugins?", "gutena-forms" ),
+										'description' => __( "Gutena Forms integrates seamlessly with the block editor, offering a user-friendly form-building experience. It is lightweight and doesn't slow down your website.", "gutena-forms" ),
 									),
 									array(
-										'title' => __( 'How much do you charge?
-
-										', 'gutena-forms' ),
-										'description' => __( 'Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.', 'gutena-forms' ),
+										'title' => __( 'Can I create different types of forms with Gutena Forms?', 'gutena-forms' ),
+										'description' => __( 'Yes, Gutena Forms offers various form elements and customization options, enabling you to create contact forms, surveys, feedback forms, and more to suit your needs.', 'gutena-forms' ),
 									),
 									array(
-										'title' => __( 'Do you offer support?
-										', 'gutena-forms' ),
-										'description' => __( 'Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.', 'gutena-forms' ),
+										'title' => __( 'Is Gutena Forms compatible with my theme?', 'gutena-forms' ),
+										'description' => __( 'Yes, Gutena Forms is designed to be compatible with most WordPress themes, ensuring a consistent form-building experience regardless of your theme choice.', 'gutena-forms' ),
 									),
 									array(
-										'title' => __( 'Do you offer refunds?
-										', 'gutena-forms' ),
-										'description' => __( 'Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.', 'gutena-forms' ),
+										'title' => __( 'Is Gutena Forms responsive and mobile-friendly?', 'gutena-forms' ),
+										'description' => __( 'Yes, Gutena Forms ensures that your forms are fully responsive and adapt perfectly to different devices, providing an optimal user experience on smartphones, tablets, and desktops.', 'gutena-forms' ),
 									),
 									array(
-										'title' => __( 'What are the server requirements?
-										', 'gutena-forms' ),
-										'description' => __( 'Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.', 'gutena-forms' ),
+										'title' => __( ' Can I customize the look and feel of my forms?', 'gutena-forms' ),
+										'description' => __( 'Absolutely! Gutena Forms offers extensive customization options, allowing you to personalize your forms with different field types, layouts, and custom styles.', 'gutena-forms' ),
 									),
+									array(
+										'title' => __( ' Is support available if I need assistance?', 'gutena-forms' ),
+										'description' => __( 'Yes, we provide dedicated support for Gutena Forms to address any questions, issues, or guidance you may need during your form-building journey.', 'gutena-forms' ),
+									),
+									array(
+										'title' => __( 'Can Gutena Forms handle large volumes of form submissions?', 'gutena-forms' ),
+										'description' => __( 'Yes, Gutena Forms offers robust entry management capabilities, allowing you to efficiently handle and analyze high volumes of form submissions from your WordPress dashboard.', 'gutena-forms' ),
+									),
+									array(
+										'title' => __( 'Can I transfer my license from one site to another?', 'gutena-forms' ),
+										'description' => __( 'Yes, you can transfer your license from one site to another. Simply deactivate the license on the current site and then activate it on the new site. This process ensures that your license is valid and active for the new site, allowing you to continue using the plugin seamlessly.', 'gutena-forms' ),
+									),
+									array(
+										'title' => __( 'Is Gutena Forms regularly updated and maintained?', 'gutena-forms' ),
+										'description' => __( 'Yes, Gutena Forms is regularly updated to ensure compatibility with the latest WordPress versions, security patches, and to bring new features and enhancements to the plugin.', 'gutena-forms' ),
+									),
+									array(
+										'title' => __( 'What happens when my license expires?', 'gutena-forms' ),
+										'description' => __( 'When your license expires, you may lose access to updates, support, and premium features. However, the plugin will continue to function as it is.', 'gutena-forms' ),
+									),
+									array(
+										'title' => __( 'Do you offer refunds?', 'gutena-forms' ),
+										'description' => __( 'No, but we do offer a special 14-day trial plan at $0, You can try out the plugin as much as you want and then decide whether to upgrade to any of our premium plans.', 'gutena-forms' ),
+									),
+									array(
+										'title' => __( 'Can I upgrade my Premium plan?', 'gutena-forms' ),
+										'description' => __( 'Yes, you can upgrade your Premium plan to include more sites. We currently offer 3 Premium Plans with increased site limits. Contact our support team for assistance with the upgrade process.', 'gutena-forms' ),
+									),
+								),
+								'sales' => array(
+									'title1' => __( 'Do you have any question?', 'gutena-forms' ),
+									'title2' => __( 'Contact with Sales Team', 'gutena-forms' ),
+									'link'	=> esc_url( $gutena_url . '/contact' ),
 								)
 							)
 						)
 					)
 				);
-			}
-
-			//knowledge base page data
-			if ( 'doc' === $pagetype ) {
-				$gutena_url = 'https://gutena.io';
+			} else if (  'settings' === $pagetype ) {
+					//setting page data
+					wp_localize_script(
+						'gutena-forms-dashboard',
+						'gutenaFormsSettingsTab',
+						array(
+							'tabs' => array(
+								array(
+									'name' => 'status',
+									'title' => esc_html__( 'Status', 'gutena-forms' ),
+									'heading' => esc_html__( 'Status Management', 'gutena-forms' ),
+									'description' => esc_html__( 'Organize and track form submissions with customizable entry status for streamlined workflow.', 'gutena-forms' ),
+								),
+								array(
+									'name' => 'tags',
+									'title' => esc_html__( 'Tags', 'gutena-forms' ),
+									'heading' => esc_html__( 'Tags Management', 'gutena-forms' ),
+									'description' => esc_html__( 'Categorize and sort form entries using tags for efficient organization and reporting.', 'gutena-forms' ),
+								),
+								array(
+									'name' => 'useraccess',
+									'title' => esc_html__( 'User Access', 'gutena-forms' ),
+									'heading' => esc_html__( 'User Access Management', 'gutena-forms' ),
+									'description' => esc_html__( 'Manage user access and permissions to control form data security and privacy.', 'gutena-forms' ),
+								)
+							),
+						)
+					);
+			} else if ( 'doc' === $pagetype ) {
+				//knowledge base page data
 				wp_localize_script(
 					'gutena-forms-dashboard',
 					'gutenaFormsDoc',
@@ -464,23 +513,26 @@
 							'title' => esc_html__( 'How to Topics and Tips', 'gutena-forms' ),
 							'items' => array(
 								array(
-									'heading' =>  esc_html__( 'How to reuse Gutena forms on Multiple Pages', 'gutena-forms' ),
+									'heading' =>  esc_html__( 'How to reuse Gutena forms on Multiple Pages?', 'gutena-forms' ),
 									'link' => esc_url( $gutena_url . '/reuse-gutena-forms-on-multiple-pages' ),
 								),
 								array(
-									'heading' =>  esc_html__( 'How to generate Google reCaptcha Site Key and Secret Key', 'gutena-forms' ),
+									'heading' =>  esc_html__( 'How to generate Google reCaptcha Site Key and Secret Key?', 'gutena-forms' ),
 									'link' => esc_url( $gutena_url . '/how-to-generate-google-recaptcha-site-key-and-secret-key' ),
 								),
+								array(
+									'heading' =>  esc_html__( 'How to start with Gutena Forms Pro?', 'gutena-forms' ),
+									'link' => esc_url( $gutena_url . '/how-to-start-with-gutena-forms-pro' ),
+								),
 							)
-
+							
 						),
 						'support' => array(
 							'title' => esc_html__( 'Need Help?', 'gutena-forms' ),
 							'description' => esc_html__( 'Have a question, we are happy to help! Get in touch with our support team.', 'gutena-forms' ),
 							'documentation_link' => esc_url( $gutena_url . '/blog' ),
-							'documentation_text' => esc_html__( 'Documentation', 'gutena-forms' ),
-							'link_text' => esc_html__( 'Submit Ticket', 'gutena-forms' ),
-							'link_url' => esc_url( 'https://wordpress.org/support/plugin/gutena-forms/' ),
+							'documentation_text' => esc_html__( 'Help Articles', 'gutena-forms' ),
+							'link_text' => esc_html__( 'Support', 'gutena-forms' ),
 						),
 						'changelog' => array(
 							'title'       => esc_html__( 'Releases and fixes', 'gutena-forms' ),
@@ -582,7 +634,7 @@
 				wp_enqueue_script( 'gutena-forms-dashboard-script', GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/script.js', array(), $asset_file['version'], true );
 
 				$dashboard_url =  esc_url( admin_url( 'admin.php?page=gutena-forms' ) );
-				$is_admin = $this->is_gfadmin();
+				$is_admin = $this->is_gfadmin() ? '1':'0';
 				//Provide data for form submission script
 				wp_localize_script(
 					'gutena-forms-dashboard-script',
@@ -591,6 +643,10 @@
 						'read_status_action'    => 'gutena_forms_entries_read',
 						'ajax_url'           	=> admin_url( 'admin-ajax.php' ),
 						'nonce'                 => wp_create_nonce( 'gutena_Forms' ),
+						'support_link'			=> esc_url( apply_filters( 
+							'gutena_forms_support_link',
+							'https://wordpress.org/support/plugin/gutena-forms/' 
+						 ) ),
 						'entry_view_url'        => $dashboard_url.'&pagetype=viewentry&form_entry_id=',
 						'entry_list_url' 		=> $dashboard_url.'&formid=',
 						'page_url'				=> $dashboard_url.'&pagetype=',
@@ -598,29 +654,31 @@
 						'is_admin'				=> $is_admin,
 						'pagetype'				=> empty( $_GET['pagetype'] ) ? '': sanitize_key( wp_unslash( $_GET['pagetype'] ) ),
 						'form_id'				=> $this->form_id,
-						'dashboard_menu' => array(
+						'dashboard_menu' => apply_filters( 
+							'gutena_forms_dashboard_menu', 
 							array(
-								'slug'  => 'introduction',
-								'title' => __( 'Introduction', 'gutena-forms' ),
-								'enable' => true
-							),
-							array(
-								'slug'  => '',
-								'title' => __( 'Entries', 'gutena-forms' ),
-								'enable' => true
-							),
-							array(
-								'slug'  => 'settings',
-								'title' => __( 'Settings', 'gutena-forms' ),
-								'enable' => $is_admin
-							),
-							array(
-								'slug'  => 'doc',
-								'title' => __( 'Knowledge Base', 'gutena-forms' ),
-								'enable' => true
+								array(
+									'slug'  => 'introduction',
+									'title' => __( 'Introduction', 'gutena-forms' ),
+									'enable' => '1'
+								),
+								array(
+									'slug'  => '',
+									'title' => __( 'Entries', 'gutena-forms' ),
+									'enable' => '1'
+								),
+								array(
+									'slug'  => 'settings',
+									'title' => __( 'Settings', 'gutena-forms' ),
+									'enable' => $is_admin
+								),
+								array(
+									'slug'  => 'doc',
+									'title' => __( 'Knowledge Base', 'gutena-forms' ),
+									'enable' => '1'
+								)
 							)
-
-						)
+						),
 						
 					)
 				);

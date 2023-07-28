@@ -174,6 +174,13 @@
 				if ( empty( $this->form_id ) ) {
 					$this->form_id = empty( $entry_data['form_id'] ) ? 0: $entry_data['form_id'];
 				}
+				//filter field values
+				if ( is_array( $entry_data['entry_data'] ) ) {
+					foreach ( $entry_data['entry_data'] as $field_slug => $fieldData) {
+						$fieldData['value'] = $this->view_field_value( $fieldData );
+						$entry_data['entry_data'][ $field_slug ] = $fieldData;
+					}
+				} 
 				//Update entry status to read from unread
 				if ( ! empty( $entry_data['entry_status'] ) && 'unread' === $entry_data['entry_status'] ) {
 					$this->update_entries_status( 'read', absint( $entry_data['entry_id'] ) );
@@ -204,10 +211,38 @@
 
 					$entry_data['current_entry_sno'] += 1; 
 				}
+
+				//related_entry
+				if ( ! empty( $entry_data['user_id'] ) && is_numeric( $entry_data['user_id'] )) {
+					$entry_data['related_entry'] = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT count(entry_id) FROM {$this->table_gutenaforms_entries} WHERE trash = 0 AND user_id=%d ",
+							$entry_data['user_id'],
+						)
+					);
+				}
 				
 			}
 			
 			return $entry_data;
+		}
+
+		public function view_field_value( $fieldData, $fieldvalue = '' ) { 
+			return ( empty( $fieldData ) || empty( $fieldData['value'] ) ) ? '': wp_kses( apply_filters( 
+				'gutena_forms_view_field_value', 
+				empty( $fieldvalue ) ? $fieldData['value'] : $fieldvalue,
+				$fieldData
+			), array_merge(
+				wp_kses_allowed_html( 'post' ),
+				array(
+					'a' => array(
+						'href'    => 1,
+						'class'	  => 1,
+						'target'  => 1,
+						'modalid' => 1
+					),
+				)
+			) );
 		}
 
 		//save new form

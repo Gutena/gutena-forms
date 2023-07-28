@@ -20,8 +20,9 @@ const PricingSection = () => {
                                 <div className='gf-title'>
                                     { item?.title } 
                                 </div>
-                                <div className='gf-price'>
-                                    { item?.price } 
+                                <div className='gf-pricing'>
+                                   <span className='gf-price'> { item?.price } </span>
+                                   <span className='gf-bill-frequency'> { pricing?.billed_frequency } </span>
                                 </div>
                                 <div className='gf-description'>
                                     { item?.description } 
@@ -55,7 +56,7 @@ const PricingSection = () => {
                                     className='gf-primary-btn'
                                     variant='primary'
                                 >
-                                    { pricing?.btn_name }
+                                    { item?.btn_name }
                                 </Button>
                             </div>
                         ) )

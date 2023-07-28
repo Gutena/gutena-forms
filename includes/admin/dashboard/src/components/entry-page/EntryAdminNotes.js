@@ -1,8 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { PanelBody, Button, TextareaControl, Modal } from '@wordpress/components';
 import { lockIcon } from '../icon';
-
-const EntryAdminNotes = ( props ) => {
+const noop = () => {};
+const EntryAdminNotes = ( {
+    onClickFunc = noop
+} ) => {
     
 
     return(
@@ -11,8 +13,8 @@ const EntryAdminNotes = ( props ) => {
             <Button 
                 label={ __( 'Add Notes', 'gutena-forms' ) }
                 variant="secondary"
-                onClick={ () => {} }
-                disabled={ true }
+                onClick={ () => onClickFunc() }
+                disabled={ false }
             >
                     { __( 'Add Notes', 'gutena-forms' ) }
             </Button>

@@ -134,7 +134,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		}
 	}
 
-    /* gfp dasboard */
+    /* gfp dasboard basic*/
     .gutena-forms-dashboard {
         &.gf-basic{
             .gutena-forms-modal-btn{
@@ -153,7 +153,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 }
             }
     
-            .gfp-settings-section{
+            .gfp-settings-section, .notes-section .components-button{
                 opacity: 0.5;
             }
         }
@@ -198,7 +198,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
             /*Flex*/
             .gf-flex{
                 display: flex;
-                gap: 3.5rem;
+                gap: 2rem;
                 flex-wrap: wrap;
                 justify-content: center;
                 &.equal-length > div {
@@ -242,6 +242,9 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
             .gutena-forms-features-section{
                 background-color: $gfp_secondary_color;
                 text-align: center;
+                .gf-flex{
+                    gap: 1.7rem;
+                }
                 .gf-title{
                     margin: 0 0 3.5rem 0;
                 }
@@ -250,11 +253,11 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                     border-radius: 10px;
                     background: $gfp_white_color;
                     box-shadow: 0px 25px 60px 0px rgba(0, 0, 0, 0.10);
-                    padding: 42px 32px 51px 32px;
+                    padding: 44px 32px 45px 32px;
                     box-sizing: border-box;
                     position: relative;
-                    width: 329px;
-                    height: 284px;
+                    width: 350px;
+                    height: 290px;
                     .gf-pro-tag{
                         position: absolute;
                         top: 10px;
@@ -269,10 +272,11 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
                     .gf-title{
                         font-size: 18px;
-                        margin: 36px 0 10px 0;
+                        margin: 28px 0 10px 0;
                     }
                     .gf-description{
-                        font-size: 17px;
+                        font-size: 16px;
+                        font-weight: 400;
                     }
                 }
             }
@@ -282,7 +286,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 background-color: #015D61;
                 text-align: center;
                 .gf-flex{
-                    gap: 3rem;
+                    gap: 1.7rem;
                 }
                 h2.gf-title{
                     color: $gfp_white_color
@@ -334,17 +338,17 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 }
 
                 .gf-flex{
-                    gap: 1.8rem;
+                    gap: 1.7rem;
                 }
 
                 .gf-feature-card{
                     border-radius: 10px;
                     background: $gfp_white_color;
                     box-shadow: 0px 5px 20px 0px rgba(33, 37, 71, 0.10);
-                    padding: 25px 32px 25px 32px;
+                    padding: 25px 30px 25px 30px;
                     box-sizing: border-box;
                     position: relative;
-                    width: 249px;
+                    width: 279px;
                     height: 455px;
                     
                     .gf-title{
@@ -353,14 +357,24 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                         color: $gfp_primary_color;
                     }
 
-                    .gf-price{
-                        font-size: 44px;
-                        font-weight: 600;
-                        margin: 0.5rem 0 0.8rem 0;
+                    .gf-pricing{
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: center;
+                        align-items: baseline;
+                        .gf-price{
+                            font-size: 44px;
+                            font-weight: 600;
+                            margin: 0.5rem 0 0.8rem 0;
+                        }
+                        .gf-bill-frequency{
+                            font-size: 14px;
+                        }
                     }
+                    
 
                     .gf-description{
-                        font-size: 16px;
+                        font-size: 14px;
                         font-weight: 600;
                         line-height: 1.5;
                         color: $gfp_heading_color;
@@ -441,9 +455,22 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                         overflow: hidden;
                         transition: max-height 0.2s ease-out;
                         p{
+                            font-size: 1rem;
                             padding-top: 0.2rem;
                             color: $gfp_body_color;
                         }
+                    }
+                }
+
+                .gf-contact-sales{
+                    font-size: 1rem;
+                    color: $gfp_heading_color;
+                    line-height: 1.6;
+                    padding-top: 60px;
+                    a{
+                        font-size: 17px;
+                        font-weight: 600;
+                        color: $gfp_heading_color;
                     }
                 }
             }
@@ -737,12 +764,18 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
         font-size: 14px;
         line-height: 1.6;
         .gf-header {
+            /*Logo*/
+            a{
+                line-height: 1;
+            }
+
+            /*Navigation*/
             .gfp-dashboard-navigation {
                 ul {
                     list-style: none;
                     display: flex;
                     margin: 0;
-                    padding-left: 2rem;
+                    padding-left: 0.8rem;
                     li{
                         padding: 1rem 0rem;
                         border-left: 1px solid $gfp_border_color;
@@ -1131,9 +1164,9 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                             border-radius: 5px;
                         }
                         .save-btn{
-                            min-width: 120px;
-                            min-height: 40px;
-                            font-size: 14px;
+                            width: 125px;
+                            height: 40px;
+                            font-size: 15px;
                             justify-content: center;
                         }
 

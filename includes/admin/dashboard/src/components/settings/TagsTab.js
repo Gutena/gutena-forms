@@ -7,8 +7,10 @@ import {
 import { useState } from '@wordpress/element';
 import { gfpIsEmpty } from '../../helper';
 import { trashIcon } from '../icon';
-
-const TagsTab = (props) => {
+const noop = () => {};
+const TagsTab = ({
+    onClickFunc = noop
+}) => {
     
 
     //tag list 
@@ -72,8 +74,8 @@ const TagsTab = (props) => {
                             <Button 
                                 label={ __( 'Add Tags', 'gutena-forms' ) }
                                 variant="secondary"
-                                onClick={ () => {} }
-                                disabled={ true }
+                                onClick={ () => onClickFunc() }
+                                disabled={ false }
                             >
                                     { __( 'Add Tags', 'gutena-forms' ) }
                             </Button>
@@ -86,8 +88,8 @@ const TagsTab = (props) => {
                         label={ __( 'Save Tags', 'gutena-forms' ) }
                         variant="primary"
                         className='save-btn'
-                        onClick={ () => {} }
-                        disabled={ true }
+                        onClick={ () => onClickFunc() }
+                        disabled={ false }
                     >
                             { __( 'Save', 'gutena-forms' ) }
                     </Button> 

@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.0
  * Requires PHP:      5.6
- * Version:           1.0.9
+ * Version:           1.1.0
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io
  * License:           GPL-2.0-or-later
@@ -47,7 +47,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 	 * Plugin version.
 	 */
 	if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-		define( 'GUTENA_FORMS_VERSION', '1.0.9' );
+		define( 'GUTENA_FORMS_VERSION', '1.1.0' );
 	}
 
 	if ( ! function_exists( 'is_gutena_forms_pro' ) ) {
@@ -706,7 +706,6 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				);
 			}
 
-
 			$blog_title  = get_bloginfo( 'name' );
 			$admin_email = sanitize_email( get_option( 'admin_email' ) );
 
@@ -720,6 +719,14 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			foreach ( $to as $key => $toEmail ) {
 				$to[ $key ] = sanitize_email( wp_unslash( $toEmail ) );
 			}
+
+			$reply_to = empty( $formSchema['form_attrs']['replyToEmail'] ) ? '' : $formSchema['form_attrs']['replyToEmail'];
+
+			$reply_to = ( empty( $reply_to ) || empty( $_POST[ $reply_to ] ) ) ? '' : sanitize_email( wp_unslash( $_POST[ $reply_to ] ) );
+
+			$reply_to_name = empty( $formSchema['form_attrs']['replyToName'] ) ? '' : $formSchema['form_attrs']['replyToName'];
+
+			$reply_to_name = ( empty( $reply_to_name ) || empty( $_POST[ $reply_to_name ] ) ) ? sanitize_key( $reply_to ) : sanitize_text_field( wp_unslash( $_POST[ $reply_to_name ] ) );
 
 			// Email Subject
 			$subject = sanitize_text_field( empty( $formSchema['form_attrs']['adminEmailSubject'] ) ? __( 'Form received', 'gutena-forms' ) . '- ' . $blog_title : $formSchema['form_attrs']['adminEmailSubject'] );
@@ -803,6 +810,13 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				'Content-Type: text/html; charset=UTF-8',
 				'From: ' . esc_html( $blog_title ) . ' <' . $admin_email . '>',
 			);
+			//Add reply to header
+			if ( ! empty( $reply_to ) ) {
+				array_push(
+					$headers,
+					'Reply-To: ' . esc_html( $reply_to_name ) . ' <' . $reply_to . '>'
+				);
+			}
 
 			//Apply filter for admin email notification
 			$body    = apply_filters( 'gutena_forms_submit_admin_notification', $body, $form_submit_data );

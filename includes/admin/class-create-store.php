@@ -160,7 +160,7 @@
             $main_sql_create = "CREATE TABLE {$table_name} (
                 entry_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 form_id bigint(20) unsigned NOT NULL,
-                user_id bigint(20) unsigned NOT NULL,
+                user_id bigint(20) unsigned NOT NULL DEFAULT '0',
                 modified_by bigint(20) unsigned NOT NULL,
                 entry_data longtext  NOT NULL,
                 ip_address varchar(128) DEFAULT NULL,
@@ -192,7 +192,8 @@
                 field_name varchar(256)  NOT NULL,
                 field_value longtext  NOT NULL,
                 PRIMARY KEY  (id),
-                KEY entry_id (entry_id)
+                KEY entry_id (entry_id),
+                KEY field_name (field_name)
                ) {$charset_collate};";
             //Useful for creating new tables and updating existing tables to a new structure.
             dbDelta( $main_sql_create );
@@ -222,12 +223,14 @@
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 form_id bigint(20) unsigned NOT NULL,
                 entry_id bigint(20) unsigned NOT NULL DEFAULT '0',
-                user_id bigint(20) unsigned NOT NULL,
+                user_id bigint(20) unsigned NOT NULL DEFAULT '0',
                 data_type varchar(100)  NOT NULL,
                 metadata longtext  NOT NULL,
                 modified_time timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY  (id),
-                KEY form_id (form_id)
+                KEY form_id (form_id),
+                KEY entry_id (entry_id),
+                KEY data_type (data_type)
                ) {$charset_collate};";    
             //Useful for creating new tables and updating existing tables to a new structure.
             dbDelta( $main_sql_create );
