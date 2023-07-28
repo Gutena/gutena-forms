@@ -345,10 +345,10 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                     border-radius: 10px;
                     background: $gfp_white_color;
                     box-shadow: 0px 5px 20px 0px rgba(33, 37, 71, 0.10);
-                    padding: 25px 32px 25px 32px;
+                    padding: 25px 30px 25px 30px;
                     box-sizing: border-box;
                     position: relative;
-                    width: 249px;
+                    width: 279px;
                     height: 455px;
                     
                     .gf-title{
@@ -357,14 +357,24 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                         color: $gfp_primary_color;
                     }
 
-                    .gf-price{
-                        font-size: 44px;
-                        font-weight: 600;
-                        margin: 0.5rem 0 0.8rem 0;
+                    .gf-pricing{
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: center;
+                        align-items: baseline;
+                        .gf-price{
+                            font-size: 44px;
+                            font-weight: 600;
+                            margin: 0.5rem 0 0.8rem 0;
+                        }
+                        .gf-bill-frequency{
+                            font-size: 14px;
+                        }
                     }
+                    
 
                     .gf-description{
-                        font-size: 16px;
+                        font-size: 14px;
                         font-weight: 600;
                         line-height: 1.5;
                         color: $gfp_heading_color;

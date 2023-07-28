@@ -20,15 +20,16 @@ const PricingSection = () => {
                                 <div className='gf-title'>
                                     { item?.title } 
                                 </div>
-                                <div className='gf-price'>
-                                    { item?.price } 
+                                <div className='gf-pricing'>
+                                   <span className='gf-price'> { item?.price } </span>
+                                   <span className='gf-bill-frequency'> { pricing?.billed_frequency } </span>
                                 </div>
                                 <div className='gf-description'>
                                     { item?.description } 
                                 </div>
                                 <ul className='gf-features-list'>
                                     {
-                                        item?.features?.map( ( feature, index ) => (
+                                        pricing?.features?.map( ( feature, index ) => (
                                             <li key={ 'features-list'+index } >
                                                 <span className='gf-icon'>
                                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -55,7 +56,7 @@ const PricingSection = () => {
                                     className='gf-primary-btn'
                                     variant='primary'
                                 >
-                                    { pricing?.btn_name }
+                                    { item?.btn_name }
                                 </Button>
                             </div>
                         ) )

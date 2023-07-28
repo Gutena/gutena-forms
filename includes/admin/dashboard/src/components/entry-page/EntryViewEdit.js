@@ -9,27 +9,7 @@ const EntryViewEdit = (props) => {
     const entry_list_url = gfpIsEmpty( gutenaFormsDashboard?.entry_list_url ) ? '#': gutenaFormsDashboard.entry_list_url+formID;
     
     const getEntryValue = ( entryDetails ) => {
-        let value = entryDetails.value;
-        if ( gfpIsEmpty( entryDetails.fieldType ) ) {
-           return value; 
-        }
-        
-        switch ( entryDetails.fieldType ) {
-            case 'file':
-                if ( false !== entryDetails.value.indexOf('://') ) {
-                    let urls = entryDetails.value.split(',');
-                    value = [];
-                    urls.forEach( (url, index) => {
-                        value.push( '<a target="_blank" href="'+url+'">FILE-'+( parseInt( index ) + 1 )+'</a>' );
-                    } );
-                    value = value.join(', ');
-                }
-                break;
-        
-            default:
-                break;
-        }
-        return value;
+        return entryDetails.value;
     }
 
     return(

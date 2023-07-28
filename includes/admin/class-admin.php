@@ -94,13 +94,13 @@
 			
 			//register menu
 			$page_hook_suffix = add_menu_page(
-				__( 'Gutena Forms', 'gutena-forms' ),
-				__( 'Gutena Forms', 'gutena-forms' ),
+				__( 'Forms', 'gutena-forms' ),
+				__( 'Forms', 'gutena-forms' ),
 				'delete_posts',
 				'gutena-forms',
 				array( $this, 'forms_dashboard' ),
 				'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuMzUyMTEgMTEuNDE1NUgwLjE1NzYyNUwxMS40MTcgMC4xNTU1NzJWNC4zMTc1TDQuMzUyMTEgMTEuNDE1NVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xOS44MDYxIDExLjQxNDFIMjQuMDAwNkwxMi43NDEyIDAuMTU0MTA3VjQuMzE2MDRMMTkuODA2MSAxMS40MTQxWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQuMzQ5MTggMTIuNzM5M0gwLjE1NDY5NkwxMS40MTQxIDIzLjk5OTJWMTkuODM3M0w0LjM0OTE4IDEyLjczOTNaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTkuODAzMiAxMi43NDAySDIzLjk5NzZMMTIuNzM4MyAyNC4wMDAyVjE5LjgzODNMMTkuODAzMiAxMi43NDAyWiIgZmlsbD0id2hpdGUiLz4KPHJlY3Qgd2lkdGg9IjguNzU3MjkiIGhlaWdodD0iMi41ODY4NiIgdHJhbnNmb3JtPSJtYXRyaXgoMSAwIDAgLTEgMTIuMDQxIDE1LjMyNjIpIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K',
-				6
+				27
 			);
 			if ( ! empty( $page_hook_suffix ) ) {
 				add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'forms_listing_styles' ) );
@@ -379,51 +379,33 @@
 							'pricing'	=> array(
 								'title' => __( 'Achieve more with Premium', 'gutena-forms' ),
 								'subtitle' => __( 'Unlock the full potential of Gutena Form with Premium', 'gutena-forms' ),
-								'btn_name' => __( 'Get Started', 'gutena-forms' ),
+								'billed_frequency' =>  __( 'Yearly', 'gutena-forms' ),
+								'features' => array(
+									__( 'All Premium Input Fields', 'gutena-forms' ),
+									__( 'All Premium Features', 'gutena-forms' ),
+									__( 'Premium Support', 'gutena-forms' ),
+								),
 								'items' => array(
 									array(
-										'title' => __( 'TRIAL PLAN', 'gutena-forms' ),
-										'price'	=> '$0.00',
-										'description' => __( '1 Site - 14 Days Trial', 'gutena-forms' ),
-										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=4',
-										'features' => array(
-											__( 'All Premium Input Fields', 'gutena-forms' ),
-											__( 'All Premium Features', 'gutena-forms' ),
-											__( 'Basic Support', 'gutena-forms' ),
-										),
-									),
-									array(
-										'title' => __( 'ESSENTIAL PLAN', 'gutena-forms' ),
+										'title' => __( 'STARTER PLAN', 'gutena-forms' ),
 										'price'	=> '$9.00',
-										'description' => __( '1 Site', 'gutena-forms' ),
+										'description' => __( '1 Site - 14 Days Free Trial', 'gutena-forms' ),
+										'btn_name' => __( 'Start Trial', 'gutena-forms' ),
 										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=1',
-										'features' => array(
-											__( 'All Premium Input Fields', 'gutena-forms' ),
-											__( 'All Premium Features', 'gutena-forms' ),
-											__( 'Premium Support', 'gutena-forms' ),
-										),
 									),
 									array(
 										'title' => __( 'DEVELOPER PLAN', 'gutena-forms' ),
 										'price'	=> '$29.00',
 										'description' => __( '5 Site', 'gutena-forms' ),
 										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=2',
-										'features' => array(
-											__( 'All Premium Input Fields', 'gutena-forms' ),
-											__( 'All Premium Features', 'gutena-forms' ),
-											__( 'Premium Support', 'gutena-forms' ),
-										),
+										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 									array(
 										'title' => __( 'AGENCY PLAN', 'gutena-forms' ),
 										'price'	=> '$99.00',
 										'description' => __( 'Unlimited Sites', 'gutena-forms' ),
 										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=3',
-										'features' => array(
-											__( 'All Premium Input Fields', 'gutena-forms' ),
-											__( 'All Premium Features', 'gutena-forms' ),
-											__( 'Premium Support', 'gutena-forms' ),
-										),
+										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 								)
 								),

@@ -174,6 +174,13 @@
 				if ( empty( $this->form_id ) ) {
 					$this->form_id = empty( $entry_data['form_id'] ) ? 0: $entry_data['form_id'];
 				}
+				//filter field values
+				if ( is_array( $entry_data['entry_data'] ) ) {
+					foreach ( $entry_data['entry_data'] as $field_slug => $fieldData) {
+						$fieldData['value'] = $this->view_field_value( $fieldData );
+						$entry_data['entry_data'][ $field_slug ] = $fieldData;
+					}
+				} 
 				//Update entry status to read from unread
 				if ( ! empty( $entry_data['entry_status'] ) && 'unread' === $entry_data['entry_status'] ) {
 					$this->update_entries_status( 'read', absint( $entry_data['entry_id'] ) );
@@ -218,6 +225,24 @@
 			}
 			
 			return $entry_data;
+		}
+
+		public function view_field_value( $fieldData, $fieldvalue = '' ) { 
+			return ( empty( $fieldData ) || empty( $fieldData['value'] ) ) ? '': wp_kses( apply_filters( 
+				'gutena_forms_view_field_value', 
+				empty( $fieldvalue ) ? $fieldData['value'] : $fieldvalue,
+				$fieldData
+			), array_merge(
+				wp_kses_allowed_html( 'post' ),
+				array(
+					'a' => array(
+						'href'    => 1,
+						'class'	  => 1,
+						'target'  => 1,
+						'modalid' => 1
+					),
+				)
+			) );
 		}
 
 		//save new form
