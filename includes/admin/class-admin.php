@@ -609,8 +609,8 @@
 			<div class="gf-body" >
 			<p class="gf-description"> '.__( 'Do you really wanna trash this entry?', 'gutena-forms' ).'</p>
 			<div class="gf-action-btns">
-				<a href="#" class="gf-btn gf-close-btn" target="_blank" > <span class="gf-btn-text">'.__( 'Cancel', 'gutena-forms' ).'</span> </a>
-				<a href="#" class="gf-btn gf-entry-delete-btn" target="_blank" > <span class="gf-btn-text">'.__( 'Trash', 'gutena-forms' ).'</span> </a>
+				<a href="#" class="gf-btn gf-close-btn" > <span class="gf-btn-text">'.__( 'Cancel', 'gutena-forms' ).'</span> </a>
+				<a href="#" class="gf-btn gf-entry-delete-btn" > <span class="gf-btn-text">'.__( 'Trash', 'gutena-forms' ).'</span> </a>
 			</div>
 			
 			</div></div></div>';
