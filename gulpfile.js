@@ -1,9 +1,17 @@
 const gulp = require( 'gulp' ),
 	del = require( 'del' ),
 	wpPot = require( 'gulp-wp-pot' ),
+    postcss = require( 'gulp-postcss' ),
+	autoprefixer = require( 'autoprefixer' ),
+    cssnano = require( 'cssnano' ),
+	concat = require( 'gulp-concat' ),
+	uglify = require( 'gulp-uglify' ),
+    rename = require( 'gulp-rename' ),
+	lec = require( 'gulp-line-ending-corrector' ),
 	git = require('gulp-git'),
 	zip = require( 'gulp-zip' );
 const { series, parallel } = require( 'gulp' );
+const sass = require('gulp-sass')(require('sass'));
 
 /**************************************
 		Git Repo inclusion:  Start
@@ -14,7 +22,7 @@ const { series, parallel } = require( 'gulp' );
  */
 //Gutena Git repo array
 var GutenaRepos = [
-    'gutena-ecosys-onboard',
+    //'gutena-ecosys-onboard',
 ];
 
 //Clean gutena repos directory
@@ -90,8 +98,8 @@ var zipPath = [
 	'./**',
 	'./build',
 	'./build/**',
-	'!./src',
-	'!./src/**',
+    '!./assets/css/**',
+    '!./assets/js/**',
 	'!./output',
 	'!./output/**',
 	'!./.editorconfig',
@@ -102,15 +110,51 @@ var zipPath = [
 	'!./package-lock.json',
 	'!./composer.json',
 	'!./composer.lock',
-	'!./phpcs.xml',
-	'!./node_modules',
-	'!./node_modules/**',
+    '!**/src/**',
+	'!**/src',
+	'!**/node_modules/**', 
+    '!**/node_modules',
+    '!**/package.json',
+    '!**/package-lock.json',
+    '!**/phpcs.xml',
+    '!**/README.md',
+    '!**/LICENSE.txt',
 ];
 
 // Clean CSS, JS and ZIP
 function clean_files() {
-	let cleanPath = [ './output/gutena-forms.zip' ];
+	let cleanPath = [ './output/gutena-forms.zip', './assets/**/**/*.min.js', './assets/minify/**/*.min.css' ];
 	return del( cleanPath, { force: true } );
+}
+
+//JS minification
+function js_minification(){
+    return  gulp.src( './assets/js/**/*.js' )
+            .pipe( uglify() )
+            .pipe( lec() )
+            .pipe( rename( { suffix  : '.min' } ) )
+            .pipe( gulp.dest('./assets/minify/js'));
+}
+
+//Compile and minify css
+function css_minification() {
+    return  gulp.src( './assets/css/**/*.scss' )
+			.pipe(sass().on('error', sass.logError))
+			.pipe(postcss([
+				autoprefixer(),
+				cssnano()
+			]))
+            .pipe( lec() )
+            .pipe( rename( { suffix  : '.min' } ) )
+            .pipe( gulp.dest('./assets/minify/css'));
+}
+
+//Watching
+function watch_and_minify_files(){
+    return  gulp.watch( 
+		[ './assets/css/**/*.scss', './assets/js/**/*.js' ],
+	 	gulp.series( css_minification, js_minification ) 
+	);
 }
 
 function create_pot() {
@@ -135,4 +179,9 @@ function create_zip() {
 		.pipe( gulp.dest( './output/' ) );
 }
 
-exports.default = series( clean_files, clean_gutena_repos, clone_gutena_repos, clean_gutena_repos_files,create_pot, create_zip );
+//exports.default = series( clean_files, css_minification, js_minification, clean_gutena_repos, clone_gutena_repos, clean_gutena_repos_files,create_pot, create_zip );
+
+exports.default = series( clean_files, css_minification, js_minification, create_pot, create_zip );
+
+//(cmd: gulp watch): run for development. It retain src and all other files
+exports.watch = series( watch_and_minify_files );

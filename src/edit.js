@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { useEffect } from '@wordpress/element';
-import { gfIsEmpty } from './helper';
+import { gfIsEmpty, getInnerBlocksbyNameAttr } from './helper';
 import {
 	InspectorControls,
 	__experimentalBlockVariationPicker,
@@ -35,6 +35,7 @@ import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
 } from '@wordpress/blocks';
+import RangeControlUnit from './components/RangeControlUnit';
 import './editor.scss';
 import variations from './variations';
 /** Hook that retrieves the given setting for the block instance in use.
@@ -121,6 +122,8 @@ export default function Edit( props ) {
 		afterSubmitHide,
 		redirectUrl,
 		adminEmails,
+		replyToEmail,
+		replyToName,
 		adminEmailSubject,
 		emailNotifyAdmin,
 		emailNotifyUser,
@@ -130,10 +133,53 @@ export default function Edit( props ) {
 		recaptcha,
 	} = attributes;
 
+	const {
+		getClientIdsOfDescendants,
+		getBlock
+	} = useSelect( blockEditorStore );
+
+	const getEmailFields = () => {
+		let emailOptions = [
+			{ label: __( 'Select', 'gutena-forms' ), value: '' }
+		];
+		const blocks = getBlock( clientId ); 
+		if ( ! gfIsEmpty( blocks ) ) {
+			let emailFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'email' );
+			if ( 0 < emailFields.length  ) {
+				for (let i = 0; i < emailFields.length; i++) {
+					let emailAttr = emailFields[i].attributes;
+					if ( 'email' === emailAttr.fieldType && ! gfIsEmpty( emailAttr.nameAttr ) ) {
+						emailOptions.push({ label: emailAttr.fieldName, value: emailAttr.nameAttr });
+					}
+				}
+			}
+		}
+		return emailOptions;
+	}
+
+	const getTextFields = () => {
+		let textOptions = [
+			{ label: __( 'Select', 'gutena-forms' ), value: '' }
+		];
+		const blocks = getBlock( clientId ); 
+		if ( ! gfIsEmpty( blocks ) ) {
+			let textFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'text' );
+			if ( 0 < textFields.length  ) {
+				for (let i = 0; i < textFields.length; i++) {
+					let fieldAttr = textFields[i].attributes;
+					if ( 'text' === fieldAttr.fieldType && ! gfIsEmpty( fieldAttr.nameAttr ) ) {
+						textOptions.push({ label: fieldAttr.fieldName, value: fieldAttr.nameAttr });
+					}
+				}
+			}
+		}
+		return textOptions;
+	}
 	
 	//Set Form ID
 	useEffect( () => {
 		let shouldRunFormID = true;
+		//set formID
 		if ( shouldRunFormID && gfIsEmpty( formID ) ) {
 			const d = new Date();
 			let randomID = Math.random().toString(16).slice(5);
@@ -172,7 +218,17 @@ export default function Edit( props ) {
 				setAttributes( { formID: GutenaFormsID } );
 			}
 		}
-
+		//set replyToEmailID
+		if ( shouldRunFormID && gfIsEmpty( replyToEmail ) && gfIsEmpty( replyToName ) ) {
+			let emailOptions = getEmailFields();
+			let textOptions = getTextFields();
+			if ( 1 < emailOptions.length && ! gfIsEmpty( emailOptions[1].value ) && 1 < textOptions.length && ! gfIsEmpty( textOptions[1].value ) ) {
+				setAttributes( { 
+					replyToEmail: emailOptions[1].value,
+					replyToName: textOptions[1].value
+				} );
+			}
+		}
 		//cleanup
 		return () => {
 			shouldRunFormID = false;
@@ -676,6 +732,7 @@ export default function Edit( props ) {
 								}
 								value={ labelTypography?.fontSize }
 								withReset={ false }
+								__nextHasNoMarginBottom
 							/>
 						</ToolsPanelItem>
 
@@ -803,6 +860,7 @@ export default function Edit( props ) {
 							}
 							value={ placeholderTypography?.fontSize }
 							withReset={ false }
+							__nextHasNoMarginBottom
 						/>
 					</ToolsPanelItem>
 
@@ -864,127 +922,45 @@ export default function Edit( props ) {
 					</ToolsPanelItem>
 				</ToolsPanel>
 				<PanelBody title="Input settings" className="gutena-forms-panel" initialOpen={ false }>
-					<PanelRow>
-						<fieldset className="components-border-radius-control">
-							<legend>
-								{ __( 'Label gap', 'gutena-forms' ) }
-							</legend>
-							<div className="components-border-radius-control__wrapper">
-								<RangeControl
-									className="components-border-radius-control__range-control"
-									value={ getQtyOrunit(
-										inputLabelGap,
-										'Qty'
-									) }
-									withInputField={ false }
-									onChange={ ( qty ) => {
-										setAttributes( {
-											inputLabelGap:
-												qty +
-												getQtyOrunit( inputLabelGap ),
-										} );
-									} }
-									min={ 0 }
-									max={
-										MAX_SPACE_VALUES[
-											getQtyOrunit( inputLabelGap )
-										]
-									}
-									step={ 1 }
-								/>
-								<UnitControl
-									className="components-border-radius-control__unit-control"
-									units={ units }
-									value={ inputLabelGap }
-									onChange={ ( inputLabelGap ) => {
-										setAttributes( { inputLabelGap } );
-									} }
-								/>
-							</div>
-						</fieldset>
-					</PanelRow>
-					<PanelRow>
-						<fieldset className="components-border-radius-control">
-							<legend>
-								{ __( 'Border width', 'gutena-forms' ) }
-							</legend>
-							<div className="components-border-radius-control__wrapper">
-								<RangeControl
-									className="components-border-radius-control__range-control"
-									value={ getQtyOrunit(
-										inputBorderWidth,
-										'Qty'
-									) }
-									withInputField={ false }
-									onChange={ ( qty ) => {
-										setAttributes( {
-											inputBorderWidth:
-												qty +
-												getQtyOrunit(
-													inputBorderWidth
-												),
-										} );
-									} }
-									min={ 1 }
-									max={
-										MAX_SPACE_VALUES[
-											getQtyOrunit( inputBorderWidth )
-										]
-									}
-									step={ 1 }
-								/>
-								<UnitControl
-									className="components-border-radius-control__unit-control"
-									units={ units }
-									value={ inputBorderWidth }
-									onChange={ ( inputBorderWidth ) => {
-										setAttributes( { inputBorderWidth } );
-									} }
-								/>
-							</div>
-						</fieldset>
-					</PanelRow>
-					<PanelRow>
-						<fieldset className="components-border-radius-control">
-							<legend>
-								{ __( 'Border radius', 'gutena-forms' ) }
-							</legend>
-							<div className="components-border-radius-control__wrapper">
-								<RangeControl
-									className="components-border-radius-control__range-control"
-									value={ getQtyOrunit(
-										inputBorderRadius,
-										'Qty'
-									) }
-									withInputField={ false }
-									onChange={ ( qty ) =>
-										setAttributes( {
-											inputBorderRadius:
-												qty +
-												getQtyOrunit(
-													inputBorderRadius
-												),
-										} )
-									}
-									min={ 0 }
-									max={
-										MAX_SPACE_VALUES[
-											getQtyOrunit( inputBorderRadius )
-										]
-									}
-									step={ 1 }
-								/>
-								<UnitControl
-									className="components-border-radius-control__unit-control"
-									units={ units }
-									value={ inputBorderRadius }
-									onChange={ ( inputBorderRadius ) => {
-										setAttributes( { inputBorderRadius } );
-									} }
-								/>
-							</div>
-						</fieldset>
-					</PanelRow>
+					<RangeControlUnit
+                        rangeLabel={ __("Label gap", "gutena-forms")  }
+                        attrValue={ inputLabelGap }
+                        onChangeFunc={ ( inputLabelGap ) => setAttributes( { inputLabelGap } ) }
+                        rangeMin={ 0 }
+                        rangeMax={ {
+                            px: 200,
+                            em: 10,
+                            rem: 5,
+                        } }
+                        rangeStep={ 1 }
+                    />
+
+					<RangeControlUnit
+                        rangeLabel={ __("Border width", "gutena-forms")  }
+                        attrValue={ inputBorderWidth }
+                        onChangeFunc={ ( inputBorderWidth ) => setAttributes( { inputBorderWidth } ) }
+                        rangeMin={ 1 }
+                        rangeMax={ {
+                            px: 200,
+                            em: 10,
+                            rem: 5,
+                        } }
+                        rangeStep={ 1 }
+                    />
+
+					<RangeControlUnit
+                        rangeLabel={ __("Border radius", "gutena-forms")  }
+                        attrValue={ inputBorderRadius }
+                        onChangeFunc={ ( inputBorderRadius ) => setAttributes( { inputBorderRadius } ) }
+                        rangeMin={ 0 }
+                        rangeMax={ {
+                            px: 200,
+                            em: 10,
+                            rem: 5,
+                        } }
+                        rangeStep={ 1 }
+                    />
+				
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Bottom border only', 'gutena-forms' ) }
@@ -1048,6 +1024,36 @@ export default function Edit( props ) {
 									onChange={ ( adminEmailSubject ) =>
 										setAttributes( { adminEmailSubject } )
 									}
+								/>
+							</PanelRow>
+							<PanelRow>
+								<SelectControl
+									label={ __( 'Reply To Email', 'gutena-forms' ) }
+									value={ replyToEmail }
+									options={ getEmailFields() }
+									onChange={ ( replyToEmail ) =>
+										setAttributes( { replyToEmail } )
+									}
+									help={ __(
+										'Select email field for reply to address',
+										'gutena-forms'
+									) }
+									__nextHasNoMarginBottom
+								/>
+							</PanelRow>
+							<PanelRow>
+								<SelectControl
+									label={ __( 'Reply To Name', 'gutena-forms' ) }
+									value={ replyToName }
+									options={ getTextFields() }
+									onChange={ ( replyToName ) =>
+										setAttributes( { replyToName } )
+									}
+									help={ __(
+										'Select name field for reply to address',
+										'gutena-forms'
+									) }
+									__nextHasNoMarginBottom
 								/>
 							</PanelRow>
 						</>

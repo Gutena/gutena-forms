@@ -232,16 +232,11 @@
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
 	}
 	
-	.gutena-forms-field::placeholder {
+	.gutena-forms-field::placeholder, .gutena-forms-placeholder {
 		color: var(--wp--gutena-forms--placeholder-color);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
-	}
-
-	.wp-block-gutena-form-field > select.gutena-forms-field {
-		padding-top: 18px;
-		padding-bottom: 18px;
 	}
 
 	//Input Field padding
@@ -258,8 +253,11 @@
 			line-height: var(--wp--gutena-forms--placeholder-line-height);
 			font-weight: var(--wp--gutena-forms--placeholder-font-weight);
 			width: 100%;
+			height: 50px;
 			padding: 13px calc( 18px + var(--wp--gutena-forms--input-border-radius, 0px )/2 );
 			box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-webkit-box-sizing: border-box;
 
 			&.checkbox-field, &.radio-field {
 				padding-left: 0;
