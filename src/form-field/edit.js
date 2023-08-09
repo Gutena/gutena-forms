@@ -20,7 +20,9 @@ import {
 	ToolbarGroup, 
 	ToolbarButton
 } from '@wordpress/components';
+import SelectFieldType from '../components/SelectFieldType';
 import { gutenaFormsIcon } from '../icon';
+
 
 //check for duplicate name attr
 const isFieldNameAttrReserved = ( nameAttrCheck, clientIdCheck ) => {
@@ -70,7 +72,6 @@ export default function edit( {
 
 	//Fields which use input tag
 	const textLikeInput = [ 'text', 'email', 'number' ];
-
 	
 	//Field types
 	const formfieldTypes = [
@@ -412,17 +413,11 @@ export default function edit( {
 			</BlockControls>
 			<InspectorControls>
 				<PanelBody title={ __( 'Field Type', 'gutena-forms' ) } initialOpen={ true }>
-					<SelectControl
-						value={ fieldType }
-						options={ fieldTypes }
-						onChange={ ( fieldType ) =>
-							setAttributes( { fieldType } )
-						}
-						help={ __(
-							'Select appropriate field type for input',
-							'gutena-forms'
-						) }
-						__nextHasNoMarginBottom
+					<SelectFieldType 
+						fieldType={ fieldType }
+						fieldTypes={ fieldTypes }
+						newFieldTypes={ newFieldTypes }
+						onChangeFunc={ ( fieldType ) => setAttributes( { fieldType } ) }
 					/>
 					{ ! gfIsEmpty( gutenaExtends?.gfcontrols ) && gutenaExtends.gfcontrols() }
 					{ ( -1 !== ['select', 'checkbox', 'radio'].indexOf( fieldType ) ) && (

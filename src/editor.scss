@@ -53,6 +53,10 @@
 	width:100%;
 }
 
+.block-editor__container .gf-no-underline{
+	text-decoration-line: none !important;
+}
+
 .gutena-forms-horizontal-radio.components-radio-control .components-flex {
 	flex-direction: row;
 	gap: 1.25rem;
@@ -80,6 +84,92 @@
 
 	.gf-required-field .components-base-control__help{
 		color: red;
+	}
+
+	.gf-select-field-type-input{
+		position: relative;
+		.gf-select-field-type-control{
+			position: relative;
+			.components-select-control__input{
+				option{
+					display: none !important;
+				}
+			}
+			.gf-select-overlay{
+				cursor: pointer;
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 50%;
+				z-index: 999;
+			}
+		}
+		
+		ul.gf-select-field-types {
+			list-style-type: none;
+			position: absolute;
+			top: 30px;
+			z-index: 9;
+			border: 1px solid #8c8f94;
+			border-top: none;
+			background: #ffffff;
+			box-sizing: border-box;
+			color: rgb(30, 30, 30);
+			width: 100%;
+			max-width: none;
+			max-height: 325px;
+			cursor: pointer;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			font-size: 13px;
+			margin: 0;
+			padding: 8px 26px 10px 8px;
+			overflow-x: hidden;
+			overflow-y: auto;
+			box-shadow: none !important;
+
+			.gf-title-link-wrapper{
+				position: relative;
+				padding-bottom: 10px;
+				.gf-title-icon{
+					display: flex;
+					gap: 6px;
+					.gf-title {
+						font-weight: 600;
+						font-size: 15px;
+					}
+				}
+
+				.gf-link{
+					position: absolute;
+					top: 0;
+					right: 0;
+					a{
+						color: #E35D3F;
+						font-weight: 600;
+					}
+				}
+			}
+
+			.gf-seprator{
+				border-bottom: 1px solid rgba(44, 51, 56, 0.1);
+				margin: 20px -28px 20px -8px;
+			}
+			
+			li{
+				cursor: pointer;
+				&:hover{
+					background-color: #f6f7f7;
+				}
+				&.gf-select-pro-options, &.gf-seprator, li{
+					cursor: auto;
+					&:hover{
+						background-color: #ffffff;
+					}
+				}
+			}
+		}
 	}
 
 }
