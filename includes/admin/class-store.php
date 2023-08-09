@@ -46,6 +46,23 @@
 			return false;
 		}
 
+		/**
+		 * @return array associative array of form block_form_id and form_id
+		 */
+		public function get_block_id_form_id_array(){
+			global $wpdb; 
+			$forms = array();
+			if ( $this->is_forms_store_exists() ) {
+				$form_rows = $this->get_form_list();
+				if ( ! empty( $form_rows ) ) {
+					foreach ($form_rows as $key => $form) {
+						$forms[ $form->block_form_id ] = $form->form_id;
+					}
+				}
+			}
+			return $forms;
+		}
+
 		public function get_form_name( $form_schema ) {
 			$form_schema = $this->maybe_unserialize( $form_schema );
 			return ( empty( $form_schema ) || empty( $form_schema['form_attrs'] ) || empty( $form_schema['form_attrs']['formName'] ) ) ? __( 'Contact Form', 'gutena-forms' ) : sanitize_text_field( $form_schema['form_attrs']['formName'] );
@@ -55,7 +72,7 @@
 		public function get_form_list() {
 			global $wpdb;
 			return  empty( $wpdb ) ? '': $wpdb->get_results(
-				"SELECT form_id, form_name FROM {$this->table_gutenaforms} WHERE form_id IN (SELECT  DISTINCT form_id  FROM {$this->table_gutenaforms_entries} WHERE trash = 0)"
+				"SELECT form_id, form_name, block_form_id FROM {$this->table_gutenaforms} WHERE form_id IN (SELECT  DISTINCT form_id  FROM {$this->table_gutenaforms_entries} WHERE trash = 0)"
 			);
 		}
 

@@ -34,6 +34,16 @@
 			}  
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
 			add_action( 'admin_init', array( $this, 'load_admin_classes' ) );
+
+			if ( ! is_gutena_forms_pro( false ) ) {
+				//view dashboard notice 
+				add_action( 'admin_notices', array( $this, 'view_dashboard_notice' ) );
+				//admin script
+				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts_admin' ) );
+				//Update form entry status to read
+				add_action( 'wp_ajax_gutena_forms_dismiss_notice', array( $this, 'dismiss_notice' ) );
+			}
+			
 		}
 
 		/**
@@ -756,6 +766,66 @@
 			return intval( function_exists( 'get_current_user_id' ) ? get_current_user_id() : 0 );
 		}
 
+		//view dashboard notice
+		public function view_dashboard_notice() {
+			$notice_id = "gutena-forms-view-dashboard-notice";
+			$notice = $this->get_notices_and_status( $notice_id );
+			if ( false === $notice['dismissed'] ) {
+				echo '<div id="'.esc_attr( $notice_id ).'" class="notice notice-info is-dismissible gutena-forms-admin-notice" style="display:flex;align-items:center; gap:6px;" > <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M4.22379 11.333H0.00196697L11.3347 0.000257024V4.1891L4.22379 11.333Z" fill="#0DA88C"/>
+					<path d="M19.7791 11.3325H24.001L12.6682 -0.000231258V4.18861L19.7791 11.3325Z" fill="#0DA88C"/>
+					<path d="M4.22159 12.6655H-0.000230298L11.3325 23.9983V19.8094L4.22159 12.6655Z" fill="#0DA88C"/>
+					<path d="M19.7772 12.6675H23.999L12.6663 24.0002V19.8114L19.7772 12.6675Z" fill="#0DA88C"/>
+					<rect width="8.81436" height="2.60358" transform="matrix(1 0 0 -1 11.9624 15.2695)" fill="#0DA88C"/>
+					</svg>
+					<p> <strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong>'. __( ' Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="'.esc_url( admin_url( 'admin.php?page=gutena-forms' ) ).'" style="color: #E35D3F;margin-left:1rem;" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </strong></a></p></div>';
+			}
+		}
+
+		//enqueue admin scripts
+		public function enqueue_scripts_admin() {
+			wp_enqueue_script( 'gutena-forms-admin', GUTENA_FORMS_PLUGIN_URL . 'assets/minify/js/admin.min.js', array(), GUTENA_FORMS_VERSION, true );
+
+			wp_localize_script(
+				'gutena-forms-admin',
+				'gutenaFormsAdmin',
+				array(
+					'dismiss_notice_action'    => 'gutena_forms_dismiss_notice',
+					'ajax_url'           	=> admin_url( 'admin-ajax.php' ),
+					'nonce'                 => wp_create_nonce( 'gutena_Forms' ),
+				)
+			);
+
+		}
+
+		//get and check if provided notice id is dismissed or not
+		private function get_notices_and_status( $notice_id = '' ) {
+			$notices = get_option( 'gutena_forms_dismiss_notices', array() );
+			return array( 
+				'notices' => $notices,
+				'dismissed' => ( empty( $notice_id ) || ( ! empty( $notices ) && in_array( $notice_id, $notices ) ) )
+			);
+		}
+
+		//dismiss notice ajax
+		public function dismiss_notice() {
+			check_ajax_referer( 'gutena_Forms', 'gfnonce' );
+			if ( $this->is_gfadmin() && ! empty( $_POST['notice_id'] ) ) {
+				$notice_id = sanitize_key( wp_unslash( $_POST['notice_id'] ) );
+				$notice = $this->get_notices_and_status( $notice_id );
+				if ( is_array( $notice['notices'] ) && false === $notice['dismissed'] ) {
+					array_push( $notice['notices'], $notice_id );
+					update_option( 'gutena_forms_dismiss_notices', $notice['notices'] );
+				}
+			}
+
+			wp_send_json_success( array(
+				'status'  => 'success',
+				'message' => __( 'Notice dismissed successfully', 'gutena-forms' ),
+			) );
+		}
+
+		//check if data tables exists
 		public function is_forms_store_exists() {
 			return empty(  get_option( 'gutena_forms_store_version', false ) ) ? false : true;
 		}
