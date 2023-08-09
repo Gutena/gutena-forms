@@ -1,8 +1,8 @@
 === Gutena Forms - Contact Forms Block ===
 Contributors:      expresstech
 Tags:              form, block, contact form, form block, forms
-Tested up to:      6.2
-Stable tag:        1.1.0
+Tested up to:      6.3
+Stable tag:        1.1.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,10 @@ Gutena Forms is fully responsive and mobile-friendly, so your forms will look gr
 == No jQuery Used ==
 
 It is essential to have a fast website, and Gutena forms assure your site’s performance won’t be affected as we’re using just javascript rather than JQuery library, so your website's performance will remain optimal.
+
+== Form Entries Database ==
+
+Say goodbye to the days of incessant email checks to stay informed about new submissions.  Now access all your form submissions right from the Gutena Form Dashboard in WordPress. This feature empowers you to optimize your workflow and stay up-to-date without unnecessary hassle.
 
 == Google reCAPTCHA Integration ==
 
@@ -119,6 +123,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+
+= 1.1.1 | 9th August 2023 =
+* Added admin notice in dashboard and email to view form entries
 
 = 1.1.0 | 28th July 2023 =
 * Added gutena_forms_view_field_value filter to filter view of field value

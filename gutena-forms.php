@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.0
  * Requires PHP:      5.6
- * Version:           1.1.0
+ * Version:           1.1.1
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io
  * License:           GPL-2.0-or-later
@@ -47,7 +47,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 	 * Plugin version.
 	 */
 	if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-		define( 'GUTENA_FORMS_VERSION', '1.1.0' );
+		define( 'GUTENA_FORMS_VERSION', '1.1.1' );
 	}
 
 	if ( ! function_exists( 'is_gutena_forms_pro' ) ) {
@@ -121,7 +121,6 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
-
 			//Provide data for form submission script
 			wp_localize_script(
 				'gutena-forms-script',
@@ -139,6 +138,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'grecaptcha_type'	  => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
 					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
 					'grecaptcha_secret_key' => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
+					'pricing_link' => esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) )
 				)
 			);
 		}
@@ -820,6 +820,14 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//Apply filter for admin email notification
 			$body    = apply_filters( 'gutena_forms_submit_admin_notification', $body, $form_submit_data );
+
+			if ( ! is_gutena_forms_pro( false ) ) {
+				/**
+				 * https://stackoverflow.com/questions/17602400/html-email-in-gmail-css-style-attribute-removed
+				 */
+				$body .= '<div style="background-color: #fffbeb; width: fit-content; margin-top: 50px; padding: 14px 15px 12px 15px; border-radius: 10px;" > <span style="font-size: 13px; line-height: 1; display: flex;" > <span style="margin-right: 5px;" > 🌟 </span> <span style="margin-right: 3px;" ><strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong></span> '. __( 'Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="'.esc_url( admin_url( 'admin.php?page=gutena-forms' ) ).'" style="color: #E35D3F; margin-left: 1rem;" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </strong></a></span></div>';
+			}
+			
 
 			$body    = wpautop( $body, true );
 			$subject = esc_html( $subject );
