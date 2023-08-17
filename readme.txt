@@ -124,6 +124,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+= 1.1.2 | Beta =
+* Fixed textarea field number of rows style
+
 = 1.1.1 | 9th August 2023 =
 * Added admin notice in dashboard and email to view form entries
 
