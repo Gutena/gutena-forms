@@ -2,7 +2,7 @@
 Contributors:      expresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.3
-Stable tag:        1.1.1
+Stable tag:        1.1.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,8 +124,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
-= 1.1.2 | Beta =
+= 1.1.2 | 24th August 2023 =
 * Fixed textarea field number of rows style
+* Fixed form submission for grecaptcha v3 disabled with saved attributes
 
 = 1.1.1 | 9th August 2023 =
 * Added admin notice in dashboard and email to view form entries
