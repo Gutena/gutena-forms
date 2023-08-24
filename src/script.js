@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function(){
 						let grecaptcha_enable  = gutena_forms.querySelector(
 							'input[name="recaptcha_enable"]'
 						);
-						if ( 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
+						if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
 							grecaptcha.ready(function() {
 								grecaptcha.execute( gutenaFormsBlock.grecaptcha_site_key, {action: 'submit'}).then( function( token ) {
 									/* for v3 - append g-recaptcha-response input 
