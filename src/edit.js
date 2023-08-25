@@ -989,79 +989,73 @@ export default function Edit( props ) {
 					</PanelRow>
 				</PanelBody>
 				<PanelBody title="Notification" initialOpen={ true }>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Admin notification', 'gutena-forms' ) }
-							help={
-								emailNotifyAdmin
-									? __(
-											'Toggle to stop email notification',
-											'gutena-forms'
-									  )
-									: __(
-											'Toggle to enable email notification after form submission',
-											'gutena-forms'
-									  )
-							}
-							checked={ emailNotifyAdmin }
-							onChange={ ( emailNotifyAdmin ) =>
-								setAttributes( { emailNotifyAdmin } )
-							}
-						/>
-					</PanelRow>
+					<ToggleControl
+						label={ __( 'Admin notification', 'gutena-forms' ) }
+						help={
+							emailNotifyAdmin
+								? __(
+										'Toggle to stop email notification',
+										'gutena-forms'
+									)
+								: __(
+										'Toggle to enable email notification after form submission',
+										'gutena-forms'
+									)
+						}
+						checked={ emailNotifyAdmin }
+						onChange={ ( emailNotifyAdmin ) =>
+							setAttributes( { emailNotifyAdmin } )
+						}
+					/>
 					{ emailNotifyAdmin ? (
 						<>
-							<PanelRow>
-								<TextControl
-									label={ __( 'Email to', 'gutena-forms' ) }
-									value={ adminEmails }
-									onChange={ ( adminEmails ) =>
-										setAttributes( { adminEmails } )
-									}
-								/>
-							</PanelRow>
-							<PanelRow>
-								<TextControl
-									label={ __(
-										'Email subject',
-										'gutena-forms'
-									) }
-									value={ adminEmailSubject }
-									onChange={ ( adminEmailSubject ) =>
-										setAttributes( { adminEmailSubject } )
-									}
-								/>
-							</PanelRow>
-							<PanelRow>
-								<SelectControl
-									label={ __( 'Reply To Email', 'gutena-forms' ) }
-									value={ replyToEmail }
-									options={ getEmailFields() }
-									onChange={ ( replyToEmail ) =>
-										setAttributes( { replyToEmail } )
-									}
-									help={ __(
-										'Select email field for reply to address',
-										'gutena-forms'
-									) }
-									__nextHasNoMarginBottom
-								/>
-							</PanelRow>
-							<PanelRow>
-								<SelectControl
-									label={ __( 'Reply To Name', 'gutena-forms' ) }
-									value={ replyToName }
-									options={ getTextFields() }
-									onChange={ ( replyToName ) =>
-										setAttributes( { replyToName } )
-									}
-									help={ __(
-										'Select name field for reply to address',
-										'gutena-forms'
-									) }
-									__nextHasNoMarginBottom
-								/>
-							</PanelRow>
+							<TextControl
+								label={ __( 'Email to', 'gutena-forms' ) }
+								value={ adminEmails }
+								onChange={ ( adminEmails ) =>
+									setAttributes( { adminEmails } )
+								}
+							/>
+						
+							<TextControl
+								label={ __(
+									'Email subject',
+									'gutena-forms'
+								) }
+								value={ adminEmailSubject }
+								onChange={ ( adminEmailSubject ) =>
+									setAttributes( { adminEmailSubject } )
+								}
+							/>
+						
+							<SelectControl
+								label={ __( 'Reply To Email', 'gutena-forms' ) }
+								value={ replyToEmail }
+								options={ getEmailFields() }
+								onChange={ ( replyToEmail ) =>
+									setAttributes( { replyToEmail } )
+								}
+								help={ __(
+									'Select email field for reply to address',
+									'gutena-forms'
+								) }
+								__nextHasNoMarginBottom
+							/>
+						
+							<SelectControl
+								label={ __( 'Reply To Name', 'gutena-forms' ) }
+								value={ replyToName }
+								options={ getTextFields() }
+								onChange={ ( replyToName ) =>
+									setAttributes( { replyToName } )
+								}
+								help={ __(
+									'Select name field for reply to address',
+									'gutena-forms'
+								) }
+								__nextHasNoMarginBottom
+							/>
+							
 						</>
 					) : (
 						''

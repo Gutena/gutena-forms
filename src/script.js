@@ -3,6 +3,11 @@ document.addEventListener("DOMContentLoaded", function(){
 		range_slider_onchange();
 		field_validation_on_input();
 		form_sumbit();
+
+		setTimeout(() => {
+			//check if grecaptcha is loaded or not
+			check_and_load_grecaptcha();
+		}, 2000);
 	};
 
 	//Check Empty
@@ -34,6 +39,45 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 		return parents;
 	};
+
+	//enqueue recaptcha if not enqueued 
+	const check_and_load_grecaptcha = () => {
+		if ( 'undefined' !== typeof gutenaFormsBlock && ! isEmpty( gutenaFormsBlock.grecaptcha_type ) && ! isEmpty( gutenaFormsBlock.grecaptcha_site_key ) ) {
+			//gutena form block
+			let gutena_form_0 = document.querySelector(
+				'.wp-block-gutena-forms'
+			);
+			if ( ! isEmpty( gutena_form_0 ) ) {
+				//check if recaptcha is enabled
+				let grecaptcha_enable  = gutena_form_0.querySelector(
+					'input[name="recaptcha_enable"]'
+				);
+				if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
+					//check if grecaptcha is defined or not
+					if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
+						//check if grecaptcha script is loading or not
+						let grecaptcha_script_html = document.getElementById('google-recaptcha-js');
+						if ( isEmpty( grecaptcha_script_html ) ) {
+							//form script
+							let gutena_forms_script_html = document.getElementById('gutena-forms-script-js');
+							if ( ! isEmpty( gutena_forms_script_html ) ) {
+								grecaptcha_script_html = document.createElement('script');
+								grecaptcha_script_html.id = 'google-recaptcha-js';
+								grecaptcha_url = 'https://www.google.com/recaptcha/api.js';
+								if ( 'v3' === gutenaFormsBlock.grecaptcha_type ) {
+									grecaptcha_url += '?render='+gutenaFormsBlock.grecaptcha_site_key
+								}
+								grecaptcha_script_html.src = grecaptcha_url;
+								//insert before form script
+								document.head.insertBefore( grecaptcha_script_html, gutena_forms_script_html );
+								//console.log("recaptcha loaded");
+							}
+						}
+					}
+				}
+			}
+		}
+	}	
 
 	const form_sumbit = () => {
 		let submitButton = document.querySelectorAll(
@@ -122,16 +166,21 @@ document.addEventListener("DOMContentLoaded", function(){
 							'input[name="recaptcha_enable"]'
 						);
 						if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
-							grecaptcha.ready(function() {
-								grecaptcha.execute( gutenaFormsBlock.grecaptcha_site_key, {action: 'submit'}).then( function( token ) {
-									/* for v3 - append g-recaptcha-response input 
-									 for v2 - already present */
-									form_data.append('g-recaptcha-response', token);
-
-									// Add your logic to submit to your backend server here.
-									save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+							if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
+								console.log("grecaptcha not defined");
+								save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+							} else {
+								grecaptcha.ready(function() {
+									grecaptcha.execute( gutenaFormsBlock.grecaptcha_site_key, {action: 'submit'}).then( function( token ) {
+										/* for v3 - append g-recaptcha-response input 
+										 for v2 - already present */
+										form_data.append('g-recaptcha-response', token);
+	
+										// Add your logic to submit to your backend server here.
+										save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+									});
 								});
-							});
+							}
 						} else {
 							save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
 						}
