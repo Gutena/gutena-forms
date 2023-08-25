@@ -125,7 +125,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 == Changelog ==
 
 = 1.1.3 | 25th August 2023 =
-* Fixed grecaptcha not enqueued
+* Fixed grecaptcha enqueue
 * Improved admin notification settings input box UI
 
 = 1.1.2 | 24th August 2023 =
