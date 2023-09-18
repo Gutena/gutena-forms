@@ -2,7 +2,7 @@
 Contributors:      expresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.3
-Stable tag:        1.1.3
+Stable tag:        1.1.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 = 1.1.4 | 18th September 2023 =
 * Fixed form database table key length
 * Fixed form entries table column label length
+* Updated .pot file
 
 = 1.1.3 | 25th August 2023 =
 * Fixed grecaptcha enqueue
