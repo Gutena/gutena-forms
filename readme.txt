@@ -124,6 +124,10 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+= 1.1.4 | 18th September 2023 =
+* Fixed form database table key length
+* Fixed form entries table column label length
+
 = 1.1.3 | 25th August 2023 =
 * Fixed grecaptcha enqueue
 * Improved admin notification settings input box UI
