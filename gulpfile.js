@@ -181,7 +181,7 @@ function create_zip() {
 
 //exports.default = series( clean_files, css_minification, js_minification, clean_gutena_repos, clone_gutena_repos, clean_gutena_repos_files,create_pot, create_zip );
 
-exports.default = series( clean_files, css_minification, js_minification, create_pot, create_zip );
+exports.default = series( clean_files, css_minification, js_minification, create_zip );
 
 //(cmd: gulp watch): run for development. It retain src and all other files
 exports.watch = series( watch_and_minify_files );
