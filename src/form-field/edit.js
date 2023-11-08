@@ -591,6 +591,16 @@ export default function edit( {
 							}
 						/>
 					</PanelRow>
+					{ ['text','textarea','number'].includes( fieldType ) && (
+						<TextControl
+							label={ __( 'Default Value', 'gutena-forms' ) }
+							value={ defaultValue }
+							type='text'
+							onChange={ ( defaultValue ) =>
+								setAttributes( { defaultValue } )
+							}
+						/>
+					) }
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
