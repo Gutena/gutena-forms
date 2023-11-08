@@ -1,8 +1,8 @@
 === Gutena Forms - Contact Forms Block ===
 Contributors:      expresstech
 Tags:              form, block, contact form, form block, forms
-Tested up to:      6.3
-Stable tag:        1.1.4
+Tested up to:      6.4
+Stable tag:        1.1.5
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -123,6 +123,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+
+= 1.1.5 | 08th November 2023 =
+* Added default value settings for text and textarea type input field
 
 = 1.1.4 | 18th September 2023 =
 * Fixed form database table key length
