@@ -130,6 +130,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'ajax_url'            => admin_url( 'admin-ajax.php' ),
 					'nonce'               => wp_create_nonce( 'gutena_Forms' ),
 					'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
+					'required_msg_optin'  => __( 'Please check this checkbox', 'gutena-forms' ),
 					'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
 					'required_msg_check' => __( 'Please check an option', 'gutena-forms' ),
 					'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
@@ -386,14 +387,20 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 			// radio type Input
-			if ( in_array( $attributes['fieldType'], array( 'radio', 'checkbox' ) ) ) {
+			if ( in_array( $attributes['fieldType'], array( 'radio', 'checkbox', 'optin' ) ) ) {
 				$output = '<div  
 				' . $this->get_field_attribute( $attributes, array(
 					'fieldClasses' 	=> 'class',
 				) ) . 
 				' 
 				>';
-				if ( ! empty( $attributes['selectOptions'] ) && is_array( $attributes['selectOptions'] ) ) {
+				if ( 'optin' == $attributes['fieldType'] ) {
+					$output .= '<label class="' . esc_attr( $attributes['fieldType'] ) . '-container">
+						<input type="checkbox" name="' . esc_attr( $attributes['nameAttr']  ) . 
+						'" value="1" >
+						<span class="checkmark"></span>
+					  </label>';
+				} else if ( ! empty( $attributes['selectOptions'] ) && is_array( $attributes['selectOptions'] ) ) {
 					foreach ( $attributes['selectOptions'] as $option ) {
 						$output .= '<label class="' . esc_attr( $attributes['fieldType'] ) . '-container">' . esc_attr( $option ) . '
 						<input type="' . esc_attr( $attributes['fieldType'] ) . '" name="' . esc_attr( 'radio' === $attributes['fieldType'] ? $attributes['nameAttr'] : $attributes['nameAttr'].'[]'  ) . 
@@ -744,7 +751,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			foreach ( $_POST as $name_attr => $field_value ) {
 				$name_attr   = sanitize_key( wp_unslash( $name_attr ) );
 
-				if ( empty( $fieldSchema[ $name_attr ] ) ) {
+				if ( empty( $fieldSchema[ $name_attr ] ) || ( ! empty( $fieldSchema[ $name_attr ][ 'fieldType' ] ) && 'optin' == $fieldSchema[ $name_attr ][ 'fieldType' ] ) ) {
 					continue;
 				}
 

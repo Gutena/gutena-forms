@@ -1,13 +1,13 @@
 import { __ } from '@wordpress/i18n';
 import { applyFilters, hasFilter } from '@wordpress/hooks';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import {
 	useBlockProps,
 	InspectorControls,
 	store as blockEditorStore,
 	BlockControls,
 } from '@wordpress/block-editor';
-import { gfIsEmpty, gfSanitizeName } from '../helper';
+import { gfIsEmpty, gfSanitizeName, getInnerBlocksbyNameAttr } from '../helper';
 import { useDispatch, useSelect, select } from '@wordpress/data';
 import {
 	PanelBody,
@@ -70,6 +70,12 @@ export default function edit( {
 		style,
 	} = attributes;
 
+	const previousFieldType = useRef( fieldType );
+
+	useEffect(() => {
+		previousFieldType.current = fieldType;
+	}, [fieldType]);
+
 	//Fields which use input tag
 	const textLikeInput = [ 'text', 'email', 'number' ];
 	
@@ -83,6 +89,7 @@ export default function edit( {
 		{ label: 'Dropdown', value: 'select' },
 		{ label: 'Radio', value: 'radio' },
 		{ label: 'Checkbox', value: 'checkbox' },
+		{ label: 'Opt-in Checkbox - Privacy policy, Terms', value: 'optin' },
 	];
 
 	let addNewFieldTypes = [];
@@ -107,37 +114,78 @@ export default function edit( {
 
 	const {
 		selectBlock,
+		moveBlocksDown, 
+		moveBlocksUp,
+		updateBlockAttributes //Use to to update block attributes using clientId
 	} = useDispatch( blockEditorStore );
 
-	const gutenaFormClientID = useSelect(
+	const { 
+		gutenaFormClientID, 
+		labelClientId, 
+		labelRootClientId,
+		parentFieldGroupClientID, 
+		parentFieldGroupClassName, 
+		parentCoreGroupClientID,
+		parentCoreGroupLayout
+	} = useSelect(
 		( select ) => {
 			//get parent gutena form clientIds
-			return select( blockEditorStore ).getBlockParentsByBlockName( clientId,'gutena/forms', true );
-		},
-		[ clientId ]
-	);
+			let gutenaFormClientID = select( blockEditorStore ).getBlockParentsByBlockName( clientId,'gutena/forms', true );
+			gutenaFormClientID = gfIsEmpty( gutenaFormClientID ) ? gutenaFormClientID: gutenaFormClientID[0];
 
+			//Returns the client ID of the block adjacent one at the given reference startClientId and modifier directionality. Directionality multiplier (1 next, -1 previous).
+			//Get Input label ClientID 
+			let labelBlockPosition = ( ! gfIsEmpty( previousFieldType ) && 'optin' == previousFieldType?.current ) ? 1 : -1;
+			let labelClientId = select( blockEditorStore ).getAdjacentBlockClientId( clientId, labelBlockPosition );
+
+			//Parent field-group block
+			let parentFieldGroupClientID = select( blockEditorStore ).getBlockParentsByBlockName( clientId,'gutena/field-group', true );
+
+			let parentCoreGroupClientID = select( blockEditorStore ).getBlockParentsByBlockName( clientId,'core/group', true );
+
+			let labelRootClientId = '';
+
+			if ( ! gfIsEmpty( labelClientId ) ) {
+				labelRootClientId = select( blockEditorStore ).getBlockRootClientId( labelClientId );
+			}
+
+			
+			let parentFieldGroupClassName = '';
+			if ( ! gfIsEmpty( parentFieldGroupClientID ) ) {
+				parentFieldGroupClientID = parentFieldGroupClientID[0];
+				let parentFieldGroupAttr = select( blockEditorStore ).getBlockAttributes( parentFieldGroupClientID );
+
+				if ( ! gfIsEmpty( parentFieldGroupAttr ) && ! gfIsEmpty( parentFieldGroupAttr.className ) ) {
+					parentFieldGroupClassName = parentFieldGroupAttr.className;
+				}
+			}
+			let parentCoreGroupLayout = {};
+			if ( ! gfIsEmpty( parentCoreGroupClientID ) ) {
+				parentCoreGroupClientID = parentCoreGroupClientID[0];
+				let parentCoreGroupAttr = select( blockEditorStore ).getBlockAttributes( parentCoreGroupClientID );
+				if ( ! gfIsEmpty( parentCoreGroupAttr ) && ! gfIsEmpty( parentCoreGroupAttr.layout ) ) {
+					parentCoreGroupLayout = parentCoreGroupAttr.layout;
+				}
+			}
+
+			return {
+				gutenaFormClientID,
+				labelClientId,
+				labelRootClientId,
+				parentFieldGroupClientID,
+				parentFieldGroupClassName,
+				parentCoreGroupClientID,
+				parentCoreGroupLayout
+			};
+
+		},
+		[ clientId, fieldType ]
+	);
+	
 	/********************************
 	 Set Field Name : START
 	 *******************************/
 	//Get Input Label from paragraph label block
-	/**
-	 * https://developer.wordpress.org/block-editor/reference-guides/data/data-core-block-editor/#getpreviousblockclientid
-	 */
-	//Get Input label ClientID
-	const labelClientId = useSelect( ( select ) => {
-		let labelParaClientId = select(
-			blockEditorStore
-		).getAdjacentBlockClientId( clientId, -1 );
-		if ( gfIsEmpty( labelParaClientId ) ) {
-			labelParaClientId = select(
-				blockEditorStore
-			).getAdjacentBlockClientId( clientId, 1 );
-		}
-
-		return labelParaClientId;
-	}, [] );
-
 	//Get Input label Content
 	const inputLabel = useSelect(
 		( select ) => {
@@ -153,8 +201,7 @@ export default function edit( {
 		[ labelClientId ]
 	);
 
-	//Use to to update block attributes using clientId
-	const { updateBlockAttributes } = useDispatch( blockEditorStore );
+
 
 	//set name attribute if default or duplicate
 	useEffect( () => {
@@ -249,7 +296,50 @@ export default function edit( {
 			if ( -1 !== ['radio', 'checkbox'].indexOf( fieldType ) ) {
 				InputClassName += optionsInline ? ' inline-options' : ' has-'+optionsColumns+'-col';
 			}
-			setAttributes( { fieldClasses: InputClassName } );
+
+			if ( 'optin' ===  fieldType && ! isRequired ) {
+				setAttributes( { 
+					fieldClasses: InputClassName,
+					isRequired: true
+				 } );
+			} else {
+				setAttributes( { fieldClasses: InputClassName } );
+			}
+
+			//add class of field type to parent gutena field group block
+			let fieldGroupClassToAdd = ' field-group-type-'+fieldType+' ';
+			if ( ! gfIsEmpty( parentFieldGroupClientID ) && -1 === parentFieldGroupClassName.indexOf( fieldGroupClassToAdd ) ) {
+				updateBlockAttributes( parentFieldGroupClientID, { className: parentFieldGroupClassName + fieldGroupClassToAdd } );
+			}
+
+			//convert stack into row for optin field type
+			if ( ! gfIsEmpty( parentCoreGroupClientID ) && ! gfIsEmpty( parentCoreGroupLayout ) ) {
+				if ( 'optin' ===  fieldType  && ! gfIsEmpty( parentCoreGroupLayout.orientation ) && 'vertical' === parentCoreGroupLayout.orientation ) {
+					//for backwardButton decrease index (move left/up) for forwardButton increase index (move right/down)
+					if ( ! gfIsEmpty( labelClientId ) && ! gfIsEmpty( labelRootClientId ) ) {
+						updateBlockAttributes( labelClientId, { content: __( 'I agree to the Terms', 'gutena-forms' ) } );
+						moveBlocksDown( [ labelClientId ], labelRootClientId );
+					}
+
+					updateBlockAttributes( parentCoreGroupClientID, { layout: {
+						...parentCoreGroupLayout,
+						orientation: undefined,
+						flexWrap:'nowrap'
+					} } );
+					
+				} else if ( 'optin' !==  fieldType && gfIsEmpty( parentCoreGroupLayout.orientation )  ) {
+					updateBlockAttributes( parentCoreGroupClientID, { layout: {
+						...parentCoreGroupLayout,
+						orientation: 'vertical',
+						flexWrap: undefined
+					} } );
+
+					if ( ! gfIsEmpty( labelClientId ) && ! gfIsEmpty( labelRootClientId ) ) {
+						updateBlockAttributes( labelClientId, { content: '' } );
+						moveBlocksUp( [ labelClientId ], labelRootClientId );
+					}
+				}
+			}
 		}
 
 		//cleanup
@@ -382,6 +472,25 @@ export default function edit( {
 			);
 		}
 
+		if ( 'optin' === fieldType ) {
+			return (
+				<div
+					className={ fieldClasses }
+				>
+				<label className={ 'checkbox-container' } > 
+					<input 
+					type="checkbox"
+					name={ fieldName } 
+					value='1'
+					checked={ ! gfIsEmpty( htmlInputValue ) }
+					onChange={ ( e ) => setSelectInputOption( '1' === htmlInputValue ? '':'1' ) }
+					/>
+					<span className="checkmark"></span>
+				</label>
+				</div>
+			);
+		}
+
 		if ( ! gfIsEmpty( gutenaExtends?.inputFieldComponent ) && 0 <= newFieldTypes.indexOf( fieldType ) ) {
 		   return gutenaExtends.inputFieldComponent();
 		}
@@ -405,7 +514,7 @@ export default function edit( {
 						label={ __( 'Select form block', 'gutena-forms' ) }
 						onClick={ () => {
 							if ( ! gfIsEmpty( gutenaFormClientID ) ) {
-								selectBlock( gutenaFormClientID[0] );
+								selectBlock( gutenaFormClientID );
 							}
 						} }
 					/>
@@ -586,6 +695,7 @@ export default function edit( {
 									  )
 							}
 							checked={ isRequired }
+							disabled={ 'optin' ===  fieldType }
 							onChange={ ( isRequired ) =>
 								setAttributes( { isRequired } )
 							}

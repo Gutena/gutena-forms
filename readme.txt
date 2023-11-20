@@ -124,6 +124,10 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+
+= 1.1.6 | Beta =
+* Added Opt-in Checkbox - Privacy policy, Terms field type
+
 = 1.1.5 | 08th November 2023 =
 * Added default value settings for text and textarea type input field
 
