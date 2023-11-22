@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 		field_group = field_group[0];
 		
-		let isCheckboxOrRadio =  hasClass( form_field, 'checkbox-field' ) || hasClass( form_field, 'radio-field' );
+		let isCheckboxOrRadio =  hasClass( form_field, 'checkbox-field' ) || hasClass( form_field, 'radio-field' ) || hasClass( form_field, 'optin-field' );
 
 		if ( isCheckboxOrRadio ) {
 			let	checkboxRadioHtml =	form_field.querySelectorAll('input');
@@ -375,7 +375,9 @@ document.addEventListener("DOMContentLoaded", function(){
 				error_msg = gutenaFormsBlock.required_msg_select;
 			}
 
-			if ( isCheckboxOrRadio ) {
+			if ( hasClass( form_field, 'optin-field' ) ) {
+				error_msg = gutenaFormsBlock.required_msg_optin;
+			} else if ( isCheckboxOrRadio ) {
 				error_msg = gutenaFormsBlock.required_msg_check;
 			}
 
