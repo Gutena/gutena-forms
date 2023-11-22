@@ -69,13 +69,8 @@ export default function edit( {
 		settings,
 		style,
 	} = attributes;
-
-	const previousFieldType = useRef( fieldType );
-
-	useEffect(() => {
-		previousFieldType.current = fieldType;
-	}, [fieldType]);
-
+	
+	const previousFieldType = useRef( '' );
 	//Fields which use input tag
 	const textLikeInput = [ 'text', 'email', 'number' ];
 	
@@ -305,7 +300,21 @@ export default function edit( {
 			} else {
 				setAttributes( { fieldClasses: InputClassName } );
 			}
+		}
 
+		//cleanup
+		return () => {
+			shouldRunFieldClassnames = false;
+		};
+	}, [ fieldType, isRequired, optionsInline, optionsColumns, autocomplete ] );
+
+	/************************************************************
+	 Set previous field type, field group class, label content
+	 ***********************************************************/
+	useEffect(() => {
+		let shouldRunFieldType = true;
+		if ( shouldRunFieldType ) {
+			
 			//add class of field type to parent gutena field group block
 			let fieldGroupClassToAdd = ' field-group-type-'+fieldType+' ';
 			if ( ! gfIsEmpty( parentFieldGroupClientID ) && -1 === parentFieldGroupClassName.indexOf( fieldGroupClassToAdd ) ) {
@@ -327,7 +336,7 @@ export default function edit( {
 						flexWrap:'nowrap'
 					} } );
 					
-				} else if ( 'optin' !==  fieldType && gfIsEmpty( parentCoreGroupLayout.orientation )  ) {
+				} else if ( ! gfIsEmpty( previousFieldType ) && 'optin' ==  previousFieldType?.current && gfIsEmpty( parentCoreGroupLayout.orientation )  ) {
 					updateBlockAttributes( parentCoreGroupClientID, { layout: {
 						...parentCoreGroupLayout,
 						orientation: 'vertical',
@@ -340,13 +349,16 @@ export default function edit( {
 					}
 				}
 			}
+
+			//set previous field type
+			previousFieldType.current = fieldType;
 		}
 
 		//cleanup
 		return () => {
-			shouldRunFieldClassnames = false;
+			shouldRunFieldType = false;
 		};
-	}, [ fieldType, isRequired, optionsInline, optionsColumns, autocomplete ] );
+	}, [fieldType]);
 
 	/********************************
 	 Input Field Component : START
