@@ -559,10 +559,10 @@ export default function Edit( props ) {
 							{ __( 'To reuse this form, please make it a ', 'gutena-forms' ) } 
 						</span>
 						<a href="https://gutena.io/reuse-gutena-forms-on-multiple-pages" target="_blank">
-							{ __( 'Reusable Block.', 'gutena-forms' ) } 
+							{ __( 'Synced Patterns', 'gutena-forms' ) } 
 						</a>
 						<span> 
-							{ __( ' Avoid copying or duplicating this block.', 'gutena-forms' ) }
+							{ __( ' ( Reusable Block ). Avoid copying or duplicating this block.', 'gutena-forms' ) }
 						</span>
 					</span>
 					</p>
