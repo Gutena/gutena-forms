@@ -2,7 +2,7 @@
 Contributors:      expresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.4
-Stable tag:        1.1.6
+Stable tag:        1.1.7
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,6 +124,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+
+= 1.1.7 | 13th December 2023 =
+* Added support for unsynced pattern
 
 = 1.1.6 | 22th November 2023 =
 * Added Opt-in Checkbox - Privacy policy, Terms field type
