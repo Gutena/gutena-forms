@@ -552,13 +552,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//block pattern
 			if ( $update && 'wp_block' == $post->post_type ) {
-				 // unhook this function so it doesn't loop infinitely
-				 remove_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10 );
-				 //correct and save unsynced pattern
-				$this->correct_gutena_forms_pattern( $post );
-				// re-hook this function.
-				add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
-				return;
+				
+				$wp_pattern_sync_status = get_post_meta( $post->ID, 'wp_pattern_sync_status', true );
+				if ( ! empty( $wp_pattern_sync_status ) && 'unsynced' == $wp_pattern_sync_status ) {
+					// unhook this function so it doesn't loop infinitely
+					remove_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10 );
+					//correct and save unsynced pattern
+					$this->correct_gutena_forms_pattern( $post );
+					// re-hook this function.
+					add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
+					return;
+				}
 			}
 
 			 // developer.wordpress.org/reference/functions/parse_blocks/
@@ -636,7 +640,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 			$post = get_post( $post_id );
-			$this->correct_gutena_forms_pattern( $post, false );
+			$this->correct_gutena_forms_pattern( $post );
 
 		}
 
@@ -647,19 +651,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		 * @param boolean $check_meta should check meta key or not
 		 * 
 		 */
-		private function correct_gutena_forms_pattern( $post, $check_meta = true ) {
+		private function correct_gutena_forms_pattern( $post ) {
 			static $func_call = 0;
 			//patterns are store under 'wp_block' post type
 			//return if post is empty or not a pattern post_type 
 			if ( $func_call > 0 || empty( $post ) || empty( $post->ID ) ||  'wp_block' != $post->post_type || empty( $post->post_content ) || false === stripos( $post->post_content,"{\"formID\"" )  ) {
 				return;
-			}
-
-			if ( $check_meta ) {
-				$wp_pattern_sync_status = get_post_meta( $post->ID, 'wp_pattern_sync_status', true );
-				if ( empty( $wp_pattern_sync_status ) || 'unsynced' != $wp_pattern_sync_status ) {
-					return;
-				}
 			}
 			
 			//get form id
