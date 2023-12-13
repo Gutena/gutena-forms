@@ -2,9 +2,9 @@
 /**
  * Plugin Name:       Gutena Forms - Contact Forms Block
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
- * Requires at least: 6.0
+ * Requires at least: 6.3
  * Requires PHP:      5.6
- * Version:           1.1.6
+ * Version:           1.1.7
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io
  * License:           GPL-2.0-or-later
@@ -47,7 +47,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 	 * Plugin version.
 	 */
 	if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-		define( 'GUTENA_FORMS_VERSION', '1.1.6' );
+		define( 'GUTENA_FORMS_VERSION', '1.1.7' );
 	}
 
 	if ( ! function_exists( 'is_gutena_forms_pro' ) ) {
@@ -74,7 +74,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
 			add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
-
+			// save pattern
+			add_action( 'added_post_meta', array( $this, 'save_gutena_forms_pattern' ), 10, 4 );
+			
 			add_action( 'wp_ajax_gutena_forms_submit', array( $this, 'submit_form' ) );
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( $this, 'submit_form' ) );
 			//Dashboard
@@ -548,6 +550,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				return;
 			}
 
+			//block pattern
+			if ( $update && 'wp_block' == $post->post_type ) {
+				 // unhook this function so it doesn't loop infinitely
+				 remove_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10 );
+				 //correct and save unsynced pattern
+				$this->correct_gutena_forms_pattern( $post );
+				// re-hook this function.
+				add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
+				return;
+			}
+
 			 // developer.wordpress.org/reference/functions/parse_blocks/
 			$form_schema = $this->get_form_schema( parse_blocks( $post->post_content ) );
 			if ( empty( $form_schema ) || ! is_array( $form_schema ) ) {
@@ -606,6 +619,72 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 		}
+
+		/**
+		 * Correct unsynced form pattern
+		 * remove form id from unsynched pattern so that it can be reuse
+		 * 
+		 * @param  integer $meta_id    ID of the meta data field
+		 * @param  integer $post_id    Post ID
+		 * @param  string $meta_key    Name of meta field
+		 * @param  string $meta_value  Value of meta field
+		 */
+		public function save_gutena_forms_pattern( $meta_id, $post_id, $meta_key, $meta_value ) {
+			//return if post meta is not for unsynced pattern
+			if ( empty( $post_id ) || empty( $meta_key ) || empty( $meta_value ) || 'wp_pattern_sync_status' != $meta_key || 'unsynced' != $meta_value ) {
+				return;
+			}
+
+			$post = get_post( $post_id );
+			$this->correct_gutena_forms_pattern( $post, false );
+
+		}
+
+		/**
+		 * Correct and save unsynced pattern
+		 * 
+		 * @param object $post 
+		 * @param boolean $check_meta should check meta key or not
+		 * 
+		 */
+		private function correct_gutena_forms_pattern( $post, $check_meta = true ) {
+			static $func_call = 0;
+			//patterns are store under 'wp_block' post type
+			//return if post is empty or not a pattern post_type 
+			if ( $func_call > 0 || empty( $post ) || empty( $post->ID ) ||  'wp_block' != $post->post_type || empty( $post->post_content ) || false === stripos( $post->post_content,"{\"formID\"" )  ) {
+				return;
+			}
+
+			if ( $check_meta ) {
+				$wp_pattern_sync_status = get_post_meta( $post->ID, 'wp_pattern_sync_status', true );
+				if ( empty( $wp_pattern_sync_status ) || 'unsynced' != $wp_pattern_sync_status ) {
+					return;
+				}
+			}
+			
+			//get form id
+			$first_extract = "\",\"formName\":";
+			if ( false === stripos( $post->post_content, $first_extract ) ) {
+				$first_extract = "\",\"formClasses\":";
+			}
+
+			$post_content = explode( $first_extract, $post->post_content );
+			$post_content = explode( "{\"formID\":\"gutena_forms_ID_", $post_content[0] );
+			$post_content = end( $post_content );
+			$formID = wp_unslash( $post_content );
+			$formID = "gutena_forms_ID_". $formID;
+			//remove form id
+			$post_content = str_ireplace( $formID, "" , $post->post_content );
+			//count function call
+			$func_call++;
+			//Update pattern
+			wp_update_post( array(
+				'ID'           => $post->ID,
+				'post_content' => $post_content,
+			) );
+
+		}
+
 
 		// Get Form schema from block parsing
 		private function get_form_schema( $blocks, $formID = 0 ) {
