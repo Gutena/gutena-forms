@@ -127,6 +127,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 = 1.1.8 | 14th December 2023 =
 * Added dynamic messages settings inside editor
+* Updated .pot file
 
 = 1.1.7 | 13th December 2023 =
 * Added support for unsynced pattern
