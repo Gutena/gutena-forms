@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.3
  * Requires PHP:      5.6
- * Version:           1.1.7
+ * Version:           1.1.8
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io
  * License:           GPL-2.0-or-later
@@ -123,26 +123,39 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
+			
+			//Form messages
+			$gutena_forms_messages = get_option( 'gutena_forms_messages', array() );
+			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array(): $gutena_forms_messages;
+			$gf_message = array(
+				'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
+				'required_msg_optin'  => __( 'Please check this checkbox', 'gutena-forms' ),
+				'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
+				'required_msg_check' => __( 'Please check an option', 'gutena-forms' ),
+				'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
+				'min_value_msg'=>  __( 'Input value should be greater than', 'gutena-forms' ),
+				'max_value_msg'=>  __( 'Input value should be less than', 'gutena-forms' ),
+			);
+			//get saved messages by admin
+			foreach ( $gf_message as $msg_key => $msg_value) {
+				if ( ! empty( $gutena_forms_messages[ $msg_key ] ) ) {
+					$gf_message[ $msg_key ] = $gutena_forms_messages[ $msg_key ];
+				}
+			}
+
 			//Provide data for form submission script
 			wp_localize_script(
 				'gutena-forms-script',
 				'gutenaFormsBlock',
-				array(
+				array_merge( array(
 					'submit_action'       => 'gutena_forms_submit',
 					'ajax_url'            => admin_url( 'admin-ajax.php' ),
 					'nonce'               => wp_create_nonce( 'gutena_Forms' ),
-					'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
-					'required_msg_optin'  => __( 'Please check this checkbox', 'gutena-forms' ),
-					'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
-					'required_msg_check' => __( 'Please check an option', 'gutena-forms' ),
-					'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
-					'min_value_msg'=>  __( 'Input value should be greater than', 'gutena-forms' ),
-					'max_value_msg'=>  __( 'Input value should be less than', 'gutena-forms' ),
 					'grecaptcha_type'	  => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
 					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
 					'grecaptcha_secret_key' => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
 					'pricing_link' => esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) )
-				)
+				), $gf_message )
 			);
 		}
 
@@ -599,6 +612,14 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 							update_option(
 								'gutena_forms_grecaptcha',
 								$this->sanitize_array( $formSchema['form_attrs']['recaptcha'] )
+							);	
+						}
+
+						//Save common form messages
+						if ( ! empty( $formSchema['form_attrs']['messages'] ) && is_array( $formSchema['form_attrs']['messages'] ) ) {
+							update_option(
+								'gutena_forms_messages',
+								$formSchema['form_attrs']['messages']
 							);	
 						}
 					}
