@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Gutena Forms - Contact Forms Block 1.1.4\n"
+"Project-Id-Version: Gutena Forms - Contact Forms Block 1.1.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/gutena-forms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-09-18T07:51:27+00:00\n"
+"POT-Creation-Date: 2023-12-14T10:15:06+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: gutena-forms\n"
@@ -30,8 +30,12 @@ msgstr ""
 msgid "https://expresstech.io"
 msgstr ""
 
-#: gutena-forms.php:132
+#: gutena-forms.php:131
 msgid "Please fill in this field"
+msgstr ""
+
+#: gutena-forms.php:132
+msgid "Please check this checkbox"
 msgstr ""
 
 #: gutena-forms.php:133
@@ -54,53 +58,53 @@ msgstr ""
 msgid "Input value should be less than"
 msgstr ""
 
-#: gutena-forms.php:154
+#: gutena-forms.php:170
 msgid "Border Style"
 msgstr ""
 
-#: gutena-forms.php:207
+#: gutena-forms.php:223
 msgid "Gutena"
 msgstr ""
 
-#: gutena-forms.php:681
+#: gutena-forms.php:786
 msgid "Missing form identity"
 msgstr ""
 
-#: gutena-forms.php:693
+#: gutena-forms.php:798
 msgid "Missing form details"
 msgstr ""
 
-#: gutena-forms.php:703
+#: gutena-forms.php:808
 msgid "Invalid reCAPTCHA"
 msgstr ""
 
-#: gutena-forms.php:732
+#: gutena-forms.php:837
 msgid "Form received"
 msgstr ""
 
-#: gutena-forms.php:828
+#: gutena-forms.php:933
 #: includes/admin/class-admin.php:781
 msgid "Exciting News!"
 msgstr ""
 
-#: gutena-forms.php:828
+#: gutena-forms.php:933
 msgid "Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard."
 msgstr ""
 
-#: gutena-forms.php:828
+#: gutena-forms.php:933
 #: includes/admin/class-admin.php:781
 msgid "See all Entries"
 msgstr ""
 
-#: gutena-forms.php:840
+#: gutena-forms.php:945
 msgid "success"
 msgstr ""
 
-#: gutena-forms.php:847
+#: gutena-forms.php:952
 msgid "Sorry! your form was not submitted properly, Please try again later."
 msgstr ""
 
-#: gutena-forms.php:848
+#: gutena-forms.php:953
 msgid "Failed to send email"
 msgstr ""
 
@@ -724,120 +728,130 @@ msgid "14-day free trial"
 msgstr ""
 
 #: build/form-field/index.js:1
-#: src/form-field/edit.js:405
-msgid "Select form block"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:415
-msgid "Field Type"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:425
-msgid "Preferences"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:425
-msgid "Options"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:436
-msgid "Show Inline"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:440
-msgid "Toggle to make options show in columns"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:444
-msgid "Toggle to make options show inline"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:457
-msgid "Columns"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:471
-msgid "Value"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:474
-msgid "Minimum"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:485
-msgid "Maximum"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:496
-msgid "Step"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:509
-msgid "Prefix"
-msgstr ""
-
-#: build/form-field/index.js:1
-#: src/form-field/edit.js:516
-msgid "Suffix"
+#: src/form-field/edit.js:329
+msgid "I agree to the Terms"
 msgstr ""
 
 #: build/form-field/index.js:1
 #: src/form-field/edit.js:526
+msgid "Select form block"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:536
+msgid "Field Type"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:546
+msgid "Preferences"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:546
+msgid "Options"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:557
+msgid "Show Inline"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:561
+msgid "Toggle to make options show in columns"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:565
+msgid "Toggle to make options show inline"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:578
+msgid "Columns"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:592
+msgid "Value"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:595
+msgid "Minimum"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:606
+msgid "Maximum"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:617
+msgid "Step"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:630
+msgid "Prefix"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:637
+msgid "Suffix"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:647
 msgid "Field settings"
 msgstr ""
 
 #: build/form-field/index.js:1
 #: build/index.js:1
-#: src/form-field/edit.js:528
+#: src/form-field/edit.js:649
 #: src/index.js:58
 msgid "Label"
 msgstr ""
 
 #: build/form-field/index.js:1
-#: src/form-field/edit.js:530
+#: src/form-field/edit.js:651
 msgid "Please add label to the field"
 msgstr ""
 
 #: build/form-field/index.js:1
-#: src/form-field/edit.js:543
+#: src/form-field/edit.js:664
 msgid "Maxlength"
 msgstr ""
 
 #: build/form-field/index.js:1
-#: src/form-field/edit.js:555
+#: src/form-field/edit.js:676
 msgid "Textarea Rows"
 msgstr ""
 
 #: build/form-field/index.js:1
-#: src/form-field/edit.js:567
+#: src/form-field/edit.js:688
 msgid "Placeholder"
 msgstr ""
 
 #: build/form-field/index.js:1
-#: src/form-field/edit.js:576
+#: src/form-field/edit.js:697
 msgid "Required"
 msgstr ""
 
 #: build/form-field/index.js:1
-#: src/form-field/edit.js:579
+#: src/form-field/edit.js:700
 msgid "Toggle to make input field not required"
 msgstr ""
 
 #: build/form-field/index.js:1
-#: src/form-field/edit.js:583
+#: src/form-field/edit.js:704
 msgid "Toggle to make input field required"
+msgstr ""
+
+#: build/form-field/index.js:1
+#: src/form-field/edit.js:718
+msgid "Default Value"
 msgstr ""
 
 #: build/index.js:1
@@ -1040,12 +1054,12 @@ msgstr ""
 
 #: build/index.js:1
 #: src/edit.js:562
-msgid "Reusable Block."
+msgid "Synced Patterns"
 msgstr ""
 
 #: build/index.js:1
 #: src/edit.js:565
-msgid " Avoid copying or duplicating this block."
+msgid " ( Reusable Block ). Avoid copying or duplicating this block."
 msgstr ""
 
 #: build/index.js:1
@@ -1200,6 +1214,11 @@ msgid "Select name field for reply to address"
 msgstr ""
 
 #: build/index.js:1
+#: src/edit.js:1064
+msgid "Confirmation"
+msgstr ""
+
+#: build/index.js:1
 #: src/edit.js:1075
 #: src/edit.js:1093
 msgid "Send to URL"
@@ -1223,6 +1242,51 @@ msgstr ""
 #: build/index.js:1
 #: src/edit.js:1116
 msgid "Toggle to hide form"
+msgstr ""
+
+#: build/index.js:1
+#: src/edit.js:1131
+msgid "Messages"
+msgstr ""
+
+#: build/index.js:1
+#: src/edit.js:1134
+msgid "Required Field"
+msgstr ""
+
+#: build/index.js:1
+#: src/edit.js:1146
+msgid "Required Select Field"
+msgstr ""
+
+#: build/index.js:1
+#: src/edit.js:1158
+msgid "Required Checkbox or Radio Field"
+msgstr ""
+
+#: build/index.js:1
+#: src/edit.js:1170
+msgid "Required Opt-in checkbox"
+msgstr ""
+
+#: build/index.js:1
+#: src/edit.js:1178
+msgid "Privacy policy, Terms"
+msgstr ""
+
+#: build/index.js:1
+#: src/edit.js:1183
+msgid "Invalid Email"
+msgstr ""
+
+#: build/index.js:1
+#: src/edit.js:1195
+msgid "Minimum value"
+msgstr ""
+
+#: build/index.js:1
+#: src/edit.js:1207
+msgid "Maximum value"
 msgstr ""
 
 #: build/index.js:1

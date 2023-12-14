@@ -1,8 +1,8 @@
 === Gutena Forms - Contact Forms Block ===
-Contributors:      expresstech
+Contributors:      expresstech, randhirexpresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.4
-Stable tag:        1.1.7
+Stable tag:        1.1.8
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,6 +124,10 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+
+= 1.1.8 | 14th December 2023 =
+* Added dynamic messages settings inside editor
+* Updated .pot file
 
 = 1.1.7 | 13th December 2023 =
 * Added support for unsynced pattern

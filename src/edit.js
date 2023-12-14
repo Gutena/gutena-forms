@@ -127,7 +127,7 @@ export default function Edit( props ) {
 		adminEmailSubject,
 		emailNotifyAdmin,
 		emailNotifyUser,
-		messages,
+		messages={},
 		formStyle,
 		style,
 		recaptcha,
@@ -1061,7 +1061,7 @@ export default function Edit( props ) {
 						''
 					) }
 				</PanelBody>
-				<PanelBody title="Confirmation" initialOpen={ true }>
+				<PanelBody title={__( 'Confirmation', 'gutena-forms' ) } initialOpen={ true }>
 					<PanelRow>
 						<SelectControl
 							label="Action"
@@ -1127,6 +1127,93 @@ export default function Edit( props ) {
 					) : (
 						''
 					) }
+				</PanelBody>
+				<PanelBody title={__( 'Messages', 'gutena-forms' ) } initialOpen={ false }>
+					<TextControl
+						type="text"
+						label={ __( 'Required Field', 'gutena-forms' ) }
+						value={ gfIsEmpty( messages?.required_msg ) ? '' : messages?.required_msg }
+						onChange={ ( required_msg ) =>
+							setAttributes( { messages:{
+								...messages,
+								required_msg
+							} } )
+						}
+						placeholder={ gutenaFormsBlock?.required_msg }
+					/>
+					<TextControl
+						type="text"
+						label={ __( 'Required Select Field', 'gutena-forms' ) }
+						value={ gfIsEmpty( messages?.required_msg_select ) ? '' : messages?.required_msg_select }
+						onChange={ ( required_msg_select ) =>
+							setAttributes( { messages:{
+								...messages,
+								required_msg_select
+							} } )
+						}
+						placeholder={ gutenaFormsBlock?.required_msg_select }
+					/>
+					<TextControl
+						type="text"
+						label={ __( 'Required Checkbox or Radio Field', 'gutena-forms' ) }
+						value={ gfIsEmpty( messages?.required_msg_check ) ? '' : messages?.required_msg_check }
+						onChange={ ( required_msg_check ) =>
+							setAttributes( { messages:{
+								...messages,
+								required_msg_check
+							} } )
+						}
+						placeholder={ gutenaFormsBlock?.required_msg_check }
+					/>
+					<TextControl
+						type="text"
+						label={ __( 'Required Opt-in checkbox', 'gutena-forms' ) }
+						value={ gfIsEmpty( messages?.required_msg_optin ) ? '' : messages?.required_msg_optin }
+						onChange={ ( required_msg_optin ) =>
+							setAttributes( { messages:{
+								...messages,
+								required_msg_optin
+							} } )
+						}
+						help={ __( 'Privacy policy, Terms', 'gutena-forms' ) }
+						placeholder={ gutenaFormsBlock?.required_msg_optin }
+					/>
+					<TextControl
+						type="text"
+						label={ __( 'Invalid Email', 'gutena-forms' ) }
+						value={ gfIsEmpty( messages?.invalid_email_msg ) ? '' : messages?.invalid_email_msg }
+						onChange={ ( invalid_email_msg ) =>
+							setAttributes( { messages:{
+								...messages,
+								invalid_email_msg
+							} } )
+						}
+						placeholder={ gutenaFormsBlock?.invalid_email_msg }
+					/>
+					<TextControl
+						type="text"
+						label={ __( 'Minimum value', 'gutena-forms' ) }
+						value={ gfIsEmpty( messages?.min_value_msg ) ? '' : messages?.min_value_msg }
+						onChange={ ( min_value_msg ) =>
+							setAttributes( { messages:{
+								...messages,
+								min_value_msg
+							} } )
+						}
+						placeholder={ gutenaFormsBlock?.min_value_msg }
+					/>
+					<TextControl
+						type="text"
+						label={ __( 'Maximum value', 'gutena-forms' ) }
+						value={ gfIsEmpty( messages?.max_value_msg ) ? '' : messages?.max_value_msg }
+						onChange={ ( max_value_msg ) =>
+							setAttributes( { messages:{
+								...messages,
+								max_value_msg
+							} } )
+						}
+						placeholder={ gutenaFormsBlock?.max_value_msg }
+					/>
 				</PanelBody>
 			</InspectorControls>
 			{ hasInnerBlocks ? (
