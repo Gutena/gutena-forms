@@ -99,11 +99,19 @@
       "type": "string",
       "default": ""
     },
+    "emailFromName": {
+      "type": "string",
+      "default": ""
+    },
     "adminEmails": {
       "type": "string",
       "default": ""
     },
     "replyToName": {
+      "type": "string",
+      "default": ""
+    },
+    "replyToLastName": {
       "type": "string",
       "default": ""
     },

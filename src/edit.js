@@ -121,9 +121,11 @@ export default function Edit( props ) {
 		afterSubmitAction,
 		afterSubmitHide,
 		redirectUrl,
+		emailFromName,
 		adminEmails,
 		replyToEmail,
 		replyToName,
+		replyToLastName,
 		adminEmailSubject,
 		emailNotifyAdmin,
 		emailNotifyUser,
@@ -989,6 +991,13 @@ export default function Edit( props ) {
 					</PanelRow>
 				</PanelBody>
 				<PanelBody title="Notification" initialOpen={ true }>
+					<TextControl
+						label={ __( 'From Name', 'gutena-forms' ) }
+						value={ emailFromName }
+						onChange={ ( emailFromName ) =>
+							setAttributes( { emailFromName } )
+						}
+					/>
 					<ToggleControl
 						label={ __( 'Admin notification', 'gutena-forms' ) }
 						help={
@@ -1043,14 +1052,27 @@ export default function Edit( props ) {
 							/>
 						
 							<SelectControl
-								label={ __( 'Reply To Name', 'gutena-forms' ) }
+								label={ __( 'Reply To Name ( First Name )', 'gutena-forms' ) }
 								value={ replyToName }
 								options={ getTextFields() }
 								onChange={ ( replyToName ) =>
 									setAttributes( { replyToName } )
 								}
 								help={ __(
-									'Select name field for reply to address',
+									'Select first or full name field for reply to address',
+									'gutena-forms'
+								) }
+								__nextHasNoMarginBottom
+							/>
+							<SelectControl
+								label={ __( 'Reply To Name ( Last Name )', 'gutena-forms' ) }
+								value={ replyToLastName }
+								options={ getTextFields() }
+								onChange={ ( replyToLastName ) =>
+									setAttributes( { replyToLastName } )
+								}
+								help={ __(
+									'Select last name field for reply to address',
 									'gutena-forms'
 								) }
 								__nextHasNoMarginBottom

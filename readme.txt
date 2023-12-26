@@ -2,7 +2,7 @@
 Contributors:      expresstech, randhirexpresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.4
-Stable tag:        1.1.8
+Stable tag:        1.1.9
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,6 +124,10 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+= 1.1.9 | 26th December 2023 =
+* Added From name for email notification
+* Added Last name reply to email address
+* Added gutena_forms_submission action hook
 
 = 1.1.8 | 14th December 2023 =
 * Added dynamic messages settings inside editor
