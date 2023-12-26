@@ -125,8 +125,8 @@ If you like this plugin, consider exploring our other themes and plugins:
 == Changelog ==
 
 = 1.1.9 | 26th December 2023 =
-* Added From name for email notification
-* Added Last name reply to email address
+* Added From name setting for email notification
+* Added Last name reply to email address setting
 * Added gutena_forms_submission action hook
 
 = 1.1.8 | 14th December 2023 =
