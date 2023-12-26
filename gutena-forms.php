@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.3
  * Requires PHP:      5.6
- * Version:           1.1.8
+ * Version:           1.1.9
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io
  * License:           GPL-2.0-or-later
@@ -47,7 +47,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 	 * Plugin version.
 	 */
 	if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-		define( 'GUTENA_FORMS_VERSION', '1.1.7' );
+		define( 'GUTENA_FORMS_VERSION', '1.1.9' );
 	}
 
 	if ( ! function_exists( 'is_gutena_forms_pro' ) ) {
@@ -812,6 +812,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 			$blog_title  = get_bloginfo( 'name' );
+			$from_name =  empty( $formSchema['form_attrs']['emailFromName'] ) ? $blog_title : $formSchema['form_attrs']['emailFromName'];
+			$from_name = sanitize_text_field( $from_name );
+
 			$admin_email = sanitize_email( get_option( 'admin_email' ) );
 
 			// Email To
@@ -829,18 +832,32 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			$reply_to = ( empty( $reply_to ) || empty( $_POST[ $reply_to ] ) ) ? '' : sanitize_email( wp_unslash( $_POST[ $reply_to ] ) );
 
+			//First name field
 			$reply_to_name = empty( $formSchema['form_attrs']['replyToName'] ) ? '' : $formSchema['form_attrs']['replyToName'];
+
+			//Last name field
+			$reply_to_lname = empty( $formSchema['form_attrs']['replyToLastName'] ) ? '' : $formSchema['form_attrs']['replyToLastName'];
+			
 
 			$reply_to_name = ( empty( $reply_to_name ) || empty( $_POST[ $reply_to_name ] ) ) ? sanitize_key( $reply_to ) : sanitize_text_field( wp_unslash( $_POST[ $reply_to_name ] ) );
 
-			// Email Subject
-			$subject = sanitize_text_field( empty( $formSchema['form_attrs']['adminEmailSubject'] ) ? __( 'Form received', 'gutena-forms' ) . '- ' . $blog_title : $formSchema['form_attrs']['adminEmailSubject'] );
+			$reply_to_lname = ( empty( $reply_to_lname ) || empty( $_POST[ $reply_to_lname ] ) ) ? '' : sanitize_text_field( wp_unslash( $_POST[ $reply_to_lname ] ) );
 
 			//Form submit Data for filter
 			$form_submit_data = array(
 				'formName' => empty( $formSchema['form_attrs']['formName'] ) ? '': $formSchema['form_attrs']['formName'],
-				'formID' => $formSchema['form_attrs']['formID']
+				'formID' => $formSchema['form_attrs']['formID'],
+				'emailFromName' => $from_name,
+				'replyToEmail' => $reply_to,
+				'replyToFname' => $reply_to_name,
+				'replyToLname' => $reply_to_lname
 			);
+
+			$reply_to_name = $reply_to_name .' '.$reply_to_lname;
+
+
+			// Email Subject
+			$subject = sanitize_text_field( empty( $formSchema['form_attrs']['adminEmailSubject'] ) ? __( 'Form received', 'gutena-forms' ) . '- ' . $blog_title : $formSchema['form_attrs']['adminEmailSubject'] );
 
 			$fieldSchema = $formSchema['form_fields'];
 			$body        = '';
@@ -909,11 +926,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 			//submitted form raw data
 			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $formID, $fieldSchema );
+			do_action( 'gutena_forms_submission', $form_submit_data, $formSchema );
 
 			//Email headers
 			$headers = array(
 				'Content-Type: text/html; charset=UTF-8',
-				'From: ' . esc_html( $blog_title ) . ' <' . $admin_email . '>',
+				'From: ' . esc_html( $from_name ) . ' <' . $admin_email . '>',
 			);
 			//Add reply to header
 			if ( ! empty( $reply_to ) ) {
