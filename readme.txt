@@ -2,7 +2,7 @@
 Contributors:      expresstech, randhirexpresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.4
-Stable tag:        1.1.9
+Stable tag:        1.2.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,6 +20,7 @@ The gutena form plugin allows you to select various form variations/pre-built fo
 
 Gutena Forms is fully responsive and mobile-friendly, so your forms will look great on any device. It also integrates with popular email marketing and CRM platforms, making it easy to manage and track your form submissions.
 
+[youtube https://www.youtube.com/watch?v=u9sB-RSBQIE]
 
 == Demos ==
 * [Contact Form](https://gutena.io/forms-block#contact-form)
@@ -123,6 +124,13 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+
+
+= 1.2.0 | 13th March 2024 =
+* Fixed: Email notification HTML_MIME_NO_HTML_TAG
+* Fixed: Checkbox field height
+* Fixed: Autofill background color
+* Fixed: Form submit progress button background default color
 
 = 1.1.9 | 26th December 2023 =
 * Added From name setting for email notification
