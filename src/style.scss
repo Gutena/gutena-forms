@@ -46,6 +46,12 @@
 		/*Background color not for radio, checkbox */
 		&:not(.checkbox-field):not(.radio-field):not(.optin-field) {
 			background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
+			&:-webkit-autofill,
+			&:-webkit-autofill:hover, 
+			&:-webkit-autofill:focus {
+			-webkit-box-shadow: 0 0 0px 1000px var(--wp--gutena-forms--input-bg-color,'transparent') inset;
+			transition: background-color 5000s ease-in-out 0s;
+			}
 		}
 
 		&.checkbox-field, &.radio-field {
@@ -258,7 +264,7 @@
 			-moz-box-sizing: border-box;
 			-webkit-box-sizing: border-box;
 
-			&:not(.textarea-field) {
+			&:not(.textarea-field):not(.checkbox-field) {
 				height: 50px;
 			}
 
@@ -392,7 +398,7 @@
 
 	//Progress button 
 	&.form-progress .wp-block-button__link {
-		box-shadow: inset 0 0 0 100px var(--wp--preset--color--primary, rgba(63, 109, 228, .8));
+		// box-shadow: inset 0 0 0 100px var(--wp--preset--color--primary, rgba(63, 109, 228, .8));
 		opacity: 0.8;
 	}
 
