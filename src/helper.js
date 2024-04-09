@@ -15,6 +15,9 @@ export const gfSanitizeName = ( name ) => {
 	return name;
 }
 
+// Slug to name 
+export const slugToName =  slug => gfIsEmpty( slug ) ? '' : slug.split('-').map( word => word.charAt(0).toUpperCase() + word.slice(1) ).join(' ');
+
 //get all inner block by name
 export const getInnerBlocksbyNameAttr = ( blocks, blockName, attrName = '', attrValue = '' ) => {	
 	let desiredBlocks = [];
