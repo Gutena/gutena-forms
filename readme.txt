@@ -1,8 +1,8 @@
 === Gutena Forms - Contact Forms Block ===
 Contributors:      expresstech, randhirexpresstech
 Tags:              form, block, contact form, form block, forms
-Tested up to:      6.4
-Stable tag:        1.2.0
+Tested up to:      6.5
+Stable tag:        1.2.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -10,7 +10,9 @@ Light-weight and easy plugin create forms inside the block editor.
 
 == Description ==
 
-Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
+Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor. 
+
+[Try Gutena Forms Demo](https://app.instawp.io/launch?t=gutena-forms-demo&d=v2).
 
 You can add as many core blocks as you like, giving you complete control over the look and feel of your forms. With Gutena Forms, you can create contact forms, registration forms, payment forms, and more in just a few clicks. 
 
@@ -125,6 +127,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 == Changelog ==
 
+= 1.2.1 | 09th April 2024 =
+* Fixed: Font family settings
+* Added: Try Demo link in readme file
 
 = 1.2.0 | 13th March 2024 =
 * Fixed: Email notification HTML_MIME_NO_HTML_TAG
