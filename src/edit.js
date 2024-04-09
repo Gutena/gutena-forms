@@ -146,20 +146,20 @@ export default function Edit( props ) {
 			return {};
 		}
 
-		if ( Array.isArray( fontFamilies ) ) {
-			fontFamilies = fontFamilies.reduce( ( o, key ) => Object.assign( o, { [ key?.slug ]: key?.fontFamily } ), {} );
-		} else {
-			fontFamilies = Object.keys( fontFamilies ).reduce( ( fontFamiliesObj, fkey ) => Object.assign( fontFamiliesObj, fontFamilies[ fkey ].reduce( ( o, key ) => Object.assign( o, { [ key?.slug ]: key?.fontFamily } ), {} ) ), {} );
+		if ( ! Array.isArray( fontFamilies ) ) {
+			/** https://github.com/WordPress/gutenberg/pull/59846 **/
+			const { theme, custom } = fontFamilies;
+			fontFamilies = theme !== undefined ? theme : [];
+			if ( custom !== undefined ) {
+				fontFamilies = [ ...fontFamilies, ...custom ];
+			}
 		}
 
 		if ( gfIsEmpty( fontFamilies ) || 0 == fontFamilies.length ) {
 			return [];
 		}
 
-		return Object.keys( fontFamilies ).map( fontFamily => ( {
-			fontFamily: fontFamily,
-			name: slugToName( fontFamily )
-		} ) );
+		return fontFamilies;
 	}
 
 	const [ fontFamilies ] = useSettings( 'typography.fontFamilies' );
