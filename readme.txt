@@ -131,7 +131,6 @@ If you like this plugin, consider exploring our other themes and plugins:
 * Fixed: Font family settings
 
 = 1.2.1 | 09th April 2024 =
-* Fixed: Font family settings
 * Added: Try Demo link in readme file
 
 = 1.2.0 | 13th March 2024 =
