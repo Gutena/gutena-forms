@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { useEffect } from '@wordpress/element';
-import { gfIsEmpty, getInnerBlocksbyNameAttr } from './helper';
+import { gfIsEmpty, getInnerBlocksbyNameAttr, slugToName } from './helper';
 import {
 	InspectorControls,
 	__experimentalBlockVariationPicker,
@@ -12,6 +12,7 @@ import {
 	PanelColorSettings,
 	FontSizePicker,
 	__experimentalFontFamilyControl as FontFamilyControl,
+	useSettings,
 } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
 import { store as coreStore } from '@wordpress/core-data';
@@ -139,6 +140,31 @@ export default function Edit( props ) {
 		getClientIdsOfDescendants,
 		getBlock
 	} = useSelect( blockEditorStore );
+
+	const getFontFamiliesList = ( fontFamilies ) => {
+		if ( gfIsEmpty( fontFamilies ) ) {
+			return {};
+		}
+
+		if ( Array.isArray( fontFamilies ) ) {
+			fontFamilies = fontFamilies.reduce( ( o, key ) => Object.assign( o, { [ key?.slug ]: key?.fontFamily } ), {} );
+		} else {
+			fontFamilies = Object.keys( fontFamilies ).reduce( ( fontFamiliesObj, fkey ) => Object.assign( fontFamiliesObj, fontFamilies[ fkey ].reduce( ( o, key ) => Object.assign( o, { [ key?.slug ]: key?.fontFamily } ), {} ) ), {} );
+		}
+
+		if ( gfIsEmpty( fontFamilies ) || 0 == fontFamilies.length ) {
+			return [];
+		}
+
+		return Object.keys( fontFamilies ).map( fontFamily => ( {
+			fontFamily: fontFamily,
+			name: slugToName( fontFamily )
+		} ) );
+	}
+
+	const [ fontFamilies ] = useSettings( 'typography.fontFamilies' );
+	const fontFamiliesList = getFontFamiliesList( fontFamilies );
+	const hasfontFamilies = 0 < fontFamiliesList.length;
 
 	const getEmailFields = () => {
 		let emailOptions = [
@@ -702,19 +728,24 @@ export default function Edit( props ) {
 								} )
 							}
 						>
-						<FontFamilyControl
-							value={ labelTypography?.fontFamily }
-							onChange={ ( fontFamily ) =>
-								setAttributes( {
-									labelTypography: {
-										...labelTypography,
-										fontFamily: fontFamily,
-									},
-								} )
-							}
-							size="__unstable-large"
-							__nextHasNoMarginBottom
-						/>
+						{
+							hasfontFamilies && (
+								<FontFamilyControl
+									fontFamilies={ fontFamiliesList }
+									value={ labelTypography?.fontFamily }
+									onChange={ ( fontFamily ) =>
+										setAttributes( {
+											labelTypography: {
+												...labelTypography,
+												fontFamily: fontFamily,
+											},
+										} )
+									}
+									size="__unstable-large"
+									__nextHasNoMarginBottom
+								/>
+							)
+						}
 						</ToolsPanelItem>
 
 						<ToolsPanelItem
@@ -830,19 +861,24 @@ export default function Edit( props ) {
 								} )
 							}
 						>
-						<FontFamilyControl
-							value={ placeholderTypography?.fontFamily }
-							onChange={ ( fontFamily ) =>
-								setAttributes( {
-									placeholderTypography: {
-										...placeholderTypography,
-										fontFamily: fontFamily,
-									},
-								} )
-							}
-							size="__unstable-large"
-							__nextHasNoMarginBottom
-						/>
+						{
+							hasfontFamilies && (
+								<FontFamilyControl
+									fontFamilies={ fontFamiliesList }
+									value={ placeholderTypography?.fontFamily }
+									onChange={ ( fontFamily ) =>
+										setAttributes( {
+											placeholderTypography: {
+												...placeholderTypography,
+												fontFamily: fontFamily,
+											},
+										} )
+									}
+									size="__unstable-large"
+									__nextHasNoMarginBottom
+								/>
+							)
+						}
 					</ToolsPanelItem>
 
 					<ToolsPanelItem
