@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.2.2
+ * Version:           1.2.3
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io
  * License:           GPL-2.0-or-later
@@ -47,7 +47,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 	 * Plugin version.
 	 */
 	if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-		define( 'GUTENA_FORMS_VERSION', '1.2.2' );
+		define( 'GUTENA_FORMS_VERSION', '1.2.3' );
 	}
 
 	if ( ! function_exists( 'is_gutena_forms_pro' ) ) {
@@ -927,6 +927,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			//submitted form raw data
 			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $formID, $fieldSchema );
 			do_action( 'gutena_forms_submission', $form_submit_data, $formSchema );
+
+			// If admin don't want to get Email notification 
+			if ( isset( $formSchema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $formSchema['form_attrs']['emailNotifyAdmin'] || false === $formSchema['form_attrs']['emailNotifyAdmin'] || '0' == $formSchema['form_attrs']['emailNotifyAdmin'] ) ) {
+				wp_send_json(
+					array(
+						'status'  => 'Success',
+						'message' => __( 'success', 'gutena-forms' ),
+						'detail'  => __( 'admin email notification off', 'gutena-forms' ),
+					)
+				);
+			}
 
 			//Email headers
 			$headers = array(
