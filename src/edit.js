@@ -141,9 +141,16 @@ export default function Edit( props ) {
 		getBlock
 	} = useSelect( blockEditorStore );
 
+	/**
+	 * Returns an array of font family names from a given object.
+	 * Supports the legacy format of theme and custom properties, as well as the new format of a single array.
+	 *
+	 * @param {Object} fontFamilies - An object containing the font families.
+	 * @return {Array} An array of font family names.
+	 */
 	const getFontFamiliesList = ( fontFamilies ) => {
 		if ( gfIsEmpty( fontFamilies ) ) {
-			return {};
+			return [];
 		}
 
 		if ( ! Array.isArray( fontFamilies ) ) {
