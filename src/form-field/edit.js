@@ -683,36 +683,33 @@ export default function edit( {
 							step={ 1 }
 						/>
 					) }
-					<PanelRow>
-						<TextControl
-							label={ __( 'Placeholder', 'gutena-forms' ) }
-							value={ placeholder }
-							onChange={ ( placeholder ) =>
-								setAttributes( { placeholder } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Required', 'gutena-forms' ) }
-							help={
-								isRequired
-									? __(
-											'Toggle to make input field not required',
-											'gutena-forms'
-									  )
-									: __(
-											'Toggle to make input field required',
-											'gutena-forms'
-									  )
-							}
-							checked={ isRequired }
-							disabled={ 'optin' ===  fieldType }
-							onChange={ ( isRequired ) =>
-								setAttributes( { isRequired } )
-							}
-						/>
-					</PanelRow>
+					<TextControl
+						label={ __( 'Placeholder', 'gutena-forms' ) }
+						value={ placeholder }
+						onChange={ ( placeholder ) =>
+							setAttributes( { placeholder } )
+						}
+					/>
+				
+					<ToggleControl
+						label={ __( 'Required', 'gutena-forms' ) }
+						help={
+							isRequired
+								? __(
+										'Toggle to make input field not required',
+										'gutena-forms'
+									)
+								: __(
+										'Toggle to make input field required',
+										'gutena-forms'
+									)
+						}
+						checked={ isRequired }
+						disabled={ 'optin' ===  fieldType }
+						onChange={ ( isRequired ) =>
+							setAttributes( { isRequired } )
+						}
+					/>
 					{ ['text','textarea','number'].includes( fieldType ) && (
 						<TextControl
 							label={ __( 'Default Value', 'gutena-forms' ) }
