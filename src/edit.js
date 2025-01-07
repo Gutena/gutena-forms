@@ -559,35 +559,31 @@ export default function Edit( props ) {
 			<style>{ formStyle }</style>
 			<InspectorControls>
 				<PanelBody title="Form settings" initialOpen={ true }>
-					<PanelRow>
-						<TextControl
-							label={ __( 'Form name', 'gutena-forms' ) }
-							value={ formName }
-							onChange={ ( formName ) =>
-								setAttributes( { formName } )
-							}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Show label', 'gutena-forms' ) }
-							help={
-								showLabel
-									? __(
-											'Toggle to hide input label',
-											'gutena-forms'
-									  )
-									: __(
-											'Toggle to show input label',
-											'gutena-forms'
-									  )
-							}
-							checked={ showLabel }
-							onChange={ ( showLabel ) =>
-								setAttributes( { showLabel } )
-							}
-						/>
-					</PanelRow>
+					<TextControl
+						label={ __( 'Form name', 'gutena-forms' ) }
+						value={ formName }
+						onChange={ ( formName ) =>
+							setAttributes( { formName } )
+						}
+					/>
+					<ToggleControl
+						label={ __( 'Show label', 'gutena-forms' ) }
+						help={
+							showLabel
+								? __(
+										'Toggle to hide input label',
+										'gutena-forms'
+									)
+								: __(
+										'Toggle to show input label',
+										'gutena-forms'
+									)
+						}
+						checked={ showLabel }
+						onChange={ ( showLabel ) =>
+							setAttributes( { showLabel } )
+						}
+					/>
 					<p ><span className="block-editor-block-card__title" >{ __( 'Note : ', 'gutena-forms' ) }</span>
 					<span className="gf-text-muted" >
 						<span>
