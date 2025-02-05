@@ -2,7 +2,7 @@
 Contributors:      expresstech, randhirexpresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.7
-Stable tag:        1.2.6
+Stable tag:        1.2.7
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+
+= 1.2.7 | 05th February 2025 =
+* Updated: Improved admin email notification failure message.
 
 = 1.2.6 | 20th January 2025 =
 * Updated: Admin email notification
