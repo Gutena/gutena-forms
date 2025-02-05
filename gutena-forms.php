@@ -978,7 +978,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				wp_send_json(
 					array(
 						'status'  => 'error',
-						'message' => __( 'Sorry! Your form was submitted, but the email could not be sent. The site admin may need to review the email settings.', 'gutena-forms' ),
+						'message' => __( 'Sorry! your form was submitted, but the email could not be sent. The site admin may need to review the email settings.', 'gutena-forms' ),
 						'details' => __( 'Failed to send email', 'gutena-forms' ),
 					)
 				);
