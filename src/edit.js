@@ -134,6 +134,7 @@ export default function Edit( props ) {
 		formStyle,
 		style,
 		recaptcha,
+		cloudflareTurnstile
 	} = attributes;
 
 	const {
@@ -177,7 +178,7 @@ export default function Edit( props ) {
 		let emailOptions = [
 			{ label: __( 'Select', 'gutena-forms' ), value: '' }
 		];
-		const blocks = getBlock( clientId ); 
+		const blocks = getBlock( clientId );
 		if ( ! gfIsEmpty( blocks ) ) {
 			let emailFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'email' );
 			if ( 0 < emailFields.length  ) {
@@ -196,7 +197,7 @@ export default function Edit( props ) {
 		let textOptions = [
 			{ label: __( 'Select', 'gutena-forms' ), value: '' }
 		];
-		const blocks = getBlock( clientId ); 
+		const blocks = getBlock( clientId );
 		if ( ! gfIsEmpty( blocks ) ) {
 			let textFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'text' );
 			if ( 0 < textFields.length  ) {
@@ -210,7 +211,7 @@ export default function Edit( props ) {
 		}
 		return textOptions;
 	}
-	
+
 	//Set Form ID
 	useEffect( () => {
 		let shouldRunFormID = true;
@@ -238,16 +239,16 @@ export default function Edit( props ) {
 				'' +
 				d.getSeconds() );
 
-			//set recaptcha and formID if not set initially as per data available 
+			//set recaptcha and formID if not set initially as per data available
 			if ( ! gfIsEmpty( recaptcha ) && gfIsEmpty( recaptcha.secret_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_type ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_site_key ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_secret_key ) ) {
-				setAttributes( { 
+				setAttributes( {
 					recaptcha: {
 						...recaptcha,
 						type: gutenaFormsBlock.grecaptcha_type,
 						site_key: gutenaFormsBlock.grecaptcha_site_key,
 						secret_key: gutenaFormsBlock.grecaptcha_secret_key,
 					},
-					formID: GutenaFormsID 
+					formID: GutenaFormsID
 				} );
 			} else {
 				setAttributes( { formID: GutenaFormsID } );
@@ -258,7 +259,7 @@ export default function Edit( props ) {
 			let emailOptions = getEmailFields();
 			let textOptions = getTextFields();
 			if ( 1 < emailOptions.length && ! gfIsEmpty( emailOptions[1].value ) && 1 < textOptions.length && ! gfIsEmpty( textOptions[1].value ) ) {
-				setAttributes( { 
+				setAttributes( {
 					replyToEmail: emailOptions[1].value,
 					replyToName: textOptions[1].value
 				} );
@@ -451,7 +452,7 @@ export default function Edit( props ) {
 						? ''
 						: '--wp--gutena-forms--label-color:' + labelColor + ';'
 				}
-				
+
 				--wp--style--block-gap:${
 					'undefined' === typeof style?.spacing?.blockGap
 						? '2em'
@@ -459,7 +460,7 @@ export default function Edit( props ) {
 				};
 			}
 
-			
+
 			${
 				gfIsEmpty( style?.spacing?.blockGap )
 					? ''
@@ -469,7 +470,7 @@ export default function Edit( props ) {
 					}
 					`
 			}
-			
+
 
 			 .${ formNameClass() } .wp-block-gutena-field-group {--wp--style--block-gap:${
 				'undefined' === typeof inputLabelGap ? '0.5em' : inputLabelGap
@@ -587,12 +588,12 @@ export default function Edit( props ) {
 					<p ><span className="block-editor-block-card__title" >{ __( 'Note : ', 'gutena-forms' ) }</span>
 					<span className="gf-text-muted" >
 						<span>
-							{ __( 'To reuse this form, please make it a ', 'gutena-forms' ) } 
+							{ __( 'To reuse this form, please make it a ', 'gutena-forms' ) }
 						</span>
 						<a href="https://gutena.io/reuse-gutena-forms-on-multiple-pages" target="_blank">
-							{ __( 'Synced Patterns', 'gutena-forms' ) } 
+							{ __( 'Synced Patterns', 'gutena-forms' ) }
 						</a>
-						<span> 
+						<span>
 							{ __( ' ( Reusable Block ). Avoid copying or duplicating this block.', 'gutena-forms' ) }
 						</span>
 					</span>
@@ -611,7 +612,7 @@ export default function Edit( props ) {
 								enable:recaptcha_status
 							} } )
 						}
-					/>	
+					/>
 					{ ( ! gfIsEmpty( recaptcha?.enable ) && recaptcha?.enable ) &&
 					<>
 						<RadioControl
@@ -629,7 +630,7 @@ export default function Edit( props ) {
 								} } )
 							}
 						/>
-					
+
 						<TextControl
 							label={ __( 'Site Key', 'gutena-forms' ) }
 							value={ recaptcha?.site_key }
@@ -654,6 +655,56 @@ export default function Edit( props ) {
 					}
 					</VStack>
 				</PanelBody>
+
+				{/* Cloudflare - Turnstile start */}
+				<PanelBody title="Cloudflare Turnstile" initialOpen={ false }>
+					<VStack>
+						<p>
+							<a>Cloudflare Turnstile</a>
+						</p>
+
+						<ToggleControl
+							label={ 'Enable' }
+							checked={ cloudflareTurnstile?.enable }
+							onChange={ ( turnstile_status ) =>
+								setAttributes( { cloudflareTurnstile:{
+									...cloudflareTurnstile,
+									enable:turnstile_status
+								} } )
+							}
+						/>
+
+						{
+							( ! gfIsEmpty( cloudflareTurnstile?.enable ) && cloudflareTurnstile?.enable ) &&
+							<>
+								<TextControl
+									label={ __( 'Site Key', 'gutena-forms' ) }
+									value={ cloudflareTurnstile?.site_key }
+									onChange={ ( site_key ) =>
+										setAttributes( { cloudflareTurnstile:{
+											...cloudflareTurnstile,
+											site_key
+										} } )
+									}
+								/>
+
+								<TextControl
+									label={ __( 'Secret Key', 'gutena-forms' ) }
+									value={ cloudflareTurnstile?.secret_key }
+									onChange={ ( secret_key ) =>
+										setAttributes( { cloudflareTurnstile:{
+											...cloudflareTurnstile,
+											secret_key
+										} } )
+									}
+								/>
+							</>
+						}
+
+					</VStack>
+				</PanelBody>
+				{/* Cloudflare - Turnstile end */}
+
 				<PanelColorSettings
 					title={ __( 'Form colors', 'gutena-forms' ) }
 					colorSettings={ [
@@ -1007,7 +1058,7 @@ export default function Edit( props ) {
                         } }
                         rangeStep={ 1 }
                     />
-				
+
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Bottom border only', 'gutena-forms' ) }
@@ -1064,7 +1115,7 @@ export default function Edit( props ) {
 									setAttributes( { adminEmails } )
 								}
 							/>
-						
+
 							<TextControl
 								label={ __(
 									'Email subject',
@@ -1075,7 +1126,7 @@ export default function Edit( props ) {
 									setAttributes( { adminEmailSubject } )
 								}
 							/>
-						
+
 							<SelectControl
 								label={ __( 'Reply To Email', 'gutena-forms' ) }
 								value={ replyToEmail }
@@ -1089,7 +1140,7 @@ export default function Edit( props ) {
 								) }
 								__nextHasNoMarginBottom
 							/>
-						
+
 							<SelectControl
 								label={ __( 'Reply To Name ( First Name )', 'gutena-forms' ) }
 								value={ replyToName }
@@ -1116,7 +1167,7 @@ export default function Edit( props ) {
 								) }
 								__nextHasNoMarginBottom
 							/>
-							
+
 						</>
 					) : (
 						''

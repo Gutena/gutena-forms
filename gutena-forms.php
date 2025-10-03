@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.2.7
+ * Version:           1.3.0
  * Author:            ExpressTech
  * Author URI:        https://expresstech.io
  * License:           GPL-2.0-or-later
@@ -126,6 +126,10 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			
 			//Form messages
 			$gutena_forms_messages = get_option( 'gutena_forms_messages', array() );
+
+			// cloudflare turnstile
+			$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', array() );
+
 			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array(): $gutena_forms_messages;
 			$gf_message = array(
 				'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
@@ -154,7 +158,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'grecaptcha_type'	  => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
 					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
 					'grecaptcha_secret_key' => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
-					'pricing_link' => esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) )
+					'pricing_link' => esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ),
+					'cloudflare_turnstile' => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile
 				), $gf_message )
 			);
 		}
@@ -487,6 +492,23 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				$html .= '<input type="hidden" name="recaptcha_enable" value="' . esc_attr( $attributes['recaptcha']['enable'] ) . '" />';
 			}
 
+			//cloudflare turnstile
+			$turnstile_html = '';
+			if ( ! empty( $attributes['cloudflareTurnstile'] ) && ! empty( $attributes['cloudflareTurnstile']['enable'] && ! empty( $attributes['cloudflareTurnstile']['site_key'] ) ) ) {
+
+				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_cloudflare_turnstile_scripts' ));
+
+				$turnstile_html .= '<div
+					class="cf-turnstile"
+					data-sitekey="' . esc_attr( $attributes['cloudflareTurnstile']['site_key'] ) . '"
+					data-theme="light"
+					data-size="normal"
+					data-callback="onSuccess"
+				></div><br />';
+
+				$html .= '<input type="hidden" name="turnstile_enable" value="' . esc_attr( $attributes['cloudflareTurnstile']['enable'] ) . '" />';
+			}
+
 			// Add required html
 			if ( ! empty( $html ) ) {
 				$content = preg_replace(
@@ -500,7 +522,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			//Submit Button HTML markup : change link to button tag
 			$content = $this->str_last_replace(
 				'<a', 
-				$recaptcha_html.'<button',
+				$recaptcha_html.$turnstile_html.'<button',
 				$content
 			); 
 
@@ -553,6 +575,32 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				}
 
 				++$recaptcha_start;
+			}
+		}
+
+		/**
+		 * Enqueue Cloudflare Turnstile scripts
+		 * 
+		 * @since 1.3.0
+		 */
+		public function enqueue_cloudflare_turnstile_scripts() {
+			static $turnstile_start = 0;
+			if ( 0 === $turnstile_start  ) {
+				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
+				if ( ! empty( $cloudflare_turnstile ) && ! empty( $cloudflare_turnstile['site_key'] ) ) {
+					wp_enqueue_script( 
+						'cloudflare-turnstile', 
+						esc_url( 'https://challenges.cloudflare.com/turnstile/v0/api.js' ), 
+						array(), 
+						null, 
+						array(
+							'defer' => true,
+							'async' => true,
+						)
+					);
+
+					++$turnstile_start;
+				}
 			}
 		}
 
@@ -613,6 +661,14 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 								'gutena_forms_grecaptcha',
 								$this->sanitize_array( $formSchema['form_attrs']['recaptcha'] )
 							);	
+						}
+
+						// cloudflare turnstile
+						if ( ! empty( $formSchema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['site_key'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['secret_key'] ) ) {
+							update_option(
+								'gutena_forms_cloudflare_turnstile',
+								$this->sanitize_array( $formSchema['form_attrs']['cloudflareTurnstile'] )
+							);
 						}
 
 						//Save common form messages
@@ -807,6 +863,15 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						'status'  => 'error',
 						'message' => __( 'Invalid reCAPTCHA', 'gutena-forms' ),
 						'recaptcha_error'	  => isset( $_POST['recaptcha_error'] ) ? sanitize_text_field( $_POST['recaptcha_error'] ) : ''
+					)
+				);
+			}
+
+			if ( ! empty( $formSchema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['enable'] ) && ! $this->cloudflare_turnstile_verify() ) {
+				wp_send_json(
+					array(
+						'status'  => 'error',
+						'message' => __( 'Invalid Cloudflare Turnstile', 'gutena-forms' ),
 					)
 				);
 			}
@@ -1062,6 +1127,45 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					return false;
 				}
 			}
+		}
+
+		/**
+		 * Verify Cloudflare Turnstile
+		 * 
+		 * @since 1.3.0
+		 * @return boolean
+		 */
+		private function cloudflare_turnstile_verify() {
+			if ( isset( $_POST['cf-turnstile-response'] ) && ! empty( $_POST['cf-turnstile-response'] ) ) {
+				$token 				  = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
+				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
+
+				if ( empty( $cloudflare_turnstile ) ) {
+					return false;
+				}
+
+				$response = wp_remote_post(
+					'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+					array(
+						'body' => array(
+							'secret' => $cloudflare_turnstile['secret_key'],
+							'response' => $token,
+						),
+					)
+				);
+
+				if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
+					return false;
+				}
+
+				$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
+
+				if ( ! empty( $api_response ) && $api_response['success'] ) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 	}

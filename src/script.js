@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		setTimeout(() => {
 			//check if grecaptcha is loaded or not
 			check_and_load_grecaptcha();
+			check_and_load_cloudflare_turnstile();
+
 		}, 2000);
 	};
 
@@ -77,7 +79,17 @@ document.addEventListener("DOMContentLoaded", function(){
 				}
 			}
 		}
-	}	
+	}
+
+	/**
+	 * Check and load Cloudflare Turnstile
+	 * Fallback for Cloudflare Turnstile
+	 * 
+	 * @since 1.3.0
+	 */
+	const check_and_load_cloudflare_turnstile = () => {
+		// function to handle turnstile success
+	}
 
 	const form_sumbit = () => {
 		let submitButton = document.querySelectorAll(
