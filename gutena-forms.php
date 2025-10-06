@@ -52,7 +52,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 	if ( ! function_exists( 'is_gutena_forms_pro' ) ) {
 		function is_gutena_forms_pro( $valid = true ) {
-			return  true === $valid ? ( defined( 'GUTENA_FORMS_PRO_VALID' ) && GUTENA_FORMS_PRO_VALID ) : defined( 'GUTENA_FORMS_PRO_VERSION' );
+			return class_exists( 'Gutena_Forms_Pro' );
 		}
 	}
 
@@ -76,7 +76,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
 			// save pattern
 			add_action( 'added_post_meta', array( $this, 'save_gutena_forms_pattern' ), 10, 4 );
-			
+
 			add_action( 'wp_ajax_gutena_forms_submit', array( $this, 'submit_form' ) );
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( $this, 'submit_form' ) );
 			//Dashboard
@@ -123,7 +123,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
-			
+
 			//Form messages
 			$gutena_forms_messages = get_option( 'gutena_forms_messages', array() );
 			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array(): $gutena_forms_messages;
@@ -169,7 +169,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						'name'         => 'round-range-slider',
 						'label'        => __( 'Border Style', 'gutena-forms' ),
 						'is_default'   => false,
-						'inline_style' => '.wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field { 
+						'inline_style' => '.wp-block-gutena-forms .is-style-round-range-slider .gutena-forms-field.range-field {
 							-webkit-appearance: none;
 							width: 100%;
 							height: 8px;
@@ -237,7 +237,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		 * @return string Rendered HTML attributes.
 		 */
 		public function get_field_attribute( $attributes , $check_attr = array() ) {
-			
+
 			//field_attr to render inside field
 			$field_attr = '';
 
@@ -273,7 +273,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		 * @return string escaped or empty string.
 		 */
 		private function check_esc_attr( $attributes, $key = '' ) {
-			
+
 			if ( empty( $key ) ) {
 				return ( isset( $attributes ) && ! is_array( $attributes ) ) ? esc_attr( $attributes ): '';
 			}
@@ -305,7 +305,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			// Text type Input
 			if ( in_array( $attributes['fieldType'], array( 'text', 'email', 'number' ) ) ) {
-				$output = '<input 
+				$output = '<input
 				' . $this->get_field_attribute( $attributes, array(
 					'nameAttr' 		=> 'name',
 					'fieldType' 	=> 'type',
@@ -318,15 +318,15 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						'max'=>'max',
 						'step'=>'step',
 					),
-				) ) . 
-				' ' . esc_attr( $inputAttr ) . ' 
+				) ) .
+				' ' . esc_attr( $inputAttr ) . '
 				/>';
 			}
 
 			//Input Range slider
 			if ( 'range' === $attributes['fieldType'] ) {
 				$output = '<div class="gf-range-container">
-				<input 
+				<input
 				' . $this->get_field_attribute( $attributes, array(
 					'nameAttr' 		=> 'name',
 					'fieldType' 	=> 'type',
@@ -336,8 +336,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						'max'=>'max',
 						'step'=>'step',
 					),
-				) ) . 
-				' ' . esc_attr( $inputAttr ) . ' 
+				) ) .
+				' ' . esc_attr( $inputAttr ) . '
 				/><p class="gf-range-values"> ';
 
 				//Range min value
@@ -358,7 +358,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				</span>';
 
 				//Range max value
-				if ( ! empty( $attributes['minMaxStep'] ) && ! empty( $attributes['minMaxStep']['max'] ) ) {	
+				if ( ! empty( $attributes['minMaxStep'] ) && ! empty( $attributes['minMaxStep']['max'] ) ) {
 					$output .= '<span class="gf-prefix-value-wrapper">
 						<span class="gf-prefix">' . $this->check_esc_attr( $attributes, 'preFix' ) . '</span>
 						<span class="gf-value">' . $this->check_esc_attr( $attributes['minMaxStep'], 'max' ) . '</span>
@@ -372,26 +372,26 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			// Textarea type Input
 			if ( 'textarea' === $attributes['fieldType'] ) {
-				$output = '<textarea 
+				$output = '<textarea
 				' . $this->get_field_attribute( $attributes, array(
 					'nameAttr' 		=> 'name',
 					'textAreaRows' 	=> 'rows',
 					'fieldClasses' 	=> 'class',
 					'placeholder'	=> 'placeholder',
 					'maxlength' 	=> 'maxlength',
-				) ) . 
-				' ' . esc_attr( $inputAttr ) . ' 
+				) ) .
+				' ' . esc_attr( $inputAttr ) . '
 				>'. esc_html( empty( $attributes['defaultValue'] ) ? '' : $attributes['defaultValue'] ).'</textarea>';
 			}
 
 			// Select type Input
 			if ( 'select' === $attributes['fieldType'] ) {
-				$output = '<select  
+				$output = '<select
 				' . $this->get_field_attribute( $attributes, array(
 					'nameAttr' 		=> 'name',
 					'fieldClasses' 	=> 'class',
-				) ) . 
-				' ' . esc_attr( $inputAttr ) . ' 
+				) ) .
+				' ' . esc_attr( $inputAttr ) . '
 				 >';
 				if ( ! empty( $attributes['selectOptions'] ) && is_array( $attributes['selectOptions'] ) ) {
 					foreach ( $attributes['selectOptions'] as $option ) {
@@ -403,22 +403,22 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			// radio type Input
 			if ( in_array( $attributes['fieldType'], array( 'radio', 'checkbox', 'optin' ) ) ) {
-				$output = '<div  
+				$output = '<div
 				' . $this->get_field_attribute( $attributes, array(
 					'fieldClasses' 	=> 'class',
-				) ) . 
-				' 
+				) ) .
+				'
 				>';
 				if ( 'optin' == $attributes['fieldType'] ) {
 					$output .= '<label class="' . esc_attr( $attributes['fieldType'] ) . '-container">
-						<input type="checkbox" name="' . esc_attr( $attributes['nameAttr']  ) . 
+						<input type="checkbox" name="' . esc_attr( $attributes['nameAttr']  ) .
 						'" value="1" >
 						<span class="checkmark"></span>
 					  </label>';
 				} else if ( ! empty( $attributes['selectOptions'] ) && is_array( $attributes['selectOptions'] ) ) {
 					foreach ( $attributes['selectOptions'] as $option ) {
 						$output .= '<label class="' . esc_attr( $attributes['fieldType'] ) . '-container">' . esc_attr( $option ) . '
-						<input type="' . esc_attr( $attributes['fieldType'] ) . '" name="' . esc_attr( 'radio' === $attributes['fieldType'] ? $attributes['nameAttr'] : $attributes['nameAttr'].'[]'  ) . 
+						<input type="' . esc_attr( $attributes['fieldType'] ) . '" name="' . esc_attr( 'radio' === $attributes['fieldType'] ? $attributes['nameAttr'] : $attributes['nameAttr'].'[]'  ) .
 						'" value="' . esc_attr( $option ) . '" >
 						<span class="checkmark"></span>
 					  </label>';
@@ -432,8 +432,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//render field styles
 			if ( ! empty( $attributes['fieldStyle'] ) && ! empty( $block->context['gutena-forms/formID'] ) && function_exists( 'wp_add_inline_style' ) ) {
-				wp_add_inline_style( 
-					'gutena-forms-style', 
+				wp_add_inline_style(
+					'gutena-forms-style',
 					'.wp-block-gutena-forms.' . esc_attr( $block->context['gutena-forms/formID'] ) . ' .gutena-forms-' . esc_attr( $attributes['fieldType'] ) . '-field {
 					' . esc_attr( $attributes['fieldStyle'] ) . '
 					}'
@@ -452,17 +452,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		public function str_last_replace( $search, $replace, $str ) {
 			//finds the position of the last occurrence of a string
 			$pos = strripos($str, $search);
-		
+
 			if ( $pos !== false ) {
 				$str = substr_replace($str, $replace, $pos, strlen($search));
 			}
-		
+
 			return $str;
 		}
 
 		// render_callback : form
 		public function render_form( $attributes, $content, $block ) {
-			
+
 			// No changes if attributes is empty
 			if ( empty( $attributes ) || empty( $attributes['adminEmails'] ) ) {
 				return $content;
@@ -473,15 +473,15 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				$html = '<input type="hidden" name="redirect_url" value="' . esc_attr( esc_url( $attributes['redirectUrl'] ) ) . '" />';
 			}
 
-			//google recaptcha 
+			//google recaptcha
 			$recaptcha_html = '';
 			if ( ! empty( $attributes['recaptcha'] ) && ! empty( $attributes['recaptcha']['enable'] ) && ! empty( $attributes['recaptcha']['site_key'] ) && ! empty( $attributes['recaptcha']['type'] ) ) {
 				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_grecaptcha_scripts' ));
-				
+
 				//input box for v2 type only
 				if ( 'v2' === $attributes['recaptcha']['type'] ){
 					$recaptcha_html = '<div class="g-recaptcha" data-sitekey="' . esc_attr( $attributes['recaptcha']['site_key'] ) . '"></div><br>';
-				} 
+				}
 
 				//input field to check if recaptcha or not
 				$html .= '<input type="hidden" name="recaptcha_enable" value="' . esc_attr( $attributes['recaptcha']['enable'] ) . '" />';
@@ -499,16 +499,16 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//Submit Button HTML markup : change link to button tag
 			$content = $this->str_last_replace(
-				'<a', 
+				'<a',
 				$recaptcha_html.'<button',
 				$content
-			); 
+			);
 
 			$content = $this->str_last_replace(
-				'</a>', 
+				'</a>',
 				'</button>',
 				$content
-			); 
+			);
 			//filter content
 			$content = apply_filters( 'gutena_forms_render_form', $content, $attributes );
 			// Enqueue block styles
@@ -543,12 +543,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				$grecaptcha = get_option( 'gutena_forms_grecaptcha', false );
 				if ( ! empty( $grecaptcha ) && ! empty( $grecaptcha['site_key'] ) && ! empty( $grecaptcha['type'] ) ) {
 
-					wp_enqueue_script( 
-						'google-recaptcha', 
-						esc_url( 'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. esc_attr( $grecaptcha['site_key'] )  ) ), 
-						array(), 
-						GUTENA_FORMS_VERSION, 
-						false 
+					wp_enqueue_script(
+						'google-recaptcha',
+						esc_url( 'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. esc_attr( $grecaptcha['site_key'] )  ) ),
+						array(),
+						GUTENA_FORMS_VERSION,
+						false
 					);
 				}
 
@@ -565,7 +565,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//block pattern
 			if ( $update && 'wp_block' == $post->post_type ) {
-				
+
 				$wp_pattern_sync_status = get_post_meta( $post->ID, 'wp_pattern_sync_status', true );
 				if ( ! empty( $wp_pattern_sync_status ) && 'unsynced' == $wp_pattern_sync_status ) {
 					// unhook this function so it doesn't loop infinitely
@@ -585,7 +585,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 			$gutena_form_ids = get_option( 'gutena_form_ids', array() );
-			
+
 			// Save gutena form schema in wp option
 			if ( ! empty( $form_schema['form_schema'] ) && is_array( $form_schema['form_schema'] ) ) {
 				$gutena_forms_blocks = explode( '<!-- wp:gutena/forms', $post->post_content );
@@ -612,7 +612,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 							update_option(
 								'gutena_forms_grecaptcha',
 								$this->sanitize_array( $formSchema['form_attrs']['recaptcha'] )
-							);	
+							);
 						}
 
 						//Save common form messages
@@ -620,7 +620,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 							update_option(
 								'gutena_forms_messages',
 								$formSchema['form_attrs']['messages']
-							);	
+							);
 						}
 					}
 				}
@@ -628,7 +628,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			// Save gutena form ids in array gutena_form_ids
 			if ( ! empty( $form_schema['form_ids'] ) ) {
-				
+
 				if ( ! empty( $gutena_form_ids ) && is_array( $gutena_form_ids ) ) {
 					$gutena_form_ids = array_merge( $gutena_form_ids, $form_schema['form_ids'] );
 				} else {
@@ -636,7 +636,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				}
 				//unique ids only
 				$gutena_form_ids = array_unique( $gutena_form_ids );
-				
+
 				update_option(
 					'gutena_form_ids',
 					$this->sanitize_array( $gutena_form_ids )
@@ -648,7 +648,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		/**
 		 * Correct unsynced form pattern
 		 * remove form id from unsynched pattern so that it can be reuse
-		 * 
+		 *
 		 * @param  integer $meta_id    ID of the meta data field
 		 * @param  integer $post_id    Post ID
 		 * @param  string $meta_key    Name of meta field
@@ -667,19 +667,19 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		/**
 		 * Correct and save unsynced pattern
-		 * 
-		 * @param object $post 
+		 *
+		 * @param object $post
 		 * @param boolean $check_meta should check meta key or not
-		 * 
+		 *
 		 */
 		private function correct_gutena_forms_pattern( $post ) {
 			static $func_call = 0;
 			//patterns are store under 'wp_block' post type
-			//return if post is empty or not a pattern post_type 
+			//return if post is empty or not a pattern post_type
 			if ( $func_call > 0 || empty( $post ) || empty( $post->ID ) ||  'wp_block' != $post->post_type || empty( $post->post_content ) || false === stripos( $post->post_content,"{\"formID\"" )  ) {
 				return;
 			}
-			
+
 			//get form id
 			$first_extract = "\",\"formName\":";
 			if ( false === stripos( $post->post_content, $first_extract ) ) {
@@ -746,7 +746,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					if ( is_array( $value ) ) {
 						$array[ $key ] = $this->sanitize_array( $value );
 					} else if ( 'block_markup' === $key && function_exists( 'wp_kses' ) ) {
-						
+
 						$array[ $key ] = wp_kses(
 							$value,
 							array_merge(
@@ -837,7 +837,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//Last name field
 			$reply_to_lname = empty( $formSchema['form_attrs']['replyToLastName'] ) ? '' : $formSchema['form_attrs']['replyToLastName'];
-			
+
 
 			$reply_to_name = ( empty( $reply_to_name ) || empty( $_POST[ $reply_to_name ] ) ) ? sanitize_key( $reply_to ) : sanitize_text_field( wp_unslash( $_POST[ $reply_to_name ] ) );
 
@@ -896,29 +896,29 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'label' => $field_name,
 					'value'	=> $field_value,
 					'fieldType' =>  empty( $fieldSchema[ $name_attr ][ 'fieldType' ] ) ? 'text': $fieldSchema[ $name_attr ][ 'fieldType' ],
-					'raw_value' => apply_filters( 
-						'gutena_forms_field_raw_value', 
-						wp_unslash( $_POST[ $name_attr ] ), 
+					'raw_value' => apply_filters(
+						'gutena_forms_field_raw_value',
+						wp_unslash( $_POST[ $name_attr ] ),
 						array(
 							'field_name' => $field_name,
 							'field_value' => $field_value,
 							'fieldSchema' => $fieldSchema[ $name_attr ],
 							'formID' => $formID,
-						) 
+						)
 					)
 				);
 
 				$field_email_html = '<p><strong>' . esc_html( $field_name ) . '</strong> <br />' . esc_html( $field_value ) . ' </p>';
 
-				$field_email_html = apply_filters( 
-					'gutena_forms_field_email_html', 
-					$field_email_html, 
+				$field_email_html = apply_filters(
+					'gutena_forms_field_email_html',
+					$field_email_html,
 					array(
 						'field_name' => $field_name,
 						'field_value' => $field_value,
 						'fieldSchema' => $fieldSchema[ $name_attr ],
 						'formID' => $formID,
-					) 
+					)
 				);
 
 				$body .= $field_email_html;
@@ -928,7 +928,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $formID, $fieldSchema );
 			do_action( 'gutena_forms_submission', $form_submit_data, $formSchema );
 
-			// If admin don't want to get Email notification 
+			// If admin don't want to get Email notification
 			if ( isset( $formSchema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $formSchema['form_attrs']['emailNotifyAdmin'] || false === $formSchema['form_attrs']['emailNotifyAdmin'] || '0' == $formSchema['form_attrs']['emailNotifyAdmin'] ) ) {
 				wp_send_json(
 					array(
@@ -961,7 +961,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				 */
 				$body .= '<div style="background-color: #fffbeb; width: fit-content; margin-top: 50px; padding: 14px 15px 12px 15px; border-radius: 10px;" > <span style="font-size: 13px; line-height: 1; display: flex;" > <span style="margin-right: 5px;" > </span> <span style="margin-right: 3px;" ><strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong></span> '. __( 'Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="'.esc_url( admin_url( 'admin.php?page=gutena-forms' ) ).'" style="color: #E35D3F; margin-left: 1rem;" target="_blank" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </a></strong></span></div>';
 			}
-			
+
 			$body    = wpautop( $body, true );
 			$body 	 = $this->email_html_body( $body, $subject );
 			$subject = esc_html( $subject );
@@ -1008,22 +1008,22 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		private function recaptcha_verify(){
 			//check if reCAPTCHA not embedded in the form
 			if ( empty( $_POST['recaptcha_enable'] ) && empty( $_POST['g-recaptcha-response'] ) ) {
-				return true; 
+				return true;
 			}
 			//default recaptcha failed is considered as spam
 			$_POST['recaptcha_error'] = 'spam';
 
 			if ( empty( $_POST['g-recaptcha-response'] ) ) {
 				$_POST['recaptcha_error'] = 'Recaptcha input missing';
-				return false;	
-			} else {  
+				return false;
+			} else {
 				//get reCAPTCHA settings
 				$recaptcha_settings= get_option( 'gutena_forms_grecaptcha', false );
 
 				if ( empty( $recaptcha_settings ) ) {
 					return false;
 				}
-				//verify reCAPTCHA 
+				//verify reCAPTCHA
 				$response = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', array(
 					'body'        => array(
 						'secret' => $recaptcha_settings['secret_key'],
