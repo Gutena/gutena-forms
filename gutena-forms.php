@@ -17,6 +17,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if ( file_exists( plugin_dir_path( __FILE__ ) . 'includes/freemius.php' ) ) {
+	include_once plugin_dir_path( __FILE__ ) . 'includes/freemius.php';
+}
+
 /**
  * Abort if the class is already exists.
  */
