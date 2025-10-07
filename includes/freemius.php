@@ -23,16 +23,14 @@ if ( ! function_exists( 'gutena_forms__fs' ) ) :
 			require_once plugin_dir_path( __FILE__ ) . 'freemius/start.php';
 			$gutena_forms__fs = fs_dynamic_init(
 				array(
-					'id'                  => '20975',
-					'slug'                => 'gutena-forms',
-					'premium_slug'        => 'gutena-forms-pro',
-					'type'                => 'plugin',
-					'public_key'          => 'pk_d66286e6558c1d5d6a4ccf3304cfb',
-					'is_premium'          => false,
-					'premium_suffix'      => 'GutenaForms',
-					'has_paid_plans'      => false,
-					'wp_org_gatekeeper'   => 'OA7#BoRiBNqdf52FvzEf!!074aRLPs8fspif$7K1#4u4Csys1fQlCecVcUTOs2mcpeVHi#C2j9d09fOTvbC0HloPT7fFee5WdS3G',
-					'menu'                => array(
+					'id'             => '20975',
+					'slug'           => 'gutena-forms',
+					'type'           => 'plugin',
+					'public_key'     => 'pk_d66286e6558c1d5d6a4ccf3304cfb',
+					'is_premium'     => false,
+					'has_addons'     => true,
+					'has_paid_plans' => false,
+					'menu'           => array(
 						'slug'    => 'gutena-forms',
 						'contact' => false,
 						'support' => false,
