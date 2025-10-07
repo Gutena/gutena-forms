@@ -165,6 +165,14 @@
 				"secret_key": "",
 				"thresholdScore":"0.50"
 			}
+		},
+		"cloudflareTurnstile": {
+			"type": "object",
+			"default": {
+				"enable": false,
+				"site_key": "",
+				"secret_key": ""
+			}
 		}
 	},
 	"providesContext": {
