@@ -5,8 +5,8 @@
  * Requires at least: 6.5
  * Requires PHP:      5.6
  * Version:           1.3.0
- * Author:            ExpressTech
- * Author URI:        https://expresstech.io
+ * Author:            Gutena Forms
+ * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       gutena-forms
@@ -525,7 +525,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			//Submit Button HTML markup : change link to button tag
 			$content = $this->str_last_replace(
-				'<a', 
+				'<a',
 				$recaptcha_html.$turnstile_html.'<button',
 				$content
 			);
@@ -584,7 +584,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		/**
 		 * Enqueue Cloudflare Turnstile scripts
-		 * 
+		 *
 		 * @since 1.3.0
 		 */
 		public function enqueue_cloudflare_turnstile_scripts() {
@@ -592,11 +592,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			if ( 0 === $turnstile_start  ) {
 				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
 				if ( ! empty( $cloudflare_turnstile ) && ! empty( $cloudflare_turnstile['site_key'] ) ) {
-					wp_enqueue_script( 
-						'cloudflare-turnstile', 
-						esc_url( 'https://challenges.cloudflare.com/turnstile/v0/api.js' ), 
-						array(), 
-						null, 
+					wp_enqueue_script(
+						'cloudflare-turnstile',
+						esc_url( 'https://challenges.cloudflare.com/turnstile/v0/api.js' ),
+						array(),
+						null,
 						array(
 							'defer' => true,
 							'async' => true,
@@ -1135,7 +1135,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		/**
 		 * Verify Cloudflare Turnstile
-		 * 
+		 *
 		 * @since 1.3.0
 		 * @return boolean
 		 */

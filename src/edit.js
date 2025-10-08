@@ -590,7 +590,7 @@ export default function Edit( props ) {
 						<span>
 							{ __( 'To reuse this form, please make it a ', 'gutena-forms' ) }
 						</span>
-						<a href="https://gutena.io/reuse-gutena-forms-on-multiple-pages" target="_blank">
+						<a href="https://gutenaforms.com/reuse-gutena-forms-on-multiple-pages" target="_blank">
 							{ __( 'Synced Patterns', 'gutena-forms' ) }
 						</a>
 						<span>
@@ -601,7 +601,7 @@ export default function Edit( props ) {
 				</PanelBody>
 				<PanelBody title="Google reCAPTCHA" initialOpen={ false }>
 				<VStack >
-					<p><a href="https://gutena.io/how-to-generate-google-recaptcha-site-key-and-secret-key" target="_blank">{ __( 'reCAPTCHA', 'gutena-forms' ) }</a> { __( ' v3 and v2 help you protect your sites from fraudulent activities, spam, and abuse. By using this integration in your forms, you can block spam form submissions.', 'gutena-forms' ) } </p>
+					<p><a href="https://gutenaforms.com/how-to-generate-google-recaptcha-site-key-and-secret-key" target="_blank">{ __( 'reCAPTCHA', 'gutena-forms' ) }</a> { __( ' v3 and v2 help you protect your sites from fraudulent activities, spam, and abuse. By using this integration in your forms, you can block spam form submissions.', 'gutena-forms' ) } </p>
 
 					<ToggleControl
 						label={ __( 'Enable', 'gutena-forms' ) }

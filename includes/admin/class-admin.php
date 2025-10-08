@@ -11,8 +11,8 @@
   * Abort if the class is already exists.
   */
  if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) {
- 
-   
+
+
 	class Gutena_Forms_Admin extends Gutena_Forms {
 
 		private $form_id = '';
@@ -31,19 +31,19 @@
 			$this->load_classes();
 			if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
 				$this->form_id = absint( sanitize_key( $_GET['formid'] ) );
-			}  
+			}
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
 			add_action( 'admin_init', array( $this, 'load_admin_classes' ) );
 
 			if ( ! is_gutena_forms_pro( false ) ) {
-				//view dashboard notice 
+				//view dashboard notice
 				add_action( 'admin_notices', array( $this, 'view_dashboard_notice' ) );
 				//admin script
 				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts_admin' ) );
 				//Update form entry status to read
 				add_action( 'wp_ajax_gutena_forms_dismiss_notice', array( $this, 'dismiss_notice' ) );
 			}
-			
+
 		}
 
 		/**
@@ -57,8 +57,8 @@
 			}
 
 			/**
-			 * activate-deactivate : Action on activation 
-			 * store : common db functions 
+			 * activate-deactivate : Action on activation
+			 * store : common db functions
 			 * create-store extends store : create tables for storing form submission
 			 * manage-store extends store : manage store : Read, Update and delete
 			 */
@@ -70,7 +70,7 @@
 		}
 
 		/**
-		 * Load admin classes 
+		 * Load admin classes
 		 */
 		public function load_admin_classes() {
 			//load list table core wp class
@@ -83,11 +83,11 @@
 
 		//Check admin capabilities
 		public function is_gfadmin( $check_permission = 'manage_options' ) {
-			if ( ! function_exists( 'wp_get_current_user' ) && file_exists( ABSPATH . "wp-includes/pluggable.php" ) ) { 
-				require_once( ABSPATH . "wp-includes/pluggable.php" ); 
+			if ( ! function_exists( 'wp_get_current_user' ) && file_exists( ABSPATH . "wp-includes/pluggable.php" ) ) {
+				require_once( ABSPATH . "wp-includes/pluggable.php" );
 			}
-			if ( ! function_exists( 'current_user_can' ) && file_exists( ABSPATH . "wp-includes/capabilities.php" ) ) { 
-				require_once( ABSPATH . "wp-includes/capabilities.php" ); 
+			if ( ! function_exists( 'current_user_can' ) && file_exists( ABSPATH . "wp-includes/capabilities.php" ) ) {
+				require_once( ABSPATH . "wp-includes/capabilities.php" );
 			}
 			return ( function_exists( 'is_admin' ) && is_admin() && function_exists( 'current_user_can' ) && current_user_can( $check_permission ) );
 		}
@@ -101,7 +101,7 @@
 			if ( ( ! has_filter( 'gutena_forms_check_user_access' ) && ! $this->is_gfadmin() )  || ! class_exists( 'Gutena_Forms_Store' ) || ! apply_filters( 'gutena_forms_check_user_access', true, 'view_entries' ) ) {
 				return;
 			}
-			
+
 			//register menu
 			$page_hook_suffix = add_menu_page(
 				__( 'Forms', 'gutena-forms' ),
@@ -126,11 +126,11 @@
 				esc_html_e( 'Access forbidden! Please contact admin to view this page.', 'gutena-forms' );
 				return;
 			}
-			
+
 			$form_store = new Gutena_Forms_Store();
 			$form_table = '';
 			$pagetype = empty( $_GET['pagetype'] ) ? '': sanitize_key( wp_unslash( $_GET['pagetype'] ) );
-			echo '<div id="gutena-forms-dashboard-page" class="gutena-forms-dashboard '.( is_gutena_forms_pro() ? '':'gf-basic' ).' " style="display:none;" >';  
+			echo '<div id="gutena-forms-dashboard-page" class="gutena-forms-dashboard '.( is_gutena_forms_pro() ? '':'gf-basic' ).' " style="display:none;" >';
 
 			if ( '' === $pagetype ) {
 				if ( '' === $this->form_id ) {
@@ -158,13 +158,13 @@
 						$form_table = new Gutena_Forms_Entries_Table();
 					}
 				}
-			} 
+			}
 
 			//view-entry page
 			if ( ! is_gutena_forms_pro() ) {
 				//Entry View Page
 				if ( ! empty( $_GET['form_entry_id'] ) && is_numeric( $_GET['form_entry_id'] ) && 'viewentry' === $pagetype  ) {
-					
+
 					//Provide data for form submission script
 					wp_localize_script(
 						'gutena-forms-dashboard',
@@ -173,8 +173,8 @@
 							'entry_data'       => $form_store->get_entry_details( absint( wp_unslash( $_GET['form_entry_id'] ) ) ),
 						)
 					);
-				} 
-			} 
+				}
+			}
 
 			//data require to create page by react js
 			$this->script_page_data( $pagetype );
@@ -189,7 +189,7 @@
 			//placeholder for react based dashboard
 			echo '<div id="gfp-page-' . esc_attr( $pagetype ) . '"></div>';
 			do_action( 'gutena_forms_entries_load_custom_page' );
-			
+
 			//render list
             if ( ! empty( $form_table ) ) {
                 $form_table->render_list_table( $form_store );
@@ -208,7 +208,7 @@
 			if ( ! function_exists('wp_localize_script') ) {
 				return;
 			}
-			$gutena_url = 'https://gutena.io';
+			$gutena_url = 'https://gutenaforms.com';
 			//introduction page data
 			if ( 'introduction' === $pagetype ) {
 				/**
@@ -366,7 +366,7 @@
 									array(
 										'is_pro' => true,
 										'icon' => esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/fields/country.svg' ),
-										'title' => __( 'Country 
+										'title' => __( 'Country
 										Dropdown ', 'gutena-forms' ),
 									),
 									array(
@@ -399,22 +399,22 @@
 									array(
 										'title' => __( 'STARTER PLAN', 'gutena-forms' ),
 										'price'	=> '$9.00',
-										'description' => __( '1 Site - 14 Days Free Trial', 'gutena-forms' ),
-										'btn_name' => __( 'Start Trial', 'gutena-forms' ),
-										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=1',
+										'description' => __( '1 Site', 'gutena-forms' ),
+										'btn_name' => __( 'Get Started', 'gutena-forms' ),
+										'link'	=> 'https://gutenaforms.com/pricing',
 									),
 									array(
 										'title' => __( 'DEVELOPER PLAN', 'gutena-forms' ),
 										'price'	=> '$29.00',
 										'description' => __( '5 Site', 'gutena-forms' ),
-										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=2',
+										'link'	=> 'https://gutenaforms.com/pricing',
 										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 									array(
 										'title' => __( 'AGENCY PLAN', 'gutena-forms' ),
 										'price'	=> '$99.00',
 										'description' => __( 'Unlimited Sites', 'gutena-forms' ),
-										'link'	=> 'https://shop.gutena.io/checkout/?edd_action=add_to_cart&download_id=1493807&edd_options[price_id]=3',
+										'link'	=> 'https://gutenaforms.com/pricing',
 										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 								)
@@ -466,10 +466,6 @@
 									array(
 										'title' => __( 'What happens when my license expires?', 'gutena-forms' ),
 										'description' => __( 'When your license expires, you may lose access to updates, support, and premium features. However, the plugin will continue to function as it is.', 'gutena-forms' ),
-									),
-									array(
-										'title' => __( 'Do you offer refunds?', 'gutena-forms' ),
-										'description' => __( 'No, but we do offer a special 14-day trial plan at $0, You can try out the plugin as much as you want and then decide whether to upgrade to any of our premium plans.', 'gutena-forms' ),
 									),
 									array(
 										'title' => __( 'Can I upgrade my Premium plan?', 'gutena-forms' ),
@@ -535,7 +531,7 @@
 									'link' => esc_url( $gutena_url . '/how-to-start-with-gutena-forms-pro' ),
 								),
 							)
-							
+
 						),
 						'support' => array(
 							'title' => esc_html__( 'Need Help?', 'gutena-forms' ),
@@ -552,7 +548,7 @@
 				);
 			}
 
-			
+
 		}
 
 		// Get Changelog from readme.txt file
@@ -577,33 +573,33 @@
 		}
 
 		/**
-		 * Go Pro Modal: 
+		 * Go Pro Modal:
 		 * to open this modal use : <a modalid="gutena-forms-go-pro-modal" href="#" class="gutena-forms-modal-btn"  ></a> - anywhere in html document
 		 */
 		public function go_pro_modal() {
-			
+
 			//Action Html
 			if ( ! is_gutena_forms_pro( false ) ) {
 				echo '
 				<div id="gutena-forms-go-pro-modal"  class="gutena-forms-modal gf-small-modal" >
 				<div class="gutena-forms-modal-content" >
 				<span class="gf-close-btn gf-close-icon">&times;</span>
-				<div class="gf-header" > 
-					<div class="gf-title" >'.__( 'Upgrade to Complete the Experience!', 'gutena-forms' ).'</div> 
+				<div class="gf-header" >
+					<div class="gf-title" >'.__( 'Upgrade to Complete the Experience!', 'gutena-forms' ).'</div>
 				</div>
-				
+
 				<div class="gf-body" >
 				<p class="gf-description"> '.__( 'Get Gutena Forms Pro Today and Unlock all the Features', 'gutena-forms' ).'</p>
-				<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ) . '" class="gf-btn gf-pro-btn" > <span class="gf-btn-text">'.__( 'Go Premium - 14 Day Free Trial', 'gutena-forms' ).'</span> </a>
+				<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ) . '" class="gf-btn gf-pro-btn" > <span class="gf-btn-text">'.__( 'Go Premium', 'gutena-forms' ).'</span> </a>
 				</div></div></div>';
 			} else {
 				do_action( 'gutena_forms_go_pro_modal' );
 			}
-			
+
 		}
 
 		/**
-		 * Delete a form entry modal: 
+		 * Delete a form entry modal:
 		 * to open this modal use : <a modalid="gutena-forms-entry-delete-modal" href="#" class="gutena-forms-modal-btn"  ></a> - anywhere in html document
 		 */
 		public function entry_delete_modal() {
@@ -612,17 +608,17 @@
 			<div id="gutena-forms-entry-delete-modal"  class="gutena-forms-modal gf-small-modal" >
 			<div class="gutena-forms-modal-content" >
 			<span class="gf-close-btn gf-close-icon">&times;</span>
-			<div class="gf-header" > 
-				<div class="gf-title" >'.__( 'Trash Entry', 'gutena-forms' ).'</div> 
+			<div class="gf-header" >
+				<div class="gf-title" >'.__( 'Trash Entry', 'gutena-forms' ).'</div>
 			</div>
-			
+
 			<div class="gf-body" >
 			<p class="gf-description"> '.__( 'Do you really wanna trash this entry?', 'gutena-forms' ).'</p>
 			<div class="gf-action-btns">
 				<a href="#" class="gf-btn gf-close-btn" > <span class="gf-btn-text">'.__( 'Cancel', 'gutena-forms' ).'</span> </a>
 				<a href="#" class="gf-btn gf-entry-delete-btn" > <span class="gf-btn-text">'.__( 'Trash', 'gutena-forms' ).'</span> </a>
 			</div>
-			
+
 			</div></div></div>';
 		}
 
@@ -638,9 +634,9 @@
 			$asset_file = include_once( GUTENA_FORMS_DIR_PATH . 'includes/admin/dashboard/build/index.asset.php' );
 
 			if ( ! empty( $asset_file['dependencies'] ) && function_exists( 'admin_url' ) ) {
-				
+
 				wp_enqueue_script( 'gutena-forms-dashboard', GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/index.js', $asset_file['dependencies'], $asset_file['version'], true );
-				
+
 				wp_enqueue_script( 'gutena-forms-dashboard-script', GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/script.js', array(), $asset_file['version'], true );
 
 				$dashboard_url =  esc_url( admin_url( 'admin.php?page=gutena-forms' ) );
@@ -653,9 +649,9 @@
 						'read_status_action'    => 'gutena_forms_entries_read',
 						'ajax_url'           	=> admin_url( 'admin-ajax.php' ),
 						'nonce'                 => wp_create_nonce( 'gutena_Forms' ),
-						'support_link'			=> esc_url( apply_filters( 
+						'support_link'			=> esc_url( apply_filters(
 							'gutena_forms_support_link',
-							'https://wordpress.org/support/plugin/gutena-forms/' 
+							'https://wordpress.org/support/plugin/gutena-forms/'
 						 ) ),
 						'entry_view_url'        => $dashboard_url.'&pagetype=viewentry&form_entry_id=',
 						'entry_list_url' 		=> $dashboard_url.'&formid=',
@@ -664,8 +660,8 @@
 						'is_admin'				=> $is_admin,
 						'pagetype'				=> empty( $_GET['pagetype'] ) ? '': sanitize_key( wp_unslash( $_GET['pagetype'] ) ),
 						'form_id'				=> $this->form_id,
-						'dashboard_menu' => apply_filters( 
-							'gutena_forms_dashboard_menu', 
+						'dashboard_menu' => apply_filters(
+							'gutena_forms_dashboard_menu',
 							array(
 								array(
 									'slug'  => 'introduction',
@@ -689,24 +685,24 @@
 								)
 							)
 						),
-						
+
 					)
 				);
 
 				do_action( 'gutena_forms_dashboard_enqueue_scripts');
 			}
-			
-			
+
+
 		}
 
 		/**
-		 * Check if given keys in an array is empty or not 
-		 * 
+		 * Check if given keys in an array is empty or not
+		 *
 		 * @param array $check_array array to check
 		 * @param array $keys keys to check
 		 * @param boolean $logic_or apply conditional logic OR if true otherwise AND
-		 * 
-		 * @return boolean 
+		 *
+		 * @return boolean
 		 */
 		public function is_empty( $check_array , $keys , $logic_or = true ) {
 			//return if values not provided
@@ -723,9 +719,9 @@
 					return false;
 				}
 			}
-			/** 
-			 * At the end for 
-			 * OR condition no one is empty  so return false 
+			/**
+			 * At the end for
+			 * OR condition no one is empty  so return false
 			 * AND all are empty so return true
 			 * */
 			return $logic_or ? false : true;
@@ -733,7 +729,7 @@
 
 		// sanitize and seralize data
 		public function sanitize_serialize_data( $data ) {
-			
+
 			if ( empty( $data ) ) {
 				return $data;
 			}
@@ -801,7 +797,7 @@
 		//get and check if provided notice id is dismissed or not
 		private function get_notices_and_status( $notice_id = '' ) {
 			$notices = get_option( 'gutena_forms_dismiss_notices', array() );
-			return array( 
+			return array(
 				'notices' => $notices,
 				'dismissed' => ( empty( $notice_id ) || ( ! empty( $notices ) && in_array( $notice_id, $notices ) ) )
 			);

@@ -10,11 +10,11 @@ Light-weight and easy plugin create forms inside the block editor.
 
 == Description ==
 
-Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor. 
+Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
 
 [Try Gutena Forms Demo](https://app.instawp.io/launch?t=gutena-forms-demo&d=v2).
 
-You can add as many core blocks as you like, giving you complete control over the look and feel of your forms. With Gutena Forms, you can create contact forms, registration forms, payment forms, and more in just a few clicks. 
+You can add as many core blocks as you like, giving you complete control over the look and feel of your forms. With Gutena Forms, you can create contact forms, registration forms, payment forms, and more in just a few clicks.
 
 The plugin is built with the latest WordPress block editor, so you can easily add and customize your forms directly within the editor. It comes with a variety of form fields, including text fields, email fields, dropdown menus, and more, as well as the ability to add custom fields.
 
@@ -25,10 +25,10 @@ Gutena Forms is fully responsive and mobile-friendly, so your forms will look gr
 [youtube https://www.youtube.com/watch?v=u9sB-RSBQIE]
 
 == Demos ==
-* [Contact Form](https://gutena.io/forms-block#contact-form)
-* [Enquiry Form](https://gutena.io/forms-block#enquiry-form)
-* [Booking Form](https://gutena.io/forms-block#booking-form)
-* [Appointment Form](https://gutena.io/forms-block#appointment-form)
+* [Contact Form](https://gutenaforms.com/forms-block#contact-form)
+* [Enquiry Form](https://gutenaforms.com/forms-block#enquiry-form)
+* [Booking Form](https://gutenaforms.com/forms-block#booking-form)
+* [Appointment Form](https://gutenaforms.com/forms-block#appointment-form)
 
 
 == No jQuery Used ==
@@ -84,7 +84,7 @@ With Gutena Forms, you can easily create custom forms for any purpose, all witho
 
 == Other Blocks From Gutena ==
 
-If you like this plugin, consider exploring our other block plugins: 
+If you like this plugin, consider exploring our other block plugins:
 
 [Gutena Newsletter](https://wordpress.org/plugins/newsletter-block-by-gutena/) - Easily and instantly add Newsletter Block to your Gutenberg Editor.
 
@@ -202,7 +202,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 * Fixed label color render in editor
 * Updated editor FontSizePicker component
 * Updated block editor range control component
-* Added select parent form block control in toolbar for child field block 
+* Added select parent form block control in toolbar for child field block
 * Added admin dashboard
 * Added form submission view in admin dashboard
 * Lock form field and error message block inside field group template
@@ -240,7 +240,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 * Fixed select field
 
 = 1.0.2 | 24th November 2022 =
-* Added filter gutena_forms_submit_admin_notification 
+* Added filter gutena_forms_submit_admin_notification
 * Fixed submit button markup
 * Fixed form picker preview
 
