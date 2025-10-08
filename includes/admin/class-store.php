@@ -308,7 +308,7 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 					<div id="gfp-dashboard-navigation" class="gfp-dashboard-navigation"></div>
 				</div>
 
-				<div id="gf-header-right-section" >
+				<div>
 					' . ( is_gutena_forms_pro( false ) ? '' : '<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ) . '" class="gf-btn gf-pro-btn"  > <span class="gf-btn-text">' . __( 'Go Premium', 'gutena-forms' ) . '</span> </a>' ) . '
 				</div>
 			</div>';
