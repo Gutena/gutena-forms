@@ -475,7 +475,7 @@
 								'sales' => array(
 									'title1' => __( 'Do you have any question?', 'gutena-forms' ),
 									'title2' => __( 'Contact with Sales Team', 'gutena-forms' ),
-									'link'	=> esc_url( $gutena_url . '/contact' ),
+									'link'	=> esc_attr( $gutena_url . '/contact?utm_source=plugin&utm_medium=footer&utm_campaign=contact_with_sales_team' ),
 								)
 							)
 						)
@@ -651,7 +651,7 @@
 						'nonce'                 => wp_create_nonce( 'gutena_Forms' ),
 						'support_link'			=> esc_url( apply_filters(
 							'gutena_forms_support_link',
-							'https://wordpress.org/support/plugin/gutena-forms/'
+							'https://objectsws.atlassian.net/servicedesk/customer/portal/239'
 						 ) ),
 						'entry_view_url'        => $dashboard_url.'&pagetype=viewentry&form_entry_id=',
 						'entry_list_url' 		=> $dashboard_url.'&formid=',
