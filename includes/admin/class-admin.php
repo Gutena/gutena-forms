@@ -536,7 +536,7 @@
 						'support' => array(
 							'title' => esc_html__( 'Need Help?', 'gutena-forms' ),
 							'description' => esc_html__( 'Have a question, we are happy to help! Get in touch with our support team.', 'gutena-forms' ),
-							'documentation_link' => esc_url( $gutena_url . '/blog' ),
+							'documentation_link' => esc_attr( $gutena_url . '/blog?utm_source=plugin&utm_medium=knowledge_base&utm_campaign=help_articles' ),
 							'documentation_text' => esc_html__( 'Help Articles', 'gutena-forms' ),
 							'link_text' => esc_html__( 'Support', 'gutena-forms' ),
 						),
