@@ -20,7 +20,7 @@ if ( ! function_exists( 'gutena_forms__fs' ) ) :
 		global $gutena_forms__fs;
 
 		if ( is_null( $gutena_forms__fs ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'freemius/start.php';
+			require_once plugin_dir_path( __FILE__ ) . 'vendor/freemius/start.php';
 			$gutena_forms__fs = fs_dynamic_init(
 				array(
 					'id'             => '20975',
