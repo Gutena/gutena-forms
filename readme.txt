@@ -10,7 +10,7 @@ Light-weight and easy plugin create forms inside the block editor.
 
 == Description ==
 
-[👑 Go Pro](https://gutenaforms.com/pricing?utm_source=wp_org&utm_medium=top&utm_campaign=go_pro) | [💻 Live Demo](https://app.instawp.io/launch?t=gutena-forms-demo&d=v2)
+[👑 Go Pro](https://gutenaforms.com/?utm_source=wp_org&utm_medium=top&utm_campaign=go_pro#pricing) | [💻 Live Demo](https://app.instawp.io/launch?t=gutena-forms-demo&d=v2)
 
 Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
 
@@ -104,15 +104,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 [Gutena](https://wordpress.org/themes/gutena/) - A full site editing (block) theme for WordPress with ready made full page templates. Elegant and functional - follows all the best practices by WP, and yeah, no jQuery!
 
-[Quiz and Survey Master](https://wordpress.org/plugins/quiz-master-next/) - Best WordPress Quiz Plugin to create engaging quizzes, surveys, & exams using WordPress and convert your website into a lead generation machine.
-
-[Responsive Menu](https://wordpress.org/plugins/responsive-menu/) - Best WordPress Menu Builder Plugin to create awesome and interactive mobile & desktop menus for WordPress websites.
-
-[Projectopia](https://wordpress.org/plugins/projectopia-core/) - Project Management & Invoicing plugin for WordPress. Generate invoices, send quotes, generate leads, manage clients, provide support - all inside your WordPress website.
-
-[Booking Ultra](https://wordpress.org/plugins/booking-ultra-pro/) - Appointment Booking plugin for WordPress - Show a quick form to accept bookings for your services with pre-set booking slots. Ideal for salons, medical professionals, lawyers, consultants, etc.
-
-[InstaWP](https://instawp.com/) - Launch a quick WordPress site with this sandbox service. Create New WordPress instance within a second.
+[Post SMTP](https://wordpress.org/plugins/post-smtp/) - SMTP & Email Logs plugin improve WordPress email deliverability. Connect Gmail SMTP, Microsoft 365, Brevo, SendGrid, Mailgun, Zoho, Amazon SES, etc. #1 WordPress SMTP Plugin.
 
 == Screenshots ==
 
@@ -126,6 +118,7 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+
 = 1.3.1 - Oct 13, 2025 =
 * FIX - URLs Correction
 
