@@ -2,7 +2,7 @@
 Contributors:      expresstech, randhirexpresstech
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.8
-Stable tag:        1.3.0
+Stable tag:        1.3.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,8 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+= 1.3.1 - Oct 13, 2025 =
+* FIX - URLs Correction
 
 = 1.3.0 - Oct 13, 2025 =
 * NEW - Added Cloudflare Turnstile Integration

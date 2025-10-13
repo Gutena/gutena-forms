@@ -401,20 +401,20 @@
 										'price'	=> '$29.99',
 										'description' => __( '1 Site', 'gutena-forms' ),
 										'btn_name' => __( 'Get Started', 'gutena-forms' ),
-										'link'	=> 'https://gutenaforms.com/pricing?utm_source=plugin&utm_medium=pricing_plan&utm_campaign=get_started_basic',
+										'link'	=> 'https://gutenaforms.com/?utm_source=plugin&utm_medium=pricing_plan&utm_campaign=get_started_basic#pricing',
 									),
 									array(
 										'title' => __( 'Professional', 'gutena-forms' ),
 										'price'	=> '$49.99',
 										'description' => __( '5 Site', 'gutena-forms' ),
-										'link'	=> 'https://gutenaforms.com/pricing?utm_source=plugin&utm_medium=pricing_plan&utm_campaign=get_started_professional',
+										'link'	=> 'https://gutenaforms.com/?utm_source=plugin&utm_medium=pricing_plan&utm_campaign=get_started_professional#pricing',
 										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 									array(
 										'title' => __( 'Business', 'gutena-forms' ),
 										'price'	=> '$59.99',
 										'description' => __( 'Unlimited Sites', 'gutena-forms' ),
-										'link'	=> 'https://gutenaforms.com/pricing?utm_source=plugin&utm_medium=pricing_plan&utm_campaign=get_started_business',
+										'link'	=> 'https://gutenaforms.com/?utm_source=plugin&utm_medium=pricing_plan&utm_campaign=get_started_business#pricing',
 										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 								)
