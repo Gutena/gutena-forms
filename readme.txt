@@ -1,8 +1,8 @@
 === Gutena Forms - Contact Forms Block ===
 Contributors:      expresstech, randhirexpresstech
 Tags:              form, block, contact form, form block, forms
-Tested up to:      6.7
-Stable tag:        1.2.7
+Tested up to:      6.8
+Stable tag:        1.3.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,9 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+
+= 1.3.0 - Oct 13, 2025 =
+* NEW - Added Cloudflare Turnstile Integration
 
 = 1.2.7 | 05th February 2025 =
 * Updated: Improved admin email notification failure message.
