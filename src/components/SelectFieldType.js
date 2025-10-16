@@ -17,13 +17,13 @@ const SelectFieldType = ( {
     onChangeFunc = noop
 } ) => {
     const notANewFieldType = ( gfIsEmpty( newFieldTypes ) || 0 === newFieldTypes.length );
-   
+
     const [ displayOption , setDisplayOption ] = useState( false );
 
     const proFields = [ 'Date', 'Time', 'Rating', 'Phone', 'Country', 'State', 'File Upload', 'Url', 'Hidden', 'Password' ];
 
     return (
-         notANewFieldType ? 
+         notANewFieldType ?
         (
         <div className='gf-select-field-type-input'>
         <div className='gf-select-field-type-control' >
@@ -51,7 +51,7 @@ const SelectFieldType = ( {
             <ul className='gf-select-field-types' >
                 {
                     fieldTypes.map( ( item, index ) => (
-                        <li 
+                        <li
                         key={ 'gf-select-option-'+index }
                         className='gf-select-option'
                         onClick={ () => {
@@ -77,22 +77,18 @@ const SelectFieldType = ( {
                             </span>
                         </div>
                         <div className='gf-link'>
-                            <a 
-                            href={ gutenaFormsBlock?.pricing_link } 
+                            <a
+                            href={ gutenaFormsBlock?.pricing_link }
                             target='_blank'
                             >
                                 { __( 'Upgrade Now', 'gutena-forms' ) }
                             </a>
-                            <br />
-                            <p className='gf-text-muted'>
-                                { __( '14-day free trial', 'gutena-forms' ) }
-                            </p>
                         </div>
-                    </div> 
+                    </div>
                     <ul className='gf-pro-fields'>
                         {
                             proFields.map( ( pitem, pindex ) => (
-                                <li 
+                                <li
                                 key={ 'gf-pro-fi-eld-option-'+pindex }
                                 className='gf-text-muted'
                                 >
@@ -105,7 +101,7 @@ const SelectFieldType = ( {
             </ul>
             )
         }
-        </div> 
+        </div>
         ):
         (
             <SelectControl
