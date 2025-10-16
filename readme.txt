@@ -1,5 +1,5 @@
 === Gutena Forms - Contact Forms Block ===
-Contributors:      expresstech, randhirexpresstech
+Contributors:      wpexpertsio
 Tags:              form, block, contact form, form block, forms
 Tested up to:      6.8
 Stable tag:        1.3.1
