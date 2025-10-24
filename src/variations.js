@@ -1487,29 +1487,6 @@ const variations = [
 		],
 		scope: [ 'block' ],
 	},
-
-	// i need another variation for existing forms, that contains the select field for existing forms when I select one of them than it will fetch that form from the database and show the form in the editor
-	{
-		name: 'existing-forms',
-		title: __( 'Existing forms', 'gutena-forms' ),
-		description: __( 'Existing forms', 'gutena-forms' ),
-		attributes: {
-			formID: 'gutena_forms_ID_842a037f99_22102025172255',
-		},
-		icon: (
-			<Icon icon={ () => (
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M12 2L2 22h20L12 2Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
-			) } />
-		),
-		innerBlocks: [
-			[
-				'gutena/existing-forms',
-			]
-		],
-		scope: [ 'block' ],
-	},
 ];
 
 export default variations;

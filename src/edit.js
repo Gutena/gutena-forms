@@ -271,21 +271,6 @@ export default function Edit( props ) {
 		};
 	}, [] );
 
-	// Show notification when form is saved to custom post type
-	useEffect( () => {
-		if ( ! gfIsEmpty( formID ) && ! gfIsEmpty( formName ) ) {
-			// This will trigger when the form is saved
-			const { createNotice } = wp.data.dispatch( 'core/notices' );
-			createNotice( 'info', 
-				__( 'Form automatically saved to reusable forms. You can now reuse this form using the "Existing Forms" block.', 'gutena-forms' ), 
-				{ 
-					isDismissible: true,
-					id: 'gutena-form-saved-' + formID
-				} 
-			);
-		}
-	}, [ formID, formName ] );
-
 	//Check Inner Blocks
 	const hasInnerBlocks = useSelect(
 		( select ) =>
@@ -603,7 +588,13 @@ export default function Edit( props ) {
 					<p ><span className="block-editor-block-card__title" >{ __( 'Note : ', 'gutena-forms' ) }</span>
 					<span className="gf-text-muted" >
 						<span>
-							{ __( 'This form is automatically saved to reusable forms when you save the post. You can reuse it using the "Existing Forms" block.', 'gutena-forms' ) }
+							{ __( 'To reuse this form, please make it a ', 'gutena-forms' ) }
+						</span>
+						<a href="https://gutenaforms.com/reuse-gutena-forms-on-multiple-pages" target="_blank">
+							{ __( 'Synced Patterns', 'gutena-forms' ) }
+						</a>
+						<span>
+							{ __( ' ( Reusable Block ). Avoid copying or duplicating this block.', 'gutena-forms' ) }
 						</span>
 					</span>
 					</p>
