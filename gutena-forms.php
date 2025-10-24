@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.3.2
+ * Version:           1.3.1
  * Author:            Gutena Forms
  * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
@@ -42,7 +42,7 @@ if ( ! defined( 'GUTENA_FORMS_PLUGIN_URL' ) ) {
  * Plugin version.
  */
 if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-	define( 'GUTENA_FORMS_VERSION', '1.3.2' );
+	define( 'GUTENA_FORMS_VERSION', '1.3.1' );
 }
 
 if ( ! function_exists( 'gutena_forms__fs' ) ) :
@@ -112,9 +112,6 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		}
 
 		public function __construct() {
-
-			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-helper.php';
-
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
@@ -651,14 +648,6 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		// save form schema
 		public function save_gutena_forms_schema( $post_id, $post, $update ) {
-
-			if ( 'gutena_form' === $post->post_type ) {
-				remove_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10 );
-				add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
-				return;
-			}
-
-
 			//post should not be a rivision or trash
 			if ( empty( $post_id ) || empty( $post ) || ! function_exists( 'parse_blocks' ) || ! function_exists( 'wp_is_post_revision' ) || wp_is_post_revision( $post_id ) || ! function_exists( 'get_post_status' ) || 'trash' === get_post_status( $post_id ) || ! has_block( 'gutena/forms', $post ) ) {
 				return;
