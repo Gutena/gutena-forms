@@ -112,6 +112,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		}
 
 		public function __construct() {
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-cpt.php';
+
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
@@ -648,6 +650,13 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		// save form schema
 		public function save_gutena_forms_schema( $post_id, $post, $update ) {
+
+			if ( 'gutena_forms' === $post->post_type ) {
+				remove_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10 );
+				add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
+				return;
+			}
+
 			//post should not be a rivision or trash
 			if ( empty( $post_id ) || empty( $post ) || ! function_exists( 'parse_blocks' ) || ! function_exists( 'wp_is_post_revision' ) || wp_is_post_revision( $post_id ) || ! function_exists( 'get_post_status' ) || 'trash' === get_post_status( $post_id ) || ! has_block( 'gutena/forms', $post ) ) {
 				return;
