@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
-	"name": "gutena-forms/existing-forms",
+	"name": "gutena/existing-forms",
 	"version": "1.0.0",
 	"title": "Existing Forms",
 	"category": "gutena",
@@ -16,9 +16,9 @@
 		"html": false
 	},
 	"attributes": {
-		"formID": {
-            "type": "number",
-            "default": 0
-        }
+		"formId": {
+			"type": "number",
+			"default": 0
+		}
 	}
 }

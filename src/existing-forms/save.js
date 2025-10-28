@@ -1,11 +1,22 @@
-import { registerBlockType } from '@wordpress/blocks';
-import { Icon } from '@wordpress/components';
-import metadata from '../block.json';
-import save from './save';
-import edit from './edit';
+import { useBlockProps } from '@wordpress/block-editor';
 
-registerBlockType( metadata, {
-    icon: <Icon />,
-    edit,
-    save,
-} );
+const Save = ( { attributes } ) => {
+	const { formId } = attributes;
+	const blockProps = useBlockProps.save();
+
+	if ( ! formId ) {
+		return (
+			<div { ...blockProps }></div>
+		);
+	}
+
+	return (
+		<div { ...blockProps }>
+			<div className="gutena-forms-existing-form" data-form-id={ formId }>
+				{ /* PHP Rendering */ }
+			</div>
+		</div>
+	);
+};
+
+export default Save;

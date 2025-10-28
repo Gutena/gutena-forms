@@ -12,14 +12,160 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 		private $post_type = 'gutena_forms';
 
-		private function __construct() {
-			add_action( 'init', array( $this, 'init' ) );
-			add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
+	private function __construct() {
+		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
+		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+	}
+
+	public function init() {
+		register_post_type( $this->post_type, $this->post_type_args() );
+
+		register_block_type(
+			GUTENA_FORMS_DIR_PATH . 'build/existing-forms',
+			array(
+				'render_callback' => array( $this, 'render_existing_form' ),
+				'attributes'      => array(
+					'formId' => array(
+						'type'    => 'number',
+						'default' => 0
+					)
+				),
+			)
+		);
+	}
+
+	public function render_existing_form( $attributes ) {
+		$form_id = isset( $attributes['formId'] ) ? intval( $attributes['formId'] ) : 0;
+
+		if ( empty( $form_id ) ) {
+			return '';
 		}
 
-		public function init() {
-			register_post_type( $this->post_type, $this->post_type_args() );
+		$form = get_post( $form_id );
+
+		if ( ! $form || $form->post_type !== $this->post_type ) {
+			return '';
 		}
+
+		return do_blocks( $form->post_content );
+	}
+
+	/**
+	 * Register REST API routes
+	 */
+	public function register_rest_routes() {
+		register_rest_route(
+			'gutena-forms/v1',
+			'/forms',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_forms' ),
+				'permission_callback' => array( $this, 'rest_permissions_check' ),
+			)
+		);
+
+		register_rest_route(
+			'gutena-forms/v1',
+			'/forms/(?P<id>\d+)',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_form' ),
+				'permission_callback' => array( $this, 'rest_permissions_check' ),
+			)
+		);
+
+		register_rest_route(
+			'gutena-forms/v1',
+			'/forms/(?P<id>\d+)/update',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'update_form' ),
+				'permission_callback' => array( $this, 'rest_permissions_check' ),
+			)
+		);
+	}
+
+	/**
+	 * Check permissions for REST API requests
+	 */
+	public function rest_permissions_check() {
+		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Get all forms
+	 */
+	public function get_forms() {
+		$forms = get_posts(
+			array(
+				'post_type'      => $this->post_type,
+				'posts_per_page' => -1,
+				'post_status'    => 'any',
+			)
+		);
+
+		return array_map( function( $form ) {
+			return array(
+				'id'    => $form->ID,
+				'title' => $form->post_title,
+			);
+		}, $forms );
+	}
+
+	/**
+	 * Get single form
+	 */
+	public function get_form( $request ) {
+		$form_id = $request['id'];
+		$form    = get_post( $form_id );
+
+		if ( ! $form || $form->post_type !== $this->post_type ) {
+			return new WP_Error( 'form_not_found', __( 'Form not found', 'gutena-forms' ), array( 'status' => 404 ) );
+		}
+
+		// Parse the blocks to get form block with attributes
+		$blocks = parse_blocks( $form->post_content );
+		$form_block = null;
+
+		foreach ( $blocks as $block ) {
+			if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
+				$form_block = $block;
+				break;
+			}
+		}
+
+		return array(
+			'id'         => $form->ID,
+			'title'      => $form->post_title,
+			'content'    => $form->post_content,
+			'attributes' => $form_block ? $form_block['attrs'] : array(),
+		);
+	}
+
+	/**
+	 * Update form
+	 */
+	public function update_form( $request ) {
+		$form_id = $request['id'];
+		$content = isset( $request['content'] ) ? $request['content'] : '';
+
+		$result = wp_update_post(
+			array(
+				'ID'           => $form_id,
+				'post_content' => $content,
+			)
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return array(
+			'success' => true,
+			'id'      => $form_id,
+		);
+	}
 
 		private function post_type_args() {
 			return array(
@@ -59,6 +205,19 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 		 * @return void
 		 */
 		public function save_post( $post_id, $post, $update ) {
+
+			if ( empty( $post_id ) || empty( $post ) || ! function_exists( 'parse_blocks' ) || ! function_exists( 'wp_is_post_revision' ) || wp_is_post_revision( $post_id ) || ! function_exists( 'get_post_status' ) || 'trash' === get_post_status( $post_id ) || ! has_block( 'gutena/forms', $post ) ) {
+				return;
+			}
+
+			if ( str_contains( $post->post_content, 'gutena/existing-forms' ) ) {
+				remove_action( 'save_post', array( $this, 'save_post' ) );
+				add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
+				remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ) );
+				add_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10, 3 );
+				return;
+			}
+
 			// Prevent infinite recursion
 			if ( self::$updating_connected_posts ) {
 				return;
@@ -72,10 +231,6 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 				add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
 				remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ) );
 				add_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10, 3 );
-				return;
-			}
-
-			if ( empty( $post_id ) || empty( $post ) || ! function_exists( 'parse_blocks' ) || ! function_exists( 'wp_is_post_revision' ) || wp_is_post_revision( $post_id ) || ! function_exists( 'get_post_status' ) || 'trash' === get_post_status( $post_id ) || ! has_block( 'gutena/forms', $post ) ) {
 				return;
 			}
 
@@ -185,7 +340,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 		if ( isset( $blocks[0]['blockName'] ) && 'gutena/forms' === $blocks[0]['blockName'] ) {
 			// Prevent infinite loop by removing actions before updating
 			self::$updating_connected_posts = true;
-			
+
 			// Remove the save_post hooks to prevent recursion
 			remove_action( 'save_post', array( $this, 'save_post' ), -1 );
 			remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10 );
@@ -231,7 +386,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			// Re-add the actions after updates complete
 			add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
 			add_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10, 3 );
-			
+
 			self::$updating_connected_posts = false;
 		}
 	}
