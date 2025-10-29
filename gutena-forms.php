@@ -112,6 +112,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		}
 
 		public function __construct() {
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
+
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
