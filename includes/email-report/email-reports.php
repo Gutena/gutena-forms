@@ -13,8 +13,18 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 	 * Gutena Forms Email Reports Class
 	 */
 	class Gutena_Forms_Email_Reports {
+		/**
+		 * Singleton instance
+		 *
+		 * @var Gutena_Forms_Email_Reports Singleton instance of the class.
+		 */
 		private static $instance;
 
+		/**
+		 * Get singleton instance.
+		 *
+		 * @return Gutena_Forms_Email_Reports
+		 */
 		public static function get_instance() {
 			if ( null === self::$instance ) {
 				self::$instance = new self();
@@ -23,109 +33,154 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 			return self::$instance;
 		}
 
+		/**
+		 * Constructor.
+		 */
 		private function __construct() {
-			add_action( 'init', array( $this, 'register_cron_event' ) );
-			add_action( 'init', array( $this, 'weekly_report' ) ); // todo change 'init' to 'gutena_weekly_summary_report'
-			add_filter( 'gutena_forms__get_total_entries', array( $this, 'query_total_entries' ) );
-			add_filter( 'gutena_forms__get_entries', array( $this, 'query_entries' ) );
+			add_action( 'init', array( $this, 'register_cron_schedule' ) );
+			add_action( 'admin_init', array( $this, 'admin_init' ) );
+			add_action( 'gutena_forms_weekly_report', array( $this, 'gutena_forms_weekly_report' ) );
+			add_action( 'gutena_forms_entries_load_custom_page', array( $this, 'settings_fields' ) );
+
+			$this->filter_email_data();
+		}
+
+		public function settings_fields() {
+			if ( isset( $_GET['pagetype'] ) && 'forms-summary-report' === sanitize_text_field( wp_unslash( $_GET['pagetype'] ) ) ) {
+				echo '<div style="padding: 0 20px" class="wrap">
+				<form action="options.php" method="post">';
+
+				settings_fields( 'gutena_forms_weekly_report' );
+				do_settings_sections( 'weekly-forms-summary' );
+				submit_button();
+
+				echo '</form>
+			</div>';
+			}
+		}
+
+		public function admin_init() {
+			register_setting( 'gutena_forms_weekly_report', 'gutena_forms_weekly_report', array( $this, 'sanitize_form_args' ) );
+
+			add_settings_section( 'gutenaforms-weekly-report', __( 'Weekly Forms Summary', 'gutena-forms' ), '__return_null', 'weekly-forms-summary' );
+			add_settings_field( 'weekly-report-enable', __( 'Enable', 'gutena-forms' ), array( $this, 'enable_disable_field' ), 'weekly-forms-summary', 'gutenaforms-weekly-report', array( 'label_for' => 'enable' ) );
+			add_settings_field( 'weekly-report-email', __( 'Email', 'gutena-forms' ), array( $this, 'email_field' ), 'weekly-forms-summary', 'gutenaforms-weekly-report', array( 'label_for' => 'email' ) );
+		}
+
+		public function enable_disable_field() {
+			$settings = get_option( 'gutena_forms_weekly_report', array( 'enabled' => 1 ) );
+			$enabled  = is_array( $settings ) && ! empty( $settings['enabled'] ) ? $settings['enabled'] : '';
+			?>
+			<input type="checkbox" id="enable" name="gutena_forms_weekly_report[enabled]" value="1" <?php checked( $enabled, '1' ); ?> />
+			<p class="desc">
+				<strong>
+					<?php esc_html_e( 'Enable to receive weekly email reports of your forms.', 'gutena-forms' ); ?>
+				</strong>
+			</p>
+			<?php
+		}
+
+		public function email_field() {
+			$settings = get_option( 'gutena_forms_weekly_report', array( 'recipient_email' => get_option( 'admin_email', '' ) ) );
+			$email    = is_array( $settings ) && ! empty( $settings['recipient_email'] ) ? $settings['recipient_email'] : '';
+			?>
+			<input type="email" id="recipient_email" name="gutena_forms_weekly_report[recipient_email]" value="<?php echo esc_attr( $email ); ?>" class="regular-text" />
+			<p class="desc">
+				<strong>
+					<?php esc_html_e( 'Enter the email address where you want to receive the weekly reports.', 'gutena-forms' ); ?>
+				</strong>
+			</p>
+			<?php
+		}
+
+		public function sanitize_form_args( $fields ) {
+			return $fields;
 		}
 
 		/**
-		 * Register Cron Event
+		 * Register cron schedule for weekly reports.
 		 */
-		public function register_cron_event() {
-			if ( ! wp_next_scheduled( 'gutena_weekly_summary_report' ) ) {
-				wp_schedule_event( time(), 'weekly', 'gutena_weekly_summary_report' );
+		public function register_cron_schedule() {
+			$settings = get_option( 'gutena_forms_weekly_report' );
+			if ( is_array( $settings ) && ! empty( $settings['enabled'] ) ) {
+				if ( ! wp_next_scheduled( 'gutena_forms_weekly_report' ) ) {
+					wp_schedule_event( current_time( 'timestamp' ), 'weekly', 'gutena_forms_weekly_report' );
+				}
+			} else {
+				// Unschedule if previously scheduled.
+				$timestamp = wp_next_scheduled( 'gutena_forms_weekly_report' );
+				if ( $timestamp ) {
+					wp_unschedule_event( $timestamp, 'gutena_forms_weekly_report' );
+				}
 			}
 		}
 
 		/**
-		 * Weekly Report
+		 * Send weekly forms report email.
 		 */
-		public function weekly_report() {
-			exit( $this->get_body() );
-		}
-
-		private function get_subject() {
-			return apply_filters( 'gutena_forms__email_report_subject',
-			'Your Weekly Gutena Form Report'
+		public function gutena_forms_weekly_report() {
+			$headers  = array(
+				'Content-Type: text/html; charset=UTF-8',
 			);
+			$subject  = __( 'Your Weekly Gutena Form Report', 'gutena-forms' );
+			$settings = get_option( 'gutena_forms_weekly_report' );
+			$email    = is_array( $settings ) && ! empty( $settings['recipient_email'] ) ? $settings['recipient_email'] : '';
+
+			wp_mail( $email, $subject, $this->get_email_content(), $headers );
 		}
 
-	private function get_body() {
-		ob_start();
-		include_once 'templates/email-report-template.php';
-		return ob_get_clean();
+		/**
+		 * Get email content.
+		 *
+		 * @return false|string
+		 */
+		private function get_email_content() {
+			ob_start();
+			require plugin_dir_path( __FILE__ ) . 'templates/email-report-template.php';
+			return ob_get_clean();
+		}
+
+		/**
+		 * Filter email data.
+		 */
+		private function filter_email_data() {
+			add_filter( 'gutena_forms__get_total_entries', array( $this, 'get_total_entries' ) );
+			add_filter( 'gutena_forms__get_entries', array( $this, 'get_entries' ) );
+		}
+
+		/**
+		 * Get total entries in the last week.
+		 *
+		 * @return string
+		 */
+		public function get_total_entries() {
+			global $wpdb;
+			$last_week = date( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
+			$sql 	   = 'SELECT COUNT( * ) FROM %i WHERE added_time >= %s;';
+			$sql       = $wpdb->prepare( $sql, $wpdb->prefix . 'gutenaforms_entries', $last_week );
+			return $wpdb->get_var( $sql );
+		}
+
+		/**
+		 * Get entries grouped by form in the last week.
+		 *
+		 * @return array
+		 */
+		public function get_entries() {
+			global $wpdb;
+			$last_week = date( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
+			$sql       = 'SELECT COUNT(*) as entries_count, gutenaforms.form_name, gutenaforms.form_id FROM %i gutenaforms LEFT JOIN %i gutenaforms_entries ON gutenaforms.form_id = gutenaforms_entries.form_id WHERE gutenaforms.published = 1 AND gutenaforms_entries.trash = 0 AND gutenaforms_entries.added_time >= %s GROUP BY gutenaforms_entries.form_id;';
+			$sql       = $wpdb->prepare( $sql, $wpdb->prefix . 'gutenaforms', $wpdb->prefix . 'gutenaforms_entries', $last_week );
+			return $wpdb->get_results( $sql, ARRAY_A );
+		}
+
+		public static function calculate_percentage_change( $new_value, $old_value ) {
+			$v = $new_value - $old_value;
+			$v = $v / $old_value;
+			$v = $v * 100;
+			return round( $v, 2 );
+		}
 	}
-
-	/**
-	 * Query Total Entries
-	 *
-	 * @param int    $total Total entries.
-	 * @param string $period Time period (week, month, etc.).
-	 * @return int Total entries count.
-	 */
-	public function query_total_entries( $total ) {
-		// If total is already set, return it
-		if ( $total > 0 ) {
-			return $total;
-		}
-
-		global $wpdb;
-
-		// Calculate date range for the week
-		$start_date = gmdate( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
-		$end_date   = gmdate( 'Y-m-d H:i:s' );
-
-		// Query form entries from the database
-		$table_name = $wpdb->prefix . 'gutenaforms_entries';
-		$sql        = 'SELECT COUNT(*) FROM %i WHERE added_time >= %s AND added_time <= %s AND trash = 0';
-		$sql        = $wpdb->prepare( $sql, $table_name, $start_date, $end_date );
-		$total      = $wpdb->get_var( $sql );
-
-		return (int) $total;
-	}
-
-	/**
-	 * Query Entries
-	 *
-	 * @param array  $entries Entries array.
-	 * @param string $period  Time period (week, month, etc.).
-	 * @return array Entries with form name and count.
-	 */
-	public function query_entries( $entries ) {
-		// If entries are already set, return them
-		if ( ! empty( $entries ) ) {
-			return $entries;
-		}
-
-		global $wpdb;
-
-		// Calculate date range for the week
-		$start_date = gmdate( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
-		$end_date   = gmdate( 'Y-m-d H:i:s' );
-
-		// Query form entries grouped by form
-		$table_entries = $wpdb->prefix . 'gutenaforms_entries';
-		$table_forms   = $wpdb->prefix . 'gutenaforms';
-		$sql           = 'SELECT f.form_name, COUNT(*) as count FROM %i e INNER JOIN %i f ON e.form_id = f.form_id WHERE e.added_time >= %s AND e.added_time <= %s AND e.trash = 0 GROUP BY e.form_id ORDER BY count DESC';
-		$sql           = $wpdb->prepare( $sql, $table_entries, $table_forms, $start_date, $end_date );
-		$results       = $wpdb->get_results( $sql );
-
-		// Format results
-		$entries = array();
-		if ( $results ) {
-			foreach ( $results as $row ) {
-				$entries[] = array(
-					'form-name' => $row->form_name,
-					'count'     => (int) $row->count,
-				);
-			}
-		}
-
-		return $entries;
-	}
-}
 
 	Gutena_Forms_Email_Reports::get_instance();
 endif;

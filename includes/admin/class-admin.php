@@ -682,6 +682,11 @@
 									'slug'  => 'doc',
 									'title' => __( 'Knowledge Base', 'gutena-forms' ),
 									'enable' => '1'
+								),
+								array(
+									'slug' => 'forms-summary-report',
+									'title' => 'Forms Summary Report',
+									'enable' => '1',
 								)
 							)
 						),
