@@ -124,8 +124,25 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			add_action( 'wp_ajax_gutena_forms_submit', array( $this, 'submit_form' ) );
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( $this, 'submit_form' ) );
+
+			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), -1 );
 			//Dashboard
 			$this->load_dashboard();
+		}
+
+		public function plugin_action_links( $prev_links ) {
+
+			if ( ! is_gutena_forms_pro() ) {
+				$new_link = sprintf(
+					'<a style="color: #e35d3f; font-weight: 600;" target="_blank" href="https://gutenaforms.com/?utm_source=plugins-screen&utm_medium=pricing_plan&utm_campaign=get_gutenaforms-pro#pricing">%s</a>',
+					__( 'Get Gutena Forms Pro' )
+				);
+
+				// required link in first place
+				array_unshift( $prev_links, $new_link );
+			}
+
+			return $prev_links;
 		}
 
 		//load form dashboard
