@@ -73,6 +73,14 @@
 		 * Load admin classes
 		 */
 		public function load_admin_classes() {
+			if ( isset( $_GET['pagetype'] ) && 'feature-request' === sanitize_key( wp_unslash( $_GET['pagetype'] ) ) ) {
+				echo '<script type="text/javascript">
+					window.location.href = "https://gutenaforms.com/roadmap/?utm_source=plugin&utm_medium=tab&utm_campaign=feature_requests";
+				</script>';
+				exit;
+			}
+
+
 			//load list table core wp class
 			if ( ! class_exists( 'WP_List_Table' ) ) {
 				if ( file_exists( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' ) ) {
@@ -687,7 +695,12 @@
 									'slug' => 'forms-summary-report',
 									'title' => 'Forms Summary Report',
 									'enable' => '1',
-								)
+								),
+								array(
+									'slug'   => 'feature-request',
+									'title'  => __( 'Feature Request', 'gutena-forms' ),
+									'enable' => '1',
+								),
 							)
 						),
 
