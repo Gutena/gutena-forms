@@ -33,7 +33,7 @@ const SettingsPage = ({
                         <>
                             <h2 className='title'>{ tab.heading } { lockIcon() }</h2>
                             <p className='description' >{ tab.description }</p>
-                            <div 
+                            <div
                             onClick={ () => onClickFunc() }
                             >
                             <tab.component
