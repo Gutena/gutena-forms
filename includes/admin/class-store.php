@@ -302,7 +302,7 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 			// logo title
 			return '<div class="gf-header">
 				<div id="gf-header-left-section" class="gf-logo-title">
-					<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms' ) ) . '" >
+					<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction' ) ) . '" >
 						<img src="' . GUTENA_FORMS_PLUGIN_URL . 'assets/img/logo.png' . '" />
 					</a>
 					<div id="gfp-dashboard-navigation" class="gfp-dashboard-navigation"></div>
