@@ -68,7 +68,7 @@ if ( ! function_exists( 'gutena_forms__fs' ) ) :
 					'has_addons'          => false,
 					'has_paid_plans'      => false,
 					'menu'                => array(
-						'slug'           => 'gutena-forms',
+						'slug'           => 'admin.php?page=gutena-forms&pagetype=introduction',
 						'contact'        => false,
 						'support'        => false,
 					),
