@@ -652,18 +652,18 @@
 
 				$dashboard_url =  esc_url( admin_url( 'admin.php?page=gutena-forms' ) );
 				$is_admin = $this->is_gfadmin() ? '1':'0';
-				
+
 				// Detect if we're on the forms list page
 				$screen = get_current_screen();
-				$is_forms_list_page = ( $screen && 'edit-gutena_forms' === $screen->id && 
+				$is_forms_list_page = ( $screen && 'edit-gutena_forms' === $screen->id &&
 										! isset( $_GET['action'] ) && ! isset( $_GET['post'] ) );
-				
+
 				// Determine current pagetype
 				$current_pagetype = empty( $_GET['pagetype'] ) ? '' : sanitize_key( wp_unslash( $_GET['pagetype'] ) );
 				if ( $is_forms_list_page ) {
 					$current_pagetype = 'forms';
 				}
-				
+
 				//Provide data for form submission script
 				wp_localize_script(
 					'gutena-forms-dashboard-script',
@@ -714,7 +714,7 @@
 								),
 								array(
 									'slug' => 'forms-summary-report',
-									'title' => 'Forms Summary Report',
+									'title' => 'Weekly Report',
 									'enable' => '1',
 								),
 								array(
