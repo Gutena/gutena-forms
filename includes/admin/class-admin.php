@@ -35,16 +35,19 @@
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
 			add_action( 'admin_init', array( $this, 'load_admin_classes' ) );
 
-			if ( ! is_gutena_forms_pro( false ) ) {
-				//view dashboard notice
-				add_action( 'admin_notices', array( $this, 'view_dashboard_notice' ) );
-				//admin script
-				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts_admin' ) );
-				//Update form entry status to read
-				add_action( 'wp_ajax_gutena_forms_dismiss_notice', array( $this, 'dismiss_notice' ) );
-			}
-
+		if ( ! is_gutena_forms_pro( false ) ) {
+			//view dashboard notice
+			add_action( 'admin_notices', array( $this, 'view_dashboard_notice' ) );
+			//admin script
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts_admin' ) );
+			//Update form entry status to read
+			add_action( 'wp_ajax_gutena_forms_dismiss_notice', array( $this, 'dismiss_notice' ) );
 		}
+
+		// Add navigation to forms list page
+		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_add_navigation_to_forms_list' ), 20 );
+
+	}
 
 		/**
 		 * Load classes
@@ -113,8 +116,8 @@
 			//register menu
 			$page_hook_suffix = add_submenu_page(
 				'edit.php?post_type=gutena_forms',
-				__( 'Forms', 'gutena-forms' ),
-				__( 'Forms', 'gutena-forms' ),
+				__( 'Entries', 'gutena-forms' ),
+				__( 'Entries', 'gutena-forms' ),
 				'delete_posts',
 				'gutena-forms',
 				array( $this, 'forms_dashboard' ),
@@ -649,6 +652,18 @@
 
 				$dashboard_url =  esc_url( admin_url( 'admin.php?page=gutena-forms' ) );
 				$is_admin = $this->is_gfadmin() ? '1':'0';
+				
+				// Detect if we're on the forms list page
+				$screen = get_current_screen();
+				$is_forms_list_page = ( $screen && 'edit-gutena_forms' === $screen->id && 
+										! isset( $_GET['action'] ) && ! isset( $_GET['post'] ) );
+				
+				// Determine current pagetype
+				$current_pagetype = empty( $_GET['pagetype'] ) ? '' : sanitize_key( wp_unslash( $_GET['pagetype'] ) );
+				if ( $is_forms_list_page ) {
+					$current_pagetype = 'forms';
+				}
+				
 				//Provide data for form submission script
 				wp_localize_script(
 					'gutena-forms-dashboard-script',
@@ -666,7 +681,7 @@
 						'page_url'				=> $dashboard_url.'&pagetype=',
 						'is_gutena_forms_pro'   => is_gutena_forms_pro() ? '1' : '0',
 						'is_admin'				=> $is_admin,
-						'pagetype'				=> empty( $_GET['pagetype'] ) ? '': sanitize_key( wp_unslash( $_GET['pagetype'] ) ),
+						'pagetype'				=> $current_pagetype,
 						'form_id'				=> $this->form_id,
 						'dashboard_menu' => apply_filters(
 							'gutena_forms_dashboard_menu',
@@ -674,6 +689,12 @@
 								array(
 									'slug'  => 'introduction',
 									'title' => __( 'Introduction', 'gutena-forms' ),
+									'enable' => '1'
+								),
+								array(
+									'slug'  => 'forms',
+									'title' => __( 'Forms', 'gutena-forms' ),
+									'link'  => admin_url( 'edit.php?post_type=gutena_forms' ),
 									'enable' => '1'
 								),
 								array(
@@ -711,6 +732,45 @@
 			}
 
 
+		}
+
+		/**
+		 * Add navigation to forms list page (edit.php?post_type=gutena_forms)
+		 *
+		 * @param string $hook Current admin page hook
+		 */
+		public function maybe_add_navigation_to_forms_list( $hook ) {
+			$screen = get_current_screen();
+
+			// Check if we're on the forms list page
+			if ( ! $screen || 'edit-gutena_forms' !== $screen->id ) {
+				return;
+			}
+
+			// Enqueue dashboard styles (reuse existing method)
+			$this->forms_listing_styles();
+
+			// Enqueue dashboard scripts (reuse existing method)
+			$this->forms_listing_scripts();
+
+			// Add navigation HTML before the page content
+			add_action( 'in_admin_header', array( $this, 'output_forms_list_navigation' ), 1 );
+		}
+
+		/**
+		 * Output navigation header on forms list page
+		 */
+		public function output_forms_list_navigation() {
+			if ( ! class_exists( 'Gutena_Forms_Store' ) ) {
+				return;
+			}
+
+			$form_store = new Gutena_Forms_Store();
+
+		// Output navigation with wrapper for proper styling
+		echo '<div class="gutena-forms-list-navigation-wrapper">';
+		echo $form_store->get_dashboard_header();
+		echo '</div>';
 		}
 
 		/**
