@@ -175,6 +175,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 				'supports'     => array( 'title', 'editor' ),
 				'has_archive'  => false,
 				'show_in_rest' => true,
+				'menu_icon'    => 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuMzUyMTEgMTEuNDE1NUgwLjE1NzYyNUwxMS40MTcgMC4xNTU1NzJWNC4zMTc1TDQuMzUyMTEgMTEuNDE1NVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xOS44MDYxIDExLjQxNDFIMjQuMDAwNkwxMi43NDEyIDAuMTU0MTA3VjQuMzE2MDRMMTkuODA2MSAxMS40MTQxWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQuMzQ5MTggMTIuNzM5M0gwLjE1NDY5NkwxMS40MTQxIDIzLjk5OTJWMTkuODM3M0w0LjM0OTE4IDEyLjczOTNaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTkuODAzMiAxMi43NDAySDIzLjk5NzZMMTIuNzM4MyAyNC4wMDAyVjE5LjgzODNMMTkuODAzMiAxMi43NDAyWiIgZmlsbD0id2hpdGUiLz4KPHJlY3Qgd2lkdGg9IjguNzU3MjkiIGhlaWdodD0iMi41ODY4NiIgdHJhbnNmb3JtPSJtYXRyaXgoMSAwIDAgLTEgMTIuMDQxIDE1LjMyNjIpIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K',
 			);
 		}
 
@@ -183,11 +184,11 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 				'not_found_in_trash' => __( 'No gutena forms found in Trash.', 'gutena-forms' ),
 				'not_found'          => __( 'No gutena forms found.', 'gutena-forms' ),
 				'parent_item_colon'  => __( 'Parent Gutena Forms:','gutena-forms' ),
-				'add_new_item'       => __( 'Add New Gutena Form', 'gutena-forms' ),
+				'add_new_item'       => __( 'Add Gutena Form', 'gutena-forms' ),
 				'search_items'       => __( 'Search Gutena Forms', 'gutena-forms' ),
 				'view_item'          => __( 'View Gutena Form', 'gutena-forms' ),
 				'edit_item'          => __( 'Edit Gutena Form', 'gutena-forms' ),
-				'all_items'          => __( 'All Gutena Forms', 'gutena-forms' ),
+				'all_items'          => __( 'Gutena Forms', 'gutena-forms' ),
 				'new_item'           => __( 'New Gutena Form','gutena-forms' ),
 				'menu_name'          => __( 'Gutena Forms', 'gutena-forms' ),
 				'name'               => __( 'Gutena Forms', 'gutena-forms' ),
