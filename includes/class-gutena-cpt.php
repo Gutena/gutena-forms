@@ -423,12 +423,23 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 			if ( 'edit-gutena_forms' !== $current_screen->id ) { return; }
 
+			echo '<style type="text/css">
+				.page-title-action {
+				    color: #FFF !important;
+				    border: none !important;
+				    font-size: 14px !important;
+				    font-weight: 700 !important;
+				    border-radius: 4px !important;
+				    background: #0DA88C !important;
+				}
+			</style>';
+
 			// If there are existing forms, show the normal list table — don't hide it.
 			if ( $this->has_forms ) {
 				return;
 			}
 
-			echo '<style>
+			echo '<style type="text/css">
 					.wrap { display: none !important; }
 					body { background: #ffffff !important; }
 				</style>';
@@ -438,6 +449,16 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			global $current_screen;
 
 			if ( 'edit-gutena_forms' !== $current_screen->id ) { return; }
+
+			echo '<script type="text/javascript">
+				( function( $ ) {
+					const $addNewFormBtn = $.document.getElementsByClassName( "page-title-action" )[0];
+					$addNewFormBtn.innerHTML = `<svg style="margin: 0 5px -4px 0;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <circle cx="9" cy="9" r="9" fill="#D2FFF7"/>
+                        <path d="M8.17405 12.6V6.00001H9.84158V12.6H8.17405ZM5.40002 10.0714V8.54287H12.6V10.0714H5.40002Z" fill="#0DA88C"/>
+                    </svg>` + $addNewFormBtn.innerHTML;
+				} )( window );
+			</script>';
 
 			// If there are existing forms, don't inject the custom UI — let WP list table render.
 			if ( $this->has_forms ) {
@@ -450,7 +471,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			        <style>
 			            .gutena-forms__wrapper { margin: 30px 0 0 50px; }
 			            .gutena-forms__add-new-form { color: #FFF !important; border: none !important; font-size: 14px !important; font-weight: 700 !important; border-radius: 4px !important; background: #0DA88C !important; }
-			            .gutena-forms__add-new-form svg { vertical-align: middle; margin-right: 5px; }
+			            .gutena-forms__add-new-form svg { vertical-align: middle; margin: -4px 5px 0 0; }
 			        </style>
 			        <div class="gutena-forms__wrapper">
 			            <div>
