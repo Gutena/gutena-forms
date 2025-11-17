@@ -669,21 +669,21 @@
 					'gutena-forms-dashboard-script',
 					'gutenaFormsDashboard',
 					array(
-						'read_status_action'    => 'gutena_forms_entries_read',
-						'ajax_url'           	=> admin_url( 'admin-ajax.php' ),
-						'nonce'                 => wp_create_nonce( 'gutena_Forms' ),
-						'support_link'			=> esc_url( apply_filters(
+						'read_status_action'  => 'gutena_forms_entries_read',
+						'ajax_url'            => admin_url( 'admin-ajax.php' ),
+						'nonce'               => wp_create_nonce( 'gutena_Forms' ),
+						'support_link'        => esc_url( apply_filters(
 							'gutena_forms_support_link',
 							'https://objectsws.atlassian.net/servicedesk/customer/portal/239'
 						 ) ),
-						'entry_view_url'        => $dashboard_url.'&pagetype=viewentry&form_entry_id=',
-						'entry_list_url' 		=> $dashboard_url.'&formid=',
-						'page_url'				=> $dashboard_url.'&pagetype=',
-						'is_gutena_forms_pro'   => is_gutena_forms_pro() ? '1' : '0',
-						'is_admin'				=> $is_admin,
-						'pagetype'				=> $current_pagetype,
-						'form_id'				=> $this->form_id,
-						'dashboard_menu' => apply_filters(
+						'entry_view_url'      => $dashboard_url.'&pagetype=viewentry&form_entry_id=',
+						'entry_list_url'      => $dashboard_url.'&formid=',
+						'page_url'            => $dashboard_url.'&pagetype=',
+						'is_gutena_forms_pro' => is_gutena_forms_pro() ? '1' : '0',
+						'is_admin'            => $is_admin,
+						'pagetype'            => $current_pagetype,
+						'form_id'             => $this->form_id,
+						'dashboard_menu'      => apply_filters(
 							'gutena_forms_dashboard_menu',
 							array(
 								array(
@@ -724,7 +724,12 @@
 								),
 							)
 						),
-
+						'create_form_url'     => add_query_arg(
+							array(
+								'post_type' => 'gutena_forms',
+							),
+							admin_url( 'post-new.php' )
+						),
 					)
 				);
 
