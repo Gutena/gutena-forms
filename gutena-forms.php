@@ -97,6 +97,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					return class_exists( 'Gutena_Forms_Pro' );
 				}
 			}
+
+			return false;
 		}
 	}
 
@@ -616,7 +618,15 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action(
 				$action_hook_name,
 				static function () use ( $style ) {
-					echo '<style>' . wp_strip_all_tags( $style ) . "</style>\n";
+
+					if ( str_contains( $style, 'u002' ) ) {
+						$decoded_style = str_replace(
+							array( 'u002d', 'u0022', 'u003e' ), array( '-', '"', '>' ), $style
+						);
+					}
+
+					$new_style = wp_strip_all_tags( $decoded_style );
+					echo '<style>' . $new_style . "</style>\n";
 				},
 				$priority
 			);
