@@ -46,7 +46,6 @@
 
 		// Add navigation to forms list page
 		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_add_navigation_to_forms_list' ), 20 );
-
 	}
 
 		/**
@@ -76,6 +75,11 @@
 		 * Load admin classes
 		 */
 		public function load_admin_classes() {
+			global $submenu;
+			if ( isset( $submenu['gutena-forms'][0] ) ) {
+				unset( $submenu['gutena-forms'][0] );
+			}
+
 			if ( isset( $_GET['pagetype'] ) && 'feature-request' === sanitize_key( wp_unslash( $_GET['pagetype'] ) ) ) {
 				echo '<script type="text/javascript">
 					window.location.href = "https://gutenaforms.com/roadmap/?utm_source=plugin&utm_medium=tab&utm_campaign=feature_requests";
@@ -113,20 +117,45 @@
 				return;
 			}
 
-			//register menu
-			$page_hook_suffix = add_submenu_page(
-				'edit.php?post_type=gutena_forms',
-				__( 'Entries', 'gutena-forms' ),
-				__( 'Entries', 'gutena-forms' ),
-				'delete_posts',
+			$page_hook_suffix = add_menu_page(
+				__( 'Gutena Forms', 'gutena-forms' ),
+				__( 'Gutena Forms', 'gutena-forms' ),
+				'manage_options',
 				'gutena-forms',
 				array( $this, 'forms_dashboard' ),
-				27
+				'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuMzUyMTEgMTEuNDE1NUgwLjE1NzYyNUwxMS40MTcgMC4xNTU1NzJWNC4zMTc1TDQuMzUyMTEgMTEuNDE1NVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xOS44MDYxIDExLjQxNDFIMjQuMDAwNkwxMi43NDEyIDAuMTU0MTA3VjQuMzE2MDRMMTkuODA2MSAxMS40MTQxWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQuMzQ5MTggMTIuNzM5M0gwLjE1NDY5NkwxMS40MTQxIDIzLjk5OTJWMTkuODM3M0w0LjM0OTE4IDEyLjczOTNaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTkuODAzMiAxMi43NDAySDIzLjk5NzZMMTIuNzM4MyAyNC4wMDAyVjE5LjgzODNMMTkuODAzMiAxMi43NDAyWiIgZmlsbD0id2hpdGUiLz4KPHJlY3Qgd2lkdGg9IjguNzU3MjkiIGhlaWdodD0iMi41ODY4NiIgdHJhbnNmb3JtPSJtYXRyaXgoMSAwIDAgLTEgMTIuMDQxIDE1LjMyNjIpIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K',
+				27,
 			);
+
+			add_submenu_page(
+				'gutena-forms',
+				__( 'Forms', 'gutena-forms' ),
+				__( 'Forms', 'gutena-forms' ),
+				'manage_options',
+				'edit.php?post_type=gutena_forms',
+			);
+
+			add_submenu_page(
+				'gutena-forms',
+				__( 'Add New Form', 'gutena-forms' ),
+				__( 'Add New Form', 'gutena-forms' ),
+				'manage_options',
+				'post-new.php?post_type=gutena_forms',
+			);
+
+			add_submenu_page(
+				'gutena-forms',
+				__( 'Entries', 'gutena-forms' ),
+				__( 'Entries', 'gutena-forms' ),
+				'manage_options',
+				'gutena-forms',
+				array( $this, 'forms_dashboard' ),
+			);
+
 			if ( ! empty( $page_hook_suffix ) ) {
 				add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'forms_listing_styles' ) );
 				add_action( 'admin_print_scripts-' . $page_hook_suffix, array( $this, 'forms_listing_scripts' ) );
-		   }
+			}
 		}
 
 		/**
