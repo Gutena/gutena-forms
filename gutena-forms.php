@@ -71,6 +71,7 @@ if ( ! function_exists( 'gutena_forms__fs' ) ) :
 						'slug'       => 'gutena-forms',
 						'contact'    => false,
 						'support'    => false,
+						'account'    => false,
 						'first-path' => 'admin.php?page=gutena-forms&pagetype=introduction',
 					),
 				)
