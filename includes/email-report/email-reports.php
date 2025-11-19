@@ -156,7 +156,7 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 		public function get_total_entries() {
 			global $wpdb;
 			$last_week = date( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
-			$sql 	   = 'SELECT COUNT( * ) FROM %i WHERE added_time >= %s;';
+			$sql 	   = 'SELECT COUNT( * ) FROM %i WHERE added_time >= %s AND trash = 0;';
 			$sql       = $wpdb->prepare( $sql, $wpdb->prefix . 'gutenaforms_entries', $last_week );
 			return $wpdb->get_var( $sql );
 		}
@@ -175,10 +175,12 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 		}
 
 		public static function calculate_percentage_change( $new_value, $old_value ) {
-			$v = $new_value - $old_value;
-			$v = $v / $old_value;
-			$v = $v * 100;
-			return round( $v, 2 );
+			if ( 0 == $old_value ) {
+				return 0;
+			}
+			$percent = ( ( $new_value - $old_value ) / $old_value ) * 100;
+
+			return round( $percent, 2 );
 		}
 	}
 

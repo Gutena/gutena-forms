@@ -8,7 +8,6 @@
 defined( 'ABSPATH' ) || exit;
 
 $plugin_url    		  = defined( 'GUTENA_FORMS_PLUGIN_URL' ) ? GUTENA_FORMS_PLUGIN_URL : '';
-$blur          		  = 'blur(3px)';
 $has_pro       		  = is_gutena_forms_pro();
 $forms_data           = apply_filters( 'gutena_forms__get_entries', array() );
 $total_entries        = apply_filters( 'gutena_forms__get_total_entries', 0 );
@@ -81,12 +80,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 													</span>
 												</td>
 												<td style="padding-left: 20px;">
-													<?php if ( ! $has_pro ) : ?>
-														<span style="font-size: 12px; color: #0D74A8; font-weight: 700; filter: <?php echo esc_attr( $blur ); ?>;">
-															<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/arrow-up.png' ); ?>" alt="↑" style="display: inline-block; vertical-align: middle; opacity: 0.8;">
-															+42%
-														</span>
-													<?php else : ?>
+													<?php if ( $has_pro ) : ?>
 														<?php $percentage = Gutena_Forms_Email_Reports::calculate_percentage_change( $total_entries, $total_entries_change ); ?>
 														<?php
 															$arrow_image = $percentage >= 0 ? 'arrow-up.png' : 'arrow-down.png';
@@ -137,12 +131,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 											</span>
 										</td>
 										<td align="right" style="padding: 12px 16px; border-bottom: 1px solid #DFF2EE;">
-											<?php if ( ! $has_pro ) : ?>
-												<span style="font-size: 12px; color: #A04; font-weight: 700; filter: <?php echo esc_attr( $blur ); ?>;">
-													<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/arrow-down.png' ); ?>" alt="↓" style="display: inline-block; vertical-align: middle; opacity: 0.8;">
-													-10%
-												</span>
-											<?php else : ?>
+											<?php if ( $has_pro ) : ?>
 												<?php
 													$conversion_rate = Gutena_Forms_Email_Reports::calculate_percentage_change( $form['entries_count'], $form['conversion_rate'] );
 													$arrow_image     = $conversion_rate >= 0 ? 'arrow-up.png' : 'arrow-down.png';
