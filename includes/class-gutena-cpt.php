@@ -339,57 +339,98 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			}
 		}
 
-		private function on_update_gutena_form_post_type( $post_id, $post ) {
-			// Prevent recursion
-			if ( self::$updating_connected_posts ) {
-				return;
+	private function on_update_gutena_form_post_type( $post_id, $post ) {
+		// Prevent recursion
+		if ( self::$updating_connected_posts ) {
+			return;
+		}
+
+		$content         = $post->post_content;
+		$blocks          = parse_blocks( $content );
+		$connected_posts = get_post_meta( $post_id, '_gutena_connected_posts', true );
+		$form_id         = get_post_meta( $post_id, 'gutena_form_id', true );
+
+		// Find the form block and extract form name to sync with post title
+		$form_block = null;
+		$form_name = '';
+		
+		foreach ( $blocks as $block ) {
+			if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
+				$form_block = $block;
+				// Extract form name from block attributes, with fallback to "Contact Form"
+				// This matches the behavior in insert_or_update_form method (line 290)
+				$form_name = isset( $block['attrs']['formName'] ) && ! empty( $block['attrs']['formName'] ) 
+					? sanitize_text_field( $block['attrs']['formName'] ) 
+					: 'Contact Form';
+				break;
 			}
+		}
 
-			$content         = $post->post_content;
-			$blocks          = parse_blocks( $content );
-			$connected_posts = get_post_meta( $post_id, '_gutena_connected_posts', true );
-			$form_id         = get_post_meta( $post_id, 'gutena_form_id', true );
+		// Post title must always be form name - update it every time when form block exists
+		if ( $form_block && ! empty( $form_name ) ) {
+			// Prevent infinite loop by removing actions before updating
+			self::$updating_connected_posts = true;
+			
+			// Remove the save_post hooks to prevent recursion
+			remove_action( 'save_post', array( $this, 'save_post' ), -1 );
+			remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10 );
 
-			if ( ! is_array( $connected_posts ) ) {
-				return;
-			}
+			wp_update_post(
+				array(
+					'ID'         => $post_id,
+					'post_title' => $form_name,
+				),
+				false,
+				false
+			);
 
-			// Filter out invalid post IDs
-			$connected_posts = array_filter( $connected_posts, function( $id ) {
-				return is_numeric( $id ) && null !== get_post( $id );
-			});
+			// Re-add the actions after update
+			add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
+			add_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10, 3 );
 
-			if ( empty( $connected_posts ) ) {
-				return;
-			}
+			self::$updating_connected_posts = false;
+		}
 
-			if ( isset( $blocks[0]['blockName'] ) && 'gutena/forms' === $blocks[0]['blockName'] ) {
-				// Prevent infinite loop by removing actions before updating
-				self::$updating_connected_posts = true;
+		if ( ! is_array( $connected_posts ) ) {
+			return;
+		}
 
-				// Remove the save_post hooks to prevent recursion
-				remove_action( 'save_post', array( $this, 'save_post' ), -1 );
-				remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10 );
+		// Filter out invalid post IDs
+		$connected_posts = array_filter( $connected_posts, function( $id ) {
+			return is_numeric( $id ) && null !== get_post( $id );
+		});
 
-				// we need to updated all connected posts blocks
-				foreach ( $connected_posts as $connected_post_id ) {
-					$connected_post = get_post( $connected_post_id );
-					if ( empty( $connected_post ) ) {
-						continue;
-					}
+		if ( empty( $connected_posts ) ) {
+			return;
+		}
 
-					$connected_post_blocks = parse_blocks( $connected_post->post_content );
-					$updated = false;
+		if ( $form_block && isset( $form_block['blockName'] ) && 'gutena/forms' === $form_block['blockName'] ) {
+			// Prevent infinite loop by removing actions before updating
+			self::$updating_connected_posts = true;
 
-					foreach ( $connected_post_blocks as $index => $block ) {
-						if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
-							$block_form_id = $block['attrs']['formID'];
-							if ( $form_id === $block_form_id ) {
-								$connected_post_blocks[ $index ] = $blocks[0];
-								$updated = true;
-							}
+			// Remove the save_post hooks to prevent recursion
+			remove_action( 'save_post', array( $this, 'save_post' ), -1 );
+			remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10 );
+
+			// we need to updated all connected posts blocks
+			foreach ( $connected_posts as $connected_post_id ) {
+				$connected_post = get_post( $connected_post_id );
+				if ( empty( $connected_post ) ) {
+					continue;
+				}
+
+				$connected_post_blocks = parse_blocks( $connected_post->post_content );
+				$updated = false;
+
+				foreach ( $connected_post_blocks as $index => $block ) {
+					if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
+						$block_form_id = $block['attrs']['formID'];
+						if ( $form_id === $block_form_id ) {
+							$connected_post_blocks[ $index ] = $form_block;
+							$updated = true;
 						}
 					}
+				}
 
 					if ( $updated ) {
 						// serialize blocks back to content
