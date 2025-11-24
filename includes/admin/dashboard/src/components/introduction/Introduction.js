@@ -56,12 +56,12 @@ const Introduction = ( props ) => {
                 handleCloseModal();
             }
         };
-        
+
         if (isVideoModalOpen) {
             document.addEventListener('keydown', handleEsc);
             document.body.style.overflow = 'hidden'; // Prevent body scroll
         }
-        
+
         return () => {
             document.removeEventListener('keydown', handleEsc);
             document.body.style.overflow = 'unset';
@@ -120,9 +120,9 @@ const Introduction = ( props ) => {
             {/* Header Section */}
             <div className="gf-header-section">
                 <div className="gf-logo-wrapper">
-                    <img 
+                    <img
                         src={pluginUrl ? `${pluginUrl}/assets/img/gutena-logo.png` : 'assets/img/gutena-logo.png'}
-                        alt="Gutena Forms Logo" 
+                        alt="Gutena Forms Logo"
                         className="gf-logo"
                     />
                 </div>
@@ -141,7 +141,7 @@ const Introduction = ( props ) => {
                         <h2 className="gf-video-heading">
                             How to Create your First Form With Gutena Forms (step by step)
                         </h2>
-                        <button 
+                        <button
                             onClick={() => setIsVideoModalOpen(true)}
                             className="gf-video-button"
                         >
@@ -152,9 +152,9 @@ const Introduction = ( props ) => {
                         </button>
                     </div>
                     <div className="gf-video-right">
-                        <img 
+                        <img
                             src={formIllustrationUrl}
-                            alt="Form illustration" 
+                            alt="Form illustration"
                             className="gf-form-illustration"
                         />
                     </div>
@@ -170,13 +170,13 @@ const Introduction = ( props ) => {
 
             {/* CTA Section */}
             <div className="gf-cta-section">
-                <a 
-                    href={gutenaFormsDashboard?.create_form_url || '#'} 
+                <a
+                    href={gutenaFormsDashboard?.create_form_url || '#'}
                     className="gf-create-form-link"
                 >
                     Create Your First Form
                 </a>
-                <a 
+                <a
                     href="https://gutenaforms.com/#faq"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -198,9 +198,9 @@ const Introduction = ( props ) => {
                             <div key={index} className="gf-feature-item">
                                 {feature.icon && (
                                     <div className="gf-feature-icon-wrapper">
-                                        <img 
-                                            src={feature.icon} 
-                                            alt={feature.title || ''} 
+                                        <img
+                                            src={feature.icon}
+                                            alt={feature.title || ''}
                                             className="gf-feature-icon"
                                         />
                                     </div>
@@ -212,7 +212,7 @@ const Introduction = ( props ) => {
                             </div>
                         ))}
                     </div>
-                    <a 
+                    <a
                         href="https://gutenaforms.com/#features"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -224,7 +224,7 @@ const Introduction = ( props ) => {
             )}
 
             {/* Upgrade to PRO Section */}
-            <div className="gf-upgrade-pro-section">
+            <div id={ 'gutena-forms-pricing' } className="gf-upgrade-pro-section">
                 <div className="gf-upgrade-left">
                     <h2 className="gf-upgrade-heading">Upgrade to PRO</h2>
                     <div className="gf-upgrade-list">
@@ -242,7 +242,7 @@ const Introduction = ( props ) => {
                     <div className="gf-pro-label">PRO</div>
                     <div className="gf-pro-price">$59.99</div>
                     <div className="gf-pro-period">Per Year</div>
-                    <a 
+                    <a
                         href={pricing?.items?.[0]?.link || gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/#pricing'}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -260,9 +260,9 @@ const Introduction = ( props ) => {
                     {testimonials.map((testimonial, index) => (
                         <div key={index} className="gf-testimonial-item">
                             {testimonial.image && (
-                                <img 
-                                    src={testimonial.image} 
-                                    alt={testimonial.name || ''} 
+                                <img
+                                    src={testimonial.image}
+                                    alt={testimonial.name || ''}
                                     className="gf-testimonial-avatar"
                                 />
                             )}
@@ -277,13 +277,13 @@ const Introduction = ( props ) => {
 
             {/* Footer CTA Section */}
             <div className="gf-footer-cta-section">
-                <a 
-                    href={gutenaFormsDashboard?.create_form_url || '#'} 
+                <a
+                    href={gutenaFormsDashboard?.create_form_url || '#'}
                     className="gf-create-form-button"
                 >
                     Create Your First Form
                 </a>
-                <a 
+                <a
                     href={gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/#pricing'}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -295,7 +295,7 @@ const Introduction = ( props ) => {
 
             {/* Video Modal */}
             {isVideoModalOpen && (
-                <div 
+                <div
                     className={`gf-video-modal ${isClosing ? 'gf-modal-closing' : ''}`}
                     onClick={(e) => {
                         if (e.target.classList.contains('gf-video-modal')) {
@@ -304,7 +304,7 @@ const Introduction = ( props ) => {
                     }}
                 >
                     <div className={`gf-video-modal-content ${isClosing ? 'gf-zoom-out' : 'gf-zoom-in'}`}>
-                        <button 
+                        <button
                             className="gf-video-modal-close"
                             onClick={handleCloseModal}
                             aria-label="Close video"
