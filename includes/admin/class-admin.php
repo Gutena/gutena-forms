@@ -441,20 +441,20 @@
 										'price'	=> '$29.99',
 										'description' => __( '1 Site', 'gutena-forms' ),
 										'btn_name' => __( 'Get Started', 'gutena-forms' ),
-										'link'	=> 'https://gutenaforms.com/?utm_source=plugin&utm_medium=pricing_plan&utm_campaign=get_started_basic#pricing',
+										'link'	=> 'https://gutenaforms.com/pricing/',
 									),
 									array(
 										'title' => __( 'Professional', 'gutena-forms' ),
 										'price'	=> '$49.99',
 										'description' => __( '5 Site', 'gutena-forms' ),
-										'link'	=> 'https://gutenaforms.com/?utm_source=plugin&utm_medium=pricing_plan&utm_campaign=get_started_professional#pricing',
+										'link'	=> 'https://gutenaforms.com/pricing/',
 										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 									array(
 										'title' => __( 'Business', 'gutena-forms' ),
 										'price'	=> '$59.99',
 										'description' => __( 'Unlimited Sites', 'gutena-forms' ),
-										'link'	=> 'https://gutenaforms.com/?utm_source=plugin&utm_medium=pricing_plan&utm_campaign=get_started_business#pricing',
+										'link'	=> 'https://gutenaforms.com/pricing/',
 										'btn_name' => __( 'Get Started', 'gutena-forms' ),
 									),
 								)
@@ -630,7 +630,7 @@
 
 				<div class="gf-body" >
 				<p class="gf-description"> '.__( 'Get Gutena Forms Pro Today and Unlock all the Features', 'gutena-forms' ).'</p>
-				<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ) . '" class="gf-btn gf-pro-btn" > <span class="gf-btn-text">'.__( 'Go Premium', 'gutena-forms' ).'</span> </a>
+				<a href="https://gutenaforms.com/pricing/" target="_blank" rel="noopener noreferrer" class="gf-btn gf-pro-btn" > <span class="gf-btn-text">'.__( 'Go Premium', 'gutena-forms' ).'</span> </a>
 				</div></div></div>';
 			} else {
 				do_action( 'gutena_forms_go_pro_modal' );

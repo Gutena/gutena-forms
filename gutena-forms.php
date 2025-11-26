@@ -138,7 +138,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			if ( ! is_gutena_forms_pro() ) {
 				$new_link = sprintf(
-					'<a style="color: #e35d3f; font-weight: 600;" target="_blank" href="https://gutenaforms.com/?utm_source=plugins-screen&utm_medium=pricing_plan&utm_campaign=get_gutenaforms-pro#pricing">%s</a>',
+					'<a style="color: #e35d3f; font-weight: 600;" target="_blank" href="https://gutenaforms.com/pricing/">%s</a>',
 					__( 'Get Gutena Forms Pro' )
 				);
 
@@ -224,7 +224,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'grecaptcha_type'	  => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
 					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
 					'grecaptcha_secret_key' => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
-					'pricing_link' => esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ),
+					'pricing_link' => 'https://gutenaforms.com/pricing/',
 					'cloudflare_turnstile' => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile
 				), $gf_message )
 			);

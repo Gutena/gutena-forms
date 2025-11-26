@@ -243,7 +243,7 @@ const Introduction = ( props ) => {
                     <div className="gf-pro-price">$59.99</div>
                     <div className="gf-pro-period">Per Year</div>
                     <a
-                        href={pricing?.items?.[0]?.link || gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/#pricing'}
+                        href={pricing?.items?.[0]?.link || gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/pricing/'}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="gf-upgrade-button"
@@ -284,7 +284,7 @@ const Introduction = ( props ) => {
                     Create Your First Form
                 </a>
                 <a
-                    href={gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/#pricing'}
+                    href={gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/pricing/'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="gf-upgrade-pro-link"
