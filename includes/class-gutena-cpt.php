@@ -353,14 +353,14 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 		// Find the form block and extract form name to sync with post title
 		$form_block = null;
 		$form_name = '';
-		
+
 		foreach ( $blocks as $block ) {
 			if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
 				$form_block = $block;
 				// Extract form name from block attributes, with fallback to "Contact Form"
 				// This matches the behavior in insert_or_update_form method (line 290)
-				$form_name = isset( $block['attrs']['formName'] ) && ! empty( $block['attrs']['formName'] ) 
-					? sanitize_text_field( $block['attrs']['formName'] ) 
+				$form_name = isset( $block['attrs']['formName'] ) && ! empty( $block['attrs']['formName'] )
+					? sanitize_text_field( $block['attrs']['formName'] )
 					: 'Contact Form';
 				break;
 			}
@@ -370,7 +370,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 		if ( $form_block && ! empty( $form_name ) ) {
 			// Prevent infinite loop by removing actions before updating
 			self::$updating_connected_posts = true;
-			
+
 			// Remove the save_post hooks to prevent recursion
 			remove_action( 'save_post', array( $this, 'save_post' ), -1 );
 			remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10 );
