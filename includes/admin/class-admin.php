@@ -50,7 +50,8 @@
 	}
 
 		public function admin_head() {
-			echo '<style type="text/css">
+			if ( ! is_gutena_forms_pro() ) {
+				echo '<style type="text/css">
 				#toplevel_page_gutena-forms ul li:last-child a {
 					background: #e35d3f !important;
 					border: 1px solid #e35d3f !important;
@@ -58,6 +59,7 @@
 					font-weight: 600;
 				}
 			</style>';
+			}
 		}
 
 		/**
