@@ -138,7 +138,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			if ( ! is_gutena_forms_pro() ) {
 				$new_link = sprintf(
-					'<a style="color: #e35d3f; font-weight: 600;" target="_blank" href="https://gutenaforms.com/pricing/">%s</a>',
+					'<a style="color: #e35d3f; font-weight: 600;" target="_blank" href="https://gutenaforms.com/pricing/?utm_source=all_plugins&utm_medium=website&utm_campaign=free_plugin">%s</a>',
 					__( 'Get Gutena Forms Pro' )
 				);
 

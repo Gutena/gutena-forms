@@ -309,7 +309,7 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 				</div>
 
 				<div class="pr-16">
-					' . ( is_gutena_forms_pro( false ) ? '' : '<a href="https://gutenaforms.com/pricing/" target="_blank" rel="noopener noreferrer" class="gf-btn gf-pro-btn"  > <span class="gf-btn-text">' . __( 'Go Premium', 'gutena-forms' ) . '</span> </a>' ) . '
+					' . ( is_gutena_forms_pro( false ) ? '' : '<a href="https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin" target="_blank" rel="noopener noreferrer" class="gf-btn gf-pro-btn"  > <span class="gf-btn-text">' . __( 'Go Premium', 'gutena-forms' ) . '</span> </a>' ) . '
 				</div>
 			</div>';
 		}

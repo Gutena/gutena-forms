@@ -712,6 +712,7 @@
 						'is_admin'            => $is_admin,
 						'pagetype'            => $current_pagetype,
 						'form_id'             => $this->form_id,
+						'pricing_link'        => esc_url( 'https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin' ),
 						'dashboard_menu'      => apply_filters(
 							'gutena_forms_dashboard_menu',
 							array(
