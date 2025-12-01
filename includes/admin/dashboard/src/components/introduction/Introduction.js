@@ -8,6 +8,9 @@ const Introduction = ( props ) => {
     const fields = gutenaFormsIntroduction?.section?.fields;
     const pricing = gutenaFormsIntroduction?.section?.pricing;
 
+    // Check if PRO version is active
+    const isProActive = gutenaFormsDashboard?.is_gutena_forms_pro === '1';
+
     // Get plugin URL from welcome image path
     const getPluginUrl = () => {
         if (welcome?.into_img) {
@@ -223,35 +226,37 @@ const Introduction = ( props ) => {
                 </div>
             )}
 
-            {/* Upgrade to PRO Section */}
-            <div id={ 'gutena-forms-pricing' } className="gf-upgrade-pro-section">
-                <div className="gf-upgrade-left">
-                    <h2 className="gf-upgrade-heading">Upgrade to PRO</h2>
-                    <div className="gf-upgrade-list">
-                        {proFeatures.map((feature, index) => (
-                            <div key={index} className="gf-upgrade-item">
-                                <span className="gf-checkmark-icon">
-                                    <CheckmarkIcon />
-                                </span>
-                                <span>{feature}</span>
-                            </div>
-                        ))}
+            {/* Upgrade to PRO Section - Only show if PRO is not active */}
+            {!isProActive && (
+                <div id={ 'gutena-forms-pricing' } className="gf-upgrade-pro-section">
+                    <div className="gf-upgrade-left">
+                        <h2 className="gf-upgrade-heading">Upgrade to PRO</h2>
+                        <div className="gf-upgrade-list">
+                            {proFeatures.map((feature, index) => (
+                                <div key={index} className="gf-upgrade-item">
+                                    <span className="gf-checkmark-icon">
+                                        <CheckmarkIcon />
+                                    </span>
+                                    <span>{feature}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="gf-upgrade-right">
+                        <div className="gf-pro-label">PRO</div>
+                        <div className="gf-pro-price">$59.99</div>
+                        <div className="gf-pro-period">Per Year</div>
+                        <a
+                            href={pricing?.items?.[0]?.link || gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/pricing/'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="gf-upgrade-button"
+                        >
+                            Upgrade Now
+                        </a>
                     </div>
                 </div>
-                <div className="gf-upgrade-right">
-                    <div className="gf-pro-label">PRO</div>
-                    <div className="gf-pro-price">$59.99</div>
-                    <div className="gf-pro-period">Per Year</div>
-                    <a
-                        href={pricing?.items?.[0]?.link || gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/pricing/'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="gf-upgrade-button"
-                    >
-                        Upgrade Now
-                    </a>
-                </div>
-            </div>
+            )}
 
             {/* Testimonials Section */}
             <div className="gf-testimonials-section">
@@ -276,21 +281,23 @@ const Introduction = ( props ) => {
             </div>
 
             {/* Footer CTA Section */}
-            <div className="gf-footer-cta-section">
+            <div className={`gf-footer-cta-section ${isProActive ? 'gf-pro-active' : ''}`}>
                 <a
                     href={gutenaFormsDashboard?.create_form_url || '#'}
                     className="gf-create-form-button"
                 >
                     Create Your First Form
                 </a>
-                <a
-                    href={gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/pricing/'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="gf-upgrade-pro-link"
-                >
-                    Upgrade to Gutena Pro
-                </a>
+                {!isProActive && (
+                    <a
+                        href={gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/pricing/'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="gf-upgrade-pro-link"
+                    >
+                        Upgrade to Gutena Pro
+                    </a>
+                )}
             </div>
 
             {/* Video Modal */}

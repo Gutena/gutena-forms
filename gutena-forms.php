@@ -98,7 +98,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				}
 			}
 
-			return false;
+			return class_exists( 'Gutena_Forms_Pro' );
 		}
 	}
 
@@ -225,7 +225,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
 					'grecaptcha_secret_key' => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
 					'pricing_link' => 'https://gutenaforms.com/pricing/',
-					'cloudflare_turnstile' => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile
+					'cloudflare_turnstile' => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile,
+					'is_pro' => is_gutena_forms_pro(),
 				), $gf_message )
 			);
 		}

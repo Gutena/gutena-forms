@@ -512,6 +512,15 @@
         flex-wrap: wrap;
         align-items: center;
         
+        // When PRO is active, center align the single button
+        &.gf-pro-active {
+            justify-content: center;
+            
+            .gf-create-form-button {
+                margin: 0 auto;
+            }
+        }
+        
         .gf-create-form-button {
             color: #FFF;
             text-align: center;
