@@ -34,6 +34,7 @@
 			}
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
 			add_action( 'admin_init', array( $this, 'load_admin_classes' ) );
+			add_action( 'admin_head', array( $this, 'admin_head' ) );
 
 		if ( ! is_gutena_forms_pro( false ) ) {
 			//view dashboard notice
@@ -47,6 +48,17 @@
 		// Add navigation to forms list page
 		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_add_navigation_to_forms_list' ), 20 );
 	}
+
+		public function admin_head() {
+			echo '<style type="text/css">
+				#toplevel_page_gutena-forms ul li:last-child {
+					background: #e35d3f !important;
+					border: 1px solid #e35d3f !important;
+					color: #ffffff;
+					font-weight: 600;
+				}
+			</style>';
+		}
 
 		/**
 		 * Load classes
@@ -78,6 +90,20 @@
 			global $submenu;
 			if ( isset( $submenu['gutena-forms'][0] ) ) {
 				unset( $submenu['gutena-forms'][0] );
+			}
+
+			if ( isset( $_GET['page'] ) && 'gutena-forms-upgrade' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
+				wp_redirect(
+					add_query_arg(
+						array(
+							'utm_source' => 'wordpress_admin_menu',
+							'utm_medium' => 'website',
+							'utm_campaign' => 'free_plugin',
+						),
+						'https://gutenaforms.com/pricing/'
+					)
+				);
+				exit;
 			}
 
 			if ( isset( $_GET['pagetype'] ) && 'feature-request' === sanitize_key( wp_unslash( $_GET['pagetype'] ) ) ) {
@@ -151,6 +177,17 @@
 				'gutena-forms',
 				array( $this, 'forms_dashboard' ),
 			);
+
+			if ( ! is_gutena_forms_pro() ) {
+				add_submenu_page(
+					'gutena-forms',
+					__( 'Upgrade', 'gutena-forms' ),
+					__( 'Upgrade', 'gutena-forms' ),
+					'manage_options',
+					'gutena-forms-upgrade',
+					'__return_null'
+				);
+			}
 
 			if ( ! empty( $page_hook_suffix ) ) {
 				add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'forms_listing_styles' ) );
