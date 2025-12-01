@@ -42,6 +42,7 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 			add_action( 'admin_notices', array( $this, 'show_migration_notice' ) );
 			add_action( 'wp_ajax_gutena_forms_start_migration', array( $this, 'ajax_start_migration' ) );
 			add_action( 'wp_ajax_gutena_forms_dismiss_migration', array( $this, 'ajax_dismiss_migration' ) );
+			add_action( 'wp_ajax_gutena_forms_check_migration_status', array( $this, 'ajax_check_migration_status' ) );
 			add_action( 'gutena_forms_migrate_forms', array( $this, 'process_migration_batch' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_migration_scripts' ) );
 		}
@@ -270,6 +271,9 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 				return;
 			}
 
+			// Get the forms list page URL for redirect after migration
+			$forms_list_url = admin_url( 'edit.php?post_type=gutena_forms' );
+
 			?>
 			<script type="text/javascript">
 			(function() {
@@ -284,7 +288,95 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 					}
 				}
 
+				// Polling function to check migration status
+				function checkMigrationStatus(nonce, notice) {
+					var xhr = new XMLHttpRequest();
+					xhr.open('POST', ajaxurl, true);
+					xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+					xhr.onload = function() {
+						if (xhr.status === 200) {
+							try {
+								var response = JSON.parse(xhr.responseText);
+								if (response.success && response.data) {
+									var data = response.data;
+									var progressBar = document.querySelector('.gutena-forms-progress-bar');
+									var progressText = document.querySelector('.gutena-forms-progress-text');
+									
+									// Update progress bar
+									if (progressBar && data.total > 0) {
+										var percentage = Math.round((data.migrated / data.total) * 100);
+										progressBar.style.width = percentage + '%';
+									}
+									
+									// Update progress text
+									if (progressText) {
+										progressText.textContent = data.migrated + ' / ' + data.total + ' <?php esc_html_e( 'forms migrated', 'gutena-forms' ); ?>';
+									}
+									
+									// Update notice text
+									var noticeParagraphs = notice.querySelectorAll('p');
+									if (noticeParagraphs.length > 1 && data.in_progress) {
+										var message = '<?php esc_html_e( 'Migration is in progress. %d of %d form(s) migrated. Please wait...', 'gutena-forms' ); ?>';
+										noticeParagraphs[1].innerHTML = message.replace('%d', data.migrated).replace('%d', data.total);
+									}
+									
+									// Check if migration is completed
+									if (data.completed || (!data.in_progress && data.migrated >= data.total && data.total > 0)) {
+										// Migration completed
+										if (noticeParagraphs.length > 0) {
+											noticeParagraphs[0].innerHTML = '<strong><?php esc_html_e( 'Migration Completed!', 'gutena-forms' ); ?></strong>';
+										}
+										if (noticeParagraphs.length > 1) {
+											noticeParagraphs[1].innerHTML = '<?php esc_html_e( 'All forms have been successfully migrated. Redirecting...', 'gutena-forms' ); ?>';
+										}
+										if (progressBar) {
+											progressBar.style.width = '100%';
+										}
+										if (progressText) {
+											progressText.textContent = data.total + ' / ' + data.total + ' <?php esc_html_e( 'forms migrated', 'gutena-forms' ); ?>';
+										}
+										
+										// Redirect to forms list page after 2 seconds
+										setTimeout(function() {
+											window.location.href = '<?php echo esc_js( $forms_list_url ); ?>';
+										}, 2000);
+										return; // Stop polling
+									}
+									
+									// Continue polling if migration is still in progress
+									if (data.in_progress) {
+										setTimeout(function() {
+											checkMigrationStatus(nonce, notice);
+										}, 2000); // Check every 2 seconds
+									}
+								}
+							} catch (e) {
+								console.error('Error parsing migration status:', e);
+								// Retry after error
+								setTimeout(function() {
+									checkMigrationStatus(nonce, notice);
+								}, 3000);
+							}
+						} else {
+							// Retry on HTTP error
+							setTimeout(function() {
+								checkMigrationStatus(nonce, notice);
+							}, 3000);
+						}
+					};
+					xhr.onerror = function() {
+						// Retry on network error
+						setTimeout(function() {
+							checkMigrationStatus(nonce, notice);
+						}, 3000);
+					};
+					xhr.send('action=gutena_forms_check_migration_status&nonce=' + encodeURIComponent(nonce));
+				}
+
 				domReady(function() {
+					var migrationNonce = '<?php echo esc_js( wp_create_nonce( 'gutena_forms_migration' ) ); ?>';
+					var notice = document.querySelector('.gutena-forms-migration-notice');
+					
 					// Start migration
 					var startButton = document.querySelector('.gutena-forms-start-migration');
 					if (startButton) {
@@ -305,22 +397,37 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 									try {
 										var response = JSON.parse(xhr.responseText);
 										if (response.success) {
+											// Update notice UI
 											var noticeParagraphs = notice.querySelectorAll('p');
 											if (noticeParagraphs.length > 0) {
 												noticeParagraphs[0].innerHTML = '<strong><?php esc_html_e( 'Migration Started', 'gutena-forms' ); ?></strong>';
 											}
 											if (noticeParagraphs.length > 1) {
-												noticeParagraphs[1].innerHTML = '<?php esc_html_e( 'Migration is now running in the background. This page will refresh automatically to show progress.', 'gutena-forms' ); ?>';
+												noticeParagraphs[1].innerHTML = '<?php esc_html_e( 'Migration is now running in the background. Please wait...', 'gutena-forms' ); ?>';
 											}
+											
+											// Remove buttons
 											var buttonParent = button.closest('p');
 											if (buttonParent) {
 												buttonParent.remove();
 											}
 											
-											// Start checking progress
+											// Show progress bar if not already visible
+											var progressContainer = notice.querySelector('.gutena-forms-migration-progress');
+											if (!progressContainer) {
+												var progressHtml = '<div class="gutena-forms-migration-progress" style="margin: 10px 0;">' +
+													'<div style="background: #f0f0f0; border-radius: 4px; height: 20px; overflow: hidden;">' +
+													'<div class="gutena-forms-progress-bar" style="background: #2271b1; height: 100%; width: 0%; transition: width 0.3s;"></div>' +
+													'</div>' +
+													'<p class="gutena-forms-progress-text" style="margin: 5px 0 0 0; font-size: 12px;"><?php esc_html_e( 'Processing...', 'gutena-forms' ); ?></p>' +
+													'</div>';
+												notice.insertAdjacentHTML('beforeend', progressHtml);
+											}
+											
+											// Start polling for status updates
 											setTimeout(function() {
-												location.reload();
-											}, 2000);
+												checkMigrationStatus(nonce, notice);
+											}, 1000);
 										} else {
 											alert(response.data && response.data.message ? response.data.message : '<?php esc_html_e( 'Migration failed to start.', 'gutena-forms' ); ?>');
 											button.disabled = false;
@@ -378,15 +485,15 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 						});
 					}
 
-					// Update progress bar if migration is in progress
+					// If migration is already in progress, start polling
 					<?php if ( $is_migrating ) : ?>
-					var updateProgress = function() {
+					if (notice) {
+						// Initial progress update
+						var progressBar = document.querySelector('.gutena-forms-progress-bar');
+						var progressText = document.querySelector('.gutena-forms-progress-text');
 						var migrated = <?php echo isset( $migration_status['migrated_forms'] ) ? intval( $migration_status['migrated_forms'] ) : 0; ?>;
 						var total = <?php echo isset( $migration_status['total_forms'] ) ? intval( $migration_status['total_forms'] ) : 1; ?>;
 						var percentage = total > 0 ? Math.round((migrated / total) * 100) : 0;
-						
-						var progressBar = document.querySelector('.gutena-forms-progress-bar');
-						var progressText = document.querySelector('.gutena-forms-progress-text');
 						
 						if (progressBar) {
 							progressBar.style.width = percentage + '%';
@@ -394,15 +501,12 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 						if (progressText) {
 							progressText.textContent = migrated + ' / ' + total + ' <?php esc_html_e( 'forms migrated', 'gutena-forms' ); ?>';
 						}
-					};
-					updateProgress();
-					<?php endif; ?>
-
-					// Auto-refresh if migration is in progress
-					<?php if ( $is_migrating ) : ?>
-					setTimeout(function() {
-						location.reload();
-					}, 5000);
+						
+						// Start polling
+						setTimeout(function() {
+							checkMigrationStatus(migrationNonce, notice);
+						}, 1000);
+					}
 					<?php endif; ?>
 				});
 			})();
@@ -457,6 +561,30 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 			update_option( self::MIGRATION_OPTION, $migration_status );
 
 			wp_send_json_success();
+		}
+
+		/**
+		 * AJAX handler to check migration status
+		 */
+		public function ajax_check_migration_status() {
+			check_ajax_referer( 'gutena_forms_migration', 'nonce' );
+
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( array( 'message' => __( 'Permission denied.', 'gutena-forms' ) ) );
+			}
+
+			$migration_status = get_option( self::MIGRATION_OPTION, array() );
+			$is_migrating = ! empty( $migration_status['in_progress'] );
+			$is_completed = ! empty( $migration_status['completed'] );
+			
+			$response = array(
+				'in_progress' => $is_migrating,
+				'completed'   => $is_completed,
+				'migrated'    => isset( $migration_status['migrated_forms'] ) ? intval( $migration_status['migrated_forms'] ) : 0,
+				'total'       => isset( $migration_status['total_forms'] ) ? intval( $migration_status['total_forms'] ) : 0,
+			);
+
+			wp_send_json_success( $response );
 		}
 
 		/**
