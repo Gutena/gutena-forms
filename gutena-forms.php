@@ -65,7 +65,7 @@ if ( ! function_exists( 'gutena_forms__fs' ) ) :
 					'type'                => 'plugin',
 					'public_key'          => 'pk_d66286e6558c1d5d6a4ccf3304cfb',
 					'is_premium'          => false,
-					'has_addons'          => false,
+					'has_addons'          => true,
 					'has_paid_plans'      => false,
 					'menu'                => array(
 						'slug'       => 'gutena-forms',

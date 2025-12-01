@@ -94,6 +94,12 @@
 				unset( $submenu['gutena-forms'][0] );
 			}
 
+			foreach ( $submenu['gutena-forms'] as $k => $gutena_form ) {
+				if ( str_contains( $gutena_form[0], 'Add-Ons' ) ) {
+					unset(  $submenu['gutena-forms'][ $k ] );
+				}
+			}
+
 			if ( isset( $_GET['page'] ) && 'gutena-forms-upgrade' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
 				wp_redirect(
 					add_query_arg(
