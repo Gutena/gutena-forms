@@ -51,7 +51,7 @@
 
 		public function admin_head() {
 			echo '<style type="text/css">
-				#toplevel_page_gutena-forms ul li:last-child {
+				#toplevel_page_gutena-forms ul li:last-child a {
 					background: #e35d3f !important;
 					border: 1px solid #e35d3f !important;
 					color: #ffffff;
