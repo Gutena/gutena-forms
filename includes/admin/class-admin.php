@@ -53,8 +53,8 @@
 			if ( ! is_gutena_forms_pro() ) {
 				echo '<style type="text/css">
 				#toplevel_page_gutena-forms ul li:last-child a {
-					background: #e35d3f !important;
-					border: 1px solid #e35d3f !important;
+					background: #28a98c !important;
+					border: 1px solid #28a98c !important;
 					color: #ffffff;
 					font-weight: 600;
 				}
