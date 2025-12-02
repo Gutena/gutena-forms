@@ -82,6 +82,7 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 			if ( ! empty( $remaining ) ) {
 				update_option( self::FORMS_TO_MIGRATE_OPTION, $remaining );
 			} else {
+				update_option( self::FORMS_TO_MIGRATE_OPTION, [] );
 				$timestamp = wp_next_scheduled( 'gutena_forms_migration_cron_event' );
 				if ( $timestamp ) {
 					wp_unschedule_event( $timestamp, 'gutena_forms_migration_cron_event' );
@@ -149,15 +150,6 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 		 * @return bool
 		 */
 		public function needs_migration() {
-			$migration_status = get_option( self::MIGRATION_OPTION, array() );
-			if ( ! empty( $migration_status['completed'] ) ) {
-				return false;
-			}
-
-			if ( ! empty( $migration_status['dismissed'] ) ) {
-				return false;
-			}
-
 			$forms_to_migrate = get_option( self::FORMS_TO_MIGRATE_OPTION, false );
 			if ( false !== $forms_to_migrate ) {
 				return ! empty( $forms_to_migrate ) ? $forms_to_migrate : false;
