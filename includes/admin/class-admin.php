@@ -310,7 +310,7 @@
 						'section' => array(
 							'welcome'   => array(
 								'into_img'			=> esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/welcome.png' ),
-								'intro_video_link' => esc_url( 'https://www.youtube.com/watch?v=2ZVS3b_02CA' ),
+								'intro_video_link' => esc_url( 'https://www.youtube.com/watch?v=XwvGGsVrBmU' ),
 								'title'			=> __( 'Welcome to Gutena Forms!', 'gutena-forms' ),
 								'description' 	=> __( "Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won't slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.", "gutena-forms" ),
 								'pricing_btn_name'	=> __( 'See Pricing', 'gutena-forms' ),
