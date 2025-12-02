@@ -1,5 +1,5 @@
 === Gutena Forms – Contact Form, Survey Form, Feedback Form, Booking Form, and Custom Form Builder ===
-Contributors:      expresstech, randhirexpresstech
+Contributors:      wpexpertsio
 Tags:              contact form, custom form, forms, form builder, form block
 Tested up to:      6.9
 Stable tag:        1.4.0
@@ -347,7 +347,6 @@ Gutena Forms gives you full control over padding, colors, spacing, typography, f
 * NEW - Weekly Form Entries email summary to admin
 * NEW - Improved welcome page with enhanced onboarding experience
 * NEW - Added Post Type support in gutena forms - (beta)
-* NEW - Improved WordPress submenu navigation with dashboard header on forms list page
 
 = 1.3.1 - Oct 13, 2025 =
 * FIX - URLs Correction
