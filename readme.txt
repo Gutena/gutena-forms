@@ -2,7 +2,7 @@
 Contributors:      wpexpertsio
 Tags:              contact form, custom form, forms, form builder, form block
 Tested up to:      6.9
-Stable tag:        1.4.0
+Stable tag:        1.4.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -343,7 +343,10 @@ Gutena Forms gives you full control over padding, colors, spacing, typography, f
 
 
 == Changelog ==
-= 1.4.0 - =
+= 1.4.1 - Dec 04, 2025 =
+* Fix - remove existing forms block
+
+= 1.4.0 - Dec 03, 2025 =
 * NEW - Weekly Form Entries email summary to admin
 * NEW - Improved welcome page with enhanced onboarding experience
 * NEW - Added Post Type support in gutena forms - (beta)
