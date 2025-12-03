@@ -15,6 +15,11 @@
 		"start": "wp-scripts start"
 	},
 	"devDependencies": {
+		"@wordpress/block-editor": "^15.6.0",
+		"@wordpress/components": "^30.6.0",
+		"@wordpress/data": "^10.33.0",
+		"@wordpress/element": "^6.33.0",
+		"@wordpress/i18n": "^6.6.0",
 		"@wordpress/scripts": "^23.6.0",
 		"autoprefixer": "^10.4.14",
 		"cssnano": "^5.1.15",

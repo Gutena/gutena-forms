@@ -35,7 +35,9 @@ document.addEventListener("DOMContentLoaded", function(){
         //make page visible after fully loaded
         makeDashboardVisible(){
            let domID = document.getElementById("gutena-forms-dashboard-page");
-            domID.style.display="block";
+            if ( null !== domID && 'undefined' !== typeof domID ) {
+                domID.style.display="block";
+            }
         }
         
         //accordions: panel open close

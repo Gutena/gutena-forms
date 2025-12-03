@@ -1,110 +1,335 @@
-=== Gutena Forms - Contact Forms Block ===
+=== Gutena Forms – Contact Form, Survey Form, Feedback Form, Booking Form, and Custom Form Builder ===
 Contributors:      wpexpertsio
-Tags:              form, block, contact form, form block, forms
-Tested up to:      6.8
-Stable tag:        1.3.1
+Tags:              contact form, custom form, forms, form builder, form block
+Tested up to:      6.9
+Stable tag:        1.4.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
-Light-weight and easy plugin create forms inside the block editor.
+Custom WordPress form builder to create lightweight contact forms, survey forms, feedback forms, booking forms, etc., right inside the Gutenberg block editor.
 
 == Description ==
 
-[👑 Go Pro](https://gutenaforms.com/?utm_source=wp_org&utm_medium=top&utm_campaign=go_pro#pricing) | [💻 Live Demo](https://app.instawp.io/launch?t=demo-gutena-forms&d=v2)
+= WordPress Contact Form Builder Plugin =
 
-Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
+[👑Checkout Premium Version](https://gutenaforms.com/pricing/?utm_source=wp_org&utm_medium=website&utm_campaign=free_plugin) | [💻 Live Demo](https://app.instawp.io/launch?t=gutena-forms-demo&d=v2) | [Support](https://objectsws.atlassian.net/servicedesk/customer/portal/239)
 
-You can add as many core blocks as you like, giving you complete control over the look and feel of your forms. With Gutena Forms, you can create contact forms, registration forms, payment forms, and more in just a few clicks.
+[Gutena Forms](https://gutenaforms.com/) is the easiest WordPress form builder plugin for creating responsive, lightweight forms in the WordPress block editor (Gutenberg). It works as a Gutenberg native form plugin that lets you build contact forms, survey forms, feedback forms, booking forms, and any custom form with a dedicated Gutenberg block.
 
-The plugin is built with the latest WordPress block editor, so you can easily add and customize your forms directly within the editor. It comes with a variety of form fields, including text fields, email fields, dropdown menus, and more, as well as the ability to add custom fields.
+You can create custom WordPress forms visually inside the block editor using the Gutenberg Form Block with complete control over styling, layout, fields, and form behavior. Gutena Forms loads fast, stays fully responsive on every device, and keeps your website’s performance at its peak.
 
-The gutena form plugin allows you to select various form variations/pre-built form templates to start with you can choose any of them or create your own custom form from scratch. Thanks to its seamless integration with the WordPress editor you can customize it as per your like.
+Use ready-made WordPress form templates, drag and drop fields, and powerful Pro features to build forms that match your brand and help you collect the data you need.
 
-Gutena Forms is fully responsive and mobile-friendly, so your forms will look great on any device. It also integrates with popular email marketing and CRM platforms, making it easy to manage and track your form submissions.
 
-[youtube https://www.youtube.com/watch?v=u9sB-RSBQIE]
+Try the [Live Demo](https://app.instawp.io/launch?t=gutena-forms-demo&d=v2) or [upgrade to Gutena Forms Pro](https://gutenaforms.com/pricing/?utm_source=wp_org&utm_medium=website&utm_campaign=free_plugin) to unlock advanced features.
 
-== Demos ==
+https://www.youtube.com/watch?v=XwvGGsVrBmU
+
+
+### **Complete Features List (Free \+ Pro)**
+
+### **Free Version Includes:**
+
+✅ Easy form creation inside the WordPress block editor
+
+✅ Lightweight WordPress form plugin
+
+✅ No jQuery
+
+✅ Form input fields:
+
+  * **Text**: Capture user text with a standard input field.
+
+  * **Number**: Collect numeric data with a number input field.
+
+  * **Range**: Let users select values with a range slider field.
+
+  * **TextArea**: Gather long responses with a multi-line text area.
+
+  * **Email**: Validate and capture user email addresses.
+
+  * **Dropdown**: Offer selectable options with a dropdown field.
+
+  * **Radio**: Allow single-choice selections with radio buttons.
+
+  * **Checkbox**: Enable multi-select choices with checkboxes.
+
+  * **Opt-in Checkbox (Privacy and Terms)**: Add GDPR-ready consent fields for policies.
+
+✅ Responsive WordPress forms
+
+✅ WordPress form block
+
+✅ Weekly form report lite
+
+✅ Pre-built WordPress form templates
+
+✅ Google reCAPTCHA integration
+
+✅ Cloudflare Turnstile integration
+
+✅ Custom confirmation messages
+
+✅ Full control over layout and styling
+
+✅ Add unlimited core blocks inside forms
+
+✅ Drag-and-drop WordPress form builder
+
+✅ User-friendly interface
+
+✅ Email Notifications
+
+✅ Custom Redirection
+
+✅ Custom Error Messages
+
+
+### **Pro Version Unlocks (everything in Free, plus):**
+
+Gutena Forms Pro gives you everything you need to manage advanced form workflows:
+
+✅ All advanced form input fields, such as:
+
+  * **File Upload**: Let users upload files and documents easily.
+
+  * **Date**: Capture dates with a user-friendly date picker.
+
+  * **Time**: Record time selections with a time picker field.
+
+  * **Rating**: Collect user ratings with a star rating field.
+
+  * **Phone**: Gather phone numbers with proper field validation.
+
+  * **Country and State**: Capture location details with country and state selectors.
+
+  * **URL**: Collect website links with a URL input field.
+
+  * **Hidden Field**: Store extra form data with hidden fields.
+
+  * **Password Field**: Securely collect passwords with a masked input field.
+
+✅ Database entries
+
+✅ Entry management dashboard
+
+✅ Weekly form report pro
+
+✅ Advanced entries filter
+
+✅ Tags management
+
+✅ Status management
+
+✅ Entry notes
+
+✅ User access control
+
+✅ Priority support
+
+Gutena Forms Pro is ideal for users who need a complete WordPress form builder Pro solution.
+
+
+### **Why Choose Gutena Forms to Build WordPress Forms**
+
+Over 20,000 WordPress site owners use Gutena Forms to build stunning contact forms. Here are some of the top reasons why they love the plugin.
+
+### **Reason 1\. No jQuery Used**
+
+Gutena Forms creates WordPress forms without jQuery, which improves load speed and performance. The plugin uses clean JavaScript so your website stays fast and lightweight.
+
+### **Reason 2\. Build Forms Inside the WordPress Block Editor**
+
+Create forms directly inside the WordPress form block without leaving the editor. Add core blocks, adjust layout, and customize every detail with full styling and spacing controls.
+
+### **Reason 3\. Pre-built Templates for Faster Form Building**
+
+Start with pre-built templates for your contact, enquiry, booking, and appointment forms. Select any template and customize it instantly. These templates help you build forms faster with the Gutenberg block form builder.
+
+### **Reason 4\. Fully Responsive and Mobile Friendly**
+
+Gutena Forms produces mobile-friendly WordPress forms that look great on any screen size. Every field adapts automatically to laptops, mobiles, and tablets.
+
+### **Reason 5\. Wide Range of Input Fields**
+
+Add all essential and advanced input fields to your forms:
+
+* Text
+
+* Number
+
+* Email
+
+* Phone
+
+* Date
+
+* Time
+
+* URL
+
+* Dropdown
+
+* Range
+
+* TextArea
+
+* Checkbox
+
+* Radio
+
+* Date and Time
+
+* Rating
+
+* Password field
+
+* Hidden field
+
+* Country and State selector
+
+* File upload field
+
+* Opt-in Checkbox \- Privacy policy, Terms
+
+This flexibility makes Gutena Forms ideal for contact forms, surveys, booking, event registrations, lead generation, feedback, and more.
+
+### **Reason 6\. Form Entries Database and Entry Notes**
+
+Access all your submission data inside the WordPress dashboard with a built-in form entry database. Gutena Forms securely stores every entry and lets you add internal Entry Notes to track follow-ups, customer details, or workflow updates, so you never need to hunt through emails again.
+
+### **Reason 7\. Google reCAPTCHA and Cloudflare Turnstile Integration**
+
+Stop spam and fraudulent submissions with built-in support for Cloudflare Turnstile and Google reCAPTCHA v2 and v3. This makes Gutena Forms a reliable WordPress plugin for spam protection.
+
+### **Reason 8\. Custom Confirmation Messages**
+
+Show a custom success message or redirect the user to a specific URL/thank-you page after submission. Also, set helpful confirmation text for every field to improve the user experience and reduce form abandonment.
+
+### **Reason 9\. Email Notifications**
+
+Gutena Forms includes powerful admin email notifications that instantly alert you when a new form entry arrives, helping you respond faster and never miss important submissions. You can customize the sender name, email subject, reply-to address, and choose specific form fields for personalized and accurate notification delivery.
+
+### **Reason 10\. Tags, Status, and Use Access Management**
+
+Organize, filter, and control your form submissions with precision. You can categorize entries with tags, assign custom statuses for better workflow management, and set user permissions to keep your form data secure and accessible only to authorized team members.
+
+
+### ⚡ **Real World Use Cases of Gutena Forms**
+
+Use Gutena Forms for any form-building need, including:
+
 * [Contact Form](https://gutenaforms.com/forms-block#contact-form)
-* [Enquiry Form](https://gutenaforms.com/forms-block#enquiry-form)
-* [Booking Form](https://gutenaforms.com/forms-block#booking-form)
-* [Appointment Form](https://gutenaforms.com/forms-block#appointment-form)
+
+* Surveys and feedback forms
+
+* [Lead generation forms](https://gutenaforms.com/forms-block#appointment-form)
+
+* Event registration forms
+
+* [Custom enquiry form](https://gutenaforms.com/forms-block#enquiry-form)
+
+* [Online booking forms](https://gutenaforms.com/forms-block#booking-form)
+
+* [Customer enquiry forms](https://gutenaforms.com/forms-block#enquiry-form)
+
+* Job application forms
+
+Gutena Forms works perfectly as a WordPress contact form plugin, WordPress booking form plugin, WordPress enquiry form plugin, and more.
 
 
-== No jQuery Used ==
+### **Other Blocks From Gutena (Fully Compatible)**
 
-It is essential to have a fast website, and Gutena forms assure your site’s performance won’t be affected as we’re using just javascript rather than JQuery library, so your website's performance will remain optimal.
+If you enjoy using Gutena Forms, explore our collection of Gutenberg block plugins designed to enhance your WordPress editing experience:
 
-== Form Entries Database ==
+* [**Gutena Newsletter**](https://wordpress.org/plugins/newsletter-block-by-gutena/): Add a customizable newsletter subscription block to the Gutenberg editor to grow your email list.
 
-Say goodbye to the days of incessant email checks to stay informed about new submissions.  Now access all your form submissions right from the Gutena Form Dashboard in WordPress. This feature empowers you to optimize your workflow and stay up-to-date without unnecessary hassle.
+* [**Gutena Accordion**](https://wordpress.org/plugins/gutena-accordion/): Insert responsive accordion blocks for FAQs, content toggles, and structured sections.
 
-== Google reCAPTCHA Integration ==
+* [**Gutena Video Lightbox**](https://wordpress.org/plugins/gutena-lightbox/): Add eye-catching video popups with a clean lightbox layout inside the block editor.
 
-Google reCAPTCHA v3 and v2 help you protect your sites from fraudulent activities, spam, and abuse. By using this integration in your forms, you can block spam form submissions.
+* [**Gutena Tabs**](https://wordpress.org/plugins/gutena-tabs/): Create organized, mobile-friendly tabbed content layouts with flexible style controls.
 
-== Multiple Pre-built form templates ==
+* [**Gutena PhotoFeed**](https://wordpress.org/plugins/photofeed-block-by-gutena/): Display Instagram photos in a single feed or multiple feeds with easy setup.
 
-Just call out the Form block by typing /form or adding a new form block, you are then asked to select a form variation. Select the variation of your choice and move further for more customizations.
-
-
-== Various form input fields ==
-
-Whether you want to capture the user’s name, email address, business information, comments, or other information. You have the freedom to set up various input fields with complete control over the form.
+* [**Gutena Recent Post Tag**](https://wordpress.org/plugins/post-featured-tag-block-by-gutena/): Highlight new or featured posts with an automated tag based on publish date.
 
 
-== Form Confirmation Messages ==
+### **Check Out What Else We’ve Built for You**
 
-Whether you want to display a success message or an error message, the gutena form allows you to set custom confirmation messages. Notify your users that the form has been successfully submitted & their details have been captured or set an error message to be displayed when there’s a problem saving the form.
+* [**Post SMTP**](https://postmansmtp.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Reliable WordPress email delivery plugin with detailed email logs and multiple SMTP integrations.
+
+* [**Advanced File Manager**](https://advancedfilemanager.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Easily manage and organize your WordPress files directly from the dashboard.
+
+* [**Password Protected**](https://passwordprotectedwp.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Secure your WordPress site, posts, pages, and categories with simple password protection.
+
+* [**myCred**](https://mycred.me/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Add gamification, rewards, ranks, and points management systems to your WordPress website.
+
+* [**WP EasyPay**](https://wpeasypay.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Accept Square payments and donations easily on your WordPress site.
+
+* [**WC Shop Sync**](https://wcshopsync.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Add Square payments and Sync WooCommerce products, customers, and orders with your Square POS.
+
+* [**Bookify**](https://wpbookify.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Your go-to online bookings and appointment scheduling plugin for WordPress.
+
+* [**CF7 Apps**](https://cf7apps.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – It allows you to add honeypot, hCaptcha, and Database entries to the Contact form. Our team is constantly adding new Contact Form 7 extensions.
+
+* [**All In One Login**](https://aiologin.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Secure your WordPress login page, change the wp-login.php url, and add Google, Facebook, Microsoft, LINE, and other social logins to your WordPress site.
+
+* [**New User Approve**](https://newuserapprove.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Control user registrations by manually approving or denying new signups.
+
+* [**WP Experts WooCommerce Store**](https://wpexperts.io/store/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Explore premium WooCommerce plugins and solutions by WPExperts.
 
 
-== Features ==
+== Frequently Asked Questions (FAQs) ==
 
-* Easy form creation inside the WordPress block editor
-* No jQuery, so it won’t slow down your website
-* Google reCAPTCHA Integration
-* Complete control over the look and feel of your forms
-* Add as many core blocks as you like
-* Pre-built templates baked in for even easier form creation
-* Fully customizable, so you can make your forms fit your brand
-* Mobile-friendly, so your forms will look great on any device
-* User-friendly interface, so you don’t need any coding skills to create beautiful forms
-* Lightweight and fast, so it won’t slow down your website
+ = What is Gutena Forms? =
 
-== Use cases ==
+Gutena Forms is a lightweight WordPress form builder plugin that lets you create custom contact forms, survey forms, booking forms, and feedback forms inside the Gutenberg block editor.
 
-* Collecting feedback from customers or clients
-* Gathering information for lead generation
-* Creating surveys to gather data from your audience
-* Creating registration forms for events or courses
-* Collecting sign-ups for newsletters or email lists
-* And much more!
+= Does Gutena Forms work inside the Gutenberg block editor? =
 
-With Gutena Forms, you can easily create custom forms for any purpose, all without writing a single line of code. Try it out today and see how easy it is to create beautiful, functional forms for your website.
+Yes, Gutena Forms works natively in the WordPress block editor and lets you build and customize forms directly in Gutenberg.
 
-== Other Blocks From Gutena ==
+= Can I create responsive and mobile-friendly forms with Gutena Forms? =
 
-If you like this plugin, consider exploring our other block plugins:
+With Gutena Forms, you can easily create fully responsive WordPress forms that look great on desktops, tablets, and mobile devices.
 
-[Gutena Newsletter](https://wordpress.org/plugins/newsletter-block-by-gutena/) - Easily and instantly add Newsletter Block to your Gutenberg Editor.
+= Does Gutena Forms support Google reCAPTCHA or Cloudflare Turnstile? =
 
-[Gutena Accordion](https://wordpress.org/plugins/gutena-accordion/) - Easily and instantly add Accordion Block to your Gutenberg Editor.
+Absolutely, Gutena Forms includes built-in Google reCAPTCHA v2 and v3, along with Cloudflare Turnstile to block spam and protect your forms.
 
-[Gutena Video Lightbox](https://wordpress.org/plugins/gutena-lightbox/) – Easily and instantly add Lightbox Video Popup Block to your Gutenberg Editor.
+= Does Gutena Forms store form entries in the WordPress database? =
 
-[Gutena Tabs](https://wordpress.org/plugins/gutena-tabs/) – Easily and instantly add beautiful Tabs Block to your Gutenberg Editor.
+Yes, Gutena Forms Pro stores all form entries in a secure database inside your WordPress dashboard so you can access submissions anytime.
 
-[Gutena PhotoFeed](https://wordpress.org/plugins/photofeed-block-by-gutena/) - Display Instagram Photos from your Instagram accounts, either in the same single feed or in multiple different ones.
+= Can I add Entry Notes to form submissions? =
 
-[Gutena Recent Post Tag](https://wordpress.org/plugins/post-featured-tag-block-by-gutena/) - Post Featured Tag Block use to add custom featured or new tag on post based on post date.
+In the Pro version, you can add Entry Notes to any submission to track customer details, follow-ups, and internal updates.
 
-== Our Products ==
+= Does Gutena Forms allow file uploads? =
 
-If you like this plugin, consider exploring our other themes and plugins:
+Yes, Gutena Forms Pro includes a File Upload field that allows users to upload documents, images, or other files through your forms.
 
-[Gutena](https://wordpress.org/themes/gutena/) - A full site editing (block) theme for WordPress with ready made full page templates. Elegant and functional - follows all the best practices by WP, and yeah, no jQuery!
+= Can I get email notifications after each form submission? =
 
-[Post SMTP](https://wordpress.org/plugins/post-smtp/) - SMTP & Email Logs plugin improve WordPress email deliverability. Connect Gmail SMTP, Microsoft 365, Brevo, SendGrid, Mailgun, Zoho, Amazon SES, etc. #1 WordPress SMTP Plugin.
+Gutena Forms sends instant email notifications to the admin and lets you customize the sender details, subject, and reply-to fields.
+
+= Are there any pre-built form templates? =
+
+Yes, the plugin provides ready-made WordPress form templates that help you create contact forms, enquiry forms, and survey forms in minutes.
+
+= Can I filter and manage my form entries? =
+
+Yes, Gutena Forms Pro includes advanced entry filters, tags, and status management so you can organize submissions efficiently.
+
+= Will Gutena Forms slow down my website? =
+
+No, Gutena Forms is a lightweight WordPress form plugin that does not use jQuery and keeps your website fast and optimized.
+
+= Can I customize the style and layout of my forms? =
+
+Gutena Forms gives you full control over padding, colors, spacing, typography, field widths, and overall form layout inside Gutenberg.
+
 
 == Screenshots ==
 
@@ -118,6 +343,10 @@ If you like this plugin, consider exploring our other themes and plugins:
 
 
 == Changelog ==
+= 1.4.0 - =
+* NEW - Weekly Form Entries email summary to admin
+* NEW - Improved welcome page with enhanced onboarding experience
+* NEW - Added Post Type support in gutena forms - (beta)
 
 = 1.3.1 - Oct 13, 2025 =
 * FIX - URLs Correction

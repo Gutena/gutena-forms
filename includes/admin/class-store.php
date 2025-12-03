@@ -302,14 +302,14 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 			// logo title
 			return '<div class="gf-header">
 				<div id="gf-header-left-section" class="gf-logo-title">
-					<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms' ) ) . '" >
+					<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction' ) ) . '" >
 						<img src="' . GUTENA_FORMS_PLUGIN_URL . 'assets/img/logo.png' . '" />
 					</a>
 					<div id="gfp-dashboard-navigation" class="gfp-dashboard-navigation"></div>
 				</div>
 
-				<div>
-					' . ( is_gutena_forms_pro( false ) ? '' : '<a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ) . '" class="gf-btn gf-pro-btn"  > <span class="gf-btn-text">' . __( 'Go Premium', 'gutena-forms' ) . '</span> </a>' ) . '
+				<div class="pr-16">
+					' . ( is_gutena_forms_pro( false ) ? '' : '<a href="https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin" target="_blank" rel="noopener noreferrer" class="gf-btn gf-pro-btn"  > <span class="gf-btn-text">' . __( 'Go Premium', 'gutena-forms' ) . '</span> </a>' ) . '
 				</div>
 			</div>';
 		}

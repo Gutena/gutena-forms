@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin activation and deactivation
-* 
+*
 *
 */
 
@@ -37,7 +37,7 @@
 
 		}
 
-		//trigger activation if form entries store was not created 
+		//trigger activation if form entries store was not created
 		public function check_and_create_store() {
 			if ( $this->is_gfadmin() && ! $this->is_forms_store_exists() ) {
 				$this->activate();
@@ -46,7 +46,7 @@
 
 		//cretae form entries store on plugin activation
 		public function activate() {
-			//check for multisite if plugin is activated 
+			//check for multisite if plugin is activated
 			if ( function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( plugin_basename( GUTENA_FORMS_FILE ) ) ) {
 				if ( function_exists( 'get_sites' ) && class_exists( 'WP_Site_Query' ) && function_exists( 'switch_to_blog' ) ) {
 					$sites = get_sites();
@@ -71,6 +71,12 @@
 		private function activation_begins() {
 			//activation begins
 			do_action( 'gutena_forms_activation_begins' );
+
+			/**
+			 * Flush rewrite rules to avoid 404 errors after activation
+			 */
+			delete_option( 'rewrite_rules' );
+
 			//will use to check last installed version
 			update_option( 'gutena_forms_version', GUTENA_FORMS_VERSION );
 			//activation ends
@@ -101,7 +107,7 @@
 		public function deactivate() {
 			do_action( 'gutena_forms_deactivation_begins' );
 		}
-		
+
 	}
 
 	Gutena_Forms_Activate_Deactivate::get_instance();

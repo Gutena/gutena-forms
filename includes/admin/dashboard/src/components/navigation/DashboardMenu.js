@@ -8,7 +8,17 @@ const DashboardMenu = () => {
     const pageSlugs = menu.map( item => item.slug );
     const pageUrl = gutenaFormsDashboard.page_url;
 
-    const isActiveMenu = ( slug = '' ) => ( pageType === slug || ( '' === slug && ! pageSlugs.includes( pageType ) ) ) ? 'active': '';
+    const isActiveMenu = ( slug = '' ) => {
+        // If pageType matches slug, it's active
+        if ( pageType === slug ) {
+            return 'active';
+        }
+        // If slug is empty (Entries), it's active when pageType is empty or not in pageSlugs
+        if ( '' === slug && ( '' === pageType || ! pageSlugs.includes( pageType ) ) ) {
+            return 'active';
+        }
+        return '';
+    };
     
     return( 
         <ul>

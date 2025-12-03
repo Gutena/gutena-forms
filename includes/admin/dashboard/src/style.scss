@@ -11,11 +11,13 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 *{scroll-behavior: smooth;}
 
-.toplevel_page_gutena-forms{
+// Support both top-level menu and submenu
+.toplevel_page_gutena-forms,
+.gutena_forms_page_gutena-forms{
 	#wpcontent{
 		padding-left: 0;
 	}
-	
+
 	.notice{
 		display: none !important;
 	}
@@ -26,7 +28,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
             gap: 6px;
             align-items: baseline;
         }
-         
+
 		.gf-btn {
 			border-radius: 5px;
 			text-decoration: none;
@@ -38,8 +40,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			gap: 6px;
 		}
 		.gf-pro-btn {
-			background: #E35D3F;
-			border-color: #E35D3F;
+			background: linear-gradient(88.97deg, #FFD591 -2.54%, #D18618 161.93%);
 			color: #fff;
 			font-weight: 600;
 		}
@@ -48,7 +49,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			font-weight: 500;
 			margin: 0.5rem 0;
 		}
-		
+
 		> .gf-header{
             box-sizing: border-box;
 			position: relative;
@@ -90,7 +91,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 vertical-align:middle;
             }
         }
-	
+
 		.entries {
 			.wp-list-table {
 				tbody tr{
@@ -102,7 +103,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 							color:$gfp_heading_color;
 						}
 					}
-	
+
 					td {
 						color:$gfp_body_color;
 					}
@@ -117,7 +118,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
                         }
                     }
-     
+
                     .check-column input:hover, .column-status:hover .status-title-icon-wrapper{
                         border-color: $gfp_wp_primary_color;
                         box-shadow: 0 0 0 1px $gfp_wp_primary_color;
@@ -128,7 +129,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                         text-decoration-line: underline;
                         text-underline-offset: 2px;
                     }
-                    
+
 				}
 			}
 		}
@@ -145,14 +146,14 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                     align-items: baseline;
                 }
             }
-    
+
             .components-panel__body-title .components-button {
                 align-items: baseline;
                 .gf-lock-svg{
                     margin-left: 0.5rem;
                 }
             }
-    
+
             .gfp-settings-section, .notes-section .components-button{
                 opacity: 0.5;
             }
@@ -175,21 +176,21 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 font-size: 16px;
                 font-weight: 600;
                 padding: 0.7rem 1.3rem;
-    
+
                 &.gf-primary-btn{
                     background-color: $gfp_primary_color;
                 }
-    
+
                 &.gf-dark-btn{
                     background-color: $gfp_heading_color;
-                }                
+                }
             }
         }
-        
+
 
         /* Introduction page*/
         .gf-introduction-page{
-            
+
             .gf-container{
                 max-width: 1150px;
                 margin: auto;
@@ -224,7 +225,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 color: $gfp_body_color;
             }
 
-            
+
 
             /*Welcome section*/
             .gutena-forms-welcome-section{
@@ -350,7 +351,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                     position: relative;
                     width: 279px;
                     height: 455px;
-                    
+
                     .gf-title{
                         font-size: 16px;
                         margin: 0;
@@ -371,7 +372,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                             font-size: 14px;
                         }
                     }
-                    
+
 
                     .gf-description{
                         font-size: 14px;
@@ -398,9 +399,9 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                             .gf-icon{
                                 padding: 3px 8px 0 0;
                             }
-                            
+
                         }
-                        
+
                     }
 
                     .gf-primary-btn{
@@ -485,7 +486,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 max-width: 900px;
                 background: $gfp_white_color;
                 padding: 2.5rem 2.875rem;
-    
+
                 .gutena-title {
                     font-size: 1.8rem;
                     font-weight: 600;
@@ -496,7 +497,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                     margin-bottom: 30px;
                     padding-bottom: 30px;
                     border-bottom: 1px solid rgba(33, 34, 47, .1);
-    
+
                     .gutena-topics {
                         .gutena-topic {
                             margin-bottom: 1rem;
@@ -516,21 +517,21 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                         }
                     }
                 }
-    
+
                 .gutena-support {
                     margin-bottom: 35px;
                     padding-bottom: 35px;
                     border-bottom: 1px solid rgba(33, 34, 47, .1);
-    
+
                     .gutena-buttons {
                         display: flex;
                         gap: 21px;
-                        
+
                         a:visited {
                             color: $gfp_white_color;
                         }
                     }
-                    
+
                     .gutena-details {
                         max-width: 321px;
                         .gutena-title {
@@ -545,16 +546,16 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                         }
                     }
                 }
-    
+
                 .gutena-changelog {
                     white-space: pre;
-    
+
                     .gutena-details {
                         .gutena-title {
                             margin-bottom: 30px;
                         }
-    
-                        .gutena-description 
+
+                        .gutena-description
                         {
                             font-size: 15px;
                             color: $gfp_body_color;
@@ -566,14 +567,14 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                                 font-size: 18px;
                                 padding-top: 25px;
                                 border-top: 1px solid rgba(33, 34, 47, .1);
-        
+
                                 &:first-of-type {
                                     padding: 0;
                                     border: 0;
                                 }
                             }
                         }
-                        
+
                     }
                 }
 
@@ -582,20 +583,20 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 }
             }
         }
-        
+
     }
 
 	.gutena-forms-modal {
-		display: none; 
-		position: fixed; 
+		display: none;
+		position: fixed;
 		z-index: 999999;
-		padding-top: 100px; 
+		padding-top: 100px;
 		left: 0;
 		top: 0;
-		width: 100%; 
-		height: 100%; 
-		overflow: auto; 
-		background-color: rgb(0,0,0); 
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background-color: rgb(0,0,0);
 		background-color: rgba(0,0,0,0.4);
 		.gf-close-btn{
 			color: $gfp_heading_color;
@@ -646,7 +647,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 							vertical-align: middle;
 						}
 					}
-					
+
 					.gf-action-content{
 						position: absolute;
 						right: 50px;
@@ -671,10 +672,10 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 					justify-content: space-between;
 					min-width: 5rem;
 				}
-				
+
 			}
 		}
-		
+
 	}
 
     .gf-small-modal{
@@ -740,7 +741,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                     color: #ffffff;
                 }
 
-                
+
             }
         }
     }
@@ -748,7 +749,9 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 }
 
 /*gfp start*/
-.toplevel_page_gutena-forms{
+// Support both top-level menu and submenu
+.toplevel_page_gutena-forms,
+.gutena_forms_page_gutena-forms{
     .gfp-notice{
         display: block;
         margin: 1.25rem 0;
@@ -759,7 +762,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
     #wpbody-content{
         padding: 0;
     }
-    
+
     .gutena-forms-dashboard {
         font-size: 14px;
         line-height: 1.6;
@@ -799,7 +802,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                                 box-shadow: none;
                             }
                         }
-                       
+
                     }
                 }
             }
@@ -852,9 +855,9 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 &.star .star, &.unstar .unstar {
                     display: inline-block;
                 }
-            } 
+            }
 
-            
+
         }
 
         .gfp-entries-status{
@@ -931,7 +934,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
             flex-grow: 1;
             overflow: auto;
             overscroll-behavior-y: none;
-            
+
             .left-section{
                 width: 75%;
             }
@@ -939,7 +942,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 width: 25%;
                 border-left: 1px solid #e0e0e0;
             }
-            .left-section, .right-section{ 
+            .left-section, .right-section{
                 background-color: $gfp_white_color;
                 display: flex;
                 flex-direction: column;
@@ -982,12 +985,12 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                     display: flex;
                     flex-direction: column;
                     gap: 0.8rem;
-                    
+
                     li {
                         display: flex;
                         gap: 0.7rem;
                         line-height: 1.3;
-                        
+
                         .icon{
                             padding-top: 3px;
                         }
@@ -1001,7 +1004,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                         }
                     }
                 }
-                
+
             }
 
             .related-section {
@@ -1126,11 +1129,11 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                         .block-editor-tools-panel-color-gradient-settings__item{
                             border: none;
                             border-right: $gfp_input_border;
-                           
+
                             .block-editor-panel-color-gradient-settings__dropdown{
                                 padding-right: 25px;
                             }
-                            
+
                         }
                         .components-base-control{
                             width: 100%;
@@ -1170,9 +1173,9 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                             justify-content: center;
                         }
 
-                        
+
                     }
-                    
+
                     /*User Access Tab*/
                     .user-acess{
                         margin-top: 2rem;
@@ -1195,7 +1198,124 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                     }
                 }
             }
-            
+
+        }
+    }
+}
+
+// Navigation on forms list page (edit.php?post_type=gutena_forms)
+.gutena-forms-list-navigation-wrapper {
+    margin: 0 0 0 -20px;
+    padding: 0 20px;
+    background: #fff;
+    border-bottom: 1px solid #ccd0d4;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
+
+    .gf-header {
+
+		.pr-16 {
+			padding-right: 16px;
+		}
+
+        box-sizing: border-box;
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        background-color: #ffffff;
+        justify-content: space-between;
+        box-shadow: none;
+
+        .gf-logo-title {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+
+            a {
+                line-height: 1;
+                display: flex;
+                align-items: center;
+
+                img {
+                    height: auto;
+                    max-height: 32px;
+                }
+            }
+
+            .gfp-dashboard-navigation {
+                ul {
+                    list-style: none;
+                    display: flex;
+                    margin: 0;
+                    padding-left: 0.8rem;
+                    flex-wrap: wrap;
+
+                    li {
+                        border-left: 1px solid $gfp_border_color;
+                        margin-bottom: 0;
+
+                        &.active {
+                            color: $gfp_primary_color;
+                            border-bottom: 2px solid $gfp_primary_color;
+                        }
+
+                        a {
+                            padding: 1rem 1.5rem;
+                            font-size: 15px;
+                            line-height: 1.3;
+                            font-weight: 600;
+                            text-decoration-line: none;
+                            outline: none;
+                            color: $gfp_heading_color;
+                            -webkit-tap-highlight-color: transparent;
+
+                            &:hover {
+                                color: $gfp_primary_color;
+                            }
+
+                            &:focus {
+                                outline: none !important;
+                                box-shadow: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .gf-pro-btn {
+            background: linear-gradient(88.97deg, #FFD591 -2.54%, #D18618 161.93%);
+            color: #fff;
+            font-weight: 600;
+            border-radius: 5px;
+            text-decoration: none;
+            text-shadow: none;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+    }
+
+    // Responsive styles
+    @media (max-width: 782px) {
+        .gf-header {
+            .gf-logo-title {
+                .gfp-dashboard-navigation {
+                    ul {
+                        flex-wrap: wrap;
+                        padding-left: 0.4rem;
+
+                        li {
+                            a {
+                                padding: 0.8rem 1rem;
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

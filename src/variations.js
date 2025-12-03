@@ -213,7 +213,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										
+
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -276,7 +276,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										
+
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -498,7 +498,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										
+
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -561,7 +561,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										
+
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -943,7 +943,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										
+
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -1006,7 +1006,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										
+
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -1401,7 +1401,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										
+
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -1464,7 +1464,7 @@ const variations = [
 								'core/paragraph',
 								{
 									style: {
-										
+
 										typography: {
 											lineHeight: '1.2',
 											fontStyle: 'normal',
@@ -1484,6 +1484,27 @@ const variations = [
 					],
 				],
 			],
+		],
+		scope: [ 'block' ],
+	},
+	{
+		name: 'existing-forms',
+		title: __( 'Existing forms', 'gutena-forms' ),
+		description: __( 'Existing forms', 'gutena-forms' ),
+		attributes: {
+			formID: 'gutena_forms_ID_842a037f99_22102025172255',
+		},
+		icon: (
+			<Icon icon={ () => (
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M12 2L2 22h20L12 2Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+				</svg>
+			) } />
+		),
+		innerBlocks: [
+			[
+				'gutena/existing-forms',
+			]
 		],
 		scope: [ 'block' ],
 	},

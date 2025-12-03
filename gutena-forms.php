@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.3.1
+ * Version:           1.4.0
  * Author:            Gutena Forms
  * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
@@ -42,7 +42,7 @@ if ( ! defined( 'GUTENA_FORMS_PLUGIN_URL' ) ) {
  * Plugin version.
  */
 if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-	define( 'GUTENA_FORMS_VERSION', '1.3.1' );
+	define( 'GUTENA_FORMS_VERSION', '1.4.0' );
 }
 
 if ( ! function_exists( 'gutena_forms__fs' ) ) :
@@ -65,12 +65,14 @@ if ( ! function_exists( 'gutena_forms__fs' ) ) :
 					'type'                => 'plugin',
 					'public_key'          => 'pk_d66286e6558c1d5d6a4ccf3304cfb',
 					'is_premium'          => false,
-					'has_addons'          => false,
+					'has_addons'          => true,
 					'has_paid_plans'      => false,
 					'menu'                => array(
-						'slug'           => 'gutena-forms',
-						'contact'        => false,
-						'support'        => false,
+						'slug'       => 'gutena-forms',
+						'contact'    => false,
+						'support'    => false,
+						'account'    => false,
+						'first-path' => 'admin.php?page=gutena-forms&pagetype=introduction',
 					),
 				)
 			);
@@ -95,6 +97,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					return class_exists( 'Gutena_Forms_Pro' );
 				}
 			}
+
+			return class_exists( 'Gutena_Forms_Pro' );
 		}
 	}
 
@@ -112,6 +116,10 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		}
 
 		public function __construct() {
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-cpt.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
+
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
@@ -121,8 +129,25 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			add_action( 'wp_ajax_gutena_forms_submit', array( $this, 'submit_form' ) );
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( $this, 'submit_form' ) );
+
+			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), -1 );
 			//Dashboard
 			$this->load_dashboard();
+		}
+
+		public function plugin_action_links( $prev_links ) {
+
+			if ( ! is_gutena_forms_pro() ) {
+				$new_link = sprintf(
+					'<a style="color: #e35d3f; font-weight: 600;" target="_blank" href="https://gutenaforms.com/pricing/?utm_source=all_plugins&utm_medium=website&utm_campaign=free_plugin">%s</a>',
+					__( 'Get Gutena Forms Pro' )
+				);
+
+				// required link in first place
+				array_unshift( $prev_links, $new_link );
+			}
+
+			return $prev_links;
 		}
 
 		//load form dashboard
@@ -200,8 +225,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'grecaptcha_type'	  => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
 					'grecaptcha_site_key' => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
 					'grecaptcha_secret_key' => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
-					'pricing_link' => esc_url( admin_url( 'admin.php?page=gutena-forms&pagetype=introduction#gutena-forms-pricing' ) ),
-					'cloudflare_turnstile' => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile
+					'pricing_link' => 'https://gutenaforms.com/pricing/',
+					'cloudflare_turnstile' => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile,
+					'is_pro' => is_gutena_forms_pro(),
 				), $gf_message )
 			);
 		}
@@ -594,7 +620,14 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action(
 				$action_hook_name,
 				static function () use ( $style ) {
-					echo '<style>' . wp_strip_all_tags( $style ) . "</style>\n";
+					if ( str_contains( $style, 'u002' ) ) {
+						$style = str_replace(
+							array( 'u002d', 'u0022', 'u003e' ), array( '-', '"', '>' ), $style
+						);
+					}
+
+					$new_style = wp_strip_all_tags( $style );
+					echo '<style>' . $new_style . "</style>\n";
 				},
 				$priority
 			);

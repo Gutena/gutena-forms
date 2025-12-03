@@ -476,6 +476,8 @@ export default function Edit( props ) {
 				'undefined' === typeof inputLabelGap ? '0.5em' : inputLabelGap
 			};}
 			`;
+
+			newFormCss = newFormCss.replaceAll( "\n", ' ' ).replaceAll( "\t", '    ' );
 			//Set Form Styles
 			setAttributes( { formStyle: newFormCss } );
 		}
