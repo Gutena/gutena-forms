@@ -1487,7 +1487,7 @@ const variations = [
 		],
 		scope: [ 'block' ],
 	},
-	{
+	/*{
 		name: 'existing-forms',
 		title: __( 'Existing forms', 'gutena-forms' ),
 		description: __( 'Existing forms', 'gutena-forms' ),
@@ -1507,7 +1507,7 @@ const variations = [
 			]
 		],
 		scope: [ 'block' ],
-	},
+	},*/
 ];
 
 export default variations;

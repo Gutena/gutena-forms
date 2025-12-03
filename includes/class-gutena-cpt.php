@@ -43,18 +43,18 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 				$this->has_forms = ! empty( $posts );
 
 
-			register_block_type(
-				GUTENA_FORMS_DIR_PATH . 'build/existing-forms',
-				array(
-					'render_callback' => array( $this, 'render_existing_form' ),
-					'attributes'      => array(
-						'formId' => array(
-							'type'    => 'number',
-							'default' => 0
-						)
-					),
-				)
-			);
+//			register_block_type(
+//				GUTENA_FORMS_DIR_PATH . 'build/existing-forms',
+//				array(
+//					'render_callback' => array( $this, 'render_existing_form' ),
+//					'attributes'      => array(
+//						'formId' => array(
+//							'type'    => 'number',
+//							'default' => 0
+//						)
+//					),
+//				)
+//			);
 		}
 
 		public function render_existing_form( $attributes ) {
