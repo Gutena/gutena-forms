@@ -1,1 +1,0 @@
-(()=>{"use strict";window.wp.blocks,window.wp.components,window.wp.element,window.wp.blockEditor,window.wp.i18n,window.wp.data,new Map,new Map})();
