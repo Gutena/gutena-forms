@@ -816,6 +816,7 @@
 									'enable' => '1',
 								),
 								array(
+									'enable' => '1',
 									'slug'   => 'feature-request',
 									'title'  => __( 'Feature Request', 'gutena-forms' ),
 									'target' => '_blank',
