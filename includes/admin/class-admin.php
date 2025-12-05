@@ -63,6 +63,25 @@
 					color: #ffffff;
 				}
 			</style>';
+
+				echo '<script type="text/javascript">
+					( function() {
+						function documentReadyState( callback ) {
+							if ( typeof document === "undefined" ) { return; }
+
+							if ( "complete" === document.readyState || "interactive" === document.readyState ) {
+								return void callback();
+							}
+
+							document.addEventListener( "DOMContentLoaded", callback );
+						}
+
+						documentReadyState( () => {
+							const el = document.querySelector( "#toplevel_page_gutena-forms ul li:last-child a" );
+							if ( el && "Upgrade" === el.innerText ) { el.setAttribute( "target", "_blank" ); }
+						} );
+					} )();
+				</script>';
 			}
 		}
 
@@ -799,7 +818,8 @@
 								array(
 									'slug'   => 'feature-request',
 									'title'  => __( 'Feature Request', 'gutena-forms' ),
-									'enable' => '1',
+									'target' => '_blank',
+									'rel'    => 'noopener noreferrer',
 								),
 							)
 						),
