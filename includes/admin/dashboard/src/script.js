@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(){
     class GfBasicDashboard {
-    
+
         constructor() {
             if ( ! this.isEmpty( gutenaFormsDashboard ) ) {
                 this.select_change_url();
@@ -13,13 +13,13 @@ document.addEventListener("DOMContentLoaded", function(){
                     this.accordions();
                     this.scrollToSectionFromUrl();
                 }, 500);
-                
+
                 this.makeDashboardVisible();
             } else {
                 console.log(" gutenaFormsDashboard not found");
             }
         }
-        
+
         //scroll to section from url in case react component may not appear bedore call
         scrollToSectionFromUrl() {
             let elId = window.location.hash;
@@ -39,24 +39,24 @@ document.addEventListener("DOMContentLoaded", function(){
                 domID.style.display="block";
             }
         }
-        
+
         //accordions: panel open close
         accordions(){
             let panels = document.querySelectorAll(
                 '#gutena-forms-dashboard-page .gf-accordions .gf-title-icon'
             );
-            
+
             if ( 0 < panels.length ) {
-                
+
                 for ( let i = 0; i < panels.length; i++ ) {
                     panels[ i ].addEventListener( 'click', function () {
-                        
+
                         let panel = this.nextElementSibling;
                         if (panel.style.maxHeight) {
                             panel.style.maxHeight = null;
                         } else {
                         panel.style.maxHeight = panel.scrollHeight + "px";
-                        } 
+                        }
                     })
                 }
             }
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function(){
                         let table_row = obj.getParents( this, 'tr' );
                         let entry_status = false === table_row ? '' : table_row.getAttribute('currentstatus');
                         //console.log("entry_status "+entry_status+" entry_id"+entry_id);
-                        if ( 'undefined' !== typeof entry_status && 'unread' === entry_status && 'undefined' !== typeof entry_id && null !== entry_id && 0 < entry_id ) { 
+                        if ( 'undefined' !== typeof entry_status && 'unread' === entry_status && 'undefined' !== typeof entry_id && null !== entry_id && 0 < entry_id ) {
                             let el = this;
                             fetch( gutenaFormsDashboard.ajax_url, {
                                 method: 'POST',
@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function(){
                             } )
                             .then( ( response ) => response.json() )
                             .then( ( response ) => {
-                                if ( false !== table_row ) {	
+                                if ( false !== table_row ) {
                                     table_row.classList.remove( 'unread' );
                                     table_row.classList.add( 'read' );
                                     table_row.setAttribute('currentstatus', 'read');
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function(){
         }
 
         /**
-         * On click delete link. it will trigger a confirmation box and perform a GET delete action accoedingly 
+         * On click delete link. it will trigger a confirmation box and perform a GET delete action accoedingly
          */
         confirm_delete(){
             let delete_entries = document.querySelectorAll(
@@ -166,11 +166,11 @@ document.addEventListener("DOMContentLoaded", function(){
                         e.preventDefault();
                         let url = this.getAttribute('href');
                         if ( 'undefined' !== typeof url && null !== url ) {
-                            
+
                             let modalEl = document.querySelector('#gutena-forms-entry-delete-modal');
 
                             if ( ! obj.isEmpty( modalEl ) ) {
-                                
+
                                 let deleteBtn = modalEl.querySelector('.gf-entry-delete-btn');
                                 if ( ! obj.isEmpty( deleteBtn ) ) {
                                     deleteBtn.setAttribute("href",url);
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function(){
         };
 
         /**
-         * Modal : in entry table modal which encolsed modal and trigger button are under same parent 
+         * Modal : in entry table modal which encolsed modal and trigger button are under same parent
          */
         gutenaFormsModal(){
             //Open modal
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function(){
                             console.log("modal not found");
                             return false;
                         }
-                        
+
                         let modalEl = document.querySelector('#'+modalID);
 
                         if ( 'undefined' !== typeof modalEl && null !== modalEl ) {
@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 for ( i = 0; i < closeBtn.length; i++ ) {
                     closeBtn[ i ].addEventListener( 'click', function (e) {
                         e.preventDefault();
-                        //get field group 
+                        //get field group
                         let parentModalEl = obj.getParents(
                             this,
                             '.gutena-forms-modal'
@@ -252,7 +252,7 @@ document.addEventListener("DOMContentLoaded", function(){
             if ( 0 < modalActionBtn.length ) {
                 for ( i = 0; i < modalActionBtn.length; i++ ) {
                     modalActionBtn[ i ].addEventListener( 'click', function () {
-                        //action drop down 
+                        //action drop down
                         let dropdownEl = this.nextElementSibling;
                         if (dropdownEl.style.display === "none") {
                             dropdownEl.style.display = "block";
@@ -287,15 +287,15 @@ document.addEventListener("DOMContentLoaded", function(){
                                 window.location = gutenaFormsDashboard.entry_view_url+entryid;
                             }
                         }
-                        
+
                     });
                 }
             }
-        
+
         }
 
          /**
-         * Go to form's Entry list page on click row 
+         * Go to form's Entry list page on click row
          */
          goToEntryListPage(){
             //Open modal
@@ -317,13 +317,33 @@ document.addEventListener("DOMContentLoaded", function(){
                                 window.location = gutenaFormsDashboard.entry_list_url+formid;
                             }
                         }
-                        
+
                     });
                 }
             }
-        
+
         }
     }
 
     const GfBasicDashboard1 = new GfBasicDashboard();
 });
+
+( function () {
+	this.isEmpty = ( data ) => {
+		return 'undefined' === typeof data || null === data || '' === data;
+	};
+	var pagetype = '-';
+	var location = window.location.href;
+	var locationParams = new URL( location ).searchParams;
+	if ( locationParams.has( 'pagetype' ) ) {
+		pagetype = locationParams.get( 'pagetype' );
+		if ( ! this.isEmpty( pagetype ) ) {
+			var elements = document.querySelectorAll( '#toplevel_page_gutena-forms ul li' );
+			if ( elements.length ) {
+				elements.forEach( element => {
+					element.classList.remove( 'current' );
+				} );
+			}
+		}
+	}
+} )();
