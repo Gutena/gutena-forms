@@ -836,7 +836,8 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
         .entries-filter-wrapper{
             display: flex;
             justify-content: space-between;
-            .gfp-entries-table-filter {
+            .gfp-entries-table-filter,
+			.gfp-search-box {
                 display: flex;
                 gap: 0.8rem;
                 align-items: center;

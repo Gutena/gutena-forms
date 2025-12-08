@@ -393,11 +393,11 @@
 				<a href="#" class="button" disabled >'.  __( 'Reset', 'gutena-forms' )  . '</a>
 			</div>
 
-			<p class="search-box">
+			<p class="gfp-search-box search-box">
 				<label class="screen-reader-text">'.  __( 'Search', 'gutena-forms' )  . ':</label>
 				<a modalid="gutena-forms-go-pro-modal" href="#" class="gutena-forms-modal-btn"  >
-					<input type="search" name="s" value="" placeholder="'.  __( 'Search', 'gutena-forms' )  . '" disabled>
-					<input type="submit" id="search-submit" class="button" value="'.  __( 'Search', 'gutena-forms' )  . '" disabled>
+					<span class="gfp-filter date-filter gutena_forms__filter-input">Search</span>
+					<span id="filter-submit" class="disabled button gutena_forms__filter-button">'.  __( 'Search', 'gutena-forms' )  . '</span>
 				</a>
 			</p> ';
 		}
