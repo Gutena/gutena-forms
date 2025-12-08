@@ -287,7 +287,7 @@
 				break;
 				default:
 					if ( ! empty( $form_entry->entry_data[$column_name] ) &&  ! empty( $form_entry->entry_data[$column_name]['value'] ) ) {
-						$column_value = $this->store->view_field_value( $form_entry->entry_data[$column_name], substr( $form_entry->entry_data[$column_name]['value'] , 0, 20 ) );
+						$column_value = $this->store->view_field_value( $form_entry->entry_data[$column_name], $form_entry->entry_data[$column_name]['value'] );
 					}
 				break;
 			}
