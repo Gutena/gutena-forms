@@ -379,22 +379,24 @@
 		public function table_topbar_filters( $args ) {
 
 			echo '<div class="gfp-entries-table-filter">
-			<span class="title title-with-icon "> '.  __( 'Filter by', 'gutena-forms' )  . ' ' . $this->lock_svg() .' </span>
-			<a modalid="gutena-forms-go-pro-modal" href="#" class="gutena-forms-modal-btn"  >
-			<input type="date" name="date_search" class="gfp-filter date-filter" disabled  >
-			<select name="tag_search" class="gfp-filter tag-filter" disabled >
-				<option value="">'.  __( 'Tag', 'gutena-forms' )  . '</option>
-			</select>
-			<select name="entry_status" class="gfp-filter status-filter" disabled>
-			<option value="">'.  __( 'Status', 'gutena-forms' )  . '</option>
-			</select>
-			<input type="submit" id="filter-submit" class="button" value="'.  __( 'Filter', 'gutena-forms' )  . '" disabled >
-			</a>
-			<a href="#" class="button" disabled >'.  __( 'Reset', 'gutena-forms' )  . '</a></div>
+				<span class="title title-with-icon "> '.  __( 'Filter by', 'gutena-forms' )  . ' ' . $this->lock_svg() .' </span>
+				<a modalid="gutena-forms-go-pro-modal" href="#" class="gutena-forms-modal-btn"  >
+					<span class="gfp-filter date-filter gutena_forms__filter-input">dd/mm/yyyy</span>
+					<span class="gfp-filter tag-filter gutena_forms__filter-dropdown">
+						<span>'.  __( 'Tag', 'gutena-forms' )  . '</span>
+					</span>
+					<span class="gfp-filter status-filter gutena_forms__filter-dropdown">
+						<span>'.  __( 'Status', 'gutena-forms' )  . '</span>
+					</span>
+					<span id="filter-submit" class="disabled button gutena_forms__filter-button">'.  __( 'Filter', 'gutena-forms' )  . '</span>
+				</a>
+				<a href="#" class="button" disabled >'.  __( 'Reset', 'gutena-forms' )  . '</a>
+			</div>
+
 			<p class="search-box">
 				<label class="screen-reader-text">'.  __( 'Search', 'gutena-forms' )  . ':</label>
 				<a modalid="gutena-forms-go-pro-modal" href="#" class="gutena-forms-modal-btn"  >
-				<input type="search" name="s" value="" placeholder="'.  __( 'Search', 'gutena-forms' )  . '" disabled>
+					<input type="search" name="s" value="" placeholder="'.  __( 'Search', 'gutena-forms' )  . '" disabled>
 					<input type="submit" id="search-submit" class="button" value="'.  __( 'Search', 'gutena-forms' )  . '" disabled>
 				</a>
 			</p> ';

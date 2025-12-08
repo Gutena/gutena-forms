@@ -840,6 +840,47 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
                 display: flex;
                 gap: 0.8rem;
                 align-items: center;
+
+                // Filter input and dropdown styles
+                .gutena_forms__filter-input,
+                .gutena_forms__filter-dropdown {
+                    color: #a7aaad; // Blue text color
+                    border: 1px solid $gfp_border_color;
+                    border-radius: 4px;
+                    background-color: $gfp_white_color;
+                    padding: 4px 12px;
+                    font-size: 14px;
+                    display: inline-flex;
+                    align-items: center;
+                }
+
+                .gutena_forms__filter-input {
+                    width: 140px;
+                }
+
+                .gutena_forms__filter-dropdown {
+                    min-width: 100px;
+                    position: relative;
+                    justify-content: space-between;
+
+                    &::after {
+                        content: '▼';
+                        font-size: 10px;
+                        color: $gfp_wp_primary_color;
+                        margin-left: 8px;
+                    }
+                }
+
+                // Filter button - blue text and blue border
+                .gutena_forms__filter-button {
+                    color: $gfp_wp_primary_color;
+                    border: 1px solid $gfp_wp_primary_color;
+                    border-radius: 4px;
+                    background-color: $gfp_white_color;
+                    padding: 0 12px;
+                    font-size: 14px;
+                    cursor: default;
+                }
             }
         }
 
