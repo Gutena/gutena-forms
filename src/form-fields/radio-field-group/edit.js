@@ -1,7 +1,9 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 const Edit = ( { attributes } ) => {
-	const blockProps = useBlockProps();
+	const blockProps = useBlockProps( {
+		className: 'wp-block-gutena-field-group'
+	} );
 
 	const FORM_GROUP = [
 		[
