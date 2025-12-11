@@ -7,9 +7,9 @@ import edit from './edit';
 import save from './save';
 import metadata from './block.json';
 import { gutenaFormsIcon } from './icon';
-import {
-    Icon
-} from '@wordpress/components';
+import { Icon } from '@wordpress/components';
+import { subscribe } from '@wordpress/data';
+
 
 registerBlockType( metadata, {
 	icon: gutenaFormsIcon,
@@ -19,7 +19,7 @@ registerBlockType( metadata, {
 } );
 
 /********************************
- Field Label  
+ Field Label
  ********************************/
 const labelIcon = () => (
 	<Icon
@@ -102,7 +102,7 @@ registerBlockVariation( 'core/buttons', {
 } );
 
 /********************************
- Field Error message 
+ Field Error message
  ********************************/
 const fieldErrorMessage = () => (
 	<Icon
@@ -167,3 +167,32 @@ domReady( () => {
         wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( [ 'gutena/form-field' ] );
     }
 });
+
+if ( ! gutenaFormsBlock.is_pro ) {
+	subscribe( () => {
+		let elements = [
+			'editor-block-list-item-gutena-date-field-group',
+			'editor-block-list-item-gutena-time-field-group',
+			'editor-block-list-item-gutena-phone-field-group',
+			'editor-block-list-item-gutena-country-field-group',
+			'editor-block-list-item-gutena-state-field-group',
+			'editor-block-list-item-gutena-file-upload-field-group',
+			'editor-block-list-item-gutena-url-field-group',
+			'editor-block-list-item-gutena-hidden-field-group',
+			'editor-block-list-item-gutena-password-field-group',
+			'editor-block-list-item-gutena-rating-field-group',
+		];
+
+		elements.forEach( element => {
+			let el = document.getElementsByClassName(element);
+			if (el.length && el[0]) {
+				el[0].parentNode.setAttribute('draggable', 'false');
+				el[0].setAttribute('aria-disabled', 'true');
+				el[0].style.pointerEvents = 'none';
+				el[0].style.userSelect = 'none';
+				el[0].style.opacity = '0.5';
+				el[0].setAttribute('disabled', 'true');
+			}
+		} );
+	} );
+}

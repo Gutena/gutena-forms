@@ -106,7 +106,7 @@ const variations = [
 		),
 		innerBlocks: [
 			[
-				'gutena/field-group',
+				'gutena/text-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -116,7 +116,7 @@ const variations = [
 				},
 			],
 			[
-				'gutena/field-group',
+				'gutena/text-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -126,7 +126,7 @@ const variations = [
 				},
 			],
 			[
-				'gutena/field-group',
+				'gutena/email-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -136,7 +136,7 @@ const variations = [
 				},
 			],
 			[
-				'gutena/field-group',
+				'gutena/text-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -146,7 +146,7 @@ const variations = [
 				},
 			],
 			[
-				'gutena/field-group',
+				'gutena/textarea-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -391,7 +391,7 @@ const variations = [
 		),
 		innerBlocks: [
 			[
-				'gutena/field-group',
+				'gutena/text-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -401,7 +401,7 @@ const variations = [
 				},
 			],
 			[
-				'gutena/field-group',
+				'gutena/text-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -411,7 +411,7 @@ const variations = [
 				},
 			],
 			[
-				'gutena/field-group',
+				'gutena/email-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -421,7 +421,7 @@ const variations = [
 				},
 			],
 			[
-				'gutena/field-group',
+				'gutena/text-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -431,7 +431,7 @@ const variations = [
 				},
 			],
 			[
-				'gutena/field-group',
+				'gutena/textarea-field-group',
 				{
 					isRequired: true,
 					fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -735,7 +735,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/text-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
@@ -760,7 +760,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/text-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
@@ -791,7 +791,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/text-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
@@ -816,7 +816,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/email-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
@@ -844,7 +844,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/textarea-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
@@ -1193,7 +1193,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/text-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
@@ -1218,7 +1218,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/text-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
@@ -1249,7 +1249,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/text-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
@@ -1274,7 +1274,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/email-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
@@ -1302,7 +1302,7 @@ const variations = [
 						{ verticalAlignment: 'top' },
 						[
 							[
-								'gutena/field-group',
+								'gutena/textarea-field-group',
 								{
 									isRequired: true,
 									fieldLabel: __(
