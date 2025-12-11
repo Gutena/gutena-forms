@@ -281,23 +281,13 @@ const Introduction = ( props ) => {
             </div>
 
             {/* Footer CTA Section */}
-            <div className={`gf-footer-cta-section ${isProActive ? 'gf-pro-active' : ''}`}>
+            <div className={`gf-footer-cta-section gf-pro-active`}>
                 <a
                     href={gutenaFormsDashboard?.create_form_url || '#'}
                     className="gf-create-form-button"
                 >
                     Create Your First Form
                 </a>
-                {!isProActive && (
-                    <a
-                        href={gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="gf-upgrade-pro-link"
-                    >
-                        Upgrade to Gutena Pro
-                    </a>
-                )}
             </div>
 
             {/* Video Modal */}
