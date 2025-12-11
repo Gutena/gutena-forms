@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.4.3
+ * Version:           1.5.0
  * Author:            Gutena Forms
  * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
@@ -42,7 +42,7 @@ if ( ! defined( 'GUTENA_FORMS_PLUGIN_URL' ) ) {
  * Plugin version.
  */
 if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-	define( 'GUTENA_FORMS_VERSION', '1.4.3' );
+	define( 'GUTENA_FORMS_VERSION', '1.5.0' );
 }
 
 if ( ! function_exists( 'gutena_forms__fs' ) ) :
@@ -116,22 +116,35 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		}
 
 		public function __construct() {
+			$this->includes();
+			$this->run();
+		}
+
+		/**
+		 * Including required dependencies
+		 *
+		 * @since 1.5.0
+		 */
+		private function includes() {
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-cpt.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
+		}
 
+		/**
+		 * Running the whole plugin
+		 *
+		 * @since 1.5.0
+		 */
+		private function run() {
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
 			add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
-			// save pattern
 			add_action( 'added_post_meta', array( $this, 'save_gutena_forms_pattern' ), 10, 4 );
-
 			add_action( 'wp_ajax_gutena_forms_submit', array( $this, 'submit_form' ) );
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( $this, 'submit_form' ) );
-
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), -1 );
-			//Dashboard
 			$this->load_dashboard();
 		}
 
