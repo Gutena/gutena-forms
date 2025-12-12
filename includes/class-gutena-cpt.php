@@ -25,6 +25,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_footer', array( $this, 'admin_footer' ) );
+			add_filter( 'block_categories_all', array( $this, 'move_gutena_to_top' ), 100, 2 );
 		}
 
 		public function init() {
@@ -444,6 +445,42 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			        }
 			    } )( window );
 			</script>';
+		}
+
+		/**
+		 * Move Gutena block category to the top in the block inserter for Gutena Forms CPT.
+		 *
+		 * @since 1.5.0
+		 * @param array 				  $block_categories Array of block categories.
+		 * @param WP_Block_Editor_Context $editor_context Editor context object.
+		 *
+		 * @return array
+		 */
+		public function move_gutena_to_top( $block_categories, $editor_context ) {
+			if ( ! empty( $editor_context->post->post_type ) && 'gutena_forms' === $editor_context->post->post_type ) {
+				$new_categories = array();
+
+				$indexes = array();
+
+				foreach ( $block_categories as $index => $category ) {
+					if ( 'gutena' === $category['slug'] || 'gutena-pro' === $category['slug'] ) {
+						$indexes[] = $index;
+						$new_categories[] = $category;
+					}
+				}
+
+				if ( isset( $indexes[0] ) && isset( $block_categories[ $indexes[0] ] ) ) {
+					unset( $block_categories[ $indexes[0] ] );
+				}
+
+				if ( isset( $indexes[1] ) && isset( $block_categories[ $indexes[1] ] ) ) {
+					unset( $block_categories[ $indexes[1] ] );
+				}
+
+				return array_merge( $new_categories, $block_categories );
+			}
+
+			return $block_categories;
 		}
 
 		public static function get_instance() {
