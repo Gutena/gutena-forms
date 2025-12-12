@@ -25,7 +25,7 @@
 			return self::$instance;
 		}
 
-		public function __construct() {	
+		public function __construct() {
             parent::__construct();
 			//Filter gutena forms render form
 			add_filter('gutena_forms_save_form_schema', array( $this, 'save_form_schema' ), 10, 3 );
@@ -36,11 +36,11 @@
 			add_action( 'wp_ajax_gutena_forms_entries_read', array( $this, 'entries_read_status_update' ) );
 
 			add_action( 'wp_loaded', array($this, 'process_bulk_action') );
-			
+
 		}
 
 		//form entries table bulk action
-		public function process_bulk_action() { 
+		public function process_bulk_action() {
 
 			if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['form_entry_id'] ) && function_exists( 'absint' ) && ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
 
@@ -48,24 +48,24 @@
 				check_ajax_referer( 'gutena_Forms', 'gfnonce' );
 				$form_id = sanitize_key( $_GET['formid'] );
 
-				//check user access 
+				//check user access
 				if ( ( ! has_filter( 'gutena_forms_check_user_access' ) && ! $this->is_gfadmin() )  || ! apply_filters( 'gutena_forms_check_user_access', true, 'edit_entries' ) ) {
 					wp_redirect( esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.$form_id ) ) );
 				}
 
 				$form_entry_id = wp_unslash( $_REQUEST['form_entry_id'] );
-				
+
 				global $wpdb;
 				$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
-				//Admin Action 
+				//Admin Action
 				do_action( 'gutena_forms_entries_admin_action', $form_id, $action, $form_entry_id );
 				$this->update_entries_status( $action, $form_entry_id );
-				
-				wp_safe_redirect( add_query_arg( 
-					array( 
+
+				wp_safe_redirect( add_query_arg(
+					array(
 						'page' => 'gutena-forms',
 						'formid' => $form_id,
-					), admin_url( 'admin.php' ) ) 
+					), admin_url( 'admin.php' ) )
 				);
 			}
 		}
@@ -76,7 +76,7 @@
             global $wpdb;
             //Update status
             if ( ! empty( $wpdb ) && ! empty( $_POST['form_entry_id'] ) && is_numeric( $_POST['form_entry_id'] ) && function_exists( 'absint' ) ) {
-				
+
 				$this->update_entries_status( 'read', absint( wp_unslash( $_POST['form_entry_id'] ) ) );
 
 				wp_send_json_success( array(
@@ -86,19 +86,19 @@
 			}
 		}
 
-	
+
 		/**
 		 * add new meta for form or entries
 		 * Required at least : 'form_id', 'data_type', 'metadata'
-		 * 
+		 *
 		 */
 		protected function add_form_or_enries_meta( $meta = array() ) {
 			//return if form id or data not available
-			global $wpdb; 
+			global $wpdb;
 			if ( empty( $wpdb ) || $this->is_empty( $meta, array( 'form_id', 'data_type', 'metadata'  ) ) ) {
 				return;
 			}
-			
+
 			//$wpdb->insert( $table_name, $data, $data_format );
 			//Insert query
 			$wpdb->insert(
@@ -123,22 +123,22 @@
 		/**
 		 * Add or Update form schema in gutena forms table
 		 * Add or update row
-		 * 
+		 *
 		 * @param array $form_schema form details in array format
 		 * @param string $form_id
 		 * @param array $gutena_form_ids array of existing forms in tables
-		 * 
+		 *
 		 */
 		public function save_form_schema( $form_schema, $block_form_id, $gutena_form_ids ) {
-			global $wpdb; 
+			global $wpdb;
 			if ( empty( $wpdb ) || empty( $block_form_id ) || ! $this->is_forms_store_exists() ) {
 				return $form_schema;
 			}
 			$block_form_id = sanitize_key( $block_form_id );
 			$error = '';
-			//getting existing schema 
+			//getting existing schema
 			$fom_schema_row = $this->get_form_details( $block_form_id );
-			
+
 			$table_forms = $this->table_gutenaforms;
 			if (  empty( $fom_schema_row ) ) {
 				$this->save_new_form( $block_form_id, $form_schema );
@@ -148,7 +148,7 @@
 				 * step1: Backup of existing schema in gutenaforms_meta table
 				 * step2: Update gutenaforms table row
 				 */
-				//step1:Creating backup of existing schema 
+				//step1:Creating backup of existing schema
 				$form_schema_serialize = $this->sanitize_serialize_data( $form_schema );
 				//take backup if form schema is different
 				if ( $form_schema_serialize !==  $fom_schema_row->form_schema ) {
@@ -159,7 +159,7 @@
 						'metadata' => $fom_schema_row->form_schema,
 					) );
 				}
-				
+
 				//step2: Update gutenaforms table row
 				//$wpdb->update( $table_name, $data, $where, $data_format, $where_format );
 				$wpdb->update(
@@ -172,41 +172,41 @@
 					array(
 						'form_id' => $fom_schema_row->form_id
 					),
-					array( '%d', '%s', '%s' ), 
+					array( '%d', '%s', '%s' ),
 					array( '%d' )
 				);
-			} 
-			
+			}
+
 			return $form_schema;
 		}
 
 		/**
 		 * Save form submitted data
-		 * 
+		 *
 		 * @param array $form_data submitted data
 		 * @param array $fieldSchema form schema
-		 * 
+		 *
 		 */
 		public function save_form_entry( $form_data, $block_form_id, $fieldSchema ) {
-			global $wpdb; 
+			global $wpdb;
 			if ( empty( $wpdb ) || empty( $form_data ) || ! is_array( $form_data ) || empty( $block_form_id ) || empty( $fieldSchema ) || ! $this->is_forms_store_exists() ) {
 				return false;
 			}
-			
+
 			/**
 			 * Step1: check if schema existing
 			 * Step2: Create form entry in table_gutenaforms_entries
 			 * Step3: Step3: Create meta entry for submiited data for record in table_gutenaforms_meta
 			 * Step4: Create field name values entries for each form fields
 			 */
-			//step1: check if schema existing 
+			//step1: check if schema existing
 			$fom_schema_row = $this->get_form_details( $block_form_id );
-			
+
 			if ( ! empty( $fom_schema_row ) ) {
-				
+
 				$fieldSchema['form_id'] = sanitize_key( $fom_schema_row->form_id );
 				$fieldSchema['user_id'] = $this->current_user_id();
-				
+
 				//Step2: Create form entry in table_gutenaforms_entries
 				$wpdb->insert(
 					$this->table_gutenaforms_entries,
@@ -230,7 +230,7 @@
 				if ( empty( $fieldSchema['entry_id'] )  ) {
 					return;
 				}
-				
+
 				//Step3: Create meta entry for submiited data for record in table_gutenaforms_meta
 				$this->add_form_or_enries_meta( array(
 					'form_id' => $fieldSchema['form_id'],
@@ -248,7 +248,7 @@
 					}
 					$field_value = $data['raw_value'];
 					if ( is_array( $field_value ) ) {
-						$field_value =	$this->sanitize_array( wp_unslash( $field_value ), true );
+						$field_value =	Gutena_Forms_Helper::sanitize_array( wp_unslash( $field_value ), true );
 						$field_value = implode(", ", $field_value );
 					} else {
 						$field_value = sanitize_textarea_field( wp_unslash( $field_value ) );
@@ -270,7 +270,7 @@
 				}
 
 				return true;
-			} 
+			}
 
 			return false;
 		}

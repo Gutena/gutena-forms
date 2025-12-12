@@ -39,7 +39,7 @@
 
 			//process_bulk_action : in Gutena_Forms_Manage_Store
 
-			if ( ! is_gutena_forms_pro() ) {
+			if ( ! Gutena_Forms_Helper::has_pro() ) {
 				//Extra controls to be displayed between bulk actions and pagination.
 				add_action( 'gutena_forms_dashboard_entries_table_topbar', array( $this, 'table_topbar_filters' ), 10, 1 );
 			}

@@ -36,7 +36,7 @@
 			add_action( 'admin_init', array( $this, 'load_admin_classes' ) );
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 
-		if ( ! is_gutena_forms_pro( false ) ) {
+		if ( ! Gutena_Forms_Helper::has_pro() ) {
 			//view dashboard notice
 			add_action( 'admin_notices', array( $this, 'view_dashboard_notice' ) );
 			//admin script
@@ -50,7 +50,7 @@
 	}
 
 		public function admin_head() {
-			if ( ! is_gutena_forms_pro() ) {
+			if ( ! Gutena_Forms_Helper::has_pro() ) {
 				echo '<style type="text/css">
 				#toplevel_page_gutena-forms ul li:last-child a {
 					background: #27a68a !important;
@@ -209,7 +209,7 @@
 				array( $this, 'forms_dashboard' ),
 			);
 
-			if ( ! is_gutena_forms_pro() ) {
+			if ( ! Gutena_Forms_Helper::has_pro() ) {
 				add_submenu_page(
 					'gutena-forms',
 					__( 'Upgrade', 'gutena-forms' ),
@@ -238,7 +238,7 @@
 			$form_store = new Gutena_Forms_Store();
 			$form_table = '';
 			$pagetype = empty( $_GET['pagetype'] ) ? '': sanitize_key( wp_unslash( $_GET['pagetype'] ) );
-			echo '<div id="gutena-forms-dashboard-page" class="gutena-forms-dashboard '.( is_gutena_forms_pro() ? '':'gf-basic' ).' " style="display:none;" >';
+			echo '<div id="gutena-forms-dashboard-page" class="gutena-forms-dashboard '.( Gutena_Forms_Helper::has_pro() ? '':'gf-basic' ).' " style="display:none;" >';
 
 			if ( '' === $pagetype ) {
 				if ( '' === $this->form_id ) {
@@ -269,7 +269,7 @@
 			}
 
 			//view-entry page
-			if ( ! is_gutena_forms_pro() ) {
+			if ( ! Gutena_Forms_Helper::has_pro() ) {
 				//Entry View Page
 				if ( ! empty( $_GET['form_entry_id'] ) && is_numeric( $_GET['form_entry_id'] ) && 'viewentry' === $pagetype  ) {
 
@@ -687,7 +687,7 @@
 		public function go_pro_modal() {
 
 			//Action Html
-			if ( ! is_gutena_forms_pro( false ) ) {
+			if ( ! Gutena_Forms_Helper::has_pro() ) {
 				echo '
 				<div id="gutena-forms-go-pro-modal"  class="gutena-forms-modal gf-small-modal" >
 				<div class="gutena-forms-modal-content" >
@@ -776,7 +776,7 @@
 						'entry_view_url'      => $dashboard_url.'&pagetype=viewentry&form_entry_id=',
 						'entry_list_url'      => $dashboard_url.'&formid=',
 						'page_url'            => $dashboard_url.'&pagetype=',
-						'is_gutena_forms_pro' => is_gutena_forms_pro() ? '1' : '0',
+						'is_gutena_forms_pro' => Gutena_Forms_Helper::has_pro() ? '1' : '0',
 						'is_admin'            => $is_admin,
 						'pagetype'            => $current_pagetype,
 						'form_id'             => $this->form_id,
@@ -920,7 +920,7 @@
 			if ( is_object( $data ) ) {
 				$data = clone $data;
 			} else if ( is_array( $data ) ) {
-				$data = $this->sanitize_array( $data, true );
+				$data = Gutena_Forms_Helper::sanitize_array( $data, true );
 			} else {
 				$data = sanitize_textarea_field( $data );
 			}

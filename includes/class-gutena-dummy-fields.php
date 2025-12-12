@@ -126,7 +126,7 @@ if ( ! class_exists( 'Gutena_Dummy_Fields' ) ) :
 		 * @return array
 		 */
 		public function register_fields( $fields ) {
-			if ( is_gutena_forms_pro() ) {
+			if ( Gutena_Forms_Helper::has_pro() ) {
 				return $fields;
 			}
 
