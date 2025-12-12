@@ -145,11 +145,15 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action( 'added_post_meta', array( $this, 'save_gutena_forms_pattern' ), 10, 4 );
 			add_action( 'wp_ajax_gutena_forms_submit', array( $this, 'submit_form' ) );
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( $this, 'submit_form' ) );
-			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), -1 );
+			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
 			$this->load_dashboard();
 		}
 
 		public function plugin_action_links( $prev_links ) {
+
+			if ( isset( $prev_links['addons'] ) ) {
+				unset( $prev_links['addons'] );
+			}
 
 			if ( ! is_gutena_forms_pro() ) {
 				$new_link = sprintf(
