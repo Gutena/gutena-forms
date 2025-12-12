@@ -179,6 +179,13 @@
         "site_key": "",
         "secret_key": ""
       }
+    },
+    "honeypot": {
+      "type": "object",
+      "default": {
+        "enable": false,
+        "timeCheckValue": 4
+      }
     }
   },
   "providesContext": {
