@@ -93,8 +93,8 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			if ( str_contains( $post->post_content, 'gutena/existing-forms' ) ) {
 				remove_action( 'save_post', array( $this, 'save_post' ) );
 				add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
-				remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ) );
-				add_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10, 3 );
+				remove_action( 'save_post', array( Gutena_Forms_Form_Schema::get_instance(), 'save_forms_schema' ) );
+				add_action( 'save_post', array( Gutena_Forms_Form_Schema::get_instance(), 'save_forms_schema' ), 10, 3 );
 				return;
 			}
 
@@ -109,8 +109,8 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 				remove_action( 'save_post', array( $this, 'save_post' ) );
 				add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
-				remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ) );
-				add_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10, 3 );
+				remove_action( 'save_post', array( Gutena_Forms_Form_Schema::get_instance(), 'save_forms_schema' ) );
+				add_action( 'save_post', array( Gutena_Forms_Form_Schema::get_instance(), 'save_forms_schema' ), 10, 3 );
 				return;
 			}
 
@@ -227,7 +227,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 			// Remove the save_post hooks to prevent recursion
 			remove_action( 'save_post', array( $this, 'save_post' ), -1 );
-			remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10 );
+			remove_action( 'save_post', array( Gutena_Forms_Form_Schema::get_instance(), 'save_forms_schema' ), 10 );
 
 			wp_update_post(
 				array(
@@ -240,7 +240,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 			// Re-add the actions after update
 			add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
-			add_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10, 3 );
+			add_action( 'save_post', array( Gutena_Forms_Form_Schema::get_instance(), 'save_forms_schema' ), 10, 3 );
 
 			self::$updating_connected_posts = false;
 		}
@@ -264,7 +264,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 			// Remove the save_post hooks to prevent recursion
 			remove_action( 'save_post', array( $this, 'save_post' ), -1 );
-			remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10 );
+			remove_action( 'save_post', array( Gutena_Forms_Form_Schema::get_instance(), 'save_forms_schema' ), 10 );
 
 			// we need to updated all connected posts blocks
 			foreach ( $connected_posts as $connected_post_id ) {
@@ -306,7 +306,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 				// Re-add the actions after updates complete
 				add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
-				add_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10, 3 );
+				add_action( 'save_post', array( Gutena_Forms_Form_Schema::get_instance(), 'save_forms_schema' ), 10, 3 );
 
 				self::$updating_connected_posts = false;
 			}
