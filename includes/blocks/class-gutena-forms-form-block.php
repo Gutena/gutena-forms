@@ -53,36 +53,13 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				$html = '<input type="hidden" name="redirect_url" value="' . esc_attr( esc_url( $attributes['redirectUrl'] ) ) . '" />';
 			}
 
-			//google recaptcha
-			$recaptcha_html = '';
-			if ( ! empty( $attributes['recaptcha'] ) && ! empty( $attributes['recaptcha']['enable'] ) && ! empty( $attributes['recaptcha']['site_key'] ) && ! empty( $attributes['recaptcha']['type'] ) ) {
-				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_grecaptcha_scripts' ));
+			// Get form schema structure from attributes for security manager
+			$form_schema = array(
+				'form_attrs' => $attributes,
+			);
 
-				//input box for v2 type only
-				if ( 'v2' === $attributes['recaptcha']['type'] ){
-					$recaptcha_html = '<div class="g-recaptcha" data-sitekey="' . esc_attr( $attributes['recaptcha']['site_key'] ) . '"></div><br>';
-				}
-
-				//input field to check if recaptcha or not
-				$html .= '<input type="hidden" name="recaptcha_enable" value="' . esc_attr( $attributes['recaptcha']['enable'] ) . '" />';
-			}
-
-			//cloudflare turnstile
-			$turnstile_html = '';
-			if ( ! empty( $attributes['cloudflareTurnstile'] ) && ! empty( $attributes['cloudflareTurnstile']['enable'] && ! empty( $attributes['cloudflareTurnstile']['site_key'] ) ) ) {
-
-				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_cloudflare_turnstile_scripts' ));
-
-				$turnstile_html .= '<div
-					class="cf-turnstile"
-					data-sitekey="' . esc_attr( $attributes['cloudflareTurnstile']['site_key'] ) . '"
-					data-theme="light"
-					data-size="normal"
-					data-callback="onSuccess"
-				></div><br />';
-
-				$html .= '<input type="hidden" name="turnstile_enable" value="' . esc_attr( $attributes['cloudflareTurnstile']['enable'] ) . '" />';
-			}
+			// Render all security fields using security manager
+			$security_html = Gutena_Forms_Security_Manager::render_all_fields( $attributes, $form_schema );
 
 			// Add required html
 			if ( ! empty( $html ) ) {
@@ -97,7 +74,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			//Submit Button HTML markup : change link to button tag
 			$content = Gutena_Forms_Helper::str_last_replace(
 				'<a',
-				$recaptcha_html.$turnstile_html.'<button',
+				$security_html.'<button',
 				$content
 			);
 
@@ -146,54 +123,5 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			);
 		}
 
-		/**
-		 * Enqueue Google reCAPTCHA scripts.
-		 *
-		 * @since 1.6.0
-		 */
-		public function enqueue_grecaptcha_scripts() {
-			static $recaptcha_start = 0;
-			if ( 0 === $recaptcha_start  ) {
-				$grecaptcha = get_option( 'gutena_forms_grecaptcha', false );
-				if ( ! empty( $grecaptcha ) && ! empty( $grecaptcha['site_key'] ) && ! empty( $grecaptcha['type'] ) ) {
-
-					wp_enqueue_script(
-						'google-recaptcha',
-						esc_url( 'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. esc_attr( $grecaptcha['site_key'] )  ) ),
-						array(),
-						GUTENA_FORMS_VERSION,
-						false
-					);
-				}
-
-				++$recaptcha_start;
-			}
-		}
-
-		/**
-		 * Enqueue Cloudflare Turnstile scripts.
-		 *
-		 * @since 1.6.0
-		 */
-		public function enqueue_cloudflare_turnstile_scripts() {
-			static $turnstile_start = 0;
-			if ( 0 === $turnstile_start  ) {
-				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
-				if ( ! empty( $cloudflare_turnstile ) && ! empty( $cloudflare_turnstile['site_key'] ) ) {
-					wp_enqueue_script(
-						'cloudflare-turnstile',
-						esc_url( 'https://challenges.cloudflare.com/turnstile/v0/api.js' ),
-						array(),
-						null,
-						array(
-							'defer' => true,
-							'async' => true,
-						)
-					);
-
-					++$turnstile_start;
-				}
-			}
-		}
 	}
 endif;

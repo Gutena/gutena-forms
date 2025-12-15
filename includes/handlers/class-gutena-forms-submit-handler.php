@@ -82,24 +82,11 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 				);
 			}
 
-			//Check for google recaptcha
-			if ( ! empty( $this->form_schema['form_attrs']['recaptcha'] ) && ! empty( $this->form_schema['form_attrs']['recaptcha']['enable'] ) && ! $this->recaptcha_verify() ) {
-				wp_send_json(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Invalid reCAPTCHA', 'gutena-forms' ),
-						'recaptcha_error'	  => isset( $_POST['recaptcha_error'] ) ? sanitize_text_field( $_POST['recaptcha_error'] ) : ''
-					)
-				);
-			}
+			// Verify all security features using the security manager
+			$security_verification = Gutena_Forms_Security_Manager::verify_all( $this->form_schema );
 
-			if ( ! empty( $this->form_schema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $this->form_schema['form_attrs']['cloudflareTurnstile']['enable'] ) && ! $this->cloudflare_turnstile_verify() ) {
-				wp_send_json(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Invalid Cloudflare Turnstile', 'gutena-forms' ),
-					)
-				);
+			if ( true !== $security_verification ) {
+				wp_send_json( $security_verification );
 			}
 
 			$blog_title  = get_bloginfo( 'name' );
@@ -294,102 +281,5 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 			';
 		}
 
-		private function recaptcha_verify() {
-			//check if reCAPTCHA not embedded in the form
-			if ( empty( $_POST['recaptcha_enable'] ) && empty( $_POST['g-recaptcha-response'] ) ) {
-				return true;
-			}
-			//default recaptcha failed is considered as spam
-			$_POST['recaptcha_error'] = 'spam';
-
-			if ( empty( $_POST['g-recaptcha-response'] ) ) {
-				$_POST['recaptcha_error'] = 'Recaptcha input missing';
-				return false;
-			} else {
-				//get reCAPTCHA settings
-				$recaptcha_settings= get_option( 'gutena_forms_grecaptcha', false );
-
-				if ( empty( $recaptcha_settings ) ) {
-					return false;
-				}
-				//verify reCAPTCHA
-				$response = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', array(
-					'body'        => array(
-						'secret' => $recaptcha_settings['secret_key'],
-						'response' => sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) )
-					)
-				));
-
-				if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
-					$_POST['recaptcha_error'] = 'No response from api';
-					return false;//fail to verify
-				}
-
-				$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
-
-				if ( ! empty($api_response) && $api_response['success'] ) {
-
-					$threshold_score = apply_filters( 'gutena_forms_recaptcha_threshold_score', ( empty( $recaptcha_settings['thresholdScore'] ) || $recaptcha_settings['thresholdScore'] < 0.5 ) ? 0.5 : $recaptcha_settings['thresholdScore'] );
-
-					// check the hostname of the site where the reCAPTCHA was solved
-					if ( ! empty( $api_response['hostname'] ) && function_exists( 'get_site_url' ) ) {
-						$site_url = explode( "?", get_site_url() );
-						if ( 5 < strlen( $site_url[0] ) && false === stripos( $site_url[0], $api_response['hostname'] ) ) {
-							$_POST['recaptcha_error'] = 'different hostname';
-							return false;//fail to verify hostname
-						}
-					}
-
-					if ( 'v2' === $recaptcha_settings['type'] ) {
-						return true;//for v2
-					} else if ( isset( $api_response['score'] ) && $api_response['score'] > $threshold_score ) {
-						return	apply_filters( 'gutena_forms_recaptcha_verify', true, $response );
-					} else {
-						return false;//spam
-					}
-				}else{
-					return false;
-				}
-			}
-		}
-
-		/**
-		 * Verify Cloudflare Turnstile
-		 *
-		 * @since 1.3.0
-		 * @return boolean
-		 */
-		private function cloudflare_turnstile_verify() {
-			if ( isset( $_POST['cf-turnstile-response'] ) && ! empty( $_POST['cf-turnstile-response'] ) ) {
-				$token 				  = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
-				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
-
-				if ( empty( $cloudflare_turnstile ) ) {
-					return false;
-				}
-
-				$response = wp_remote_post(
-					'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-					array(
-						'body' => array(
-							'secret' => $cloudflare_turnstile['secret_key'],
-							'response' => $token,
-						),
-					)
-				);
-
-				if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
-					return false;
-				}
-
-				$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
-
-				if ( ! empty( $api_response ) && $api_response['success'] ) {
-					return true;
-				}
-			}
-
-			return false;
-		}
 	}
 endif;

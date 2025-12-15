@@ -63,6 +63,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		public function __construct() {
 			$this->includes();
 			$this->initialize_modules();
+			$this->initialize_security();
 			$this->run();
 		}
 
@@ -83,6 +84,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-dummy-fields.php';
+
+			// Security classes
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/security/class-gutena-forms-security-abstract.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/security/class-gutena-forms-security-manager.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/security/class-gutena-forms-recaptcha.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/security/class-gutena-forms-cloudflare-turnstile.php';
 		}
 
 		/**
@@ -94,6 +101,20 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			$this->submit_handler = Gutena_Forms_Submit_Handler::get_instance();
 			$this->block_registry = Gutena_Forms_Block_Registry::get_instance();
 			$this->form_schema    = Gutena_Forms_Form_Schema::get_instance();
+		}
+
+		/**
+		 * Initialize security implementations
+		 *
+		 * @since 1.6.0
+		 */
+		private function initialize_security() {
+			// Register built-in security implementations
+			Gutena_Forms_Security_Manager::register( 'Gutena_Forms_Recaptcha' );
+			Gutena_Forms_Security_Manager::register( 'Gutena_Forms_Cloudflare_Turnstile' );
+			
+			// Allow third-party plugins to register their own
+			do_action( 'gutena_forms_register_security' );
 		}
 
 		/**
