@@ -24,6 +24,22 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 		private static $instance;
 
 		/**
+		 * Form ID
+		 *
+		 * @since 1.6.0
+		 * @var string $form_id The form ID.
+		 */
+		private $form_id;
+
+		/**
+		 * Form Schema
+		 *
+		 * @since 1.6.0
+		 * @var array $form_schema The form schema.
+		 */
+		private $form_schema;
+
+		/**
 		 * Get the single instance of the class.
 		 *
 		 * @since 1.6.0
@@ -54,10 +70,10 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 				);
 			}
 
-			$formID     = sanitize_key( wp_unslash( $_POST['formid'] ) );
-			$formSchema = get_option( $formID );
+			$this->form_id     = sanitize_key( wp_unslash( $_POST['formid'] ) );
+			$this->form_schema = get_option( $this->form_id );
 
-			if ( empty( $formSchema ) || empty( $formSchema['form_attrs'] ) || empty( $formSchema['form_fields'] ) ) {
+			if ( empty( $this->form_schema ) || empty( $this->form_schema['form_attrs'] ) || empty( $this->form_schema['form_fields'] ) ) {
 				wp_send_json(
 					array(
 						'status'  => 'error',
@@ -67,7 +83,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 			}
 
 			//Check for google recaptcha
-			if ( ! empty( $formSchema['form_attrs']['recaptcha'] ) && ! empty( $formSchema['form_attrs']['recaptcha']['enable'] ) && ! $this->recaptcha_verify() ) {
+			if ( ! empty( $this->form_schema['form_attrs']['recaptcha'] ) && ! empty( $this->form_schema['form_attrs']['recaptcha']['enable'] ) && ! $this->recaptcha_verify() ) {
 				wp_send_json(
 					array(
 						'status'  => 'error',
@@ -77,7 +93,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 				);
 			}
 
-			if ( ! empty( $formSchema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['enable'] ) && ! $this->cloudflare_turnstile_verify() ) {
+			if ( ! empty( $this->form_schema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $this->form_schema['form_attrs']['cloudflareTurnstile']['enable'] ) && ! $this->cloudflare_turnstile_verify() ) {
 				wp_send_json(
 					array(
 						'status'  => 'error',
@@ -87,13 +103,13 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 			}
 
 			$blog_title  = get_bloginfo( 'name' );
-			$from_name =  empty( $formSchema['form_attrs']['emailFromName'] ) ? $blog_title : $formSchema['form_attrs']['emailFromName'];
+			$from_name =  empty( $this->form_schema['form_attrs']['emailFromName'] ) ? $blog_title : $this->form_schema['form_attrs']['emailFromName'];
 			$from_name = sanitize_text_field( $from_name );
 
 			$admin_email = sanitize_email( get_option( 'admin_email' ) );
 
 			// Email To
-			$to = empty( $formSchema['form_attrs']['adminEmails'] ) ? $admin_email : $formSchema['form_attrs']['adminEmails'];
+			$to = empty( $this->form_schema['form_attrs']['adminEmails'] ) ? $admin_email : $this->form_schema['form_attrs']['adminEmails'];
 
 			if ( ! is_array( $to ) ) {
 				$to = explode( ',', $to );
@@ -103,15 +119,15 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 				$to[ $key ] = sanitize_email( wp_unslash( $toEmail ) );
 			}
 
-			$reply_to = empty( $formSchema['form_attrs']['replyToEmail'] ) ? '' : $formSchema['form_attrs']['replyToEmail'];
+			$reply_to = empty( $this->form_schema['form_attrs']['replyToEmail'] ) ? '' : $this->form_schema['form_attrs']['replyToEmail'];
 
 			$reply_to = ( empty( $reply_to ) || empty( $_POST[ $reply_to ] ) ) ? '' : sanitize_email( wp_unslash( $_POST[ $reply_to ] ) );
 
 			//First name field
-			$reply_to_name = empty( $formSchema['form_attrs']['replyToName'] ) ? '' : $formSchema['form_attrs']['replyToName'];
+			$reply_to_name = empty( $this->form_schema['form_attrs']['replyToName'] ) ? '' : $this->form_schema['form_attrs']['replyToName'];
 
 			//Last name field
-			$reply_to_lname = empty( $formSchema['form_attrs']['replyToLastName'] ) ? '' : $formSchema['form_attrs']['replyToLastName'];
+			$reply_to_lname = empty( $this->form_schema['form_attrs']['replyToLastName'] ) ? '' : $this->form_schema['form_attrs']['replyToLastName'];
 
 
 			$reply_to_name = ( empty( $reply_to_name ) || empty( $_POST[ $reply_to_name ] ) ) ? sanitize_key( $reply_to ) : sanitize_text_field( wp_unslash( $_POST[ $reply_to_name ] ) );
@@ -120,8 +136,8 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 
 			//Form submit Data for filter
 			$form_submit_data = array(
-				'formName' => empty( $formSchema['form_attrs']['formName'] ) ? '': $formSchema['form_attrs']['formName'],
-				'formID' => $formSchema['form_attrs']['formID'],
+				'formName' => empty( $this->form_schema['form_attrs']['formName'] ) ? '': $this->form_schema['form_attrs']['formName'],
+				'formID' => $this->form_schema['form_attrs']['formID'],
 				'emailFromName' => $from_name,
 				'replyToEmail' => $reply_to,
 				'replyToFname' => $reply_to_name,
@@ -132,9 +148,9 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 
 
 			// Email Subject
-			$subject = sanitize_text_field( empty( $formSchema['form_attrs']['adminEmailSubject'] ) ? __( 'Form received', 'gutena-forms' ) . '- ' . $blog_title : $formSchema['form_attrs']['adminEmailSubject'] );
+			$subject = sanitize_text_field( empty( $this->form_schema['form_attrs']['adminEmailSubject'] ) ? __( 'Form received', 'gutena-forms' ) . '- ' . $blog_title : $this->form_schema['form_attrs']['adminEmailSubject'] );
 
-			$fieldSchema = $formSchema['form_fields'];
+			$fieldSchema = $this->form_schema['form_fields'];
 			$body        = '';
 
 			foreach ( $_POST as $name_attr => $field_value ) {
@@ -144,7 +160,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 					continue;
 				}
 
-				$field_value = apply_filters( 'gutena_forms_field_value_for_email', $field_value, $fieldSchema[ $name_attr ], $formID );
+				$field_value = apply_filters( 'gutena_forms_field_value_for_email', $field_value, $fieldSchema[ $name_attr ], $this->form_id );
 
 				if ( is_array( $field_value ) ) {
 					$field_value =	Gutena_Forms_Helper::sanitize_array( wp_unslash( $field_value ), true );
@@ -178,7 +194,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 							'field_name' => $field_name,
 							'field_value' => $field_value,
 							'fieldSchema' => $fieldSchema[ $name_attr ],
-							'formID' => $formID,
+							'formID' => $this->form_id,
 						)
 					)
 				);
@@ -192,7 +208,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 						'field_name' => $field_name,
 						'field_value' => $field_value,
 						'fieldSchema' => $fieldSchema[ $name_attr ],
-						'formID' => $formID,
+						'formID' => $this->form_id,
 					)
 				);
 
@@ -200,11 +216,11 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 
 			}
 			//submitted form raw data
-			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $formID, $fieldSchema );
-			do_action( 'gutena_forms_submission', $form_submit_data, $formSchema );
+			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $this->form_id, $fieldSchema );
+			do_action( 'gutena_forms_submission', $form_submit_data, $this->form_schema );
 
 			// If admin don't want to get Email notification
-			if ( isset( $formSchema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $formSchema['form_attrs']['emailNotifyAdmin'] || false === $formSchema['form_attrs']['emailNotifyAdmin'] || '0' == $formSchema['form_attrs']['emailNotifyAdmin'] ) ) {
+			if ( isset( $this->form_schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->form_schema['form_attrs']['emailNotifyAdmin'] || false === $this->form_schema['form_attrs']['emailNotifyAdmin'] || '0' == $this->form_schema['form_attrs']['emailNotifyAdmin'] ) ) {
 				wp_send_json(
 					array(
 						'status'  => 'Success',

@@ -14,81 +14,15 @@
  * @package           gutena-forms
  */
 
-
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Plugin dir path
- */
-if ( ! defined( 'GUTENA_FORMS_FILE' ) ) {
-	define( 'GUTENA_FORMS_FILE',  __FILE__ );
-}
-
-/**
- * Plugin dir path
- */
-if ( ! defined( 'GUTENA_FORMS_DIR_PATH' ) ) {
-	define( 'GUTENA_FORMS_DIR_PATH',  plugin_dir_path( __FILE__ ) );
-}
-
-/**
- * Plugin url
- */
-if ( ! defined( 'GUTENA_FORMS_PLUGIN_URL' ) ) {
-	define( 'GUTENA_FORMS_PLUGIN_URL', esc_url( trailingslashit( plugins_url( '', __FILE__ ) ) ) );
-}
-
-/**
- * Plugin version.
- */
-if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-	define( 'GUTENA_FORMS_VERSION', '1.5.0' );
-}
-
-if ( ! function_exists( 'gutena_forms__fs' ) ) :
-	/**
-	 * Initialize Freemius.
-	 *
-	 * @since 1.3.0
-	 * @throws Freemius_Exception If unable to load Freemius.
-	 * @return Freemius
-	 */
-	function gutena_forms__fs() {
-		global $gutena_forms__fs;
-
-		if ( is_null( $gutena_forms__fs ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'vendor/freemius/start.php';
-			$gutena_forms__fs = fs_dynamic_init(
-				array(
-					'id'                  => '20975',
-					'slug'                => 'gutena-forms',
-					'type'                => 'plugin',
-					'public_key'          => 'pk_d66286e6558c1d5d6a4ccf3304cfb',
-					'is_premium'          => false,
-					'has_addons'          => true,
-					'has_paid_plans'      => false,
-					'menu'                => array(
-						'slug'       => 'gutena-forms',
-						'contact'    => false,
-						'support'    => false,
-						'account'    => false,
-						'first-path' => 'admin.php?page=gutena-forms&pagetype=introduction',
-					),
-				)
-			);
-		}
-
-		return $gutena_forms__fs;
-	}
-
-	gutena_forms__fs();
-	do_action( 'gutena_forms__fs_loaded' );
-endif;
+include_once plugin_dir_path( __FILE__ ) . 'constants.php';
+include_once GUTENA_FORMS_DIR_PATH . 'freemius.php';
 
 /**
  * Abort if the class is already exists.
  */
-if ( ! class_exists( 'Gutena_Forms' ) ) {
+if ( ! class_exists( 'Gutena_Forms' ) ) :
 	class Gutena_Forms {
 
 		// The instance of this class
@@ -196,14 +130,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			return $prev_links;
 		}
 
-		//load form dashboard
 		private function load_dashboard() {
 			if ( ! class_exists( 'Gutena_Forms_Admin' ) && file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-admin.php' ) ) {
 				require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-admin.php';
 			}
 		}
 
-		// Register Gutena category if not exists
 		public function register_category( $block_categories, $editor_context ) {
 			$fields = wp_list_pluck( $block_categories, 'slug' );
 
@@ -226,5 +158,4 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 	}
 
 	Gutena_Forms::get_instance();
-
-}
+endif;
