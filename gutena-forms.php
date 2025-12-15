@@ -583,6 +583,19 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				$html .= '<input type="hidden" name="turnstile_enable" value="' . esc_attr( $attributes['cloudflareTurnstile']['enable'] ) . '" />';
 			}
 
+			$honeypot_html = '';
+			if ( ! empty( $attributes['honeypot'] ) && ! empty( $attributes['honeypot']['enable'] ) && $attributes['honeypot']['enable'] ) {
+				$time_check_value = ! empty( $attributes['honeypot']['timeCheckValue'] )
+					? intval( $attributes['honeypot']['timeCheckValue'] )
+					: 4; // default 4 seconds
+				// we need to different hidden fields 1 for checking time second for check honeypot
+				$honeypot_html .= '<div style="display:none;">
+					<label for="gf_hp_' . esc_attr( $attributes['formID'] ) . '">' . esc_html__( 'Leave this field empty', 'gutena-forms' ) . '</label>
+					<input type="text" name="gf_hp_' . esc_attr( $attributes['formID'] ) . '" id="gf_hp_' . esc_attr( $attributes['formID'] ) . '" value="" />
+					<input type="hidden" name="gf_time_check_' . esc_attr( $attributes['formID'] ) . '" value="' . esc_attr( time() + $time_check_value ) . '" />
+				</div>';
+
+			}
 			// Add required html
 			if ( ! empty( $html ) ) {
 				$content = preg_replace(
@@ -596,7 +609,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			//Submit Button HTML markup : change link to button tag
 			$content = $this->str_last_replace(
 				'<a',
-				$recaptcha_html.$turnstile_html.'<button',
+				$recaptcha_html . $turnstile_html . $honeypot_html . '<button',
 				$content
 			);
 
@@ -957,6 +970,50 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				);
 			}
 
+			// Check for honeypot field validation
+			if ( ! empty( $formSchema['form_attrs']['honeypot'] ) && ! empty( $formSchema['form_attrs']['honeypot']['enable'] ) && $formSchema['form_attrs']['honeypot']['enable'] ) {
+				$honeypot_field_name = 'gf_hp_' . sanitize_text_field( wp_unslash( $_POST['formid'] ) );
+				$time_check_field_name = 'gf_time_check_' . sanitize_text_field( wp_unslash( $_POST['formid'] ) );
+
+				// Check if honeypot field was filled (if filled, it's spam)
+				if ( isset( $_POST[ $honeypot_field_name ] ) && ! empty( $_POST[ $honeypot_field_name ] ) ) {
+					wp_send_json(
+						array(
+							'status'  => 'error',
+							'message' => __( 'Spam detected', 'gutena-forms' ),
+						)
+					);
+				}
+
+				// Check time-based validation (if submitted too quickly, it's likely spam)
+				if ( isset( $_POST[ $time_check_field_name ] ) && ! empty( $_POST[ $time_check_field_name ] ) ) {
+					$time_check_value = intval( $_POST[ $time_check_field_name ] );
+					$time_limit = ! empty( $formSchema['form_attrs']['honeypot']['timeCheckValue'] )
+						? intval( $formSchema['form_attrs']['honeypot']['timeCheckValue'] )
+						: 4; // default 4 seconds
+
+					// If current time is less than the stored time, form was submitted too quickly
+					// The stored time is: time() + time_limit when form was rendered
+					// So if current time < stored time, it means form was submitted before time_limit seconds passed
+					if ( time() < $time_check_value ) {
+						wp_send_json(
+							array(
+								'status'  => 'error',
+								'message' => __( 'Form submitted too quickly. Please try again.', 'gutena-forms' ),
+							)
+						);
+					}
+				} else {
+					// Time check field is missing, which could indicate tampering
+					wp_send_json(
+						array(
+							'status'  => 'error',
+							'message' => __( 'Invalid form submission', 'gutena-forms' ),
+						)
+					);
+				}
+			}
+
 			$blog_title  = get_bloginfo( 'name' );
 			$from_name =  empty( $formSchema['form_attrs']['emailFromName'] ) ? $blog_title : $formSchema['form_attrs']['emailFromName'];
 			$from_name = sanitize_text_field( $from_name );
@@ -1010,6 +1067,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			foreach ( $_POST as $name_attr => $field_value ) {
 				$name_attr   = sanitize_key( wp_unslash( $name_attr ) );
+
+				// Skip honeypot and time check fields from email
+				if ( strpos( $name_attr, 'gf_hp_' ) === 0 || strpos( $name_attr, 'gf_time_check_' ) === 0 ) {
+					continue;
+				}
 
 				if ( empty( $fieldSchema[ $name_attr ] ) || ( ! empty( $fieldSchema[ $name_attr ][ 'fieldType' ] ) && 'optin' == $fieldSchema[ $name_attr ][ 'fieldType' ] ) ) {
 					continue;
