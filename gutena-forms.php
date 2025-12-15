@@ -64,6 +64,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			$this->includes();
 			$this->initialize_modules();
 			$this->initialize_security();
+			$this->initialize_email();
 			$this->run();
 		}
 
@@ -90,6 +91,13 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/security/class-gutena-forms-security-manager.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/security/class-gutena-forms-recaptcha.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/security/class-gutena-forms-cloudflare-turnstile.php';
+
+			// Email classes
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/email/class-gutena-forms-email-abstract.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/email/class-gutena-forms-email-manager.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/email/class-gutena-forms-email-admin.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/email/class-gutena-forms-email-user.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/email/class-gutena-forms-email-weekly-report.php';
 		}
 
 		/**
@@ -115,6 +123,18 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			
 			// Allow third-party plugins to register their own
 			do_action( 'gutena_forms_register_security' );
+		}
+
+		/**
+		 * Initialize email implementations
+		 *
+		 * @since 1.6.0
+		 */
+		private function initialize_email() {
+			// Register email classes
+			Gutena_Forms_Email_Manager::register( 'admin_notification', 'Gutena_Forms_Email_Admin' );
+			Gutena_Forms_Email_Manager::register( 'user_autoresponder', 'Gutena_Forms_Email_User' );
+			Gutena_Forms_Email_Manager::register( 'weekly_report', 'Gutena_Forms_Email_Weekly_Report' );
 		}
 
 		/**

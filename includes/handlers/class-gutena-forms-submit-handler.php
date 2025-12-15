@@ -93,19 +93,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 			$from_name =  empty( $this->form_schema['form_attrs']['emailFromName'] ) ? $blog_title : $this->form_schema['form_attrs']['emailFromName'];
 			$from_name = sanitize_text_field( $from_name );
 
-			$admin_email = sanitize_email( get_option( 'admin_email' ) );
-
-			// Email To
-			$to = empty( $this->form_schema['form_attrs']['adminEmails'] ) ? $admin_email : $this->form_schema['form_attrs']['adminEmails'];
-
-			if ( ! is_array( $to ) ) {
-				$to = explode( ',', $to );
-			}
-
-			foreach ( $to as $key => $toEmail ) {
-				$to[ $key ] = sanitize_email( wp_unslash( $toEmail ) );
-			}
-
 			$reply_to = empty( $this->form_schema['form_attrs']['replyToEmail'] ) ? '' : $this->form_schema['form_attrs']['replyToEmail'];
 
 			$reply_to = ( empty( $reply_to ) || empty( $_POST[ $reply_to ] ) ) ? '' : sanitize_email( wp_unslash( $_POST[ $reply_to ] ) );
@@ -115,7 +102,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 
 			//Last name field
 			$reply_to_lname = empty( $this->form_schema['form_attrs']['replyToLastName'] ) ? '' : $this->form_schema['form_attrs']['replyToLastName'];
-
 
 			$reply_to_name = ( empty( $reply_to_name ) || empty( $_POST[ $reply_to_name ] ) ) ? sanitize_key( $reply_to ) : sanitize_text_field( wp_unslash( $_POST[ $reply_to_name ] ) );
 
@@ -131,11 +117,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 				'replyToLname' => $reply_to_lname
 			);
 
-			$reply_to_name = $reply_to_name .' '.$reply_to_lname;
-
-
-			// Email Subject
-			$subject = sanitize_text_field( empty( $this->form_schema['form_attrs']['adminEmailSubject'] ) ? __( 'Form received', 'gutena-forms' ) . '- ' . $blog_title : $this->form_schema['form_attrs']['adminEmailSubject'] );
 
 			$fieldSchema = $this->form_schema['form_fields'];
 			$body        = '';
@@ -206,8 +187,18 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $this->form_id, $fieldSchema );
 			do_action( 'gutena_forms_submission', $form_submit_data, $this->form_schema );
 
-			// If admin don't want to get Email notification
-			if ( isset( $this->form_schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->form_schema['form_attrs']['emailNotifyAdmin'] || false === $this->form_schema['form_attrs']['emailNotifyAdmin'] || '0' == $this->form_schema['form_attrs']['emailNotifyAdmin'] ) ) {
+			// Prepare email data for email manager
+			$email_data = array(
+				'form_schema'     => $this->form_schema,
+				'form_submit_data' => $form_submit_data,
+				'body'            => $body,
+			);
+
+			// Send admin notification email
+			$admin_email_result = Gutena_Forms_Email_Manager::send_admin_notification( $email_data );
+
+			// If admin email notification is disabled, return success
+			if ( is_wp_error( $admin_email_result ) && 'email_not_enabled' === $admin_email_result->get_error_code() ) {
 				wp_send_json(
 					array(
 						'status'  => 'Success',
@@ -217,42 +208,8 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 				);
 			}
 
-			//Email headers
-			$headers = array(
-				'Content-Type: text/html; charset=UTF-8',
-				'From: ' . esc_html( $from_name ) . ' <' . $admin_email . '>',
-			);
-			//Add reply to header
-			if ( ! empty( $reply_to ) ) {
-				array_push(
-					$headers,
-					'Reply-To: ' . esc_html( $reply_to_name ) . ' <' . $reply_to . '>'
-				);
-			}
-
-			//Apply filter for admin email notification
-			$body    = apply_filters( 'gutena_forms_submit_admin_notification', $body, $form_submit_data );
-
-			if ( ! Gutena_Forms_Helper::has_pro() ) {
-				/**
-				 * https://stackoverflow.com/questions/17602400/html-email-in-gmail-css-style-attribute-removed
-				 */
-				$body .= '<div style="background-color: #fffbeb; width: fit-content; margin-top: 50px; padding: 14px 15px 12px 15px; border-radius: 10px;" > <span style="font-size: 13px; line-height: 1; display: flex;" > <span style="margin-right: 5px;" > </span> <span style="margin-right: 3px;" ><strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong></span> '. __( 'Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="'.esc_url( admin_url( 'admin.php?page=gutena-forms' ) ).'" style="color: #E35D3F; margin-left: 1rem;" target="_blank" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </a></strong></span></div>';
-			}
-
-			$body    = wpautop( $body, true );
-			$body 	 = $this->email_html_body( $body, $subject );
-			$subject = esc_html( $subject );
-			$res     = wp_mail( $to, $subject, $body, $headers );
-
-			if ( $res ) {
-				wp_send_json(
-					array(
-						'status'  => 'Success',
-						'message' => __( 'success', 'gutena-forms' ),
-					)
-				);
-			} else {
+			// If admin email failed, return error
+			if ( is_wp_error( $admin_email_result ) ) {
 				wp_send_json(
 					array(
 						'status'  => 'error',
@@ -261,24 +218,19 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Handler' ) ) :
 					)
 				);
 			}
-		}
 
-		private function email_html_body ( $body, $subject ) {
-			$lang = function_exists( 'get_language_attributes' ) ? get_language_attributes('html') : 'lang="en"';
-			return '
-			<!DOCTYPE html>
-			<html '. $lang .'>
-				<head>
-				<meta http-equiv="X-UA-Compatible" content="IE=edge">
-				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1">
-				<title>'.$subject.'</title>
-				</head>
-				<body style="margin:0;padding:0;background:#ffffff;">
-				'.$body.'
-				</body>
-			</html>
-			';
+			// If admin email succeeded, try to send user auto-responder
+			if ( true === $admin_email_result ) {
+				Gutena_Forms_Email_Manager::send_user_autoresponder( $email_data );
+			}
+
+			// Return success
+			wp_send_json(
+				array(
+					'status'  => 'Success',
+					'message' => __( 'success', 'gutena-forms' ),
+				)
+			);
 		}
 
 	}

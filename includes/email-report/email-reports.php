@@ -119,14 +119,13 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 		 * Send weekly forms report email.
 		 */
 		public function gutena_forms_weekly_report() {
-			$headers  = array(
-				'Content-Type: text/html; charset=UTF-8',
+			// Prepare email data
+			$email_data = array(
+				'report_content' => $this->get_email_content(),
 			);
-			$subject  = __( 'Your Weekly Gutena Form Report', 'gutena-forms' );
-			$settings = get_option( 'gutena_forms_weekly_report' );
-			$email    = is_array( $settings ) && ! empty( $settings['recipient_email'] ) ? $settings['recipient_email'] : '';
 
-			wp_mail( $email, $subject, $this->get_email_content(), $headers );
+			// Send weekly report email using email manager
+			Gutena_Forms_Email_Manager::send_weekly_report( $email_data );
 		}
 
 		/**
