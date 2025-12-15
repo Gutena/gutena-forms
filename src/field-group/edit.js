@@ -20,12 +20,17 @@ export default function edit( {
 			},
 			[
 				[
-					'core/heading',
+					'gutena-forms/form-labels',
 					{
 						level: 3,
 						content: attributes.fieldLabelContent,
 						placeholder: attributes.fieldLabel,
 						className: 'heading-input-label-gutena',
+						htmlFor: '' === attributes.fieldLabelContent
+							? ''
+							: attributes.fieldLabelContent
+								.toLowerCase()
+								.replace( / /g, '_' )
 					},
 				],
 				[
@@ -34,7 +39,7 @@ export default function edit( {
 						fieldType: attributes.fieldType,
 						fieldName: attributes.fieldLabelContent,
 						nameAttr:
-							'' == attributes.fieldLabelContent
+							'' === attributes.fieldLabelContent
 								? ''
 								: attributes.fieldLabelContent
 										.toLowerCase()

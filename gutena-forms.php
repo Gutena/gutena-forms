@@ -171,6 +171,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				)
 			);
 
+			register_block_type( __DIR__ . '/build/form-labels' );
+
 			// Field group Block
 			register_block_type( __DIR__ . '/build/field-group' );
 
@@ -379,6 +381,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			// Text type Input
 			if ( in_array( $attributes['fieldType'], array( 'text', 'email', 'number' ) ) ) {
 				$output = '<input
+				id="' . $attributes['nameAttr'] . '"
 				' . $this->get_field_attribute( $attributes, array(
 					'nameAttr' 		=> 'name',
 					'fieldType' 	=> 'type',
@@ -400,6 +403,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			if ( 'range' === $attributes['fieldType'] ) {
 				$output = '<div class="gf-range-container">
 				<input
+				id="' . $attributes['nameAttr'] . '"
 				' . $this->get_field_attribute( $attributes, array(
 					'nameAttr' 		=> 'name',
 					'fieldType' 	=> 'type',
@@ -446,6 +450,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			// Textarea type Input
 			if ( 'textarea' === $attributes['fieldType'] ) {
 				$output = '<textarea
+				id="' . $attributes['nameAttr'] . '"
 				' . $this->get_field_attribute( $attributes, array(
 					'nameAttr' 		=> 'name',
 					'textAreaRows' 	=> 'rows',
@@ -460,6 +465,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			// Select type Input
 			if ( 'select' === $attributes['fieldType'] ) {
 				$output = '<select
+				id="' . $attributes['nameAttr'] . '"
 				' . $this->get_field_attribute( $attributes, array(
 					'nameAttr' 		=> 'name',
 					'fieldClasses' 	=> 'class',
