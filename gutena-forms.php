@@ -205,6 +205,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				)
 			);
 
+			register_block_type( __DIR__ . '/build/field-group' );
+
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
 
