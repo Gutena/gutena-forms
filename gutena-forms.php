@@ -146,6 +146,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action( 'wp_ajax_gutena_forms_submit', array( $this, 'submit_form' ) );
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( $this, 'submit_form' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
+			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
 			$this->load_dashboard();
 		}
 
@@ -252,6 +253,26 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		}
 
 		private function register_field_groups() {
+			$fields    = apply_filters( 'gutena_forms__register_fields', array() );
+			$group_dir = __DIR__ . '/build/form-fields/';
+
+			usort(
+				$fields,
+				function ( $a, $b ) {
+					return strcmp( $a['title'], $b['title'] );
+				}
+			);
+
+			foreach ( $fields as $field => $field_args ) {
+				if ( file_exists( $group_dir . $field_args['dir'] . '/block.json' ) ) {
+					register_block_type( $group_dir . $field_args['dir'] );
+				} elseif ( file_exists( $field_args['dir'] . '/block.json' ) ) {
+					register_block_type( $field_args['dir'] );
+				}
+			}
+		}
+
+		public function register_fields( $blocks ) {
 			$fields = array(
 				'text-field-group'     => array(
 					'name'  => 'gutena/text-field-group',
@@ -309,23 +330,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				),
 			);
 
-			$fields = apply_filters( 'gutena_forms__register_fields', $fields );
-			$group_dir = __DIR__ . '/build/form-fields/';
-
-			usort(
-				$fields,
-				function ( $a, $b ) {
-					return strcmp( $a['title'], $b['title'] );
-				}
-			);
-
-			foreach ( $fields as $field => $field_args ) {
-				if ( file_exists( $group_dir . $field_args['dir'] . '/block.json' ) ) {
-					register_block_type( $group_dir . $field_args['dir'] );
-				} elseif ( file_exists( $field_args['dir'] . '/block.json' ) ) {
-					register_block_type( $field_args['dir'] );
-				}
+			foreach ( $fields as $k => $field ) {
+				$blocks[ $k ] = $field;
 			}
+
+			return $blocks;
 		}
 
 		public function register_blocks_styles() {
@@ -387,13 +396,13 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			if ( ! empty( $editor_context->post ) && ! in_array( 'gutena', $fields, true ) ) {
 				$block_categories[] = array(
 					'slug' => 'gutena',
-					'title' => __('Gutena', 'gutena-forms'),
+					'title' => __( 'Gutena Forms General Fields', 'gutena-forms' ),
 				);
 
 				if ( ! is_gutena_forms_pro() ) {
 					$block_categories[] = array(
 						'slug' => 'gutena-pro',
-						'title' => 'Gutena Forms Pro',
+						'title' => __( 'Gutena Forms Premium Fields', 'gutena-forms' ),
 					);
 				}
 			}

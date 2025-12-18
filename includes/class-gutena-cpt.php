@@ -26,6 +26,8 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_footer', array( $this, 'admin_footer' ) );
 			add_filter( 'block_categories_all', array( $this, 'move_gutena_to_top' ), 100, 2 );
+			// only gutena blocks in gutena forms cpt
+			add_filter( 'allowed_block_types_all', array( $this, 'only_gutena_blocks' ), 10, 2 );
 		}
 
 		public function init() {
@@ -481,6 +483,26 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			}
 
 			return $block_categories;
+		}
+
+		/**
+		 * Allowed blocks only gutena in gutena forms cpt
+		 * @param array|true 			  $allowed_blocks Array of allowed block names, or true to allow all blocks.
+		 * @param WP_Block_Editor_Context $editor_context Editor context object.
+		 *
+		 * @return array|true
+		 */
+		public function only_gutena_blocks( $allowed_blocks, $editor_context ) {
+			if ( $this->post_type === $editor_context->post->post_type ) {
+				$blocks 		= apply_filters( 'gutena_forms__register_fields', [] );
+				$allowed_blocks = array();
+				foreach ( $blocks as $k => $block ) {
+					$allowed_blocks[] = $block['name'];
+				}
+				return $allowed_blocks;
+			}
+
+			return $allowed_blocks;
 		}
 
 		public static function get_instance() {
