@@ -26,8 +26,9 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_footer', array( $this, 'admin_footer' ) );
 			add_filter( 'block_categories_all', array( $this, 'move_gutena_to_top' ), 100, 2 );
-			// only gutena blocks in gutena forms cpt
-			add_filter( 'allowed_block_types_all', array( $this, 'only_gutena_blocks' ), 10, 2 );
+			/**
+			 * add_filter( 'allowed_block_types_all', array( $this, 'only_gutena_blocks' ), 10, 2 );
+			 */
 		}
 
 		public function init() {
