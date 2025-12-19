@@ -460,30 +460,25 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 		 * @return array
 		 */
 		public function move_gutena_to_top( $block_categories, $editor_context ) {
-			if ( ! empty( $editor_context->post->post_type ) && 'gutena_forms' === $editor_context->post->post_type ) {
-				$new_categories = array();
+			$new_categories = array();
+			$indexes       = array();
 
-				$indexes = array();
-
-				foreach ( $block_categories as $index => $category ) {
-					if ( 'gutena' === $category['slug'] || 'gutena-pro' === $category['slug'] ) {
-						$indexes[] = $index;
-						$new_categories[] = $category;
-					}
+			foreach ( $block_categories as $index => $category ) {
+				if ( 'gutena' === $category['slug'] || 'gutena-pro' === $category['slug'] ) {
+					$indexes[] 		  = $index;
+					$new_categories[] = $category;
 				}
-
-				if ( isset( $indexes[0] ) && isset( $block_categories[ $indexes[0] ] ) ) {
-					unset( $block_categories[ $indexes[0] ] );
-				}
-
-				if ( isset( $indexes[1] ) && isset( $block_categories[ $indexes[1] ] ) ) {
-					unset( $block_categories[ $indexes[1] ] );
-				}
-
-				return array_merge( $new_categories, $block_categories );
 			}
 
-			return $block_categories;
+			if ( isset( $indexes[0] ) && isset( $block_categories[ $indexes[0] ] ) ) {
+				unset( $block_categories[ $indexes[0] ] );
+			}
+
+			if ( isset( $indexes[1] ) && isset( $block_categories[ $indexes[1] ] ) ) {
+				unset( $block_categories[ $indexes[1] ] );
+			}
+
+			return array_merge( $new_categories, $block_categories );
 		}
 
 		/**
