@@ -8,7 +8,6 @@ import save from './save';
 import metadata from './block.json';
 import { gutenaFormsIcon } from './icon';
 import { Icon } from '@wordpress/components';
-import { subscribe } from '@wordpress/data';
 
 
 registerBlockType( metadata, {
@@ -169,8 +168,9 @@ domReady( () => {
 });
 
 if ( ! gutenaFormsBlock.is_pro ) {
-	subscribe( () => {
-		let elements = [
+	setInterval( function () {
+		var elements;
+		elements = [
 			'editor-block-list-item-gutena-date-field-group',
 			'editor-block-list-item-gutena-time-field-group',
 			'editor-block-list-item-gutena-phone-field-group',
@@ -192,7 +192,33 @@ if ( ! gutenaFormsBlock.is_pro ) {
 				el[0].style.userSelect = 'none';
 				el[0].style.opacity = '0.5';
 				el[0].setAttribute('disabled', 'true');
+				el[0].parentNode.addEventListener(
+					'click',
+					function ( e ) {
+						window.open( 'https://gutenaforms.com/pricing/?utm_source=editor&utm_medium=website&utm_campaign=free_plugin', '_blank' );
+					}
+				);
 			}
 		} );
-	} );
+
+		const strContains = ( str, substr ) => {
+			return str.indexOf( substr ) !== -1;
+		}
+		elements = document.getElementsByClassName( 'block-editor-inserter__panel-title' );
+
+		if ( elements.length ) {
+			for ( var i = 0; i < elements.length; i++ ) {
+				var el = elements[i];
+				if ( strContains( el.innerText, 'GUTENA FORMS PRO' ) ) {
+					el.innerHTML = `<h2 class="block-editor-inserter__panel-title">
+						${ 'Gutena Forms Premium Fields' }
+						<br />
+						<a target="_blank" href="https://gutenaforms.com/pricing/?utm_source=editor&utm_medium=website&utm_campaign=free_plugin" style="background-color: #2ab399;color: #fff;padding: 10px;font-size: 12px;border: none;border-radius: 4px;cursor: pointer;transition: background-color .3s;margin-top: 16px;max-width: 280px;width: 100%;font-weight: 600;display: block;text-decoration: none;">
+							Upgrade to Unlock these fields
+						</a>
+					</h2>`
+				}
+			}
+		}
+	}, 100 );
 }

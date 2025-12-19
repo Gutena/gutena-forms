@@ -402,7 +402,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				if ( ! is_gutena_forms_pro() ) {
 					$block_categories[] = array(
 						'slug' => 'gutena-pro',
-						'title' => __( 'Gutena Forms Premium Fields', 'gutena-forms' ),
+						'title' => __( 'Gutena Forms Pro', 'gutena-forms' ),
 					);
 				}
 			}
