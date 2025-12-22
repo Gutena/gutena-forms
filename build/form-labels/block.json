@@ -1,13 +1,13 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 2,
-  "name": "gutena-forms/form-labels",
+  "name": "gutena/field-label",
   "version": "1.0.0",
   "title": "Form Labels",
   "category": "widgets",
   "icon": "editor-justify",
   "parent": [
-    "gutena/forms"
+    "gutena/field-group"
   ],
   "description": "A block to display form labels in Gutena Forms.",
   "supports": {

@@ -171,10 +171,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				)
 			);
 
-			register_block_type( __DIR__ . '/build/form-labels' );
+		// Field group Block (register first)
+		register_block_type( __DIR__ . '/build/field-group' );
 
-			// Field group Block
-			register_block_type( __DIR__ . '/build/field-group' );
+		// Form Labels Block
+		register_block_type( __DIR__ . '/build/form-labels' );
 
 			// Form Confirmation Message Block
 			register_block_type( __DIR__ . '/build/form-confirm-msg' );
