@@ -175,7 +175,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		register_block_type( __DIR__ . '/build/field-group' );
 
 		// Form Labels Block
-		register_block_type( __DIR__ . '/build/form-labels' );
+		register_block_type( __DIR__ . '/build/form-labels', array(
+			'render_callback' => array( $this, 'render_form_labels' ),
+		) );
 
 			// Form Confirmation Message Block
 			register_block_type( __DIR__ . '/build/form-confirm-msg' );
@@ -355,6 +357,18 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 			return isset( $attributes[ $key ] ) ? esc_attr( $attributes[ $key ] ): '';
+		}
+
+		public function render_form_labels( $attributes ) {
+			ob_start();
+
+			echo '<label
+				for="' . esc_attr( $attributes['htmlFor'] ) . '"
+			>'
+				. esc_attr( $attributes['content'] ) .
+			'</label>';
+
+			return ob_get_clean();
 		}
 
 		// render_callback : form field
