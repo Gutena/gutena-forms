@@ -346,7 +346,7 @@ Gutena Forms gives you full control over padding, colors, spacing, typography, f
 
 == Changelog ==
 = 1.5.0 - Dec 23, 2025 =
-* NEW - Individual form fields block
+* NEW - Individual form fields block.
 
 = 1.4.3 - Dec 10, 2025 =
 * FIX - Removed existing form block.
