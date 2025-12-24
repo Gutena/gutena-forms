@@ -89,11 +89,6 @@
 		}
 	}
 
-	.gutena-froms__container {
-		margin-top: 20px;
-		padding: 0 40px;
-	}
-
 	.gutena-forms__forms-header {
 		display: flex;
 		justify-content: flex-start;
@@ -101,6 +96,123 @@
 
 		.gutena-froms__primary-button {
 			margin-left: 20px;
+		}
+	}
+
+	.gutena-froms__settings-layout {
+
+		&:after {
+			content: "";
+			display: table;
+			clear: both;
+		}
+
+		.gutena-forms__main-content-container {
+			width: calc( 100% - 210px );
+
+			.gutena-forms__container {
+				padding: 35px 70px;
+			}
+
+
+			h1 {
+				color: #000;
+				font-size: 16px;
+				font-weight: 700;
+			}
+
+			p {
+				color: #000;
+				font-size: 12px;
+				font-weight: 400;
+			}
+
+			.gutena-forms__settings-meta-box {
+				border-radius: 10px;
+				border: 1px solid #e2e2e2;
+				background: #ffffff;
+				padding: 20px;
+				width: 760px;
+			}
+		}
+
+		.gutena-forms__left-menu-navigation {
+			width: 200px;
+			background: #ffffff;
+			border-right: 0.5px solid #E2E2E2;
+			min-height: calc( 100vh - 45px - 32px - 66px );
+
+			.gutena-forms__container {
+				padding: 10px;
+			}
+
+			.gutena-forms__accordion-header {
+				cursor: pointer;
+				user-select: none;
+				border-radius: 4px;
+				background: #F0FFFC;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				height: 35px;
+				padding: 0 20px;
+
+				svg {
+					margin-top: 5px;
+				}
+
+				.gutena-forms__accordion-title {
+					color: #424D55;
+					font-size: 12px;
+					font-weight: 500;
+				}
+
+				.gutena-forms__accordion-arrow {
+					&.closed {
+						transform: rotate(-180deg);
+					}
+				}
+			}
+
+			.gutena-forms__accordion-items {
+				padding: 0 20px 0 28px;
+				margin-top: 10px;
+
+				&.closed {
+					display: none;
+				}
+			}
+			.gutena-forms__accordion-item {
+				border-left: 1px solid #e2e2e2;
+				padding-left: 10px;
+
+				&:last-child {
+					a {
+						margin-bottom: 0;
+					}
+				}
+
+				a {
+					line-height: 30px;
+					color: #6E7376;
+					font-size: 12px;
+					font-weight: 500;
+					text-decoration: none;
+					display: inline-block;
+					width: 100%;
+					margin-bottom: 14px;
+					box-shadow: none;
+					padding: 0 6px;
+					border: 1px solid transparent;
+
+					&.active {
+						border-radius: 4px;
+						background: #F0FFFC;
+						color: #424D55;
+						border: 1px solid #46BEA8;
+					}
+				}
+			}
 		}
 	}
 }

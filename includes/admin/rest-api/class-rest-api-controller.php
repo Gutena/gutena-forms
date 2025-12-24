@@ -77,11 +77,11 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 
 			register_rest_route(
 				self::$namespace,
-				'/forms-list',
+				'/left-navigation-menus',
 				array(
 					'permission_callback' => array( self::class, 'permission_callback' ),
 					'methods'             => 'GET',
-					'callback'			  => array( $this, 'get_forms_list' ),
+					'callback'			  => array( $this, 'get_left_navigation_menus' ),
 				)
 			);
 		}
@@ -110,7 +110,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 				),
 				array(
 					'title' => __( 'Settings', 'gutena-forms' ),
-					'slug'  => '/settings',
+					'slug'  => '/settings/manage-status',
 				),
 				array(
 					'title'    => __( 'Feature Request', 'gutena-forms' ),
@@ -138,6 +138,69 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'menus'   => array(),
 					'status'  => 404,
 					'message' => __( 'No menus found.', 'gutena-forms' ),
+				)
+			);
+		}
+
+		/**
+		 * Get left navigation menus callback
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request The REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function get_left_navigation_menus( $request ) {
+			$menus = array(
+				array(
+					'title' => __( 'General Settings', 'gutena-forms' ),
+					'icon'  => 'Gear',
+					'menus' => array(
+						array(
+							'title' => __( 'Manage Status', 'gutena-forms' ),
+							'slug'  => 'manage-status',
+						),
+						array(
+							'title' => __( 'Manage Tags', 'gutena-forms' ),
+							'slug'  => 'manage-tags',
+						),
+						array(
+							'title' => __( 'User Access', 'gutena-forms' ),
+							'slug'  => 'user-access',
+						),
+						array(
+								'title' => __( 'Weekly Summary', 'gutena-forms' ),
+								'slug'  => 'weekly-summary',
+							),
+						)
+				),
+				array(
+					'title' => __( 'Spam Protection', 'gutena-forms' ),
+					'icon'  => 'Shield',
+					'menus' => array(
+						array(
+							'title' => __( 'Honeypot', 'gutena-forms' ),
+							'slug'  => 'honeypot',
+						),
+					),
+				)
+			);
+
+			if ( is_array( $menus ) && ! empty( $menus ) ) {
+				return rest_ensure_response(
+					array(
+						'menus'   => $menus,
+						'status'  => 200,
+						'message' => __( 'Left navigation menus fetched successfully.', 'gutena-forms' ),
+					)
+				);
+			}
+
+			return rest_ensure_response(
+				array(
+					'menus'   => array(),
+					'status'  => 404,
+					'message' => __( 'No left navigation menus found.', 'gutena-forms' ),
 				)
 			);
 		}

@@ -1,5 +1,5 @@
-import { Routes, Route } from 'react-router';
-import GutenaFormsSettings from '../components/gutena-froms-settings'
+import {Routes, Route, useParams} from 'react-router';
+import GutenaFormsSettingsLayout from '../layouts/gutena-forms-settings-layout';
 
 const GutenaFormsBody = () => {
 
@@ -7,7 +7,10 @@ const GutenaFormsBody = () => {
 		<Routes>
 			<Route
 				path={ 'settings/:slug/' }
-				element={ <GutenaFormsSettings /> }
+			/>
+			<Route
+				path={ 'settings/settings/:settings_id/' }
+				element={ <GutenaFormsSettingsLayout /> }
 			/>
 		</Routes>
 	);
