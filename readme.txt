@@ -280,9 +280,9 @@ If you enjoy using Gutena Forms, explore our collection of Gutenberg block plugi
 * [**WP Experts WooCommerce Store**](https://wpexperts.io/store/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Explore premium WooCommerce plugins and solutions by WPExperts.
 
 
-== Frequently Asked Questions (FAQs) ==
+== Frequently Asked Questions ==
 
- = What is Gutena Forms? =
+= What is Gutena Forms? =
 
 Gutena Forms is a lightweight WordPress form builder plugin that lets you create custom contact forms, survey forms, booking forms, and feedback forms inside the Gutenberg block editor.
 
@@ -333,15 +333,15 @@ Gutena Forms gives you full control over padding, colors, spacing, typography, f
 
 == Screenshots ==
 
-1. Search and select the Gutena Form Block
-2. Choose the Form Layout and Style
-3. Individual Form Fields Settings
-4. Form Colors Settings
-5. Input Settings
-6. Edit success and error messages
-7. Configuration Email Notification
-8. View all forms
-9. View form entries
+1. Dedicated Gutenberg Form Block for Gutena Forms
+2. Pre-built contact form templates
+3. Dedicated block for every form field
+4. Change your contact form colors
+5. Input field settings (e.g., label gap, border, width, border radius, etc.)
+6. Add Success and Error Messages
+7. Set up admin email notifications
+8. See all your contact forms in one place
+9. View contact form entries and submission database
 
 
 == Changelog ==
