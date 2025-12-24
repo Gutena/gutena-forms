@@ -1,0 +1,106 @@
+#wpcontent {
+	padding-left: 0 !important;
+}
+
+#wpwrap {
+	background: #FAFAFA !important;
+}
+
+.gutena-froms#gutena-forms__root {
+	.gutena-forms__header-container {
+		background: #FFFFFF;
+		border-bottom: 0.5px solid #E2E2E2;
+		height: 45px;
+		display: flex;
+		padding: 0 20px;
+		align-items: center;
+		justify-content: space-between;
+
+		.gutena-forms_icon-menu-container {
+			display: flex;
+			align-items: center;
+
+			.gutena-forms_icon-menu {
+				margin-right: 15px;
+			}
+
+			.gutena-forms__header-menu {
+				ul {
+					padding: 0;
+					margin: 0;
+
+					li {
+						display: inline-block;
+						height: 45px;
+						padding: 0;
+						margin: 0;
+
+						a {
+							display: block;
+							padding: 0 20px;
+							text-decoration: none;
+							font-size: 12px;
+							font-weight: 500;
+							color: #6E7376;
+							height: 100%;
+							line-height: 45px;
+
+							&:focus,
+							&:hover {
+								box-shadow: none;
+								outline: none;
+								border: none;
+							}
+
+							&.active {
+								height: calc( 100% - 2px );
+								color: #424D55;
+								font-weight: 700;
+								border-bottom: 2px solid #0DA88C;
+								box-shadow: none;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.gutena-forms__upgrade-button {
+			border: 0.603px solid #1AE8C2;
+			background: linear-gradient(90deg, #1AE8C2 -51.51%, #0E826D 100%), linear-gradient(270deg, #E2A446 0%, #FED38E 100%);
+			padding: 3px 9px;
+			border-radius: 3px;
+			height: auto;
+
+			svg {
+				margin-right: 6px;
+			}
+		}
+	}
+
+	.gutena-froms__primary-button {
+		padding: 6px 10px;
+		height: auto;
+		border-radius: 4px;
+		background: #0DA88C;
+
+		svg {
+			margin-right: 10px;
+		}
+	}
+
+	.gutena-froms__container {
+		margin-top: 20px;
+		padding: 0 40px;
+	}
+
+	.gutena-forms__forms-header {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+
+		.gutena-froms__primary-button {
+			margin-left: 20px;
+		}
+	}
+}

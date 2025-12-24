@@ -106,6 +106,8 @@
 					require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-' . $filename .'.php';
 				}
 			}
+
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/rest-api/class-rest-api-controller.php';
 		}
 
 		/**
@@ -184,42 +186,6 @@
 				27,
 			);
 
-			add_submenu_page(
-				'gutena-forms',
-				__( 'Forms', 'gutena-forms' ),
-				__( 'Forms', 'gutena-forms' ),
-				'manage_options',
-				'edit.php?post_type=gutena_forms',
-			);
-
-			add_submenu_page(
-				'gutena-forms',
-				__( 'Add New Form', 'gutena-forms' ),
-				__( 'Add New Form', 'gutena-forms' ),
-				'manage_options',
-				'post-new.php?post_type=gutena_forms',
-			);
-
-			add_submenu_page(
-				'gutena-forms',
-				__( 'Entries', 'gutena-forms' ),
-				__( 'Entries', 'gutena-forms' ),
-				'manage_options',
-				'gutena-forms',
-				array( $this, 'forms_dashboard' ),
-			);
-
-			if ( ! is_gutena_forms_pro() ) {
-				add_submenu_page(
-					'gutena-forms',
-					__( 'Upgrade', 'gutena-forms' ),
-					__( 'Upgrade', 'gutena-forms' ),
-					'manage_options',
-					'gutena-forms-upgrade',
-					'__return_null'
-				);
-			}
-
 			if ( ! empty( $page_hook_suffix ) ) {
 				add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'forms_listing_styles' ) );
 				add_action( 'admin_print_scripts-' . $page_hook_suffix, array( $this, 'forms_listing_scripts' ) );
@@ -228,84 +194,13 @@
 
 		/**
 		 * Form Dashboard pages: including form list, respective form entries etc
+		 *
+		 * @version 1.1.0
+		 * @modified 1.6.0
+		 * @since 1.0.0
 		 */
 		public function forms_dashboard() {
-			if ( ! function_exists('wp_localize_script') && ( ! has_filter( 'gutena_forms_check_user_access' ) && ! $this->is_gfadmin() )  || ! class_exists( 'Gutena_Forms_Store' ) || ! apply_filters( 'gutena_forms_check_user_access', true, 'view_entries' ) ) {
-				esc_html_e( 'Access forbidden! Please contact admin to view this page.', 'gutena-forms' );
-				return;
-			}
-
-			$form_store = new Gutena_Forms_Store();
-			$form_table = '';
-			$pagetype = empty( $_GET['pagetype'] ) ? '': sanitize_key( wp_unslash( $_GET['pagetype'] ) );
-			echo '<div id="gutena-forms-dashboard-page" class="gutena-forms-dashboard '.( is_gutena_forms_pro() ? '':'gf-basic' ).' " style="display:none;" >';
-
-			if ( '' === $pagetype ) {
-				if ( '' === $this->form_id ) {
-					if ( file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-list-table.php' ) ) {
-						require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-list-table.php';
-						if ( class_exists( 'Gutena_Forms_List_Table' ) ) {
-							$form_table = new Gutena_Forms_List_Table();
-						}
-					}
-				} else if ( file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-entries-table.php' ) ) {
-					require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-forms-entries-table.php';
-					if ( class_exists( 'Gutena_Forms_Entries_Table' ) ) {
-						$form_list = $form_store->get_form_list();
-						//form list
-						if ( ! empty( $form_list ) ) {
-							//Provide data for form submission script
-							wp_localize_script(
-								'gutena-forms-dashboard',
-								'gutenaFormsList',
-								array(
-									'list'       => $form_list
-								)
-							);
-						}
-						$form_table = new Gutena_Forms_Entries_Table();
-					}
-				}
-			}
-
-			//view-entry page
-			if ( ! is_gutena_forms_pro() ) {
-				//Entry View Page
-				if ( ! empty( $_GET['form_entry_id'] ) && is_numeric( $_GET['form_entry_id'] ) && 'viewentry' === $pagetype  ) {
-
-					//Provide data for form submission script
-					wp_localize_script(
-						'gutena-forms-dashboard',
-						'gutenaFormsEntryDetails',
-						array(
-							'entry_data'       => $form_store->get_entry_details( absint( wp_unslash( $_GET['form_entry_id'] ) ) ),
-						)
-					);
-				}
-			}
-
-			//data require to create page by react js
-			$this->script_page_data( $pagetype );
-
-			//Top header
-			echo  $form_store->get_dashboard_header();
-			echo '<div id="gutena-forms-dashboard-admin-message"></div>';
-			//Placeholder for breadcrumb
-			if ( ( '' === $pagetype && ! empty( $this->form_id ) ) || in_array( $pagetype, array( 'viewentry') ) ) {
-				echo '<div id="gfp-page-breadcrumb"></div>';
-			}
-			//placeholder for react based dashboard
-			echo '<div id="gfp-page-' . esc_attr( $pagetype ) . '"></div>';
-			do_action( 'gutena_forms_entries_load_custom_page' );
-
-			//render list
-            if ( ! empty( $form_table ) ) {
-                $form_table->render_list_table( $form_store );
-				$this->entry_delete_modal();
-            }
-			//pro modal
-			$this->go_pro_modal();
-			echo '</div>';
+			echo '<div id="gutena-forms__root" class="gutena-froms"></div>';
 		}
 
 		/**
@@ -731,112 +626,54 @@
 		}
 
 		public function forms_listing_styles() {
-			wp_enqueue_style( 'gutena-forms-dashboard-style', GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/style-index.css', array( 'wp-components','wp-edit-blocks' ), GUTENA_FORMS_VERSION, 'all' );
+			$assets_file = GUTENA_FORMS_DIR_PATH . 'includes/admin/dashboard/build/index.asset.php';
+			if ( ! file_exists( $assets_file ) ) {
+				return;
+			}
 
-			do_action( 'gutena_forms_dashboard_enqueue_style');
-
+			$assets = include $assets_file;
+			wp_enqueue_style(
+				'gutena-forms-dashboard',
+				GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/index.css',
+				array_filter(
+					$assets['dependencies'],
+					function ( $dependency ) {
+						return wp_style_is( $dependency, 'registered' );
+					}
+				),
+				$assets['version'],
+				'all'
+			);
 		}
 
 		public function forms_listing_scripts() {
-
-			$asset_file = include_once( GUTENA_FORMS_DIR_PATH . 'includes/admin/dashboard/build/index.asset.php' );
-
-			if ( ! empty( $asset_file['dependencies'] ) && function_exists( 'admin_url' ) ) {
-
-				wp_enqueue_script( 'gutena-forms-dashboard', GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/index.js', $asset_file['dependencies'], $asset_file['version'], true );
-
-				wp_enqueue_script( 'gutena-forms-dashboard-script', GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/script.js', array(), $asset_file['version'], true );
-
-				$dashboard_url =  esc_url( admin_url( 'admin.php?page=gutena-forms' ) );
-				$is_admin = $this->is_gfadmin() ? '1':'0';
-
-				// Detect if we're on the forms list page
-				$screen = get_current_screen();
-				$is_forms_list_page = ( $screen && 'edit-gutena_forms' === $screen->id &&
-										! isset( $_GET['action'] ) && ! isset( $_GET['post'] ) );
-
-				// Determine current pagetype
-				$current_pagetype = empty( $_GET['pagetype'] ) ? '' : sanitize_key( wp_unslash( $_GET['pagetype'] ) );
-				if ( $is_forms_list_page ) {
-					$current_pagetype = 'forms';
-				}
-
-				//Provide data for form submission script
-				wp_localize_script(
-					'gutena-forms-dashboard-script',
-					'gutenaFormsDashboard',
-					array(
-						'read_status_action'  => 'gutena_forms_entries_read',
-						'ajax_url'            => admin_url( 'admin-ajax.php' ),
-						'nonce'               => wp_create_nonce( 'gutena_Forms' ),
-						'support_link'        => esc_url( apply_filters(
-							'gutena_forms_support_link',
-							'https://objectsws.atlassian.net/servicedesk/customer/portal/239'
-						 ) ),
-						'entry_view_url'      => $dashboard_url.'&pagetype=viewentry&form_entry_id=',
-						'entry_list_url'      => $dashboard_url.'&formid=',
-						'page_url'            => $dashboard_url.'&pagetype=',
-						'is_gutena_forms_pro' => is_gutena_forms_pro() ? '1' : '0',
-						'is_admin'            => $is_admin,
-						'pagetype'            => $current_pagetype,
-						'form_id'             => $this->form_id,
-						'pricing_link'        => esc_url( 'https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin' ),
-						'dashboard_menu'      => apply_filters(
-							'gutena_forms_dashboard_menu',
-							array(
-								array(
-									'slug'  => 'introduction',
-									'title' => __( 'Introduction', 'gutena-forms' ),
-									'enable' => '1'
-								),
-								array(
-									'slug'  => 'forms',
-									'title' => __( 'Forms', 'gutena-forms' ),
-									'link'  => admin_url( 'edit.php?post_type=gutena_forms' ),
-									'enable' => '1'
-								),
-								array(
-									'slug'  => '',
-									'title' => __( 'Entries', 'gutena-forms' ),
-									'enable' => '1'
-								),
-								array(
-									'slug'  => 'settings',
-									'title' => __( 'Settings', 'gutena-forms' ),
-									'enable' => $is_admin
-								),
-								array(
-									'slug'  => 'doc',
-									'title' => __( 'Knowledge Base', 'gutena-forms' ),
-									'enable' => '1'
-								),
-								array(
-									'slug' => 'forms-summary-report',
-									'title' => 'Weekly Report',
-									'enable' => '1',
-								),
-								array(
-									'enable' => '1',
-									'slug'   => 'feature-request',
-									'title'  => __( 'Feature Request', 'gutena-forms' ),
-									'target' => '_blank',
-									'rel'    => 'noopener noreferrer',
-								),
-							)
-						),
-						'create_form_url'     => add_query_arg(
-							array(
-								'post_type' => 'gutena_forms',
-							),
-							admin_url( 'post-new.php' )
-						),
-					)
-				);
-
-				do_action( 'gutena_forms_dashboard_enqueue_scripts');
+			$assets_file = GUTENA_FORMS_DIR_PATH . 'includes/admin/dashboard/build/index.asset.php';
+			if ( ! file_exists( $assets_file ) ) {
+				return;
 			}
 
+			$assets = include $assets_file;
+			wp_enqueue_script(
+				'gutena-forms-dashboard',
+				GUTENA_FORMS_PLUGIN_URL . 'includes/admin/dashboard/build/index.js',
+				array_filter(
+					$assets['dependencies'],
+					function ( $dependency ) {
+						return wp_script_is( $dependency, 'registered' );
+					}
+				),
+				$assets['version'],
+				true
+			);
 
+			wp_localize_script(
+				'gutena-forms-dashboard',
+				'gutenaFormsAdmin',
+				array(
+					'pluginURL' => esc_url( GUTENA_FORMS_PLUGIN_URL ),
+					'adminURL'  => esc_url( admin_url() ),
+				)
+			);
 		}
 
 		/**
