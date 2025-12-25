@@ -110,6 +110,7 @@
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/abstract-forms-settings.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/honeypot/class-honeypot.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/weekly-report/class-weekly-report.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/manage-tags/class-manage-tags.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/rest-api/class-rest-api-controller.php';
 		}
 

@@ -5,6 +5,8 @@ import GutenaFormsToggleField from './fields/gutena-forms-toggle-field';
 import GutenaFormsEmailField from './fields/gutena-forms-email-field';
 import GutenaFormsSubmitButton from './fields/gutena-forms-submit-button';
 import { gutenaFormsUpdateSettings } from "../api";
+import { toast } from 'react-toastify';
+import { __ } from '@wordpress/i18n';
 
 const GutenaFormsSettingsMetaBox = ( { title, description, items } ) => {
 	const { settings_id } = useParams();
@@ -17,14 +19,18 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items } ) => {
 			setLoading( true );
 			const settings = {};
 			items.map( ( item, id ) => {
-				fieldValue[ item.id ] = item.value || item.default;
-				settings[ id ] = {
-					id: item.id,
-					type: item.type,
-					label: item.name,
-					desc: item.desc,
-					value: fieldValue[ item.id ],
-					attrs: item.attrs || {},
+				if ( 'template' === item.type ) {
+
+				} else {
+					fieldValue[ item.id ] = item.value || item.default;
+					settings[ id ] = {
+						id: item.id,
+						type: item.type,
+						label: item.name,
+						desc: item.desc,
+						value: fieldValue[ item.id ],
+						attrs: item.attrs || {},
+					}
 				}
 			} );
 
@@ -41,7 +47,11 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items } ) => {
 
 	const handleSubmit = ( e ) => {
 		gutenaFormsUpdateSettings( settings_id, fieldValue )
-			.then( response => {} )
+			.then( response => {
+				toast.success(
+					__( 'Settings updated successfully.', 'gutena-forms' )
+				);
+			} )
 	};
 
 	const GutenaFormsRenderSettingsField = ( { field } ) => {

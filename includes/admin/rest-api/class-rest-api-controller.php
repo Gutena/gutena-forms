@@ -286,6 +286,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							array(
 								'status'  => 200,
 								'message' => __( 'Settings saved successfully.', 'gutena-forms' ),
+								'success' => true,
 							)
 						);
 					}
