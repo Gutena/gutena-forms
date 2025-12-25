@@ -64,3 +64,46 @@ export async function gutenaFormsFetchSettingsMenu() {
 
 	throw new Error( 'Gutena Forms FetchSettingsMenu Error' );
 }
+
+/**
+ * Fetch settings from the Gutena Forms REST API.
+ *
+ * @since 1.6.0
+ * @param settingsId
+ *
+ * @returns {Promise<*>}
+ */
+export async function gutenaFormsFetchSettings( settingsId ) {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: addQueryArgs(
+			`${ GutenaFormsRestConfiguration.namespace }settings/`,
+			{
+				settings_id: settingsId,
+			}
+		),
+	} );
+
+	if ( response.settings ) {
+		return response.settings;
+	}
+
+	throw new Error( 'Gutena Forms FetchSettings Error' );
+}
+
+export async function gutenaFormsUpdateSettings( settingsId, settingsData ) {
+	const response = await apiFetch({
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }save-settings`,
+		data: {
+			settings_id: settingsId,
+			settings_data: settingsData,
+		},
+	} );
+
+	if ( response.success ) {
+		return response;
+	}
+
+	throw new Error( 'Gutena Forms UpdateSettings Error' );
+}

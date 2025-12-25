@@ -133,6 +133,64 @@
 				background: #ffffff;
 				padding: 20px;
 				width: 760px;
+
+				.gutena-forms__toggle-control {
+					.gutena-forms__toggle-control-input {
+						.components-toggle-control__label {
+							color: #000;
+							font-size: 14px;
+							font-weight: 700;
+						}
+
+						.components-toggle-control__help {
+							color: #424D55;
+							font-size: 12px;
+							font-weight: 400;
+						}
+
+						.is-checked {
+							.components-form-toggle__track {
+								background: #0DA88C;
+							}
+						}
+					}
+				}
+
+				.gutena-forms__number-control {
+					margin-top: 20px;
+					.components-input-control__label {
+						color: #000;
+						font-size: 14px;
+						font-weight: 700;
+						text-transform: none;
+					}
+				}
+
+				.gutena-forms__email-control {
+					margin-top: 20px;
+
+					.components-base-control__label {
+						color: #000;
+						font-size: 14px;
+						font-weight: 700;
+						text-transform: none;
+					}
+
+					.gutena-forms__field-description {
+						color: #424D55;
+						font-size: 12px;
+						font-weight: 400;
+						margin-top: 4px;
+					}
+				}
+
+				.gutena-forms__submit-button {
+					margin-top: 30px;
+
+					button {
+						background: #28a98c;
+					}
+				}
 			}
 		}
 

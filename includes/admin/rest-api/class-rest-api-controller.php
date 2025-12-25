@@ -84,6 +84,26 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'callback'			  => array( $this, 'get_left_navigation_menus' ),
 				)
 			);
+
+			register_rest_route(
+				self::$namespace,
+				'/settings',
+				array(
+					'permission_callback' => array( self::class, 'permission_callback' ),
+					'methods'             => 'GET',
+					'callback'            => array( $this, 'get_settings' ),
+				),
+			);
+
+			register_rest_route(
+				self::$namespace,
+				'/save-settings',
+				array(
+					'permission_callback' => array( self::class, 'permission_callback' ),
+					'methods'             => 'POST',
+					'callback'            => array( $this, 'save_settings' ),
+				),
+			);
 		}
 
 		/**
@@ -201,6 +221,81 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'menus'   => array(),
 					'status'  => 404,
 					'message' => __( 'No left navigation menus found.', 'gutena-forms' ),
+				)
+			);
+		}
+
+		/**
+		 * Get settings callback
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request The REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function get_settings( $request ) {
+			$settings_id = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
+
+			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
+
+			if ( is_array( $gutena_forms_settings ) ) {
+				if ( isset( $gutena_forms_settings[ $settings_id ] ) ) {
+					if ( class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
+						$settings = new $gutena_forms_settings[ $settings_id ]();
+						if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
+							return rest_ensure_response(
+								array(
+									'settings' => $settings->get_settings(),
+									'status'   => 200,
+									'message'  => __( 'Settings fetched successfully.', 'gutena-forms' ),
+								)
+							);
+						}
+					}
+				}
+			}
+
+			return rest_ensure_response(
+				array(
+					'settings' => array(),
+					'status'   => 404,
+					'message'  => __( 'Settings not found.', 'gutena-forms' ),
+				)
+			);
+		}
+
+		/**
+		 * Save settings callback
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request The REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function save_settings( $request ) {
+			$settings_id  = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
+			$settings_data = $request->get_param( 'settings_data' );
+
+			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
+			if ( is_array( $gutena_forms_settings ) && isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
+				$settings = new $gutena_forms_settings[ $settings_id ]();
+				if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
+					$save_result = $settings->save_settings( $settings_data );
+					if ( $save_result ) {
+						return rest_ensure_response(
+							array(
+								'status'  => 200,
+								'message' => __( 'Settings saved successfully.', 'gutena-forms' ),
+							)
+						);
+					}
+				}
+			}
+
+			return rest_ensure_response(
+				array(
+					'status'  => 500,
+					'message' => __( 'Failed to save settings.', 'gutena-forms' ),
 				)
 			);
 		}
