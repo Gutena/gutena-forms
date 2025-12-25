@@ -192,6 +192,52 @@
 					}
 				}
 			}
+
+			.gutena-forms__pro-wrapper {
+				width: 100%;
+				height: 100%;
+				position: relative;
+
+				.gutena-forms__pro-description {
+					color: #424D55;
+					font-size: 12px;
+					font-weight: 400;
+				}
+
+				.gutena-forms__pro-single-tag-wrapper {
+					display: flex;
+					width: 360px;
+					justify-content: space-between;
+					align-items: center;
+					padding: 10px 20px;
+					margin-top: 10px;
+
+					border-radius: 4px;
+					border-color: #cccccc;
+					border-style: solid;
+					border-top-width: 0.5px;
+					border-right-width: 0.5px;
+					border-bottom-width: 0.5px;
+					border-left-width: 2px;
+
+					.gutena-forms__pro-single-tag {
+						display: flex;
+						align-items: center;
+
+						.gutena-forms__pro-single-tag-title {
+							color: #424D55;
+							font-size: 12px;
+							font-weight: 500;
+						}
+
+						.gutena-forms__pro-single-tag-icon {
+							svg {
+								margin: 0 15px -4px 0;
+							}
+						}
+					}
+				}
+			}
 		}
 
 		.gutena-forms__left-menu-navigation {

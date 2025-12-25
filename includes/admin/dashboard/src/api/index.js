@@ -9,6 +9,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 const GutenaFormsRestConfiguration = {
 	namespace: 'gutena-forms/v1/',
+	proNamespace: 'gutena-forms/pro/v1/',
 };
 
 /**
@@ -91,6 +92,14 @@ export async function gutenaFormsFetchSettings( settingsId ) {
 	throw new Error( 'Gutena Forms FetchSettings Error' );
 }
 
+/**
+ * Update settings via the Gutena Forms REST API.
+ *
+ * @since 1.6.0
+ * @param settingsId
+ * @param settingsData
+ * @returns {Promise<unknown>}
+ */
 export async function gutenaFormsUpdateSettings( settingsId, settingsData ) {
 	const response = await apiFetch({
 		method: 'POST',
@@ -106,4 +115,17 @@ export async function gutenaFormsUpdateSettings( settingsId, settingsData ) {
 	}
 
 	throw new Error( 'Gutena Forms UpdateSettings Error' );
+}
+
+export async function gutenaFormsFetchTags() {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: `${ GutenaFormsRestConfiguration.proNamespace }tags/get-all`,
+	} );
+
+	if ( response.tags ) {
+		return response.tags;
+	}
+
+	throw new Error( 'Upgrade to pro' );
 }

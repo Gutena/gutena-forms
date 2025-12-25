@@ -7,12 +7,14 @@ import GutenaFormsSubmitButton from './fields/gutena-forms-submit-button';
 import { gutenaFormsUpdateSettings } from "../api";
 import { toast } from 'react-toastify';
 import { __ } from '@wordpress/i18n';
+import { SettingsTemplates } from '../utils/templates';
 
 const GutenaFormsSettingsMetaBox = ( { title, description, items } ) => {
 	const { settings_id } = useParams();
 	const [ settings, setSettings ] = useState( false );
 	const [ fieldValue, setFieldValue ] = useState( {} );
 	const [ loading, setLoading ] = useState( true );
+	const [ template, setTemplate ] = useState( false );
 
 	useEffect(
 		() => {
@@ -20,7 +22,7 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items } ) => {
 			const settings = {};
 			items.map( ( item, id ) => {
 				if ( 'template' === item.type ) {
-
+					setTemplate( item.name );
 				} else {
 					fieldValue[ item.id ] = item.value || item.default;
 					settings[ id ] = {
@@ -114,19 +116,26 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items } ) => {
 		return fieldElement;
 	}
 
+	const ScreenTemplate = SettingsTemplates[ template ];
+
 	return (
 		<div>
 			<h2>{ title }</h2>
 			<p>{ description }</p>
 
 			<div className={ 'gutena-forms__settings-meta-box' }>
-				{ ! loading && settings && Object.keys( settings ).map( ( key, index ) => {
+				{ ! template && ! loading && settings && Object.keys( settings ).map( ( key, index ) => {
 					return (
 						<div key={ index }>
 							<GutenaFormsRenderSettingsField field={ settings[ key ] } />
 						</div>
 					);
 				} ) }
+				{
+					template && ScreenTemplate && (
+						<ScreenTemplate />
+					)
+				}
 			</div>
 		</div>
 	);
