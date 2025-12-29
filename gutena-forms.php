@@ -504,11 +504,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				'
 				>';
 				if ( 'optin' == $attributes['fieldType'] ) {
-					$output .= '<label for="' . $attributes['nameAttr'] . '" class="' . esc_attr( $attributes['fieldType'] ) . '-container">
-						<input id="' . $attributes['nameAttr'] . '" type="checkbox" name="' . esc_attr( $attributes['nameAttr']  ) .
+					$output .= '<input id="' . $attributes['nameAttr'] . '" type="checkbox" name="' . esc_attr( $attributes['nameAttr']  ) .
 						'" value="1" >
-						<span class="checkmark"></span>
-					  </label>';
+						<span class="checkmark"></span>';
 				} else if ( ! empty( $attributes['selectOptions'] ) && is_array( $attributes['selectOptions'] ) ) {
 					foreach ( $attributes['selectOptions'] as $option ) {
 						$output .= '<label class="' . esc_attr( $attributes['fieldType'] ) . '-container">' . esc_attr( $option ) . '
