@@ -118,7 +118,6 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 	}
 
 	const ScreenTemplate = SettingsTemplates[ template ];
-
 	const showProPopup = () => {
 		if ( ! isPro ) {
 			return;

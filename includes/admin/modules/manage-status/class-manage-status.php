@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Manage Tags
+ * Class Manage Status
  *
  * @since 1.6.0
  * @package GutenaForms
@@ -8,13 +8,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
+if ( ! class_exists( 'Gutena_Forms_Manage_Status' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
-	 * Class to manage tags settings module.
+	 * Class to manage status settings module.
 	 *
 	 * @since 1.6.0
 	 */
-	class Gutena_Forms_Manage_Tags extends Gutena_Forms_Forms_Settings {
+	class Gutena_Forms_Manage_Status extends Gutena_Forms_Forms_Settings {
 		/**
 		 * Register Module
 		 *
@@ -24,7 +24,7 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms
 			add_filter(
 				'gutena_forms__settings',
 				function ( $settings ) {
-					$settings['manage-tags'] = __CLASS__;
+					$settings['manage-status'] = __CLASS__;
 					return $settings;
 				}
 			);
@@ -38,13 +38,13 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms
 		 */
 		public function get_settings() {
 			return array(
-				'title' 	  => __( 'Tags Management', 'gutena-forms' ),
-				'description' => __( 'Categorize and sort form entries using tags for efficient organization and reporting.', 'gutena-forms' ),
-				'is-pro'	  => true,
+				'title'       => __( 'Status Management', 'gutena-forms' ),
+				'description' => __( 'Organize and track form submissions with customizable entry status for streamlined workflow.', 'gutena-forms' ),
+				'is-pro'      => true,
 				'fields'      => array(
 					array(
 						'type' => 'template',
-						'name' => 'manage-tags',
+						'name' => 'manage-status',
 					)
 				),
 			);
@@ -61,5 +61,5 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms
 		}
 	}
 
-	Gutena_Forms_Manage_Tags::register_module();
+	Gutena_Forms_Manage_Status::register_module();
 endif;

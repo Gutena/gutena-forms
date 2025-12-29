@@ -1,20 +1,20 @@
 <?php
 /**
- * Class Manage Tags
+ * Class User Access
  *
  * @since 1.6.0
- * @package GutenaForms
+ * @package Gutena Forms
  */
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
+if ( ! class_exists( 'Gutena_Forms_User_Access' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
-	 * Class to manage tags settings module.
+	 * Gutena Forms User Access Class
 	 *
 	 * @since 1.6.0
 	 */
-	class Gutena_Forms_Manage_Tags extends Gutena_Forms_Forms_Settings {
+	class Gutena_Forms_User_Access extends Gutena_Forms_Forms_Settings {
 		/**
 		 * Register Module
 		 *
@@ -24,7 +24,7 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms
 			add_filter(
 				'gutena_forms__settings',
 				function ( $settings ) {
-					$settings['manage-tags'] = __CLASS__;
+					$settings['user-access'] = __CLASS__;
 					return $settings;
 				}
 			);
@@ -38,14 +38,14 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms
 		 */
 		public function get_settings() {
 			return array(
-				'title' 	  => __( 'Tags Management', 'gutena-forms' ),
-				'description' => __( 'Categorize and sort form entries using tags for efficient organization and reporting.', 'gutena-forms' ),
+				'title'       => __( 'User Access Management', 'gutena-forms' ),
+				'description' => __( 'Manage user access and permissions to control form data security and privacy.', 'gutena-forms' ),
 				'is-pro'	  => true,
 				'fields'      => array(
 					array(
 						'type' => 'template',
-						'name' => 'manage-tags',
-					)
+						'name' => 'user-access',
+					),
 				),
 			);
 		}
@@ -54,12 +54,12 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms
 		 * Save Settings
 		 *
 		 * @since 1.6.0
-		 * @param $settings
+		 * @param array $settings array Settings array.
 		 */
 		public function save_settings( $settings ) {
 			// dummy function.
 		}
 	}
 
-	Gutena_Forms_Manage_Tags::register_module();
+	Gutena_Forms_User_Access::register_module();
 endif;

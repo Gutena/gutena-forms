@@ -117,6 +117,12 @@ export async function gutenaFormsUpdateSettings( settingsId, settingsData ) {
 	throw new Error( 'Gutena Forms UpdateSettings Error' );
 }
 
+/**
+ * Fetch tags from the Gutena Forms Pro REST API.
+ *
+ * @since 1.6.0
+ * @returns {Promise<*>}
+ */
 export async function gutenaFormsFetchTags() {
 	const response = await apiFetch( {
 		method: 'GET',
@@ -125,6 +131,25 @@ export async function gutenaFormsFetchTags() {
 
 	if ( response.tags ) {
 		return response.tags;
+	}
+
+	throw new Error( 'Upgrade to pro' );
+}
+
+/**
+ * Fetch status from the Gutena Forms Pro REST API.
+ *
+ * @since 1.6.0
+ * @returns {Promise<*>}
+ */
+export async function gutenaFormsFetchStatus() {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: `${ GutenaFormsRestConfiguration.proNamespace }status/get-all`,
+	} );
+
+	if ( response.status ) {
+		return response.status;
 	}
 
 	throw new Error( 'Upgrade to pro' );

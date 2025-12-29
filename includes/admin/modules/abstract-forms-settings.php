@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Gutena_Forms_Forms_Settings' ) ) {
+if ( ! class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
 	 * Abstract Class for Forms Settings Modules
 	 *
@@ -42,4 +42,4 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Settings' ) ) {
 		 */
 		abstract public function save_settings( $settings );
 	}
-}
+endif;
