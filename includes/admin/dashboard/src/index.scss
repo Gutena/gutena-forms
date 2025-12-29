@@ -346,4 +346,28 @@
 			margin-right: 5px;
 		}
 	}
+
+	.gutena-forms__pro-popup {
+		width: 335px;
+		background: #ffffff;
+		position: relative;
+		border-radius: 8px;
+
+		.gutena-forms__popup-header {
+			background: linear-gradient(265deg, #0DA88C -39.82%, #015D61 87.8%);
+			text-align: center;
+			padding: 20px;
+
+			h1 {
+				margin: 12px 0;
+				background: linear-gradient(94deg, #FFF 3.64%, #1AE8C2 159.87%);
+				background-clip: text;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+
+				font-size: 18px;
+				font-weight: 700;
+			}
+		}
+	}
 }

@@ -676,6 +676,7 @@
 				array(
 					'pluginURL' => esc_url( GUTENA_FORMS_PLUGIN_URL ),
 					'adminURL'  => esc_url( admin_url() ),
+					'hasPro'    => is_gutena_forms_pro( false ),
 				)
 			);
 		}
