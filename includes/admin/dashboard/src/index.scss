@@ -369,5 +369,47 @@
 				font-weight: 700;
 			}
 		}
+
+		.gutena-forms__popup-actions {
+			padding: 30px;
+
+			.gutena-forms__popup-content {
+				display: grid;
+				grid-template-columns: auto auto;
+
+				.gutena-forms__feature {
+					color: #04463A;
+					font-size: 10px;
+					font-weight: 700;
+					margin-bottom: 14px;
+
+					display: flex;
+					align-items: center;
+
+					svg {
+						margin-right: 5px;
+					}
+				}
+			}
+
+			.gutena-forms__pro-upgrade-button {
+				margin-top: 20px;
+
+				padding: 10px 0;
+				text-align: center;
+				display: block;
+
+				color: #FFF;
+				font-size: 12px;
+				font-weight: 700;
+
+				border-radius: 4px;
+				background: linear-gradient(90deg, #FFBC43 -5.2%, #D08E15 100%);
+
+				svg {
+					margin: 0 10px -2px 0;
+				}
+			}
+		}
 	}
 }
