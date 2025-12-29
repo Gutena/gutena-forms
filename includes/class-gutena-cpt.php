@@ -322,6 +322,8 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 			echo '<style type="text/css">
 				.page-title-action {
+					display: none !important;
+					visibility: hidden !important;
 				    color: #FFF !important;
 				    border: none !important;
 				    font-size: 14px !important;
