@@ -6,7 +6,7 @@
 	"title": "Number",
 	"parent": ["gutena/forms"],
 	"category": "gutena",
-	"icon": "hash",
+	"icon": "calculator",
 	"description": "Capture numeric values like quantities, ages, or reference numbers with validation.",
 	"attributes": {
 		"nameAttr": {

@@ -6,7 +6,7 @@
 	"title": "Dropdown",
 	"parent": ["gutena/forms"],
 	"category": "gutena",
-	"icon": "arrow-down-alt",
+	"icon": "menu",
 	"description": "Provide a list of selectable options in a compact dropdown menu.",
 	"attributes": {
 		"nameAttr": {

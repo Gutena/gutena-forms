@@ -6,7 +6,7 @@
 	"title": "Radio",
 	"parent": ["gutena/forms"],
 	"category": "gutena",
-	"icon": "radio-button",
+	"icon": "forms",
 	"description": "Enable users to choose a single option from multiple choices.",
 	"attributes": {
 	"nameAttr": {
