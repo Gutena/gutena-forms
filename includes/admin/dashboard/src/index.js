@@ -1,6 +1,6 @@
 import './index.scss';
 import domReady from '@wordpress/dom-ready';
-import { createRoot, StrictMode } from '@wordpress/element';
+import { createRoot, StrictMode, useState } from '@wordpress/element';
 import { HashRouter } from 'react-router';
 import GutenaFormsToast from './components/gutena-froms-toast';
 import GutenaFormsHeader from './components/gutena-forms-header';
@@ -9,13 +9,19 @@ import GutenaFormsProPopup from './components/gutena-forms-pro-popup';
 
 const GutenaFormsApp = () => {
 
+	const [ showProPopup, setShowProPopup ] = useState( false );
+
 	return (
 		<div>
 			<GutenaFormsToast />
 
 			{
 				! gutenaFormsAdmin.hasPro && (
-					<GutenaFormsProPopup isPopup={ true } />
+					<GutenaFormsProPopup
+						isPopup={ true }
+						show={ showProPopup }
+						hideHandler={ e => setShowProPopup( false ) }
+					/>
 				)
 			}
 
@@ -23,7 +29,9 @@ const GutenaFormsApp = () => {
 				<GutenaFormsHeader />
 
 				<div className={ 'gutena-froms__container' }>
-					<GutenaFormsBody />
+					<GutenaFormsBody
+						showProPopupHandler={ () => setShowProPopup( true ) }
+					/>
 				</div>
 			</div>
 		</div>

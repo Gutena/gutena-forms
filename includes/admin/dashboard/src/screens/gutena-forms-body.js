@@ -1,7 +1,7 @@
 import {Routes, Route, useParams} from 'react-router';
 import GutenaFormsSettingsLayout from '../layouts/gutena-forms-settings-layout';
 
-const GutenaFormsBody = () => {
+const GutenaFormsBody = ( { showProPopupHandler } ) => {
 
 	return (
 		<Routes>
@@ -10,7 +10,7 @@ const GutenaFormsBody = () => {
 			/>
 			<Route
 				path={ 'settings/settings/:settings_id/' }
-				element={ <GutenaFormsSettingsLayout /> }
+				element={ <GutenaFormsSettingsLayout showProPopupHandler={ showProPopupHandler } /> }
 			/>
 		</Routes>
 	);

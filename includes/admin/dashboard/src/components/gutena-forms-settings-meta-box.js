@@ -10,7 +10,7 @@ import { __ } from '@wordpress/i18n';
 import { SettingsTemplates } from '../utils/templates';
 import GutenaFormsProBadge from './gutena-forms-pro-badge';
 
-const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false } ) => {
+const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false, onClick } ) => {
 	const { settings_id } = useParams();
 	const [ settings, setSettings ] = useState( false );
 	const [ fieldValue, setFieldValue ] = useState( {} );
@@ -119,8 +119,16 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false 
 
 	const ScreenTemplate = SettingsTemplates[ template ];
 
+	const showProPopup = () => {
+		if ( ! isPro ) {
+			return;
+		}
+
+		onClick();
+	}
+
 	return (
-		<div>
+		<div onClick={ showProPopup }>
 			<h2>
 				{ title }
 				{
@@ -142,6 +150,12 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false 
 				{
 					template && ScreenTemplate && (
 						<ScreenTemplate />
+					)
+				}
+
+				{
+					isPro && (
+						<div className="gutena-forms__settings-meta-box--overlay"></div>
 					)
 				}
 			</div>

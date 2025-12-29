@@ -2,7 +2,7 @@ import GutenaFormsLeftMenuNavigation from '../components/gutena-forms-left-menu-
 import GutenaFormsSettingsMetaBox from '../components/gutena-forms-settings-meta-box';
 import GutenaFormsSettings from '../components/gutena-forms-settings';
 
-const GutenaFormsSettingsLayout = () => {
+const GutenaFormsSettingsLayout = ( { showProPopupHandler } ) => {
 
 	return (
 		<div className={ 'gutena-froms__settings-layout' }>
@@ -14,7 +14,7 @@ const GutenaFormsSettingsLayout = () => {
 
 
 				<div className={ 'gutena-forms__container' }>
-					<GutenaFormsSettings />
+					<GutenaFormsSettings showProPopupHandler={ showProPopupHandler } />
 				</div>
 
 			</div>
