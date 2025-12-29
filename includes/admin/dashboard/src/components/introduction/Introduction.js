@@ -174,12 +174,6 @@ const Introduction = ( props ) => {
             {/* CTA Section */}
             <div className="gf-cta-section">
                 <a
-                    href={gutenaFormsDashboard?.create_form_url || '#'}
-                    className="gf-create-form-link"
-                >
-                    Create Your First Form
-                </a>
-                <a
                     href="https://gutenaforms.com/#faq"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -278,16 +272,6 @@ const Introduction = ( props ) => {
                         </div>
                     ))}
                 </div>
-            </div>
-
-            {/* Footer CTA Section */}
-            <div className={`gf-footer-cta-section gf-pro-active`}>
-                <a
-                    href={gutenaFormsDashboard?.create_form_url || '#'}
-                    className="gf-create-form-button"
-                >
-                    Create Your First Form
-                </a>
             </div>
 
             {/* Video Modal */}

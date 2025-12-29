@@ -196,14 +196,6 @@
 
 			add_submenu_page(
 				'gutena-forms',
-				__( 'Add New Form', 'gutena-forms' ),
-				__( 'Add New Form', 'gutena-forms' ),
-				'manage_options',
-				'post-new.php?post_type=gutena_forms',
-			);
-
-			add_submenu_page(
-				'gutena-forms',
 				__( 'Entries', 'gutena-forms' ),
 				__( 'Entries', 'gutena-forms' ),
 				'manage_options',
@@ -331,7 +323,7 @@
 						'section' => array(
 							'welcome'   => array(
 								'into_img'			=> esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/welcome.png' ),
-								'intro_video_link' => esc_url( 'https://www.youtube.com/watch?v=oHNwAfpNOnQ' ),
+								'intro_video_link' => esc_url( 'https://www.youtube.com/watch?v=u9sB-RSBQIE' ),
 								'title'			=> __( 'Welcome to Gutena Forms!', 'gutena-forms' ),
 								'description' 	=> __( "Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won't slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.", "gutena-forms" ),
 								'pricing_btn_name'	=> __( 'See Pricing', 'gutena-forms' ),
