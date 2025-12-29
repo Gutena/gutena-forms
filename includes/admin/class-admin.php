@@ -117,9 +117,11 @@
 				unset( $submenu['gutena-forms'][0] );
 			}
 
-			foreach ( $submenu['gutena-forms'] as $k => $gutena_form ) {
-				if ( str_contains( $gutena_form[0], 'Add-Ons' ) ) {
-					unset(  $submenu['gutena-forms'][ $k ] );
+			if ( isset( $submenu['gutena-forms'] ) && is_array( $submenu['gutena-forms'] ) ) {
+				foreach ( $submenu['gutena-forms'] as $k => $gutena_form ) {
+					if ( str_contains( $gutena_form[0], 'Add-Ons' ) ) {
+						unset(  $submenu['gutena-forms'][ $k ] );
+					}
 				}
 			}
 
