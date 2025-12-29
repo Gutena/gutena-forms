@@ -1,4 +1,4 @@
-import GutenaFormsAccordion from './GutenaFormsAccordion'
+import GutenaFormsAccordion from './gutena-forms-accordion'
 import Gear from '../icons/gear';
 import Shield from '../icons/shield';
 import { useState, useEffect } from '@wordpress/element';

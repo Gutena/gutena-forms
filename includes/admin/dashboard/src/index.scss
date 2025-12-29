@@ -220,6 +220,16 @@
 					border-bottom-width: 0.5px;
 					border-left-width: 2px;
 
+					&.gutena-forms__add-new-tag-btn {
+						justify-content: center;
+						cursor: pointer;
+						border-left-width: 1px;
+
+						svg {
+							margin-right: 8px;
+						}
+					}
+
 					.gutena-forms__pro-single-tag {
 						display: flex;
 						align-items: center;
@@ -317,6 +327,23 @@
 					}
 				}
 			}
+		}
+	}
+
+	.gutena-forms__pro-badge {
+		display: inline-block;
+		margin-left: 5px;
+		padding: 0 6px;
+		border-radius: 15px;
+		border: 0.5ps solid #1AE8C2;
+		background: linear-gradient(90deg, #1AE8C2 -88.15%, #0E826D 100%), linear-gradient(260deg, #0D2149 1.97%, #208AAE 100%);
+
+		color: #FFF;
+		font-size: 10px;
+		font-weight: 800;
+
+		svg {
+			margin-right: 5px;
 		}
 	}
 }

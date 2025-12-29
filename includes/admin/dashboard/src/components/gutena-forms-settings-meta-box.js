@@ -8,8 +8,9 @@ import { gutenaFormsUpdateSettings } from "../api";
 import { toast } from 'react-toastify';
 import { __ } from '@wordpress/i18n';
 import { SettingsTemplates } from '../utils/templates';
+import GutenaFormsProBadge from './gutena-forms-pro-badge';
 
-const GutenaFormsSettingsMetaBox = ( { title, description, items } ) => {
+const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false } ) => {
 	const { settings_id } = useParams();
 	const [ settings, setSettings ] = useState( false );
 	const [ fieldValue, setFieldValue ] = useState( {} );
@@ -120,7 +121,14 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items } ) => {
 
 	return (
 		<div>
-			<h2>{ title }</h2>
+			<h2>
+				{ title }
+				{
+					isPro && (
+						<GutenaFormsProBadge />
+					)
+				}
+			</h2>
 			<p>{ description }</p>
 
 			<div className={ 'gutena-forms__settings-meta-box' }>

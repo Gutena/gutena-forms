@@ -23,6 +23,7 @@ const GutenaFormsSettings = () => {
 					title={ settings.title }
 					description={ settings.description }
 					items={ settings.fields }
+					isPro={ settings['is-pro'] }
 				/>
 			) }
 		</div>

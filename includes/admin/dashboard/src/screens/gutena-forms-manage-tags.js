@@ -4,6 +4,7 @@ import GutenaFormsSubmitButton from '../components/fields/gutena-forms-submit-bu
 import { __, sprintf } from '@wordpress/i18n';
 import Bin from '../icons/bin';
 import Tag from '../icons/tag';
+import { AddNew } from '../icons/plus';
 
 const GutenaFormsManageTags = () => {
 
@@ -58,6 +59,11 @@ const GutenaFormsManageTags = () => {
 											</div>
 										);
 									} ) }
+								</div>
+
+								<div className={ 'gutena-forms__pro-single-tag-wrapper gutena-forms__add-new-tag-btn' }>
+									<AddNew />
+									Add Tags
 								</div>
 
 								<GutenaFormsSubmitButton label={ __( 'Save Changes', 'gutena-forms' ) } />

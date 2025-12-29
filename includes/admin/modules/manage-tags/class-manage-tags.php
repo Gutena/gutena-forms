@@ -40,6 +40,7 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms
 			return array(
 				'title' 	  => __( 'Tags Management', 'gutena-forms' ),
 				'description' => __( 'Categorize and sort form entries using tags for efficient organization and reporting.', 'gutena-forms' ),
+				'is-pro'	  => true,
 				'fields'      => array(
 					array(
 						'type' => 'template',
