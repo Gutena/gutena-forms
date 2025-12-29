@@ -7,7 +7,7 @@
 	"parent": ["gutena/forms"],
 	"category": "gutena",
 	"icon": "yes-alt",
-	"description": "Checkbox",
+	"description": "Allow users to select one or multiple options from a list.",
 	"attributes": {
 		"nameAttr": {
 			"type": "string",

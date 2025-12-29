@@ -7,7 +7,7 @@
 	"parent": ["gutena/forms"],
 	"category": "gutena-pro",
 	"icon": "lock",
-	"description": "Password",
+	"description": "Securely collect sensitive information with masked input.",
 	"textdomain": "gutena-forms-pro",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",

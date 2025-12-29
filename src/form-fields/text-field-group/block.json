@@ -7,7 +7,7 @@
 	"parent": ["gutena/forms"],
 	"category": "gutena",
 	"icon": "text",
-	"description": "Text",
+	"description": "Collect short text inputs such as names, titles, or single-line responses.",
 	"attributes": {
 		"nameAttr": {
 			"type": "string",

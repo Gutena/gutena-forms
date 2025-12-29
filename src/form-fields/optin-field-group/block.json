@@ -7,7 +7,7 @@
 	"parent": ["gutena/forms"],
 	"category": "gutena",
 	"icon": "privacy",
-	"description": "Opt-in",
+	"description": "Add a consent checkbox for privacy policies, terms, or GDPR compliance.",
 	"attributes": {
 		"nameAttr": {
 			"type": "string",

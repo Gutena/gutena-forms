@@ -7,7 +7,7 @@
 	"parent": ["gutena/forms"],
 	"category": "gutena",
 	"icon": "settings",
-	"description": "Range",
+	"description": "Let users select a value within a defined range using a slider.",
 	"attributes": {
 		"nameAttr": {
 			"type": "string",

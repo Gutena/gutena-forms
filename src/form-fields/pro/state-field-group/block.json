@@ -7,7 +7,7 @@
 	"parent": ["gutena/forms"],
 	"category": "gutena-pro",
 	"icon": "location",
-	"description": "State",
+	"description": "Collect location details with structured country and state selection.",
 	"textdomain": "gutena-forms-pro",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",

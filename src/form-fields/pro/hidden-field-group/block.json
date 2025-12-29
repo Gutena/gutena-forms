@@ -7,7 +7,7 @@
 	"parent": ["gutena/forms"],
 	"category": "gutena-pro",
 	"icon": "hidden",
-	"description": "Hidden",
+	"description": "Store additional data invisibly without user interaction.",
 	"textdomain": "gutena-forms-pro",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",

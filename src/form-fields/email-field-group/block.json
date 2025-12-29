@@ -7,7 +7,7 @@
 	"parent": ["gutena/forms"],
 	"category": "gutena",
 	"icon": "email",
-	"description": "Email",
+	"description": "Collect and validate user email addresses for accurate communication",
 	"attributes": {
 		"nameAttr": {
 			"type": "string",
