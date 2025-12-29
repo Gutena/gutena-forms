@@ -9,7 +9,7 @@
   ],
   "category": "gutena-pro",
   "icon": "star-filled",
-  "description": "Rating",
+  "description": "Gather user feedback using a star-based rating field.",
   "textdomain": "gutena-forms-pro",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",

@@ -9,7 +9,7 @@
   ],
   "category": "gutena",
   "icon": "editor-paragraph",
-  "description": "Textarea",
+  "description": "Capture longer, multi-line responses such as messages or feedback.",
   "attributes": {
     "nameAttr": {
       "type": "string",

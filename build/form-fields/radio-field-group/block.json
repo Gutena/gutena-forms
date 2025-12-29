@@ -8,8 +8,8 @@
     "gutena/forms"
   ],
   "category": "gutena",
-  "icon": "radio-button",
-  "description": "Radio",
+  "icon": "forms",
+  "description": "Enable users to choose a single option from multiple choices.",
   "attributes": {
     "nameAttr": {
       "type": "string",

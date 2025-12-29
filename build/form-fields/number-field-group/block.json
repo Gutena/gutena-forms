@@ -8,8 +8,8 @@
     "gutena/forms"
   ],
   "category": "gutena",
-  "icon": "hash",
-  "description": "Number",
+  "icon": "calculator",
+  "description": "Capture numeric values like quantities, ages, or reference numbers with validation.",
   "attributes": {
     "nameAttr": {
       "type": "string",

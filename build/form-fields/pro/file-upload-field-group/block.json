@@ -9,7 +9,7 @@
   ],
   "category": "gutena-pro",
   "icon": "upload",
-  "description": "File Upload",
+  "description": "Allow users to upload files, documents, or images through the form.",
   "textdomain": "gutena-forms-pro",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",

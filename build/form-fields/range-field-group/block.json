@@ -8,8 +8,8 @@
     "gutena/forms"
   ],
   "category": "gutena",
-  "icon": "settings",
-  "description": "Range",
+  "icon": "admin-settings",
+  "description": "Let users select a value within a defined range using a slider.",
   "attributes": {
     "nameAttr": {
       "type": "string",

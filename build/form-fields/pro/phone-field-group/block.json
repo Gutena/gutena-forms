@@ -9,7 +9,7 @@
   ],
   "category": "gutena-pro",
   "icon": "phone",
-  "description": "Phone",
+  "description": "Capture phone numbers with proper formatting and validation.",
   "textdomain": "gutena-forms-pro",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
