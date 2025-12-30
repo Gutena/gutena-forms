@@ -55,13 +55,13 @@
 				#toplevel_page_gutena-forms ul li:last-child a {
 					background: #27a68a !important;
 					border: 1px solid #27a68a !important;
-					color: #ffffff;
+					color: #ffffff !important;
 					font-weight: 600;
 				}
 
 				#toplevel_page_gutena-forms ul li:last-child a:hover,
 				 #toplevel_page_gutena-forms ul li:last-child a:focus {
-					color: #ffffff;
+					color: #ffffff !important;
 				}
 			</style>';
 
