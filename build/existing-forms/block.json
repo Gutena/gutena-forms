@@ -19,7 +19,7 @@
   "attributes": {
     "formID": {
       "type": "string",
-      "default": ""
+      "default": false
     }
   },
   "textdomain": "gutena-forms",

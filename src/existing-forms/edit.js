@@ -17,6 +17,10 @@ const Edit = ( { attributes, setAttributes } ) => {
 			.then( ( response ) => {
 				setFormIds( response.forms );
 			} );
+
+		if ( attributes.formID ) {
+			setFormId( attributes.formID );
+		}
 	}, [] );
 
 	useEffect( () => {
@@ -45,19 +49,25 @@ const Edit = ( { attributes, setAttributes } ) => {
 
 	return (
 		<div>
-			<select
-				onChange={ ( event ) => {
-					setFormId( event.target.value );
-					setAttributes( { formID: event.target.value } );
-				} }
-			>
-				<option value={ false }>Select a form</option>
-				{ formIds.map( ( form ) => (
-					<option key={ form.id } value={ form.id }>
-						{ form.title }
-					</option>
-				) ) }
-			</select>
+			{
+				attributes.formID ? (
+					<div>Loading form</div>
+				) : (
+					<select
+						onChange={ ( event ) => {
+							setFormId( event.target.value );
+							setAttributes( { formID: event.target.value } );
+						} }
+					>
+						<option value={ false }>Select a form</option>
+						{ formIds.map( ( form ) => (
+							<option key={ form.id } value={ form.id }>
+								{ form.title }
+							</option>
+						) ) }
+					</select>
+				)
+			}
 		</div>
 	);
 };
