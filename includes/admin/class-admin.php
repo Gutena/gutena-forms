@@ -59,7 +59,8 @@
 					font-weight: 600;
 				}
 
-				#toplevel_page_gutena-forms ul li:last-child a:hover {
+				#toplevel_page_gutena-forms ul li:last-child a:hover,
+				 #toplevel_page_gutena-forms ul li:last-child a:focus {
 					color: #ffffff;
 				}
 			</style>';
