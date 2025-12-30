@@ -1488,17 +1488,22 @@ const variations = [
 		],
 		scope: [ 'block' ],
 	},
-	{
-		name: 'existing-forms',
-		title: __( 'Existing Forms', 'gutena-forms' ),
-		description: __( 'Use a form you have already created.', 'gutena-forms' ),
-		attributes: {},
-		icon: <ExistingFormsIcon />,
-		innerBlocks: [
-			[ 'gutena/existing-forms' ]
-		],
-		scope: [ 'block' ],
-	}
 ];
+
+if ( ! gutenaFormsBlock.is_gutena_forms_post_type && gutenaFormsBlock.forms_available ) {
+	variations.push(
+		{
+			name: 'existing-forms',
+			title: __( 'Existing Forms', 'gutena-forms' ),
+			description: __( 'Use a form you have already created.', 'gutena-forms' ),
+			attributes: {},
+			icon: <ExistingFormsIcon />,
+			innerBlocks: [
+				[ 'gutena/existing-forms' ]
+			],
+			scope: [ 'block' ],
+		}
+	);
+}
 
 export default variations;
