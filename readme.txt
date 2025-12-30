@@ -30,13 +30,13 @@ https://www.youtube.com/watch?v=u9sB-RSBQIE
 
 ### Free Version Includes:
 
-🌟 Easy form creation inside the WordPress block editor
+* Easy form creation inside the WordPress block editor
 
-🌟 Lightweight WordPress form plugin
+* Lightweight WordPress form plugin
 
-🌟 No jQuery
+* No jQuery
 
-🌟 Form input fields:
+* Form input fields:
 
   * **Text**: Capture user text with a standard input field.
 
@@ -56,40 +56,40 @@ https://www.youtube.com/watch?v=u9sB-RSBQIE
 
   * **Opt-in Checkbox (Privacy and Terms)**: Add GDPR-ready consent fields for policies.
 
-🌟 Responsive WordPress forms
+* Responsive WordPress forms
 
-🌟 WordPress form block
+* WordPress form block
 
-🌟 Weekly form report lite
+* Weekly form report lite
 
-🌟 Pre-built WordPress form templates
+* Pre-built WordPress form templates
 
-🌟 Google reCAPTCHA integration
+* Google reCAPTCHA integration
 
-🌟 Cloudflare Turnstile integration
+* Cloudflare Turnstile integration
 
-🌟 Custom confirmation messages
+* Custom confirmation messages
 
-🌟 Full control over layout and styling
+* Full control over layout and styling
 
-🌟 Add unlimited core blocks inside forms
+* Add unlimited core blocks inside forms
 
-🌟 Drag-and-drop WordPress form builder
+* Drag-and-drop WordPress form builder
 
-🌟 User-friendly interface
+* User-friendly interface
 
-🌟 Email Notifications
+* Email Notifications
 
-🌟 Custom Redirection
+* Custom Redirection
 
-🌟 Custom Error Messages
+* Custom Error Messages
 
 
 ### ✨Pro Version Unlocks (everything in Free, plus):✨
 
 Gutena Forms Pro gives you everything you need to manage advanced form workflows:
 
-🌟 All advanced form input fields, such as:
+* All advanced form input fields, such as:
 
   * **File Upload**: Let users upload files and documents easily.
 
@@ -109,23 +109,23 @@ Gutena Forms Pro gives you everything you need to manage advanced form workflows
 
   * **Password Field**: Securely collect passwords with a masked input field.
 
-🌟 Database entries
+* Database entries
 
-🌟 Entry management dashboard
+* Entry management dashboard
 
-🌟 Weekly form report pro
+* Weekly form report pro
 
-🌟 Advanced entries filter
+* Advanced entries filter
 
-🌟 Tags management
+* Tags management
 
-🌟 Status management
+* Status management
 
-🌟 Entry notes
+* Entry notes
 
-🌟 User access control
+* User access control
 
-🌟 Priority support
+* Priority support
 
 Gutena Forms Pro is ideal for users who need a complete WordPress form builder Pro solution.
 
@@ -221,11 +221,11 @@ Use Gutena Forms for any form-building need, including:
 
 * [Contact Form](https://gutenaforms.com/forms-block#contact-form)
 
-* Surveys and feedback forms
+* [Surveys and feedback forms]((https://gutenaforms.com/forms-block#contact-form))
 
 * [Lead generation forms](https://gutenaforms.com/forms-block#appointment-form)
 
-* Event registration forms
+* [Event registration forms](https://gutenaforms.com/forms-block#appointment-form)
 
 * [Custom enquiry form](https://gutenaforms.com/forms-block#enquiry-form)
 
@@ -233,7 +233,7 @@ Use Gutena Forms for any form-building need, including:
 
 * [Customer enquiry forms](https://gutenaforms.com/forms-block#enquiry-form)
 
-* Job application forms
+* [Job application forms](https://gutenaforms.com/forms-block#enquiry-form)
 
 Gutena Forms works perfectly as a WordPress contact form plugin, WordPress booking form plugin, WordPress enquiry form plugin, and more.
 
@@ -257,27 +257,27 @@ If you enjoy using Gutena Forms, explore our collection of Gutenberg block plugi
 
 ### ⚡ Check Out What Else We’ve Built for You
 
-* [**Post SMTP**](https://postmansmtp.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Reliable WordPress email delivery plugin with detailed email logs and multiple SMTP integrations.
+* [**Post SMTP**](https://postmansmtp.com) – Reliable WordPress email delivery plugin with detailed email logs and multiple SMTP integrations.
 
-* [**Advanced File Manager**](https://advancedfilemanager.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Easily manage and organize your WordPress files directly from the dashboard.
+* [**Advanced File Manager**](https://advancedfilemanager.com) – Easily manage and organize your WordPress files directly from the dashboard.
 
-* [**Password Protected**](https://passwordprotectedwp.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Secure your WordPress site, posts, pages, and categories with simple password protection.
+* [**Password Protected**](https://passwordprotectedwp.com) – Secure your WordPress site, posts, pages, and categories with simple password protection.
 
-* [**myCred**](https://mycred.me/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Add gamification, rewards, ranks, and points management systems to your WordPress website.
+* [**myCred**](https://mycred.me) – Add gamification, rewards, ranks, and points management systems to your WordPress website.
 
-* [**WP EasyPay**](https://wpeasypay.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Accept Square payments and donations easily on your WordPress site.
+* [**WP EasyPay**](https://wpeasypay.com) – Accept Square payments and donations easily on your WordPress site.
 
-* [**WC Shop Sync**](https://wcshopsync.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Add Square payments and Sync WooCommerce products, customers, and orders with your Square POS.
+* [**WC Shop Sync**](https://wcshopsync.com) – Add Square payments and Sync WooCommerce products, customers, and orders with your Square POS.
 
-* [**Bookify**](https://wpbookify.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Your go-to online bookings and appointment scheduling plugin for WordPress.
+* [**Bookify**](https://wpbookify.com) – Your go-to online bookings and appointment scheduling plugin for WordPress.
 
-* [**CF7 Apps**](https://cf7apps.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – It allows you to add honeypot, hCaptcha, and Database entries to the Contact form. Our team is constantly adding new Contact Form 7 extensions.
+* [**CF7 Apps**](https://cf7apps.com) – It allows you to add honeypot, hCaptcha, and Database entries to the Contact form. Our team is constantly adding new Contact Form 7 extensions.
 
-* [**All In One Login**](https://aiologin.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Secure your WordPress login page, change the wp-login.php url, and add Google, Facebook, Microsoft, LINE, and other social logins to your WordPress site.
+* [**All In One Login**](https://aiologin.com) – Secure your WordPress login page, change the wp-login.php url, and add Google, Facebook, Microsoft, LINE, and other social logins to your WordPress site.
 
-* [**New User Approve**](https://newuserapprove.com/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Control user registrations by manually approving or denying new signups.
+* [**New User Approve**](https://newuserapprove.com) – Control user registrations by manually approving or denying new signups.
 
-* [**WP Experts WooCommerce Store**](https://wpexperts.io/store/?utm_source=wordpress+org&utm_medium=readme&utm_campaign=Gutena+Forms) – Explore premium WooCommerce plugins and solutions by WPExperts.
+* [**WP Experts WooCommerce Store**](https://wpexperts.io/store) – Explore premium WooCommerce plugins and solutions by WPExperts.
 
 
 == Frequently Asked Questions ==
