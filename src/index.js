@@ -192,12 +192,15 @@ if ( ! gutenaFormsBlock.is_pro ) {
 				el[0].style.userSelect = 'none';
 				el[0].style.opacity = '0.5';
 				el[0].setAttribute('disabled', 'true');
-				el[0].parentNode.addEventListener(
-					'click',
-					function ( e ) {
-						window.open( 'https://gutenaforms.com/pricing/?utm_source=editor&utm_medium=website&utm_campaign=free_plugin', '_blank' );
-					}
-				);
+
+				if ( el[1] ) {
+					el[1].parentNode.setAttribute('draggable', 'false');
+					el[1].setAttribute('aria-disabled', 'true');
+					el[1].style.pointerEvents = 'none';
+					el[1].style.userSelect = 'none';
+					el[1].style.opacity = '0.5';
+					el[1].setAttribute('disabled', 'true');
+				}
 			}
 		} );
 
