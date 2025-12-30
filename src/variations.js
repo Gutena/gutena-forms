@@ -5,6 +5,7 @@ import { Icon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import successIcon from './success-tick.svg';
 import errorIcon from './error.svg';
+import ExistingFormsIcon from './existing-forms/icon';
 
 /** @typedef {import('@wordpress/blocks').WPBlockVariation} WPBlockVariation */
 /**
@@ -1487,6 +1488,17 @@ const variations = [
 		],
 		scope: [ 'block' ],
 	},
+	{
+		name: 'existing-forms',
+		title: __( 'Existing Forms', 'gutena-forms' ),
+		description: __( 'Use a form you have already created.', 'gutena-forms' ),
+		attributes: {},
+		icon: <ExistingFormsIcon />,
+		innerBlocks: [
+			[ 'gutena/existing-forms' ]
+		],
+		scope: [ 'block' ],
+	}
 ];
 
 export default variations;
