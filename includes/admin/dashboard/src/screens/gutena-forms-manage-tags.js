@@ -5,6 +5,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import Bin from '../icons/bin';
 import Tag from '../icons/tag';
 import { AddNew } from '../icons/plus';
+import GutenaFormsListBox from '../components/gutena-forms-list-box';
 
 const GutenaFormsManageTags = () => {
 
@@ -44,24 +45,18 @@ const GutenaFormsManageTags = () => {
 								<div>
 									{ tags.map( ( tag, index ) => {
 										return (
-											<div className={ 'gutena-forms__pro-single-tag-wrapper' } key={ index }>
-												<div className={ 'gutena-forms__pro-single-tag' }>
-													<div className={ 'gutena-forms__pro-single-tag-icon' }>
-														<Tag />
-													</div>
-													<div className={ 'gutena-forms__pro-single-tag-title' }>
-														{ tag.title }
-													</div>
-												</div>
-												<div className={ 'gutena-forms__pro-single-tag-delete-icon' }>
-													<Bin />
-												</div>
+											<div key={ index }>
+												<GutenaFormsListBox
+													leftContent={ <Tag /> }
+													middleContent={ tag.title }
+													rightContent={ <Bin />}
+												/>
 											</div>
 										);
 									} ) }
 								</div>
 
-								<div className={ 'gutena-forms__pro-single-tag-wrapper gutena-forms__add-new-tag-btn' }>
+								<div className={ 'gutena-forms__pro-single-list-wrapper gutena-forms__add-new-tag-btn' }>
 									<AddNew />
 									Add Tags
 								</div>

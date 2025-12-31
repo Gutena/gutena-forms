@@ -215,7 +215,7 @@
 					font-weight: 400;
 				}
 
-				.gutena-forms__pro-single-tag-wrapper {
+				.gutena-forms__pro-single-list-wrapper {
 					display: flex;
 					width: 360px;
 					justify-content: space-between;
@@ -241,20 +241,28 @@
 						}
 					}
 
-					.gutena-forms__pro-single-tag {
+					.gutena-forms__pro-single-list {
 						display: flex;
 						align-items: center;
 
-						.gutena-forms__pro-single-tag-title {
+						.gutena-forms__pro-single-list-title {
 							color: #424D55;
 							font-size: 12px;
 							font-weight: 500;
 						}
 
-						.gutena-forms__pro-single-tag-icon {
+						.gutena-forms__pro-single-list-icon {
 							svg {
 								margin: 0 15px -4px 0;
 							}
+						}
+					}
+
+					.gutena-forms__user-profile {
+						span {
+							display: inline-block;
+							margin-left: 5px;
+							color: #0DA88C;
 						}
 					}
 				}

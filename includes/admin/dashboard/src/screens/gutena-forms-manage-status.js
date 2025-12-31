@@ -5,6 +5,7 @@ import Ellipse from '../icons/ellipse';
 import { gutenaFormsFetchStatus } from '../api';
 import {AddNew} from '../icons/plus';
 import GutenaFormsSubmitButton from '../components/fields/gutena-forms-submit-button';
+import GutenaFormsListBox from '../components/gutena-forms-list-box';
 
 const GutenaFormsManageStatus = () => {
 	const [ status, setStatus ] = useState([] );
@@ -66,24 +67,19 @@ const GutenaFormsManageStatus = () => {
 								<div>
 									{ status.map( ( stat, index ) => {
 										return (
-											<div className={ 'gutena-forms__pro-single-tag-wrapper' } style={ { borderLeftColor: stat.color } } key={ index }>
-												<div className={ 'gutena-forms__pro-single-tag' }>
-													<div className={ 'gutena-forms__pro-single-tag-icon' }>
-														<Ellipse fill={ stat.color } />
-													</div>
-													<div className={ 'gutena-forms__pro-single-tag-title' }>
-														{ stat.title }
-													</div>
-												</div>
-												<div className={ 'gutena-forms__pro-single-tag-delete-icon' }>
-													<Bin />
-												</div>
+											<div key={ index }>
+												<GutenaFormsListBox
+													leftContent={ <Ellipse fill={ stat.color } /> }
+													middleContent={ stat.title }
+													rightContent={ <Bin /> }
+													style={ { borderLeftColor: stat.color } }
+												/>
 											</div>
 										);
 									} ) }
 								</div>
 
-								<div className={ 'gutena-forms__pro-single-tag-wrapper gutena-forms__add-new-tag-btn' }>
+								<div className={ 'gutena-forms__pro-single-list-wrapper gutena-forms__add-new-tag-btn' }>
 									<AddNew />
 									Add Status
 								</div>

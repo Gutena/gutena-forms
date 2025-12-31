@@ -154,3 +154,16 @@ export async function gutenaFormsFetchStatus() {
 
 	throw new Error( 'Upgrade to pro' );
 }
+
+export async function gutenaFormsFetchUsers() {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: `${ GutenaFormsRestConfiguration.proNamespace }user-list`,
+	} );
+
+	if ( response.users ) {
+		return response.users;
+	}
+
+	throw new Error( 'Upgrade to pro' );
+}
