@@ -7,3 +7,12 @@ export const SettingsTemplates = {
 	'manage-status': GutenaFormsManageStatus,
 	'user-access': GutenaFormsUserAccess,
 }
+
+export const PageTemplates = {
+	'forms': () => {
+
+		return (
+			<div>Hello World</div>
+		);
+	}
+};
