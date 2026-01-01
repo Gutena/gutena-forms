@@ -5,14 +5,17 @@ import Next from '../icons/next';
 
 const GutenaFormsDatatable = ( { headers = [], data = [], children } ) => {
 	const [ numberOfData, setNumberOfData ] = useState( 10 );
+	const [ currentPage, setCurrentPage ] = useState( 1 );
+	const [ offset, setOffset ] = useState( 0 );
+	const totalPages = Math.ceil( data.length / numberOfData );
 
-	data = data.slice( 0, numberOfData === -1 ? data.length : numberOfData );
+	const newData = data.slice( offset, ( numberOfData === -1 ? data.length : numberOfData ) + offset );
 
 	useEffect( () => {
 
 	}, [] );
 
-	const PaginationComponent = ( { data } ) => {
+	const PaginationComponent = () => {
 
 		if ( numberOfData < 0 ) {
 			return (
@@ -37,14 +40,46 @@ const GutenaFormsDatatable = ( { headers = [], data = [], children } ) => {
 			);
 		}
 
+		return (
+			<div className={ 'gutena-forms__pagination' }>
+				<Button
+					className={ 'gutena-forms__pagination-button prev-button' }
+					disabled={ currentPage === 1 }
+					onClick={ () => {
+						if ( currentPage > 1 ) {
+							setCurrentPage( currentPage - 1 );
+							setOffset( offset - numberOfData );
+						}
+					} }
+				>
+					<Previous />
+				</Button>
+				<Button
+					className={ 'gutena-forms__pagination-button current' }
+					disabled={ true }
+				>{ currentPage }</Button>
+				<Button
+					className={ 'gutena-forms__pagination-button next-button' }
+					disabled={ currentPage === totalPages || totalPages === 0 }
+					onClick={ () => {
+						if ( currentPage < totalPages ) {
+							setCurrentPage( currentPage + 1 );
+							setOffset( offset + numberOfData );
+						}
+					} }
+				>
+					<Next />
+				</Button>
+			</div>
+		);
 	};
 
-	const NumberOfPagesComponent = ( { data } ) => {
+	const NumberOfPagesComponent = () => {
 
 		return (
 			<div className={ 'number-of-items-wrapper' }>
 				<div className={ 'display-inline-block' }>
-					Page 1 out of 1
+					Page { currentPage } out of { totalPages > 0 ? totalPages : 1 }
 				</div>
 				<div className={ 'display-inline-block gutena-forms__select-wrapper' }>
 					<SelectControl
@@ -95,7 +130,7 @@ const GutenaFormsDatatable = ( { headers = [], data = [], children } ) => {
 
 				<tbody>
 				{
-					data.map( ( row, index ) => (
+					newData.map( ( row, index ) => (
 						<tr key={ index }>
 							{ headers.map( ( header, index ) => (
 								<td key={ index }>
@@ -115,10 +150,10 @@ const GutenaFormsDatatable = ( { headers = [], data = [], children } ) => {
 					<td colSpan={ headers.length }>
 						<div className={ 'gutena-forms__table-footer' }>
 							<div>
-								<NumberOfPagesComponent data={ data } />
+								<NumberOfPagesComponent />
 							</div>
 							<div>
-								<PaginationComponent data={ data } />
+								<PaginationComponent />
 							</div>
 						</div>
 					</td>

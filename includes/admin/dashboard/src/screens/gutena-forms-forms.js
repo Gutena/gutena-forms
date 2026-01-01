@@ -943,7 +943,10 @@ const GutenaFormsForms = () => {
 							title: __( 'Contact Us', 'gutena-forms' ),
 							datetime: '2024-01-15 10:30 AM',
 						},
-					] }
+					].map( ( item, index ) => ( {
+						...item,
+						title: `${ item.title } #${ index + 1 }`,
+					} )) }
 					children={ {
 						'checkbox' : ( a,b ) => {
 							return (
