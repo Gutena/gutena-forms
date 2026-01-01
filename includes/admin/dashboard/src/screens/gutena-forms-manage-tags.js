@@ -2,7 +2,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { gutenaFormsFetchTags } from '../api';
 import GutenaFormsSubmitButton from '../components/fields/gutena-forms-submit-button';
 import { __, sprintf } from '@wordpress/i18n';
-import Bin from '../icons/bin';
+import { FadedBin } from '../icons/bin';
 import Tag from '../icons/tag';
 import { AddNew } from '../icons/plus';
 import GutenaFormsListBox from '../components/gutena-forms-list-box';
@@ -49,7 +49,7 @@ const GutenaFormsManageTags = () => {
 												<GutenaFormsListBox
 													leftContent={ <Tag /> }
 													middleContent={ tag.title }
-													rightContent={ <Bin />}
+													rightContent={ <FadedBin />}
 												/>
 											</div>
 										);

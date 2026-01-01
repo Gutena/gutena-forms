@@ -13,13 +13,17 @@ const GutenaFormsPageLayout = () => {
 		gutenaFormsFetchSettings( slug )
 			.then( data => {
 				setLoading( false );
-				setTemplate( data.fields[0].name )
+				if ( data.fields && data.fields ) {
+					if ( data.fields[0] && 'template' === data.fields[0].type ) {
+						setTemplate( data.fields[0].name );
+					}
+				}
 			} )
 	}, [ slug ] );
 
 	const TemplateComponent = PageTemplates[ template ];
 	return (
-		<div>
+		<div className={ 'gutena-forms__page-layout-wrapper' }>
 			{ ! loading && (
 				<>
 					{ template && PageTemplates[ template ] && (

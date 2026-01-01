@@ -7,6 +7,11 @@
 }
 
 .gutena-froms#gutena-forms__root {
+
+	svg {
+		fill: transparent;
+	}
+
 	.gutena-forms__header-container {
 		background: #FFFFFF;
 		border-bottom: 0.5px solid #E2E2E2;
@@ -76,6 +81,10 @@
 				margin-right: 6px;
 			}
 		}
+	}
+
+	.gutena-forms__mb-30 {
+		margin-bottom: 30px;
 	}
 
 	.gutena-froms__primary-button {
@@ -397,10 +406,6 @@
 				position: absolute;
 				top: 10px;
 				right: 5px;
-
-				svg {
-					fill: transparent;
-				}
 			}
 
 			.gutena-forms__popup-header {
@@ -462,5 +467,130 @@
 				}
 			}
 		}
+	}
+
+	.gutena-forms__page-layout-wrapper {
+		padding: 80px 40px;
+
+		.gutena-forms__page-title {
+			color: #2C3338;
+			font-size: 24px;
+			font-weight: 700;
+			margin: 0;
+		}
+
+		.gutena-forms-add-new-form-button {
+			border-radius: 5px;
+			background: #0DA88C;
+			margin-left: 20px;
+			display: inline-block;
+			height: auto;
+
+			color: #FFF;
+			font-size: 14px;
+			font-weight: 700;
+
+			svg {
+				margin: 0 10px -4px 0;
+			}
+		}
+	}
+
+	.gutena-forms__datatable-wrapper {
+		overflow: hidden;
+		border-radius: 4px;
+		border: 0.5px solid #d4d4e4;
+		background: #ffffff;
+		width: 100%;
+
+		.gutena-forms__action-links {
+			button {
+				margin: 0 10px 0 0;
+				padding: 0;
+				box-shadow: none;
+				outline: none;
+
+				&:last-child {
+					margin-right: 0;
+				}
+			}
+		}
+
+		thead {
+			height: 45px;
+
+			tr {
+
+				th {
+					border: none;
+					border-bottom: 0.5px solid #d4d4e4;
+					background: #F9F9F9;
+					text-align: left;
+
+					color: #414A51;
+					font-size: 12px;
+					font-weight: 700;
+					padding: 0 20px;
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				td {
+					border: none;
+					border-bottom: 0.5px solid #E2E2E2;
+					padding: 12px 20px;
+
+					color: #6E7376;
+					font-size: 12px;
+					font-weight: 500;
+				}
+
+				&:last-child {
+					td {
+						border-bottom: none;
+					}
+				}
+			}
+		}
+
+		.gutena-forms__table-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			.number-of-items-wrapper {
+				.gutena-forms__select-wrapper {
+					margin-left: 10px;
+				}
+			}
+		}
+
+		.gutena-forms__pagination {
+			.gutena-forms__pagination-button {
+				border-radius: 4px;
+				border: .5px solid #ccd5d9;
+				margin-right: 4px;
+
+				&:last-child {
+					margin-right: 0;
+				}
+
+				&.current {
+					border-radius: 4px;
+					background: #EDFFFC;
+					border: none;
+
+					color: #0DA88C;
+					font-size: 12px;
+					font-weight: 500;
+				}
+			}
+		}
+	}
+
+	.display-inline-block {
+		display: inline-block;
 	}
 }

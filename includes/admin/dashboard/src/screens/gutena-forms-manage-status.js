@@ -1,6 +1,6 @@
 import { useState, useEffect } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import Bin from '../icons/bin';
+import { FadedBin } from '../icons/bin';
 import Ellipse from '../icons/ellipse';
 import { gutenaFormsFetchStatus } from '../api';
 import {AddNew} from '../icons/plus';
@@ -71,7 +71,7 @@ const GutenaFormsManageStatus = () => {
 												<GutenaFormsListBox
 													leftContent={ <Ellipse fill={ stat.color } /> }
 													middleContent={ stat.title }
-													rightContent={ <Bin /> }
+													rightContent={ <FadedBin /> }
 													style={ { borderLeftColor: stat.color } }
 												/>
 											</div>
