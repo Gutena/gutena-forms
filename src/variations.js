@@ -20,7 +20,7 @@ if ( ! gutenaFormsBlock.is_gutena_forms_post_type && gutenaFormsBlock.forms_avai
 	variations.push(
 		{
 			name: 'existing-forms',
-			title: __( 'Chose form existing forms in your site', 'gutena-forms' ),
+			title: __( 'Chose from existing forms in your site', 'gutena-forms' ),
 			description: __( 'Use a form you have already created.', 'gutena-forms' ),
 			attributes: {},
 			icon: <ExistingFormsIcon />,
