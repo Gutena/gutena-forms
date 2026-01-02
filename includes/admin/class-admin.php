@@ -47,6 +47,16 @@
 
 		// Add navigation to forms list page
 		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_add_navigation_to_forms_list' ), 20 );
+		add_action(
+			'admin_head',
+			function () {
+				echo '<style type="text/css" id="gutena-forms__variation-icon-styles">
+					.gutena-forms__variation-icons {
+						fill: transparent !important;
+					}
+				</style>';
+			}, 123456789
+		);
 	}
 
 		public function admin_head() {
