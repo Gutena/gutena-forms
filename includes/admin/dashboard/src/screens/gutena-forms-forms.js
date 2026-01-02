@@ -947,17 +947,14 @@ const GutenaFormsForms = () => {
 						...item,
 						title: `${ item.title } #${ index + 1 }`,
 					} )) }
-					children={ {
-						'checkbox' : ( a,b ) => {
-							return (
-								<input type="checkbox" className={ 'select-form-checkbox' } />
-							);
-						},
-
-						'actions': ( a,b ) => {
+				>
+					{ {
+						'Actions': ( { row } ) => {
 							return (
 								<div className={ 'gutena-forms__action-links' }>
-									<Button>
+									<Button
+										href={ `post.php?post=${ row.id }&action=edit` }
+									>
 										<Edit />
 									</Button>
 									<Button>
@@ -973,7 +970,6 @@ const GutenaFormsForms = () => {
 							);
 						}
 					} }
-				>
 				</GutenaFormsDatatable>
 			</div>
 		</div>
