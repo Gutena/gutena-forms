@@ -2,7 +2,7 @@
 /**
  * Class Existing Forms Block
  *
- * @since 1.5.2
+ * @since 1.6.0
  * @package Gutena Forms
  */
 
@@ -12,7 +12,7 @@ if ( ! class_exists( 'Gutena_Forms_Existing_Forms_Block' ) ) :
 	/**
 	 * Gutena Forms Existing Forms Block Class.
 	 *
-	 * @since 1.5.2
+	 * @since 1.6.0
 	 */
 	class Gutena_Forms_Existing_Forms_Block {
 		private static $instance;
@@ -20,7 +20,7 @@ if ( ! class_exists( 'Gutena_Forms_Existing_Forms_Block' ) ) :
 		/**
 		 * Register block.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 */
 		public function register_block() {
 			register_block_type(
@@ -34,7 +34,7 @@ if ( ! class_exists( 'Gutena_Forms_Existing_Forms_Block' ) ) :
 		/**
 		 * Render block callback.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @param array    $attributes Block attributes.
 		 * @param string   $content Block content.
 		 * @param WP_Block $block Block instance.
@@ -57,7 +57,7 @@ if ( ! class_exists( 'Gutena_Forms_Existing_Forms_Block' ) ) :
 		/**
 		 * Get the single instance of the class.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @return Gutena_Forms_Existing_Forms_Block
 		 */
 		public static function get_instance() {

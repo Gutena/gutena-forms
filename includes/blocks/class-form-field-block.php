@@ -2,7 +2,7 @@
 /**
  * Class Form Field Block
  *
- * @since 1.5.2
+ * @since 1.6.0
  * @package Gutena Forms
  */
 
@@ -12,13 +12,13 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 	/**
 	 * Gutena Forms Form Field Block Class.
 	 *
-	 * @since 1.5.2
+	 * @since 1.6.0
 	 */
 	class Gutena_Forms_Form_Field_Block {
 		/**
 		 * The single instance of the class.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @var Gutena_Forms_Form_Field_Block $instance The single instance of the class.
 		 */
 		private static $instance;
@@ -26,7 +26,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 		/**
 		 * Register block.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 */
 		public function register_block() {
 			register_block_type(
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 		/**
 		 * Render block callback.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @param array  $attributes Block attributes.
 		 * @param string $content Block content.
 		 * @param WP_Block $block Block instance.
@@ -271,7 +271,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 		/**
 		 * Get the single instance of the class.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @return Gutena_Forms_Form_Field_Block
 		 */
 		public static function get_instance() {

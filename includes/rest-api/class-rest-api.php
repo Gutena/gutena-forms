@@ -2,7 +2,7 @@
 /**
  * Class Rest Api
  *
- * @since 1.5.2
+ * @since 1.6.0
  * @package Gutena Forms
  */
 
@@ -12,13 +12,13 @@ if ( ! class_exists( 'Gutena_Forms_Rest_Api' ) ) :
 	/**
 	 * Gutena Forms Rest Api Class
 	 *
-	 * @since 1.5.2
+	 * @since 1.6.0
 	 */
 	class Gutena_Forms_Rest_Api {
 		/**
 		 * The single instance of the class.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @var Gutena_Forms_Rest_Api $instance The single instance of the class.
 		 */
 		private static $instance;
@@ -26,7 +26,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_Api' ) ) :
 		/**
 		 * Constructor.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 */
 		private function __construct() {
 			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
@@ -35,7 +35,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_Api' ) ) :
 		/**
 		 * Register REST API routes.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @param WP_REST_Server $server The REST server.
 		 */
 		public function rest_api_init( $server ) {
@@ -63,7 +63,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_Api' ) ) :
 		/**
 		 * Get form IDs.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @return WP_REST_Response
 		 */
 		public function get_form_ids() {
@@ -95,7 +95,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_Api' ) ) :
 		/**
 		 * Get form data.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @param WP_REST_Request $request The REST request.
 		 *
 		 * @return WP_REST_Response
@@ -145,7 +145,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_Api' ) ) :
 		/**
 		 * Get the single instance of the class.
 		 *
-		 * @since 1.5.2
+		 * @since 1.6.0
 		 * @return Gutena_Forms_Rest_Api
 		 */
 		public static function get_instance() {
