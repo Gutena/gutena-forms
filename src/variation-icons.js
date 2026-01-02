@@ -24,7 +24,7 @@ export const OneColumnBasicIcon = () => (
 export const OneColumnModernIcon = () => (
 	<Icon
 		icon={ () => (
-			<svg style={{ fill: 'transparent' }} width="242" height="186" viewBox="0 0 242 186" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg className={ 'gutena-forms__variation-icons' } width="242" height="186" viewBox="0 0 242 186" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<rect x="0.5" y="0.5" width="241" height="185" rx="4.5" fill="white"/>
 				<rect x="0.5" y="0.5" width="241" height="185" rx="4.5" stroke="#D6EAE5"/>
 				<mask id="path-2-inside-1_381_1541" fill="white">
