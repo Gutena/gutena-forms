@@ -63,6 +63,30 @@ const Placeholder = ( { clientId, name, setAttributes } ) => {
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const blockProps = useBlockProps();
 
+	// renaming the button from skip to 'Use Default'
+	useEffect( () => {
+		const skipButton = document.querySelector( '.wp-block-gutena-forms .block-editor-block-variation-picker__skip' );
+
+		if ( skipButton ) {
+			const textNode = Array.from( skipButton.childNodes ).find( ( node ) => {
+				return node.nodeType === Node.TEXT_NODE || ( node.nodeType === Node.ELEMENT_NODE && node.textContent?.trim() === 'Skip' );
+			} );
+
+			if ( textNode ) {
+				if ( textNode.nodeType === Node.TEXT_NODE ) {
+					textNode.textContent = textNode.textContent.replace( 'Skip', __( 'Continue with default', 'gutena-forms' ) );
+				} else {
+					textNode.textContent = __( 'Continue with default', 'gutena-forms' );
+				}
+			} else {
+				const skipText = skipButton.textContent;
+				if ( skipText.includes( 'Skip' ) ) {
+					skipButton.textContent = skipText.replace( 'Skip', __( 'Continue with default', 'gutena-forms' ) );
+				}
+			}
+		}
+	}, [ variations ] );
+
 	return (
 		<div { ...blockProps }>
 			<__experimentalBlockVariationPicker
