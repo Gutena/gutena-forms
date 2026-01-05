@@ -496,23 +496,131 @@
 		}
 	}
 
+	.gutena-forms__table-wrapper {
+		overflow: hidden;
+		border-radius: 4px;
+		border: 0.5px solid #d4d4e4;
+		background: #ffffff;
+		width: 100%;
+
+		thead,
+		tfoot {
+			height: 45px;
+
+			tr {
+
+				th {
+					border: none;
+					background: #F9F9F9;
+					text-align: left;
+
+					color: #414A51;
+					font-size: 12px;
+					font-weight: 700;
+					padding: 0 20px;
+				}
+			}
+		}
+
+		thead {
+			tr {
+				th {
+					border-bottom: 0.5px solid #d4d4e4;
+				}
+			}
+		}
+
+		tfoot {
+			tr {
+				th {
+					border-top: 0.5px solid #d4d4e4;
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				td {
+					border: none;
+					border-bottom: 0.5px solid #E2E2E2;
+					padding: 12px 20px;
+
+					color: #6E7376;
+					font-size: 12px;
+					font-weight: 500;
+				}
+
+				&:last-child {
+					td {
+						border-bottom: none;
+					}
+				}
+			}
+		}
+	}
+
+	.display-inline-block {
+		display: inline-block;
+	}
+
 	.gutena-forms__data-table-container {
 		padding: 25px;
 		border-radius: 10px;
-		background: #ffffff;
-		border: 1px solid #e2e2e2;
+		border: 1px solid #E2E2E2;
+		background: #FFF;
 
-		.gutena-forms__data-table-header {
+		.gutena-forms__datatable-header {
 			display: flex;
 			justify-content: space-between;
+			align-items: center;
 			margin-bottom: 25px;
 
 			.gutena-forms__search-box {
 				border-radius: 2px;
 				border: 1px solid #e2e2e2;
-				padding: 6px 10px;
-				width: 180px;
+				padding: 0 10px;
+				min-width: 180px;
 				margin-right: 10px;
+
+				input {
+					border: none;
+					outline: none;
+					padding: 0;
+					margin: 0;
+					width: 190px;
+					height: 30px;
+
+					&[readonly] {
+						background-color: transparent;
+					}
+
+					color: #6E7376;
+					font-size: 12px;
+					font-weight: 400;
+
+					&::placeholder {
+						color: #A7AAAD;
+						font-size: 12px;
+						font-weight: 400;
+					}
+
+					&:focus {
+						box-shadow: none;
+					}
+				}
+
+				&.date-search {
+
+					svg {
+						margin: 0 0 -2px 10px;
+					}
+				}
+
+				&.text-search {
+					svg {
+						margin-right: 10px;
+					}
+				}
 			}
 
 			.display-inline-block {
@@ -524,74 +632,16 @@
 			}
 		}
 
-		.gutena-forms__datatable-wrapper {
-			overflow: hidden;
-			border-radius: 4px;
-			border: 0.5px solid #d4d4e4;
-			background: #ffffff;
+		.gutena-forms__table-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			width: 100%;
 
-			.gutena-forms__action-links {
-				button {
-					margin: 0 10px 0 0;
-					padding: 0;
-					box-shadow: none;
-					outline: none;
-
-					&:last-child {
-						margin-right: 0;
-					}
-				}
-			}
-
-			thead {
-				height: 45px;
-
-				tr {
-
-					th {
-						border: none;
-						border-bottom: 0.5px solid #d4d4e4;
-						background: #F9F9F9;
-						text-align: left;
-
-						color: #414A51;
-						font-size: 12px;
-						font-weight: 700;
-						padding: 0 20px;
-					}
-				}
-			}
-
-			tbody {
-				tr {
-					td {
-						border: none;
-						border-bottom: 0.5px solid #E2E2E2;
-						padding: 12px 20px;
-
-						color: #6E7376;
-						font-size: 12px;
-						font-weight: 500;
-					}
-
-					&:last-child {
-						td {
-							border-bottom: none;
-						}
-					}
-				}
-			}
-
-			.gutena-forms__table-footer {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-
-				.number-of-items-wrapper {
-					.gutena-forms__select-wrapper {
-						margin-left: 10px;
-					}
+			.number-of-items-wrapper {
+				padding-top: 10px;
+				.gutena-forms__select-wrapper {
+					margin-left: 10px;
 				}
 			}
 
@@ -617,9 +667,5 @@
 				}
 			}
 		}
-	}
-
-	.display-inline-block {
-		display: inline-block;
 	}
 }

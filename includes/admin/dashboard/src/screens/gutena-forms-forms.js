@@ -1,7 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Plus } from '../icons/plus';
-import GutenaFormsDatatable from '../components/gutena-forms-datatable';
+import GutenaFormsTable from '../components/gutena-forms-table';
+import GutenaFormsDataTable from '../components/gutena-forms-datatable'
 import Edit from '../icons/edit';
 import Copy from '../icons/copy';
 import Eye from '../icons/eye';
@@ -25,7 +26,7 @@ const GutenaFormsForms = () => {
 			</div>
 
 			<div>
-				<GutenaFormsDatatable
+				<GutenaFormsDataTable
 					headers={ [
 						{
 							key: 'checkbox',
@@ -946,31 +947,8 @@ const GutenaFormsForms = () => {
 					].map( ( item, index ) => ( {
 						...item,
 						title: `${ item.title } #${ index + 1 }`,
-					} )) }
-				>
-					{ {
-						'Actions': ( { row } ) => {
-							return (
-								<div className={ 'gutena-forms__action-links' }>
-									<Button
-										href={ `post.php?post=${ row.id }&action=edit` }
-									>
-										<Edit />
-									</Button>
-									<Button>
-										<Copy />
-									</Button>
-									<Button>
-										<Eye />
-									</Button>
-									<Button>
-										<Bin />
-									</Button>
-								</div>
-							);
-						}
-					} }
-				</GutenaFormsDatatable>
+					} ) ) }
+				/>
 			</div>
 		</div>
 	);
