@@ -9,27 +9,50 @@ import Previous from "../icons/previous";
 
 
 const GutenaFormsDatatable = ( { headers, data } ) => {
-	const [ tableData, setTableData ] = useState( [] );
-	const [ numberOfRowsPerPage, setNumberOfRowsPerPage ] = useState( 10 );
-	const [ searchTerm, setSearchTerm ] = useState( '' );
+	const [ numberOfRows, setNumberOfRows ] = useState( 10 );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
-	const [ offSet, setOffset ] = useState( 0 );
+	const [ searchTerm, setSearchTerm ] = useState( '' );
+	const totalPages = Math.ceil( data.length / numberOfRows );
+	const [ tableData, setTableData ] = useState( [] );
+	const [ offset, setOffset ] = useState( 0 );
 
 	useEffect( () => {
-		setTableData( data.splice( offSet, numberOfRowsPerPage ) );
-	}, [] );
+		setCurrentPage( 1 );
+		setOffset( 0 );
+	}, [ numberOfRows ] );
+
+	useEffect( () => {
+		const filteredData = data.filter( ( a ) => {
+			return Object.values( a ).some( ( value ) =>
+				String( value ).toLowerCase().includes( searchTerm.toLowerCase() )
+			);
+		} );
+
+		setTableData( filteredData.slice( offset, numberOfRows + offset ) );
+	}, [ numberOfRows, searchTerm, offset ] );
+
+	const handlePrevPage = () => {
+		setCurrentPage( currentPage - 1 );
+		setOffset( offset - numberOfRows );
+	}
+
+	const handleNextPage = () => {
+		setCurrentPage( currentPage + 1 );
+		setOffset( offset + numberOfRows );
+	}
+
 
 	const NumberOfPagesComponent = () => {
 
 		return (
 			<div className={ 'number-of-items-wrapper' }>
 				<div className={ 'display-inline-block' }>
-					Page 1 out of 1
+					Page { currentPage } out of { -1 < totalPages ? totalPages : 1 }
 				</div>
 
 				<div className={ 'display-inline-block gutena-forms__select-wrapper' }>
 					<SelectControl
-						value={ numberOfRowsPerPage }
+						onChange={ ( value ) => setNumberOfRows( parseInt( value ) ) }
 						options={ [
 							{ label: '10', value: 10 },
 							{ label: '25', value: 25 },
@@ -37,7 +60,7 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 							{ label: '100', value: 100 },
 							{ label: 'All', value: -1 },
 						] }
-						onChange={ ( value ) => setNumberOfRowsPerPage( parseInt( value ) ) }
+						value={ numberOfRows }
 					/>
 				</div>
 			</div>
@@ -46,7 +69,7 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 
 	const PaginationComponent = () => {
 
-		if ( tableData.length <= 0 || -1 === numberOfRowsPerPage ) {
+		if ( -1 === numberOfRows ) {
 			return (
 				<div className={ 'gutena-forms__pagination' }>
 					<Button
@@ -73,11 +96,8 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 			<div className={ 'gutena-forms__pagination' }>
 				<Button
 					className={ 'gutena-forms__pagination-button prev-button' }
-					onClick={ () => {
-						const newOffset = offSet - numberOfRowsPerPage;
-						setOffset( newOffset );
-					} }
-					disabled={ offSet <= 0 }
+					onClick={ handlePrevPage }
+					disabled={ currentPage <= 1 }
 				>
 					<Previous />
 				</Button>
@@ -85,14 +105,11 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 				<Button
 					className={ 'gutena-forms__pagination-button current' }
 					disabled={ true }
-				>1</Button>
+				>{ currentPage }</Button>
 				<Button
 					className={ 'gutena-forms__pagination-button next-button' }
-					onClick={ () => {
-						const newOffset = offSet + numberOfRowsPerPage;
-						setOffset( newOffset );
-					} }
-					disabled={ ( offSet + numberOfRowsPerPage ) >= data.length }
+					onClick={ handleNextPage }
+					disabled={ currentPage >= totalPages || tableData.length < numberOfRows }
 				>
 					<Next />
 				</Button>
