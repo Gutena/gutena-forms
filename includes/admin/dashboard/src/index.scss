@@ -677,4 +677,51 @@
 		z-index: 9999;
 		 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
+
+	.gutena-forms__bulk-action-container {
+
+		.components-input-base {
+			position: static;
+		}
+
+		select {
+			height: auto;
+			padding: 0 30px 0 10px;
+			border-radius: 2px;
+			border: 1px solid #E2E2E2;
+			box-shadow: none !important;
+			outline: none !important;
+
+			color: #A7AAAD;
+			font-size: 12px;
+			font-weight: 400;
+		}
+
+		.display-inline-block {
+			&:last-child {
+				margin-left: 15px;
+			}
+		}
+	}
+
+	.secondary-button {
+		border-radius: 2px;
+		border: 1px solid #0DA88C;
+		background: linear-gradient(0deg, #FFF 0%, #FFF 100%), #E0ECFF;
+		color: #0DA88C;
+		font-size: 12px;
+		font-weight: 500;
+		box-shadow: none;
+		padding: 6px 10px;
+	}
+
+	.gutena-forms-datatable__action {
+		svg {
+			margin-right: 10px;
+
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+	}
 }

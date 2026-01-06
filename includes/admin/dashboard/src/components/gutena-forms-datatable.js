@@ -1,15 +1,17 @@
 import GutenaFormsTable from './gutena-forms-table';
 import { useState, useEffect } from '@wordpress/element';
-import {Button, SelectControl} from '@wordpress/components';
+import { Button, SelectControl } from '@wordpress/components';
 import Calendar from "../icons/calendar";
 import Search from "../icons/search";
 import Next from "../icons/next";
 import Previous from "../icons/previous";
 import GutenaFormsCalendar from './gutena-forms-calendar';
+import { __ } from '@wordpress/i18n';
+import { toast } from 'react-toastify';
 
 
 
-const GutenaFormsDatatable = ( { headers, data } ) => {
+const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChildren } ) => {
 	const [ numberOfRows, setNumberOfRows ] = useState( 10 );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
 	const [ searchTerm, setSearchTerm ] = useState( '' );
@@ -18,6 +20,7 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 	const [ offset, setOffset ] = useState( 0 );
 	const [ calendarActive, setCalendarActive ] = useState( false );
 	const [ selectedDates, setSelectedDates ] = useState( '' );
+	const [ bulkAction, setBulkAction ] = useState( 'bulk_actions' );
 
 	useEffect( () => {
 		setCurrentPage( 1 );
@@ -64,6 +67,15 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 	const handleDateSelect = ( { startDate, endDate } ) => {
 		setSelectedDates( [ startDate, endDate ] );
 	}
+
+	const handleBulkActions = () => {
+		if ( 'bulk_actions' === bulkAction ) {
+			toast.error( 'Please select a bulk action to perform.' );
+			return;
+		}
+
+		handleBulkAction( bulkAction );
+	};
 
 
 	const NumberOfPagesComponent = () => {
@@ -141,11 +153,44 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 		);
 	};
 
+	const toggleAllCheckboxes = ( e ) => {
+		const checkboxes = document.querySelectorAll( '.gutena_forms_form_select' );
+		checkboxes.forEach( ( checkbox ) => {
+			checkbox.checked = e.target.checked;
+		} );
+	}
+
+	const uncheckGlobalCheckbox = ( e ) => {
+		if ( ! e.target.checked ) {
+			const globalCheckbox = document.querySelector( '.gutena_forms_form_select_all' );
+			globalCheckbox.checked = false;
+		}
+	};
+
 	return (
 		<div className={ 'gutena-forms__data-table-container' }>
 
 			<div className={ 'gutena-forms__datatable-header' }>
-				<div></div>
+
+				<div className={ 'gutena-forms__bulk-action-container' }>
+					<div className={ 'display-inline-block' }>
+						<SelectControl
+							options={ [
+								{ label: 'Bulk Actions', value: 'bulk_actions' },
+								{ label: 'Delete', value: 'delete' },
+							] }
+							value={ bulkAction }
+							onChange={ ( value ) => setBulkAction( value ) }
+						/>
+					</div>
+
+					<div className={ 'display-inline-block' }>
+						<Button
+							className={ 'secondary-button' }
+							onClick={ handleBulkActions }
+						>{ __( 'Apply', 'gutena-forms' ) }</Button>
+					</div>
+				</div>
 
 				<div>
 					<div className={ 'display-inline-block' }>
@@ -181,6 +226,15 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 							/>
 						</div>
 					</div>
+					<div className={ 'display-inline-block' }>
+						<Button
+							className={ 'gutena-forms__clear-filters-button secondary-button' }
+							onClick={ () => {
+								setSearchTerm( '' );
+								setSelectedDates( '' );
+							} }
+						>{ __( 'Clear Filters', 'gutena-forms' ) }</Button>
+					</div>
 				</div>
 			</div>
 
@@ -194,10 +248,32 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 
 							return (
 								<label htmlFor={ 'checkbox_for_all' }>
-									<input type={ 'checkbox' } id={ 'checkbox_for_all' } />
+									<input
+										type={ 'checkbox' }
+										id={ 'checkbox_for_all' }
+										className={ 'gutena_forms_form_select_all' }
+										onClick={ toggleAllCheckboxes }
+									/>
 								</label>
 							);
 						}
+					},
+
+					body: {
+						checkbox: ( { index } ) => {
+
+							return (
+								<label htmlFor={ `select_for_${index}` }>
+									<input
+										type={ 'checkbox' }
+										id={ `select_for_${index}` }
+										className={ 'gutena_forms_form_select' }
+										onClick={ uncheckGlobalCheckbox }
+									/>
+								</label>
+							);
+						},
+						...datatableChildren.body,
 					},
 
 					footer: ( headers ) => {
@@ -218,7 +294,7 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 								</th>
 							</tr>
 						);
-					}
+					},
 				} }
 			</GutenaFormsTable>
 		</div>

@@ -52,7 +52,24 @@ const GutenaFormsForms = () => {
 						...item,
 						title: `${ item.title } #${ index + 1 }`,
 					} ) ) }
-				/>
+
+					datatableChildren={ {
+						body: {
+							actions: ( row ) => {
+								console.log( row )
+								return (
+									<div className={ 'gutena-forms-datatable__action' }>
+										<Edit />
+										<Copy />
+										<Eye />
+										<Bin />
+									</div>
+								);
+							}
+						}
+					} }
+				>
+				</GutenaFormsDataTable>
 			</div>
 		</div>
 	);
