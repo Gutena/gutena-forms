@@ -155,6 +155,12 @@ export async function gutenaFormsFetchStatus() {
 	throw new Error( 'Upgrade to pro' );
 }
 
+/**
+ * Fetch users from the Gutena Forms Pro REST API.
+ *
+ * @since 1.6.0
+ * @returns {Promise<[*]|(function({byId: {}, queries: {}}=, *): ({byId: *, queries: {}}))|*>}
+ */
 export async function gutenaFormsFetchUsers() {
 	const response = await apiFetch( {
 		method: 'GET',
@@ -166,4 +172,59 @@ export async function gutenaFormsFetchUsers() {
 	}
 
 	throw new Error( 'Upgrade to pro' );
+}
+
+/**
+ * Fetch all forms from the Gutena Forms REST API.
+ *
+ * @since 1.6.0
+ * @returns {Promise<*>}
+ */
+export async function gutenaFormsFetchAllForms() {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: `${ GutenaFormsRestConfiguration.namespace }forms/get-all`,
+	} );
+
+	if ( response.forms ) {
+		return response.forms;
+	}
+
+	throw new Error( 'Gutena Forms FetchAllForms Error' );
+}
+
+export async function gutenaFormsDeleteForm( formId ) {
+	const response = await apiFetch( {
+		method: 'DELETE',
+		path: addQueryArgs(
+			`${ GutenaFormsRestConfiguration.namespace }forms/delete/`,
+			{
+				form_id: formId,
+			}
+		),
+	} );
+
+	if ( 'success' === response.status ) {
+		return response;
+	}
+
+	throw new Error( 'Gutena Forms DeleteForm Error' );
+}
+
+export async function deleteMultipleForms( formIds ) {
+	const response = await apiFetch( {
+		method: 'DELETE',
+		path: addQueryArgs(
+			`${ GutenaFormsRestConfiguration.namespace }forms/delete/`,
+			{
+				form_id: formIds,
+			}
+		),
+	} );
+
+	if ( 'success' === response.status ) {
+		return response;
+	}
+
+	throw new Error( 'Gutena Forms DeleteForm Error' );
 }

@@ -21,6 +21,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 	const [ calendarActive, setCalendarActive ] = useState( false );
 	const [ selectedDates, setSelectedDates ] = useState( '' );
 	const [ bulkAction, setBulkAction ] = useState( 'bulk_actions' );
+	const [ selectedData, setSelectedData ] = useState( [] );
 
 	useEffect( () => {
 		setCurrentPage( 1 );
@@ -74,7 +75,12 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 			return;
 		}
 
-		handleBulkAction( bulkAction );
+		if ( ! selectedData.length ) {
+			toast.error( 'Please select at least one item to perform bulk action.' );
+			return;
+		}
+
+		handleBulkAction( bulkAction, selectedData );
 	};
 
 
@@ -153,10 +159,21 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 		);
 	};
 
+	const valueSetter = ( value, isSelected ) => {
+		if ( isSelected ) {
+			setSelectedData( ( prevSelected ) => ( [ ...prevSelected, value ] ) );
+		} else {
+			setSelectedData( ( prevSelected ) => prevSelected.filter( ( item ) => item !== value ) );
+		}
+	}
+
 	const toggleAllCheckboxes = ( e ) => {
 		const checkboxes = document.querySelectorAll( '.gutena_forms_form_select' );
 		checkboxes.forEach( ( checkbox ) => {
 			checkbox.checked = e.target.checked;
+
+			const value = parseInt( checkbox.value );
+			valueSetter( value, e.target.checked );
 		} );
 	}
 
@@ -260,15 +277,20 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 					},
 
 					body: {
-						checkbox: ( { index } ) => {
+						checkbox: ( { row } ) => {
 
 							return (
-								<label htmlFor={ `select_for_${index}` }>
+								<label htmlFor={ `select_for_${ row.id }` }>
 									<input
 										type={ 'checkbox' }
-										id={ `select_for_${index}` }
+										id={ `select_for_${ row.id }` }
 										className={ 'gutena_forms_form_select' }
 										onClick={ uncheckGlobalCheckbox }
+										value={ row.id }
+										onInput={ ( e ) => {
+											const value = parseInt( e.target.value );
+											valueSetter( value, e.target.checked );
+										} }
 									/>
 								</label>
 							);

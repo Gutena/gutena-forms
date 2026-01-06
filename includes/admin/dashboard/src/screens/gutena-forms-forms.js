@@ -7,9 +7,55 @@ import Edit from '../icons/edit';
 import Copy from '../icons/copy';
 import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
-import testdata from '../test-data/data.json';
+import { useEffect, useState } from '@wordpress/element';
+import {gutenaFormsFetchAllForms, gutenaFormsDeleteForm, deleteMultipleForms} from '../api';
+import { toast } from 'react-toastify';
 
 const GutenaFormsForms = () => {
+	const [ forms, setForms ] = useState( false );
+	const [ loading, setLoading ] = useState( true );
+
+	useEffect( () => {
+		setLoading( true );
+		gutenaFormsFetchAllForms()
+			.then( ( forms ) => {
+				setLoading( false );
+				setForms( forms );
+			} )
+	}, [] );
+
+	const handleDeleteForm = ( formId ) => {
+		setLoading( true );
+		gutenaFormsDeleteForm( formId )
+			.then( response => {
+				toast.success( __( 'Form deleted successfully.', 'gutena-forms' ) );
+				// Refresh forms list
+				return gutenaFormsFetchAllForms()
+					.then( ( response ) => {
+						setLoading( false );
+						setForms( response );
+					} );
+			} );
+	}
+
+	const handleBulkActions = ( action, selectedData ) => {
+		setLoading( true );
+		switch ( action ) {
+			case 'delete':
+				deleteMultipleForms( selectedData )
+					.then( response => {
+						toast.success( __( 'Selected forms deleted successfully.', 'gutena-forms' ) );
+						// Refresh forms list
+						return gutenaFormsFetchAllForms()
+							.then( ( response ) => {
+								setLoading( false );
+								setForms( response );
+							} );
+					} );
+				break;
+		}
+	}
+
 	return (
 		<div>
 			<div className={ 'gutena-forms__mb-30' }>
@@ -27,49 +73,70 @@ const GutenaFormsForms = () => {
 			</div>
 
 			<div>
-				<GutenaFormsDataTable
-					headers={ [
-						{
-							key: 'checkbox',
-							value: '',
-							width: '25px',
-						},
-						{
-							key: 'title',
-							value: __( 'Form Title', 'gutena-forms' )
-						},
-						{
-							key: 'datetime',
-							value: __( 'Date Created', 'gutena-forms' )
-						},
-						{
-							key: 'actions',
-							value: __( 'Action', 'gutena-forms' ),
-							width: '100px',
-						}
-					] }
-					data={ testdata.map( ( item, index ) => ( {
-						...item,
-						title: `${ item.title } #${ index + 1 }`,
-					} ) ) }
-
-					datatableChildren={ {
-						body: {
-							actions: ( row ) => {
-								console.log( row )
-								return (
-									<div className={ 'gutena-forms-datatable__action' }>
-										<Edit />
-										<Copy />
-										<Eye />
-										<Bin />
-									</div>
-								);
+				{ ! loading && (
+					<GutenaFormsDataTable
+						headers={ [
+							{
+								key: 'checkbox',
+								value: '',
+								width: '25px',
+							},
+							{
+								key: 'title',
+								value: __( 'Form Title', 'gutena-forms' )
+							},
+							{
+								key: 'author',
+								value: __( 'Author', 'gutena-forms' ),
+								width: '150px',
+							},
+							{
+								key: 'datetime',
+								value: __( 'Date Created', 'gutena-forms' ),
+								width: '150px',
+							},
+							{
+								key: 'status',
+								value: __( 'Status', 'gutena-forms' ),
+								width: '100px',
+							},
+							{
+								key: 'actions',
+								value: __( 'Action', 'gutena-forms' ),
+								width: '110px',
 							}
-						}
-					} }
-				>
-				</GutenaFormsDataTable>
+						] }
+						data={ forms }
+
+						datatableChildren={ {
+							body: {
+								actions: ( { row } ) => {
+									return (
+										<div className={ 'gutena-forms-datatable__action' }>
+											<Button
+												href={ `post.php?post=${ row.id }&action=edit`}
+											>
+												<Edit />
+											</Button>
+											<Button
+												href={ row.permalink }
+											>
+												<Eye />
+											</Button>
+											<Button
+												onClick={ () => handleDeleteForm( row.id ) }
+											>
+												<Bin />
+											</Button>
+										</div>
+									);
+								}
+							}
+						} }
+						handleBulkAction={ handleBulkActions }
+					>
+					</GutenaFormsDataTable>
+				) }
 			</div>
 		</div>
 	);
