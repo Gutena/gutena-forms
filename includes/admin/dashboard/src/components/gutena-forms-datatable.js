@@ -5,6 +5,7 @@ import Calendar from "../icons/calendar";
 import Search from "../icons/search";
 import Next from "../icons/next";
 import Previous from "../icons/previous";
+import GutenaFormsCalendar from './gutena-forms-calendar';
 
 
 
@@ -15,6 +16,8 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 	const totalPages = Math.ceil( data.length / numberOfRows );
 	const [ tableData, setTableData ] = useState( [] );
 	const [ offset, setOffset ] = useState( 0 );
+	const [ calendarActive, setCalendarActive ] = useState( false );
+	const [ selectedDates, setSelectedDates ] = useState( '' );
 
 	useEffect( () => {
 		setCurrentPage( 1 );
@@ -22,14 +25,31 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 	}, [ numberOfRows ] );
 
 	useEffect( () => {
-		const filteredData = data.filter( ( a ) => {
+		let filteredData = data;
+
+		if ( 2 === selectedDates.length ) {
+			filteredData = filteredData.filter( ( item ) => {
+				let current = new Date( item.datetime );
+				let startDate = new Date( selectedDates[0] );
+				let endDate = new Date( selectedDates[1] );
+
+				return current >= startDate && current <= endDate;
+			} );
+		}
+
+		// Apply text search filter
+		filteredData = filteredData.filter( ( a ) => {
 			return Object.values( a ).some( ( value ) =>
 				String( value ).toLowerCase().includes( searchTerm.toLowerCase() )
 			);
 		} );
 
+		if ( -1 === numberOfRows ) {
+			setTableData( filteredData );
+			return;
+		}
 		setTableData( filteredData.slice( offset, numberOfRows + offset ) );
-	}, [ numberOfRows, searchTerm, offset ] );
+	}, [ numberOfRows, searchTerm, offset, selectedDates ] );
 
 	const handlePrevPage = () => {
 		setCurrentPage( currentPage - 1 );
@@ -39,6 +59,10 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 	const handleNextPage = () => {
 		setCurrentPage( currentPage + 1 );
 		setOffset( offset + numberOfRows );
+	}
+
+	const handleDateSelect = ( { startDate, endDate } ) => {
+		setSelectedDates( [ startDate, endDate ] );
 	}
 
 
@@ -131,9 +155,19 @@ const GutenaFormsDatatable = ( { headers, data } ) => {
 									placeholder={ 'mm/dd/yyyy - mm/dd/yyyy' }
 									type={ 'text' }
 									readOnly
+									value={ selectedDates && `${ selectedDates[0] } - ${ selectedDates[1] }` }
+									onClick={ () => setCalendarActive( ! calendarActive ) }
 								/>
 							</span>
 							<Calendar />
+
+							{
+								calendarActive && (
+									<GutenaFormsCalendar
+										onSelect={ handleDateSelect }
+									/>
+								)
+							}
 						</div>
 					</div>
 					<div className={ 'display-inline-block' }>

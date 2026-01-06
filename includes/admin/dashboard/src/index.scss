@@ -610,6 +610,7 @@
 				}
 
 				&.date-search {
+					position: relative;
 
 					svg {
 						margin: 0 0 -2px 10px;
@@ -667,5 +668,13 @@
 				}
 			}
 		}
+	}
+
+	.gutena-forms__calendar-wrapper {
+		position: absolute;
+		top: 30px;
+		right: 0;
+		z-index: 9999;
+		 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
 }
