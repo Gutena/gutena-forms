@@ -322,8 +322,6 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 			echo '<style type="text/css">
 				.page-title-action {
-					display: none !important;
-					visibility: hidden !important;
 				    color: #FFF !important;
 				    border: none !important;
 				    font-size: 14px !important;
@@ -376,6 +374,13 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			            <div>
 			                <h2 style="display: inline-block;margin-right: 20px;">
 			                    ' . __( 'Gutena Forms', 'gutena-forms' ) . '
+			                    <a style="display: inline-block;margin: -6px 0 0 20px;" href="' . esc_url( admin_url( 'post-new.php?post_type=' . $this->post_type ) ) . '" rel="noopener noreferrer" class="button gutena-forms__add-new-form">
+			                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+			                            <circle cx="9" cy="9" r="9" fill="#D2FFF7"/>
+			                            <path d="M8.17405 12.6V6.00001H9.84158V12.6H8.17405ZM5.40002 10.0714V8.54287H12.6V10.0714H5.40002Z" fill="#0DA88C"/>
+			                        </svg>
+			                        ' . __( 'Add New Form', 'gutena-forms' ) . '
+			                    </a>
 			                </h2>
 			            </div>
 			            <div style="margin-top: 30px;display: flex;justify-content: center;align-items: center;">
