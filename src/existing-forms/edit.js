@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from '@wordpress/element';
-import { Icon } from '@wordpress/components';
+import { Icon, Panel, PanelRow, PanelBody, PanelHeader, Button, Dashicon } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { addQueryArgs } from '@wordpress/url';
 import Logo from './logo';
+import { __ } from '@wordpress/i18n';
 
 const Edit = ( { attributes, setAttributes } ) => {
 	const blockProps = useBlockProps();
@@ -59,51 +60,100 @@ const Edit = ( { attributes, setAttributes } ) => {
 		/>
 	);
 
+	let elementComponent;
+
 	if ( formId && 'false' !== formId && form ) {
-		return (
+		elementComponent = (
 			<div { ...blockProps }>
 				<div dangerouslySetInnerHTML={ { __html: form } }></div>
 			</div>
 		);
-	}
+	} else {
+		elementComponent = (
+			<div style={ { display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '220px', border: '1px solid #E2E2E2', background: '#FAFAFA', } }>
+				{
+					attributes.formID ? (
+						<div>Loading form</div>
+					) : (
+						<div style={ { display: 'flex', alignItems: 'center', flexDirection: 'column' } }>
 
-	return (
-		<div style={ { display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '220px', border: '1px solid #E2E2E2', background: '#FAFAFA', } }>
-			{
-				attributes.formID ? (
-					<div>Loading form</div>
-				) : (
-					<div style={ { display: 'flex', alignItems: 'center', flexDirection: 'column' } }>
+							<div style={ { display: 'block', marginBottom: '20px' } }>
+								<Logo />
+							</div>
 
-						<div style={ { display: 'block', marginBottom: '20px' } }>
-							<Logo />
-						</div>
-
-						<div style={ { width: '320px', borderRadius: '4px', background: '#FAFAFA', border: '1px solid #E2E2E2', position: 'relative' } }>
+							<div style={ { width: '320px', borderRadius: '4px', background: '#FAFAFA', border: '1px solid #E2E2E2', position: 'relative' } }>
 							<span
 								style={ { position: 'absolute', top: '-2px', right: '8px', } }
 							>
 								<DropDownIcon />
 							</span>
-							<select
-								onChange={ ( event ) => {
-									setFormId( event.target.value );
-									setAttributes( { formID: event.target.value } );
-								} }
-								style={ { width: '100%', border: 'none' }}
-								ref={ selectReference }
-							>
-								<option value={ false }>Choose an existing form</option>
-								{ formIds.map( ( form ) => (
-									<option key={ form.id } value={ form.id }>
-										{ form.title }
-									</option>
-								) ) }
-							</select>
+								<select
+									onChange={ ( event ) => {
+										setFormId( event.target.value );
+										setAttributes( { formID: event.target.value } );
+									} }
+									style={ { width: '100%', border: 'none' }}
+									ref={ selectReference }
+								>
+									<option value={ false }>Choose an existing form</option>
+									{ formIds.map( ( form ) => (
+										<option key={ form.id } value={ form.id }>
+											{ form.title }
+										</option>
+									) ) }
+								</select>
+							</div>
 						</div>
-					</div>
-				)
-			}
+					)
+				}
+			</div>
+		);
+	}
+
+	return (
+		<div>
+			<InspectorControls>
+				{
+					formId && 'false' !== formId && form &&
+					(
+						<Panel>
+							<PanelHeader>
+								{ __( 'Form Settings', 'gutena-forms' ) }
+							</PanelHeader>
+							<PanelBody>
+
+								<div className={ 'notice notice-warning' } style={{ margin: '0 0 15px 0'}}>
+									<p>
+										{ __( 'Note: For editing Gutena Forms please refer to the Gutena Forms Editor - ', 'gutena-forms' ) }
+										<Button
+											href={ `post.php?post=${ formId }&action=edit` }
+											style={ { padding: 0, margin: 0, textDecoration: 'underline', height: 0, color: '#007cba' } }
+										>
+											{ __( 'Edit Form', 'gutena-forms' ) }
+											<Dashicon
+												icon={ 'external' }
+											/>
+										</Button>
+									</p>
+								</div>
+
+								<Button
+									style={ { width: '100%', display: 'block' } }
+									isSecondary
+									onClick={ () => {
+										setFormId( false );
+										setForm( null );
+										setAttributes( { formID: false } );
+									} }
+								>
+									{ __( 'Change Form', 'gutena-forms' ) }
+								</Button>
+							</PanelBody>
+						</Panel>
+					)
+				}
+			</InspectorControls>
+			{ elementComponent }
 		</div>
 	);
 };
