@@ -183,29 +183,8 @@
 }
 
 .wp-block-gutena-forms {
-	.components-placeholder.components-placeholder {
-		gap: 0 !important;
-	}
-
-	.components-placeholder__instructions {
-		display: none !important;
-	}
-
-	.block-editor-block-variation-picker__variations {
-		li {
-				&:first-child {
-					.block-editor-block-variation-picker__variation-label {
-						width: 70% !important;
-						font-size: 14px !important;
-						font-weight: 500 !important;
-						gap: 0 !important;
-				}
-			} }
-}
-
 	.block-editor-block-variation-picker__skip {
 		button {
-			margin-top: 15px !important;
 			font-size: 14px !important;
 		}
 	}
