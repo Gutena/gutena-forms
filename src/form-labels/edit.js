@@ -5,7 +5,8 @@ import {gfIsEmpty} from "../helper";
 const Edit = ( { attributes, setAttributes, clientId } ) => {
 
 	const parent  = select( 'core/block-editor' ).getBlockParents( clientId );
-	var children  = select( 'core/block-editor' ).getBlocksByClientId( parent[1] );
+	// client specific issue that's why changing the index from 0 to 3.
+	var children  = select( 'core/block-editor' ).getBlocksByClientId( parent[ 3 ] );
 	var elementId = children[0]?.innerBlocks[0]?.innerBlocks[1]?.attributes?.nameAttr;
 	let {
 		content, htmlFor, isRequired, placeholder, className
