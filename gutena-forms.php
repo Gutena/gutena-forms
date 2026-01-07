@@ -171,10 +171,13 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				)
 			);
 
-			register_block_type( __DIR__ . '/build/form-labels' );
+		// Field group Block (register first)
+		register_block_type( __DIR__ . '/build/field-group' );
 
-			// Field group Block
-			register_block_type( __DIR__ . '/build/field-group' );
+		// Form Labels Block
+		register_block_type( __DIR__ . '/build/form-labels', array(
+			'render_callback' => array( $this, 'render_form_labels' ),
+		) );
 
 			// Form Confirmation Message Block
 			register_block_type( __DIR__ . '/build/form-confirm-msg' );
@@ -356,6 +359,18 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			return isset( $attributes[ $key ] ) ? esc_attr( $attributes[ $key ] ): '';
 		}
 
+		public function render_form_labels( $attributes ) {
+			ob_start();
+
+			echo '<label
+				for="' . esc_attr( $attributes['htmlFor'] ) . '"
+			>'
+				. esc_attr( $attributes['content'] ) .
+			'</label>';
+
+			return ob_get_clean();
+		}
+
 		// render_callback : form field
 		public function render_form_field( $attributes, $content, $block ) {
 			// No changes if fieldType is empty
@@ -489,11 +504,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				'
 				>';
 				if ( 'optin' == $attributes['fieldType'] ) {
-					$output .= '<label class="' . esc_attr( $attributes['fieldType'] ) . '-container">
-						<input type="checkbox" name="' . esc_attr( $attributes['nameAttr']  ) .
+					$output .= '<input id="' . $attributes['nameAttr'] . '" type="checkbox" name="' . esc_attr( $attributes['nameAttr']  ) .
 						'" value="1" >
-						<span class="checkmark"></span>
-					  </label>';
+						<span class="checkmark"></span>';
 				} else if ( ! empty( $attributes['selectOptions'] ) && is_array( $attributes['selectOptions'] ) ) {
 					foreach ( $attributes['selectOptions'] as $option ) {
 						$output .= '<label class="' . esc_attr( $attributes['fieldType'] ) . '-container">' . esc_attr( $option ) . '

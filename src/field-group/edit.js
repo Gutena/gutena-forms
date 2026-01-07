@@ -2,11 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 export default function edit( {
-	className,
 	attributes,
-	setAttributes,
-	isSelected,
-	clientId,
 } ) {
 	const FORM_GROUP = [
 		[
@@ -20,7 +16,7 @@ export default function edit( {
 			},
 			[
 				[
-					'gutena-forms/form-labels',
+					'gutena/field-label',
 					{
 						level: 3,
 						content: attributes.fieldLabelContent,
@@ -30,7 +26,11 @@ export default function edit( {
 							? ''
 							: attributes.fieldLabelContent
 								.toLowerCase()
-								.replace( / /g, '_' )
+								.replace( / /g, '_' ),
+						lock: {
+							remove: true,
+							move: true,
+						}
 					},
 				],
 				[
@@ -73,6 +73,8 @@ export default function edit( {
 		'core/group',
 		'core/image',
 		'core/paragraph',
+		'gutena/form-field',
+		'gutena/field-label',
 	];
 	return (
 		<div { ...blockProps }>
