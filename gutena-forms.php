@@ -135,6 +135,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-existing-forms-block.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/rest-api/class-rest-api.php';
 		}
 
@@ -193,6 +194,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			Gutena_Forms_Field_Block::get_instance()->register_block();
 			Gutena_Forms_Form_Field_Block::get_instance()->register_block();
 			Gutena_Forms_Existing_Forms_Block::get_instance()->register_block();
+			Gutena_Forms_Field_Label_Block::get_instance()->register_block();
 
 			// Form Confirmation Message Block
 			register_block_type( __DIR__ . '/build/form-confirm-msg' );

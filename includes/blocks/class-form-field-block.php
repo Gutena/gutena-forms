@@ -71,6 +71,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 			// Text type Input
 			if ( in_array( $attributes['fieldType'], array( 'text', 'email', 'number' ) ) ) {
 				$output = '<input
+				id="' . esc_attr( $attributes['nameAttr'] ) . '"
 				' . $this->get_field_attribute( $attributes, array(
 						'nameAttr' 		=> 'name',
 						'fieldType' 	=> 'type',
@@ -92,6 +93,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 			if ( 'range' === $attributes['fieldType'] ) {
 				$output = '<div class="gf-range-container">
 				<input
+				id="' . esc_attr( $attributes['nameAttr'] ) . '"
 				' . $this->get_field_attribute( $attributes, array(
 						'nameAttr' 		=> 'name',
 						'fieldType' 	=> 'type',
@@ -138,6 +140,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 			// Textarea type Input
 			if ( 'textarea' === $attributes['fieldType'] ) {
 				$output = '<textarea
+				id="' . esc_attr( $attributes['nameAttr'] ) . '"
 				' . $this->get_field_attribute( $attributes, array(
 						'nameAttr' 		=> 'name',
 						'textAreaRows' 	=> 'rows',
@@ -152,6 +155,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 			// Select type Input
 			if ( 'select' === $attributes['fieldType'] ) {
 				$output = '<select
+				id="' . esc_attr( $attributes['nameAttr'] ) . '"
 				' . $this->get_field_attribute( $attributes, array(
 						'nameAttr' 		=> 'name',
 						'fieldClasses' 	=> 'class',
@@ -175,8 +179,10 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 					'
 				>';
 				if ( 'optin' == $attributes['fieldType'] ) {
-					$output .= '<label class="' . esc_attr( $attributes['fieldType'] ) . '-container">
-						<input type="checkbox" name="' . esc_attr( $attributes['nameAttr']  ) .
+					$output .= '<label for="' . esc_attr( $attributes['nameAttr'] ) . '" class="' . esc_attr( $attributes['fieldType'] ) . '-container">
+						<input
+						id="' . esc_attr( $attributes['nameAttr'] ) . '"
+						 type="checkbox" name="' . esc_attr( $attributes['nameAttr']  ) .
 						'" value="1" >
 						<span class="checkmark"></span>
 					  </label>';
