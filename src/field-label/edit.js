@@ -26,7 +26,6 @@ const Edit = ( { attributes, setAttributes, clientId } ) => {
 
 
 		var elementId = children[0]?.innerBlocks[0]?.innerBlocks[1]?.attributes?.nameAttr;
-console.log( children )
 		if ( gfIsEmpty( elementId ) ) {
 			return nameAttributeFinder( parentBlockIds, i );
 		}
@@ -42,7 +41,7 @@ console.log( children )
 
 		if ( gfIsEmpty( htmlFor ) ) {
 			htmlFor = nameAttributeFinder( parent, -1 );
-			console.log( htmlFor );
+
 			if ( ! gfIsEmpty( htmlFor ) ) {
 				setAttributes( { htmlFor: htmlFor } );
 			}
