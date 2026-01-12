@@ -31,6 +31,7 @@ import {
 	__experimentalUnitControl as UnitControl,
 	__experimentalVStack as VStack,
 	__experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue,
+	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 import {
 	createBlocksFromInnerBlocksTemplate,
@@ -158,7 +159,8 @@ export default function Edit( props ) {
 		formStyle,
 		style,
 		recaptcha,
-		cloudflareTurnstile
+		cloudflareTurnstile,
+		honeypot,
 	} = attributes;
 
 	const {
@@ -730,6 +732,45 @@ export default function Edit( props ) {
 					</VStack>
 				</PanelBody>
 				{/* Cloudflare - Turnstile end */}
+
+				{ /* Honeypot start */ }
+				<PanelBody title={ "Honeypot Field" } initialOpen={ false }>
+					<VStack>
+						<p>Honeypot field settings</p>
+						<ToggleControl
+							label={ 'enable' }
+							checked={ honeypot?.enable }
+							onChange={ ( honeypot_status ) => {
+								setAttributes( {
+									honeypot: {
+										...honeypot,
+										enable: honeypot_status
+									}
+								} );
+							} }
+						/>
+
+						{
+							( ! gfIsEmpty( honeypot?.enable ) && honeypot?.enable ) &&
+							<>
+								<NumberControl
+									label={ __( 'Time limit (in seconds)', 'gutena-forms' ) }
+									value={ honeypot?.timeCheckValue }
+									onChange={ ( timeCheckValue ) => {
+										setAttributes( {
+											honeypot: {
+												...honeypot,
+												timeCheckValue: timeCheckValue
+											}
+										} );
+									} }
+									description={ 'Adds a time-based spam check that detects submissions made too quickly, a common bot behavior. The default threshold is 4 seconds, adjustable as needed. If unsure, leave it off.'}
+								/>
+							</>
+						}
+					</VStack>
+				</PanelBody>
+				{ /* Honeypot end */ }
 
 				<PanelColorSettings
 					title={ __( 'Form colors', 'gutena-forms' ) }

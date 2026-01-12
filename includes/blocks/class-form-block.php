@@ -89,6 +89,19 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				$html .= '<input type="hidden" name="turnstile_enable" value="' . esc_attr( $attributes['cloudflareTurnstile']['enable'] ) . '" />';
 			}
 
+			$honeypot_html = '';
+			if ( ! empty( $attributes['honeypot'] ) && ! empty( $attributes['honeypot']['enable'] ) ) {
+				$time_check_value = ! empty( $attributes['honeypot']['timeCheckValue'] )
+					? intval( $attributes['honeypot']['timeCheckValue'] )
+					: 4; // default 4 seconds
+				// we need to different hidden fields 1 for checking time second for check honeypot
+				$honeypot_html .= '<div style="display:none;">
+					<label for="gf_hp_' . esc_attr( $attributes['formID'] ) . '">' . esc_html__( 'Leave this field empty', 'gutena-forms' ) . '</label>
+					<input type="text" name="gf_hp_' . esc_attr( $attributes['formID'] ) . '" id="gf_hp_' . esc_attr( $attributes['formID'] ) . '" value="" />
+					<input type="hidden" name="gf_time_check_' . esc_attr( $attributes['formID'] ) . '" value="' . esc_attr( time() + $time_check_value ) . '" />
+				</div>';
+			}
+
 			// Add required html
 			if ( ! empty( $html ) ) {
 				$content = preg_replace(
@@ -102,7 +115,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			//Submit Button HTML markup : change link to button tag
 			$content = $this->str_last_replace(
 				'<a',
-				$recaptcha_html.$turnstile_html.'<button',
+				$recaptcha_html . $turnstile_html . $honeypot_html . '<button',
 				$content
 			);
 
