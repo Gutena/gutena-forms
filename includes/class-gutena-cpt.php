@@ -26,6 +26,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_footer', array( $this, 'admin_footer' ) );
 			add_filter( 'block_categories_all', array( $this, 'move_gutena_to_top' ), 100, 2 );
+			add_action( 'wp_trash_post', array( $this, 'when_trash_post' ) );
 			/**
 			 * add_filter( 'allowed_block_types_all', array( $this, 'only_gutena_blocks' ), 10, 2 );
 			 */
@@ -498,6 +499,71 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			}
 
 			return $allowed_blocks;
+		}
+
+		/**
+		 * When a Gutena Forms post is trashed, perform necessary cleanup.
+		 *
+		 * @since 1.6.0
+		 * @param int $post_id Post id.
+		 */
+		public function when_trash_post( $post_id ) {
+			$post = get_post( $post_id );
+			if ( empty( $post ) || $this->post_type !== $post->post_type ) {
+				return;
+			}
+
+			$form_id = get_post_meta( $post_id, 'gutena_form_id', true );
+			$connected_posts = get_post_meta( $post_id, '_gutena_connected_posts', true );
+
+			if ( ! is_array( $connected_posts ) || empty( $connected_posts ) ) {
+				return;
+			}
+
+			// Remove references to this form from connected posts and replace with a text notice. "The form has been removed."
+			foreach ( $connected_posts as $connected_post_id ) {
+				$connected_post = get_post( $connected_post_id );
+				if ( empty( $connected_post ) ) {
+					continue;
+				}
+
+				$connected_post_blocks = parse_blocks( $connected_post->post_content );
+				$updated               = false;
+
+				foreach ( $connected_post_blocks as $index => $block ) {
+					if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
+						$block_form_id = $block['attrs']['formID'];
+						if ( $form_id === $block_form_id ) {
+							// Replace block with a paragraph block indicating removal
+
+							$connected_post_blocks[ $index ] = array(
+								'blockName' => 'core/paragraph',
+								'attrs'     => array(),
+								'innerContent' => array(
+									'<p><em>' . esc_html__( 'This form has been deleted.', 'gutena-forms' ) . '</em></p>',
+								),
+								'innerHTML'    => '<p><em>' . esc_html__( 'This form has been deleted.', 'gutena-forms' ) . '</em></p>',
+								'innerBlocks' => array(),
+							);
+
+							$updated = true;
+						}
+					}
+				}
+
+				if ( $updated ) {
+					$new_content = serialize_blocks( $connected_post_blocks );
+					wp_update_post(
+						array(
+							'ID'           => $connected_post_id,
+							'post_content' => $new_content,
+						),
+						false,
+						false
+					);
+				}
+
+			}
 		}
 
 		public static function get_instance() {
