@@ -304,6 +304,19 @@ export default function Edit( props ) {
 		[ clientId ]
 	);
 
+	//Check if existing forms block is present
+	const hasExistingFormsBlock = useSelect(
+		( select ) => {
+			const blocks = select( blockEditorStore ).getBlocks( clientId );
+			if ( gfIsEmpty( blocks ) || 0 === blocks.length ) {
+				return false;
+			}
+			const existingFormsBlocks = getInnerBlocksbyNameAttr( blocks, 'gutena/existing-forms' );
+			return ! gfIsEmpty( existingFormsBlocks ) && existingFormsBlocks.length > 0;
+		},
+		[ clientId ]
+	);
+
 	//Get Author Email
 	const currentUser = useSelect( ( select ) => {
 		return '' == adminEmails
@@ -586,7 +599,8 @@ export default function Edit( props ) {
 	return (
 		<>
 			<style>{ formStyle }</style>
-			<InspectorControls>
+			{ ! hasExistingFormsBlock && (
+				<InspectorControls>
 				<PanelBody title="Form settings" initialOpen={ true }>
 					<TextControl
 						label={ __( 'Form name', 'gutena-forms' ) }
@@ -1396,6 +1410,7 @@ export default function Edit( props ) {
 					/>
 				</PanelBody>
 			</InspectorControls>
+			) }
 			{ hasInnerBlocks ? (
 				<form method="post" { ...blockProps }>
 					<input type="hidden" name="formid" value={ formID } />
