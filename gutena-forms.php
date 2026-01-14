@@ -146,6 +146,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		 * @since 1.5.0
 		 */
 		private function run() {
+			gutena_forms__fs()->add_filter( 'hide_account_tabs', '__return_true' );
+
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
