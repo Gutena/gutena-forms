@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 
 
 
-const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChildren } ) => {
+const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren, customFilters } ) => {
 	const [ numberOfRows, setNumberOfRows ] = useState( 10 );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
 	const [ searchTerm, setSearchTerm ] = useState( '' );
@@ -190,6 +190,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 			<div className={ 'gutena-forms__datatable-header' }>
 
 				<div className={ 'gutena-forms__bulk-action-container' }>
+
 					<div className={ 'display-inline-block' }>
 						<SelectControl
 							options={ [
@@ -207,9 +208,23 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 							onClick={ handleBulkActions }
 						>{ __( 'Apply', 'gutena-forms' ) }</Button>
 					</div>
+
 				</div>
 
 				<div>
+
+					{ customFilters && customFilters.components && customFilters.components.map( ( Component, key ) => {
+						return (
+							<div
+								className={ 'display-inline-block' }
+								key={ key }
+								style={ { marginRight: '10px' } }
+							>
+								<Component />
+							</div>
+						);
+					} ) }
+
 					<div className={ 'display-inline-block' }>
 						<div className={ 'gutena-forms__search-box date-search' }>
 							<span>
@@ -227,6 +242,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 								calendarActive && (
 									<GutenaFormsCalendar
 										onSelect={ handleDateSelect }
+										onExit={ () => setCalendarActive( false ) }
 									/>
 								)
 							}
@@ -252,6 +268,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 							} }
 						>{ __( 'Clear Filters', 'gutena-forms' ) }</Button>
 					</div>
+
 				</div>
 			</div>
 
@@ -277,16 +294,15 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 					},
 
 					body: {
-						checkbox: ( { row } ) => {
-
+						checkbox: ( { row, index, header } ) => {
 							return (
-								<label htmlFor={ `select_for_${ row.id }` }>
+								<label htmlFor={ `select_for_${ row[ header.value ] }` }>
 									<input
 										type={ 'checkbox' }
-										id={ `select_for_${ row.id }` }
+										id={ `select_for_${ row[ header.value ] }` }
 										className={ 'gutena_forms_form_select' }
 										onClick={ uncheckGlobalCheckbox }
-										value={ row.id }
+										value={ row[ header.value ] }
 										onInput={ ( e ) => {
 											const value = parseInt( e.target.value );
 											valueSetter( value, e.target.checked );
@@ -295,7 +311,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, datatableChild
 								</label>
 							);
 						},
-						...datatableChildren.body,
+						...tableChildren.body,
 					},
 
 					footer: ( headers ) => {

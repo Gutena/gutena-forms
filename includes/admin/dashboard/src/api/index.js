@@ -193,6 +193,13 @@ export async function gutenaFormsFetchAllForms() {
 	throw new Error( 'Gutena Forms FetchAllForms Error' );
 }
 
+/**
+ * Delete form via the Gutena Forms REST API.
+ *
+ * @since 1.6.0
+ * @param formId
+ * @returns {Promise<unknown>}
+ */
 export async function gutenaFormsDeleteForm( formId ) {
 	const response = await apiFetch( {
 		method: 'DELETE',
@@ -211,6 +218,13 @@ export async function gutenaFormsDeleteForm( formId ) {
 	throw new Error( 'Gutena Forms DeleteForm Error' );
 }
 
+/**
+ * Delete multiple forms via the Gutena Forms REST API.
+ *
+ * @since 1.6.0
+ * @param formIds
+ * @returns {Promise<unknown>}
+ */
 export async function deleteMultipleForms( formIds ) {
 	const response = await apiFetch( {
 		method: 'DELETE',
@@ -228,3 +242,40 @@ export async function deleteMultipleForms( formIds ) {
 
 	throw new Error( 'Gutena Forms DeleteForm Error' );
 }
+
+export async function gutenaFormsFetchAllEntries() {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: `${ GutenaFormsRestConfiguration.namespace }entries/get-all`,
+	} );
+
+	if ( response.entries ) {
+		return response.entries;
+	}
+
+	throw new Error( 'Gutena Forms FetchAllEntries Error' );
+}
+
+export async function gutenaFormsFetchEntriesByForm( formId ) {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: addQueryArgs(
+			`${ GutenaFormsRestConfiguration.namespace }entries/get-all`,
+			{
+				form_id: formId,
+			}
+		),
+	} );
+
+	if ( response.entries ) {
+		return response.entries;
+	}
+
+	throw new Error( 'Gutena Forms FetchEntriesByForm Error' );
+}
+
+export async function gutenaFormsFetchEntryDetails( entryId ) {}
+
+export async function gutenaFormsDeleteEntry( entryId ) {}
+
+export async function gutenaFormsDeleteMultipleEntries( entryIds ) {}

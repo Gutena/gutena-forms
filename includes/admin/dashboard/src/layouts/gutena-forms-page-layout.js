@@ -16,9 +16,13 @@ const GutenaFormsPageLayout = () => {
 				if ( data.fields && data.fields ) {
 					if ( data.fields[0] && 'template' === data.fields[0].type ) {
 						setTemplate( data.fields[0].name );
+					} else {
+						setTemplate( false );
 					}
+				} else {
+					setTemplate( false );
 				}
-			} )
+			} );
 	}, [ slug ] );
 
 	const TemplateComponent = PageTemplates[ template ];

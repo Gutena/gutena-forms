@@ -166,7 +166,7 @@ const GutenaFormsForms = () => {
 							headers={ [
 								{
 									key: 'checkbox',
-									value: '',
+									value: 'id',
 									width: '25px',
 								},
 								{
@@ -180,7 +180,7 @@ const GutenaFormsForms = () => {
 								},
 								{
 									key: 'datetime',
-									value: __( 'Date Created', 'gutena-forms' ),
+									value: __( 'Date & Time', 'gutena-forms' ),
 									width: '150px',
 								},
 								{
@@ -196,7 +196,7 @@ const GutenaFormsForms = () => {
 							] }
 							data={ forms }
 
-							datatableChildren={ {
+							tableChildren={ {
 								body: {
 									actions: ( { row } ) => {
 										return (

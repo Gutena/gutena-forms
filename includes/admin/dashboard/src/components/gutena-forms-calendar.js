@@ -3,7 +3,7 @@ import { DateRangePicker } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 
-const GutenaFormsCalendar = ( { onSelect } ) => {
+const GutenaFormsCalendar = ( { onSelect, onExit } ) => {
 
 	const [ selection, setSelection ] = useState( {
 		startDate: new Date(),
@@ -34,6 +34,7 @@ const GutenaFormsCalendar = ( { onSelect } ) => {
 	document.addEventListener( 'click', ( e ) => {
 		if ( active && ! e.target.closest( '.date-search' ) ) {
 			setActive( false );
+			onExit();
 		}
 	} );
 
