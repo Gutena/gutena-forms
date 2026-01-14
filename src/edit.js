@@ -756,6 +756,7 @@ export default function Edit( props ) {
 								<NumberControl
 									label={ __( 'Time limit (in seconds)', 'gutena-forms' ) }
 									value={ honeypot?.timeCheckValue }
+									min={ 1 }
 									onChange={ ( timeCheckValue ) => {
 										setAttributes( {
 											honeypot: {
