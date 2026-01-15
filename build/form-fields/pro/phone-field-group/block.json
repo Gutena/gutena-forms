@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/phone-field-group",
+  "version": "1.0.0",
+  "title": "Phone",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena-pro",
+  "icon": "phone",
+  "description": "Capture phone numbers with proper formatting and validation.",
+  "textdomain": "gutena-forms-pro",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style.css"
+}

@@ -15,6 +15,13 @@ defined( 'ABSPATH' ) || exit;
 if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin' ) ) {
 
 	class Gutena_Forms_Store extends Gutena_Forms_Admin {
+		/**
+		 * Current Form Id.
+		 *
+		 * @since 1.5.0
+		 * @var string $form_id Current form id.
+		 */
+		public $form_id = '';
 
 		// Table to store forms
 		public $table_gutenaforms = 'gutenaforms';

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/country-field-group",
+  "version": "1.0.0",
+  "title": "Country",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena-pro",
+  "icon": "admin-site",
+  "description": "Collect location details with structured country and state selection.",
+  "textdomain": "gutena-forms-pro",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style.css"
+}

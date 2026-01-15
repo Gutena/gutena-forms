@@ -7,7 +7,7 @@
 	"parent": [ "gutena/forms" ],
 	"category": "gutena",
 	"icon": "feedback",
-	"description": "Field Group",
+	"description": "Add a field and specify its label, placeholder, field type, etc.",
 	"attributes": {
 		"nameAttr": {
 			"type": "string",

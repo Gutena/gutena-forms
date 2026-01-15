@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/time-field-group",
+  "version": "1.0.0",
+  "title": "Time",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena-pro",
+  "icon": "clock",
+  "description": "Let users choose a specific time with a dedicated time picker field.",
+  "textdomain": "gutena-forms-pro",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style.css"
+}

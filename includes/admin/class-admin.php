@@ -55,12 +55,13 @@
 				#toplevel_page_gutena-forms ul li:last-child a {
 					background: #27a68a !important;
 					border: 1px solid #27a68a !important;
-					color: #ffffff;
+					color: #ffffff !important;
 					font-weight: 600;
 				}
 
-				#toplevel_page_gutena-forms ul li:last-child a:hover {
-					color: #ffffff;
+				#toplevel_page_gutena-forms ul li:last-child a:hover,
+				 #toplevel_page_gutena-forms ul li:last-child a:focus {
+					color: #ffffff !important;
 				}
 			</style>';
 
@@ -127,9 +128,11 @@
 				unset( $submenu['gutena-forms'][0] );
 			}
 
-			foreach ( $submenu['gutena-forms'] as $k => $gutena_form ) {
-				if ( str_contains( $gutena_form[0], 'Add-Ons' ) ) {
-					unset(  $submenu['gutena-forms'][ $k ] );
+			if ( isset( $submenu['gutena-forms'] ) && is_array( $submenu['gutena-forms'] ) ) {
+				foreach ( $submenu['gutena-forms'] as $k => $gutena_form ) {
+					if ( str_contains( $gutena_form[0], 'Add-Ons' ) ) {
+						unset(  $submenu['gutena-forms'][ $k ] );
+					}
 				}
 			}
 
@@ -244,7 +247,7 @@
 						'section' => array(
 							'welcome'   => array(
 								'into_img'			=> esc_url( GUTENA_FORMS_PLUGIN_URL . 'assets/img/welcome.png' ),
-								'intro_video_link' => esc_url( 'https://www.youtube.com/watch?v=oHNwAfpNOnQ' ),
+								'intro_video_link' => esc_url( 'https://www.youtube.com/watch?v=u9sB-RSBQIE' ),
 								'title'			=> __( 'Welcome to Gutena Forms!', 'gutena-forms' ),
 								'description' 	=> __( "Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won't slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.", "gutena-forms" ),
 								'pricing_btn_name'	=> __( 'See Pricing', 'gutena-forms' ),

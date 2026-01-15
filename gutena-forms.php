@@ -116,30 +116,49 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		}
 
 		public function __construct() {
+			$this->includes();
+			$this->run();
+		}
+
+		/**
+		 * Including required dependencies
+		 *
+		 * @since 1.5.0
+		 */
+		private function includes() {
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-cpt.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-dummy-fields.php';
+		}
 
+		/**
+		 * Running the whole plugin
+		 *
+		 * @since 1.5.0
+		 */
+		private function run() {
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
 			add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
-			// save pattern
 			add_action( 'added_post_meta', array( $this, 'save_gutena_forms_pattern' ), 10, 4 );
-
 			add_action( 'wp_ajax_gutena_forms_submit', array( $this, 'submit_form' ) );
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( $this, 'submit_form' ) );
-
-			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), -1 );
-			//Dashboard
+			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
+			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
 			$this->load_dashboard();
 		}
 
 		public function plugin_action_links( $prev_links ) {
 
+			if ( isset( $prev_links['addons'] ) ) {
+				unset( $prev_links['addons'] );
+			}
+
 			if ( ! is_gutena_forms_pro() ) {
 				$new_link = sprintf(
-					'<a style="color: #e35d3f; font-weight: 600;" target="_blank" href="https://gutenaforms.com/pricing/?utm_source=all_plugins&utm_medium=website&utm_campaign=free_plugin">%s</a>',
+					'<a style="color: #36a78a; font-weight: 600;" target="_blank" href="https://gutenaforms.com/pricing/?utm_source=all_plugins&utm_medium=website&utm_campaign=free_plugin">%s</a>',
 					__( 'Get Gutena Forms Pro' )
 				);
 
@@ -171,8 +190,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				)
 			);
 
-			// Field group Block
-			register_block_type( __DIR__ . '/build/field-group' );
+			$this->register_field_groups();
 
 			// Form Confirmation Message Block
 			register_block_type( __DIR__ . '/build/form-confirm-msg' );
@@ -187,6 +205,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'render_callback' => array( $this, 'render_form_field' ),
 				)
 			);
+
+			register_block_type( __DIR__ . '/build/field-group' );
 
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
@@ -230,6 +250,91 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'is_pro' => is_gutena_forms_pro(),
 				), $gf_message )
 			);
+		}
+
+		private function register_field_groups() {
+			$fields    = apply_filters( 'gutena_forms__register_fields', array() );
+			$group_dir = __DIR__ . '/build/form-fields/';
+
+			usort(
+				$fields,
+				function ( $a, $b ) {
+					return strcmp( $a['title'], $b['title'] );
+				}
+			);
+
+			foreach ( $fields as $field => $field_args ) {
+				if ( file_exists( $group_dir . $field_args['dir'] . '/block.json' ) ) {
+					register_block_type( $group_dir . $field_args['dir'] );
+				} elseif ( file_exists( $field_args['dir'] . '/block.json' ) ) {
+					register_block_type( $field_args['dir'] );
+				}
+			}
+		}
+
+		public function register_fields( $blocks ) {
+			$fields = array(
+				'text-field-group'     => array(
+					'name'  => 'gutena/text-field-group',
+					'type'  => 'text',
+					'title' => 'Text Field',
+					'dir'   => 'text-field-group',
+				),
+				'email-field-group'    => array(
+					'name'  => 'gutena/email-field-group',
+					'type'  => 'email',
+					'title' => 'Email Field',
+					'dir'   => 'email-field-group',
+				),
+				'textarea-field-group' => array(
+					'name'  => 'gutena/textarea-field-group',
+					'type'  => 'textarea',
+					'title' => 'Textarea Field',
+					'dir'   => 'textarea-field-group',
+				),
+				'range-field-group'    => array(
+					'name'  => 'gutena/range-field-group',
+					'type'  => 'range',
+					'title' => 'Range Slider Field',
+					'dir'   => 'range-field-group',
+				),
+				'radio-field-group'    => array(
+					'name'  => 'gutena/radio-field-group',
+					'type'  => 'radio',
+					'title' => 'Radio Field',
+					'dir'   => 'radio-field-group',
+				),
+				'checkbox-field-group' => array(
+					'name'  => 'gutena/checkbox-field-group',
+					'type'  => 'checkbox',
+					'title' => 'Checkbox Field',
+					'dir'   => 'checkbox-field-group',
+				),
+				'dropdown-field-group' => array(
+					'name'  => 'gutena/dropdown-field-group',
+					'type'  => 'select',
+					'title' => 'Dropdown Field',
+					'dir'   => 'dropdown-field-group',
+				),
+				'optin-field-group'    => array(
+					'name'  => 'gutena/optin-field-group',
+					'type'  => 'optin',
+					'title' => 'Opt-in Field',
+					'dir'   => 'optin-field-group',
+				),
+				'number-field-group'   => array(
+					'name'  => 'gutena/number-field-group',
+					'type'  => 'number',
+					'title' => 'Number Field',
+					'dir'   => 'number-field-group',
+				),
+			);
+
+			foreach ( $fields as $k => $field ) {
+				$blocks[ $k ] = $field;
+			}
+
+			return $blocks;
 		}
 
 		public function register_blocks_styles() {
@@ -289,13 +394,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			$fields = wp_list_pluck( $block_categories, 'slug' );
 
 			if ( ! empty( $editor_context->post ) && ! in_array( 'gutena', $fields, true ) ) {
-				array_push(
-					$block_categories,
-					array(
-						'slug'  => 'gutena',
-						'title' => __( 'Gutena', 'gutena-forms' ),
-					)
+				$block_categories[] = array(
+					'slug' => 'gutena',
+					'title' => __( 'Gutena Forms General Fields', 'gutena-forms' ),
 				);
+
+				if ( ! is_gutena_forms_pro() ) {
+					$block_categories[] = array(
+						'slug' => 'gutena-pro',
+						'title' => __( 'Gutena Forms Pro', 'gutena-forms' ),
+					);
+				}
 			}
 
 			return $block_categories;

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/url-field-group",
+  "version": "1.0.0",
+  "title": "URL",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena-pro",
+  "icon": "admin-links",
+  "description": "Collect website or link URLs with built-in format validation.",
+  "textdomain": "gutena-forms-pro",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style.css"
+}

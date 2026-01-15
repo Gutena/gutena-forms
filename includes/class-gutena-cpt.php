@@ -25,6 +25,10 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_footer', array( $this, 'admin_footer' ) );
+			add_filter( 'block_categories_all', array( $this, 'move_gutena_to_top' ), 100, 2 );
+			/**
+			 * add_filter( 'allowed_block_types_all', array( $this, 'only_gutena_blocks' ), 10, 2 );
+			 */
 		}
 
 		public function init() {
@@ -327,6 +331,8 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 			echo '<style type="text/css">
 				.page-title-action {
+					display: none !important;
+					visibility: hidden !important;
 				    color: #FFF !important;
 				    border: none !important;
 				    font-size: 14px !important;
@@ -379,13 +385,6 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			            <div>
 			                <h2 style="display: inline-block;margin-right: 20px;">
 			                    ' . __( 'Gutena Forms', 'gutena-forms' ) . '
-			                    <a style="display: inline-block;margin: -6px 0 0 20px;" href="' . esc_url( admin_url( 'post-new.php?post_type=' . $this->post_type ) ) . '" rel="noopener noreferrer" class="button gutena-forms__add-new-form">
-			                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-			                            <circle cx="9" cy="9" r="9" fill="#D2FFF7"/>
-			                            <path d="M8.17405 12.6V6.00001H9.84158V12.6H8.17405ZM5.40002 10.0714V8.54287H12.6V10.0714H5.40002Z" fill="#0DA88C"/>
-			                        </svg>
-			                        ' . __( 'Add New Form', 'gutena-forms' ) . '
-			                    </a>
 			                </h2>
 			            </div>
 			            <div style="margin-top: 30px;display: flex;justify-content: center;align-items: center;">
@@ -407,7 +406,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			                        <div style="flex:1;text-align:right;display:flex;justify-content:center;align-items:center;">
 			                            <div style="display:inline-block;">
 			                                <img src="' . GUTENA_FORMS_PLUGIN_URL . 'assets/img/form-illustration.png" alt="form-illustration" style="max-width:100%;height:auto;display:block;"/>
-			                                <button aria-label="Play video" onclick="(function(){var m=document.getElementById(\'gf-video-modal\');var i=m.querySelector(\'iframe\');i.src=\'https://www.youtube.com/embed/oHNwAfpNOnQ?si=S-f5_-UxB3lqIrNu\';m.classList.add(\'show\');})();" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:none;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;width:83px;height:83px;">
+			                                <button aria-label="Play video" onclick="(function(){var m=document.getElementById(\'gf-video-modal\');var i=m.querySelector(\'iframe\');i.src=\'https://www.youtube.com/embed/u9sB-RSBQIE?si=cxD-pNwOW60-n8fc\';m.classList.add(\'show\');})();" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:none;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;width:83px;height:83px;">
 			                                    <svg xmlns="http://www.w3.org/2000/svg" width="83" height="83" viewBox="0 0 83 83" fill="none">
 			                                        <path d="M41.5 7C22.4698 7 7 22.4836 7 41.5C7 60.5302 22.4698 76 41.5 76C60.5164 76 76 60.5302 76 41.5C76 22.4836 60.5164 7 41.5 7Z" fill="#0DA88C" fill-opacity="0.3"/>
 			                                        <path d="M36.8208 55.7548L53.5589 42.4193C53.8304 42.1975 54 41.8588 54 41.4968C54 41.1348 53.8304 40.7962 53.5589 40.5743L36.8208 27.2389C36.4815 26.9703 36.0179 26.9236 35.6333 27.1221C35.443 27.2184 35.2827 27.368 35.1707 27.5538C35.0587 27.7396 34.9996 27.9542 35 28.1731V54.8323C35 55.276 35.2488 55.6847 35.6333 55.8832C35.7917 55.9533 35.9613 56 36.131 56C36.3798 56 36.6173 55.9183 36.8208 55.7548Z" fill="white"/>
@@ -439,7 +438,6 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			                            </div>
 			                        </div>
 			                    </div>
-			                    <a style="margin-bottom: 30px;" href="' . esc_url( admin_url( 'post-new.php?post_type=' . $this->post_type ) ) . '" rel="noopener noreferrer" class="button gutena-forms__add-new-form">Create Your First Form</a>
 			                    <p>
 			                        Need some help? Check out our <a href="https://gutenaforms.com/#faq" target="_blank" rel="noopener noreferrer" style="color: #0DA88C;text-decoration: none;">comprehensive guide.</a>
 			                    </p>
@@ -453,6 +451,57 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			        }
 			    } )( window );
 			</script>';
+		}
+
+		/**
+		 * Move Gutena block category to the top in the block inserter for Gutena Forms CPT.
+		 *
+		 * @since 1.5.0
+		 * @param array 				  $block_categories Array of block categories.
+		 * @param WP_Block_Editor_Context $editor_context Editor context object.
+		 *
+		 * @return array
+		 */
+		public function move_gutena_to_top( $block_categories, $editor_context ) {
+			$new_categories = array();
+			$indexes       = array();
+
+			foreach ( $block_categories as $index => $category ) {
+				if ( 'gutena' === $category['slug'] || 'gutena-pro' === $category['slug'] ) {
+					$indexes[] 		  = $index;
+					$new_categories[] = $category;
+				}
+			}
+
+			if ( isset( $indexes[0] ) && isset( $block_categories[ $indexes[0] ] ) ) {
+				unset( $block_categories[ $indexes[0] ] );
+			}
+
+			if ( isset( $indexes[1] ) && isset( $block_categories[ $indexes[1] ] ) ) {
+				unset( $block_categories[ $indexes[1] ] );
+			}
+
+			return array_merge( $new_categories, $block_categories );
+		}
+
+		/**
+		 * Allowed blocks only gutena in gutena forms cpt
+		 * @param array|true 			  $allowed_blocks Array of allowed block names, or true to allow all blocks.
+		 * @param WP_Block_Editor_Context $editor_context Editor context object.
+		 *
+		 * @return array|true
+		 */
+		public function only_gutena_blocks( $allowed_blocks, $editor_context ) {
+			if ( $this->post_type === $editor_context->post->post_type ) {
+				$blocks 		= apply_filters( 'gutena_forms__register_fields', [] );
+				$allowed_blocks = array();
+				foreach ( $blocks as $k => $block ) {
+					$allowed_blocks[] = $block['name'];
+				}
+				return $allowed_blocks;
+			}
+
+			return $allowed_blocks;
 		}
 
 		public static function get_instance() {
