@@ -174,6 +174,11 @@ const GutenaFormsForms = () => {
 									value: __( 'Form Title', 'gutena-forms' )
 								},
 								{
+									key: 'entries',
+									value: __( 'Entries', 'gutena-forms' ),
+									width: '100px',
+								},
+								{
 									key: 'author',
 									value: __( 'Author', 'gutena-forms' ),
 									width: '150px',

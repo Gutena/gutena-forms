@@ -154,6 +154,7 @@
 				exit;
 			}
 
+			/**
 			if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) {
 				wp_safe_redirect(
 					add_query_arg(
@@ -165,7 +166,7 @@
 				);
 				exit;
 			}
-
+			*/
 			//load list table core wp class
 			if ( ! class_exists( 'WP_List_Table' ) ) {
 				if ( file_exists( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' ) ) {
