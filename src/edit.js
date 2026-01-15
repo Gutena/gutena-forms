@@ -16,7 +16,7 @@ import {
 } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
 import { store as coreStore } from '@wordpress/core-data';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useDispatch, useSelect, dispatch } from '@wordpress/data';
 import {
 	PanelBody,
 	PanelRow,
@@ -595,6 +595,34 @@ export default function Edit( props ) {
 	const blockProps = useBlockProps( {
 		className: formClasses,
 	} );
+
+	if ( hasExistingFormsBlock ) {
+		dispatch( 'core/edit-post' )
+			.hideBlockTypes( [
+				'gutena/textarea-field-group',
+				'gutena/text-field-group',
+				'gutena/range-field-group',
+				'gutena/radio-field-group',
+				'gutena/optin-field-group',
+				'gutena/number-field-group',
+				'gutena/email-field-group',
+				'gutena/dropdown-field-group',
+				'gutena/checkbox-field-group',
+				'gutena/country-field-group',
+				'gutena/date-field-group',
+				'gutena/file-upload-field-group',
+				'gutena/hidden-field-group',
+				'gutena/password-field-group',
+				'gutena/phone-field-group',
+				'gutena/rating-field-group',
+				'gutena/state-field-group',
+				'gutena/time-field-group',
+				'gutena/url-field-group',
+				'gutena/forms',
+				'gutena/form-confirm-msg',
+				'gutena/form-error-msg',
+			] );
+	}
 
 	return (
 		<>

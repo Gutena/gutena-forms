@@ -127,7 +127,8 @@ const Edit = ( { attributes, setAttributes } ) => {
 										{ __( 'Note: For editing Gutena Forms please refer to the Gutena Forms Editor - ', 'gutena-forms' ) }
 										<Button
 											href={ `post.php?post=${ formId }&action=edit` }
-											style={ { padding: 0, margin: 0, textDecoration: 'underline', height: 0, color: '#007cba' } }
+											style={ { padding: 0, margin: 0, textDecoration: 'underline', height: 0, color: '#007cba', boxShadow: 'none' } }
+											target={ '_blank' }
 										>
 											{ __( 'Edit Form', 'gutena-forms' ) }
 											<Dashicon
