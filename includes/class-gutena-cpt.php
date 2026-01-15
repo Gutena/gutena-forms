@@ -219,6 +219,15 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			}
 		}
 
+		// Set gutena_form_id meta if it doesn't exist and formID is available in block
+		if ( $form_block && isset( $form_block['attrs']['formID'] ) && ! empty( $form_block['attrs']['formID'] ) ) {
+			$block_form_id = $form_block['attrs']['formID'];
+			if ( empty( $form_id ) ) {
+				update_post_meta( $post_id, 'gutena_form_id', $block_form_id );
+				$form_id = $block_form_id;
+			}
+		}
+
 		// Post title must always be form name - update it every time when form block exists
 		if ( $form_block && ! empty( $form_name ) ) {
 			// Prevent infinite loop by removing actions before updating
