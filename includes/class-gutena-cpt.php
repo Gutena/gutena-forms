@@ -220,6 +220,18 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 				$form_name = isset( $block['attrs']['formName'] ) && ! empty( $block['attrs']['formName'] )
 					? sanitize_text_field( $block['attrs']['formName'] )
 					: 'Contact Form';
+
+				// Extract formID from block and set gutena_form_id meta if it doesn't exist
+				// This ensures the meta is set when a gutena_forms post is created directly
+				if ( $form_block && isset( $form_block['attrs']['formID'] ) && ! empty( $form_block['attrs']['formID'] ) ) {
+					$block_form_id = $form_block['attrs']['formID'];
+					// Only set meta if it doesn't already exist
+					if ( empty( $form_id ) ) {
+						update_post_meta( $post_id, 'gutena_form_id', $block_form_id );
+						$form_id = $block_form_id;
+					}
+				}
+
 				break;
 			}
 		}
