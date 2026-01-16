@@ -5,7 +5,6 @@ import { InnerBlocks, useBlockProps, InspectorControls } from '@wordpress/block-
 import { addQueryArgs } from '@wordpress/url';
 import Logo from './logo';
 import { __ } from '@wordpress/i18n';
-import { dispatch } from '@wordpress/data';
 
 const Edit = ( { attributes, setAttributes } ) => {
 	const blockProps = useBlockProps();
@@ -125,7 +124,7 @@ const Edit = ( { attributes, setAttributes } ) => {
 
 								<div className={ 'notice notice-warning' } style={{ margin: '0 0 15px 0'}}>
 									<p>
-										{ __( 'Note: For editing Gutena Forms please refer to the Gutena Forms Editor - ', 'gutena-forms' ) }
+										{ __( 'Form fields added from the block inserter are not displayed on the frontend. Use the Gutena Forms Editor to add form fields.', 'gutena-forms' ) }
 										<Button
 											href={ `post.php?post=${ formId }&action=edit` }
 											style={ { padding: 0, margin: 0, textDecoration: 'underline', height: 0, color: '#007cba', boxShadow: 'none' } }
