@@ -59,6 +59,7 @@ const Edit = ( { attributes, setAttributes } ) => {
 
 		dispatch( 'core/edit-post' )
 			.hideBlockTypes( blockToToggle );
+
 	}, [] );
 
 	useEffect( () => {
@@ -91,7 +92,7 @@ const Edit = ( { attributes, setAttributes } ) => {
 
 	if ( formId && 'false' !== formId && form ) {
 		elementComponent = (
-			<div { ...blockProps }>
+			<div>
 				<div dangerouslySetInnerHTML={ { __html: form } }></div>
 			</div>
 		);
@@ -181,7 +182,9 @@ const Edit = ( { attributes, setAttributes } ) => {
 					)
 				}
 			</InspectorControls>
-			{ elementComponent }
+			<div { ...blockProps }>
+				{ elementComponent }
+			</div>
 		</div>
 	);
 };
