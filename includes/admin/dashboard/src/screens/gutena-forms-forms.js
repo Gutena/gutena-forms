@@ -3,10 +3,9 @@ import { Button } from '@wordpress/components';
 import { Plus } from '../icons/plus';
 import NoFormBanner from '../icons/NoFormBanner';
 import GutenaFormsYouTubeModal from '../components/gutena-forms-youtube-modal';
-import GutenaFormsTable from '../components/gutena-forms-table';
+import { Link } from 'react-router';
 import GutenaFormsDataTable from '../components/gutena-forms-datatable'
 import Edit from '../icons/edit';
-import Copy from '../icons/copy';
 import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
 import { useEffect, useState } from '@wordpress/element';
@@ -223,7 +222,20 @@ const GutenaFormsForms = () => {
 												</Button>
 											</div>
 										);
-									}
+									},
+									entries: ( { row } ) => {
+										if ( row.entries && row.entries > 0 ) {
+											return (
+												<>
+													<Link
+														to={ `/settings/entries/${ row.id }` }
+													>{ row.entries }</Link>
+												</>
+											);
+										}
+
+										return row.entries;
+									},
 								}
 							} }
 							handleBulkAction={ handleBulkActions }

@@ -1,8 +1,11 @@
 import { useState, useEffect } from '@wordpress/element';
-import {} from '@wordpress/i18n';
-import { SelectControl } from '@wordpress/components';
+import { SelectControl, Button } from '@wordpress/components';
 import GutenaFormsDatatable from '../components/gutena-forms-datatable';
 import { gutenaFormsFetchAllEntries } from '../api';
+import { Link } from 'react-router';
+import Eye from '../icons/eye';
+import { Bin } from '../icons/bin';
+
 const GutenaFormsEntries = () => {
 
 	const [ entries, setEntries ] = useState( [] );
@@ -61,6 +64,11 @@ const GutenaFormsEntries = () => {
 						{
 							key: 'form_name',
 							value: 'Form Name',
+							width: '200px',
+						},
+						{
+							key: 'entry_data',
+							value: 'First Value',
 						},
 						{
 							key: 'datetime',
@@ -74,7 +82,47 @@ const GutenaFormsEntries = () => {
 						}
 					] }
 					data={ entries }
-					tableChildren={ {} }
+					tableChildren={ {
+						body: {
+							entry_id: ( { row } ) => {
+
+								return (
+									<div>
+										Entry # { row.entry_id }
+									</div>
+								);
+							},
+
+							entry_data: ( { row } ) => {
+
+								return (
+									<div>
+										{ row.value && Object.keys( row.value )[0] && row.value[ Object.keys( row.value )[0] ] && row.value[ Object.keys( row.value )[0] ].value && (
+											<div>
+												{ row.value[ Object.keys( row.value )[0] ].value }
+											</div>
+										) }
+									</div>
+								);
+							},
+
+							actions: ( { row } ) => {
+
+								return (
+									<div className={ 'gutena-forms-datatable__action' }>
+										<Link
+											to={ `/settings/entry/${ row.entry_id }` }
+										>
+											<Eye />
+										</Link>
+										<Button>
+											<Bin />
+										</Button>
+									</div>
+								);
+							},
+						}
+					} }
 					handleBulkAction={ ( ...v ) => { console.log( ...v )} }
 					customFilters={ {
 						components: [

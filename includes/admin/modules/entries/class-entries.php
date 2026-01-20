@@ -33,6 +33,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 				'gutena_forms__settings',
 				function ( $settings ) {
 					$settings['entries'] = __CLASS__;
+					$settings['entry']   = __CLASS__;
 					return $settings;
 				}
 			);
@@ -98,7 +99,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 			$form_id = $request->get_param( 'form_id' );
 
 			// Build base query
-			$query = "SELECT e.entry_id, e.form_id, f.form_name, e.added_time
+			$query = "SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data
 					  FROM {$store->table_gutenaforms_entries} e
 					  LEFT JOIN {$store->table_gutenaforms} f ON e.form_id = f.form_id
 					  WHERE e.trash = %d";
@@ -122,11 +123,17 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 			// Format entries to match required structure
 			$formatted_entries = array_map(
 				function ( $entry ) {
+					$value = array();
+					if ( is_serialized( $entry['entry_data'] ) ) {
+						$value = maybe_unserialize( $entry['entry_data'] );
+					}
+
 					return array(
 						'entry_id'  => absint( $entry['entry_id'] ),
 						'form_id'   => absint( $entry['form_id'] ),
 						'form_name' => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
 						'datetime'  => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
+						'value' => $value,
 					);
 				},
 				$entries

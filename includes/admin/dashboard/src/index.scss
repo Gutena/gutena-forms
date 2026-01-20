@@ -548,6 +548,8 @@
 					color: #6E7376;
 					font-size: 12px;
 					font-weight: 500;
+
+					vertical-align: top;
 				}
 
 				&:last-child {
@@ -716,7 +718,8 @@
 	}
 
 	.gutena-forms-datatable__action {
-		button {
+		button,
+		a {
 			padding: 0;
 			margin-right: 10px;
 		}
