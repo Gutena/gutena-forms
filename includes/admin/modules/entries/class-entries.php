@@ -171,7 +171,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 			global $wpdb;
 			$store         = new Gutena_Forms_Store();
 			$block_form_id = get_post_meta( $form_id, 'gutena_form_id', true );
-			$sql           = 'SELECT COUNT( * ) FROM %i gutenaForms LEFT JOIN %i gutenaFormsEntries ON gutenaForms.form_id = gutenaFormsEntries.form_id WHERE gutenaForms.block_form_id = %s';
+			$sql           = 'SELECT COUNT( gutenaFormsEntries.entry_id ) FROM %i gutenaForms LEFT JOIN %i gutenaFormsEntries ON gutenaForms.form_id = gutenaFormsEntries.form_id WHERE gutenaForms.block_form_id = %s';
 			$sql           = $wpdb->prepare(
 				$sql,
 				$store->table_gutenaforms,
