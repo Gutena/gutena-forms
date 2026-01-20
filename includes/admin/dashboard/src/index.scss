@@ -912,6 +912,76 @@
 		}
 	}
 
+	.gutena-forms__entry-screen {
+
+		.desc,
+		.description {
+			color: #6E7376;
+			font-size: 10px;
+			font-weight: 400;
+		}
+
+		h2.heading {
+			color: #2C3338;
+			font-size: 16px;
+			font-weight: 700;
+
+			margin: 0;
+			padding: 0;
+		}
+
+		.gutena-forms__entry-screen-container {
+			position: relative;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.gutena-froms__entry-meta-box {
+			border-radius: 10px;
+			border: 1px solid #E2E2E2;
+			background: #FFF;
+			padding: 15px;
+			margin-bottom: 14px;
+
+			color: #6E7376;
+			font-size: 12px;
+			font-weight: 500;
+
+			.gutena-forms__entry-data {
+				margin-top: 15px;
+
+				.gutena-forms__entry-data-row {
+					height: 40px;
+					display: flex;
+					justify-content: space-between;
+
+					.value {
+						text-align: left;
+						width: 80%;
+					}
+
+					.label {
+						width: 20%;
+						text-align: left;
+						font-weight: 700;
+					}
+				}
+			}
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		.gutena-forms__col-70 {
+			width: calc( 70% - 7px );
+		}
+
+		.gutena-forms__col-30 {
+			width: calc( 30% - 7px );
+		}
+	}
+
 	// Custom Zoom In Animation
 	@keyframes gutenaFormsZoomIn {
 		0% {

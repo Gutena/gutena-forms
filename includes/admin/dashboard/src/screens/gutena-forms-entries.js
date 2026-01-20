@@ -1,13 +1,15 @@
 import { useState, useEffect } from '@wordpress/element';
 import { SelectControl, Button } from '@wordpress/components';
 import GutenaFormsDatatable from '../components/gutena-forms-datatable';
+import GutenaFormsSingleEntryPage from './gutena-forms-single-entry-page';
 import { gutenaFormsFetchAllEntries } from '../api';
-import { Link } from 'react-router';
+import { Link, useParams } from 'react-router';
 import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
 
 const GutenaFormsEntries = () => {
 
+	const { id } = useParams();
 	const [ entries, setEntries ] = useState( [] );
 	const [ loading, setLoading ] = useState( true );
 
@@ -49,87 +51,99 @@ const GutenaFormsEntries = () => {
 	return (
 		<div>
 			{ ! loading && (
-				<GutenaFormsDatatable
-					headers={ [
-						{
-							key: 'checkbox',
-							value: 'entry_id',
-							width: '25px',
-						},
-						{
-							key: 'entry_id',
-							value: 'Entry ID',
-							width: '100px',
-						},
-						{
-							key: 'form_name',
-							value: 'Form Name',
-							width: '200px',
-						},
-						{
-							key: 'entry_data',
-							value: 'First Value',
-						},
-						{
-							key: 'datetime',
-							value: 'Date & Time',
-							width: '150px',
-						},
-						{
-							key: 'actions',
-							value: 'Action',
-							width: '110px',
-						}
-					] }
-					data={ entries }
-					tableChildren={ {
-						body: {
-							entry_id: ( { row } ) => {
+				<div>
+					{ id && (
+						<div>
+							<GutenaFormsSingleEntryPage entryId={ id } />
+						</div>
+					) }
 
-								return (
-									<div>
-										Entry # { row.entry_id }
-									</div>
-								);
-							},
+					{ ! id && (
+						<div>
+							<GutenaFormsDatatable
+								headers={ [
+									{
+										key: 'checkbox',
+										value: 'entry_id',
+										width: '25px',
+									},
+									{
+										key: 'entry_id',
+										value: 'Entry ID',
+										width: '100px',
+									},
+									{
+										key: 'form_name',
+										value: 'Form Name',
+										width: '200px',
+									},
+									{
+										key: 'entry_data',
+										value: 'First Value',
+									},
+									{
+										key: 'datetime',
+										value: 'Date & Time',
+										width: '150px',
+									},
+									{
+										key: 'actions',
+										value: 'Action',
+										width: '110px',
+									}
+								] }
+								data={ entries }
+								tableChildren={ {
+									body: {
+										entry_id: ( { row } ) => {
 
-							entry_data: ( { row } ) => {
+											return (
+												<div>
+													Entry # { row.entry_id }
+												</div>
+											);
+										},
 
-								return (
-									<div>
-										{ row.value && Object.keys( row.value )[0] && row.value[ Object.keys( row.value )[0] ] && row.value[ Object.keys( row.value )[0] ].value && (
-											<div>
-												{ row.value[ Object.keys( row.value )[0] ].value }
-											</div>
-										) }
-									</div>
-								);
-							},
+										entry_data: ( { row } ) => {
 
-							actions: ( { row } ) => {
+											return (
+												<div>
+													{ row.value && Object.keys( row.value )[0] && row.value[ Object.keys( row.value )[0] ] && row.value[ Object.keys( row.value )[0] ].value && (
+														<div>
+															{ row.value[ Object.keys( row.value )[0] ].value }
+														</div>
+													) }
+												</div>
+											);
+										},
 
-								return (
-									<div className={ 'gutena-forms-datatable__action' }>
-										<Link
-											to={ `/settings/entry/${ row.entry_id }` }
-										>
-											<Eye />
-										</Link>
-										<Button>
-											<Bin />
-										</Button>
-									</div>
-								);
-							},
-						}
-					} }
-					handleBulkAction={ ( ...v ) => { console.log( ...v )} }
-					customFilters={ {
-						components: [
-							FormFilter,
-						]
-					} }
-				/>
+										actions: ( { row } ) => {
+
+											return (
+												<div className={ 'gutena-forms-datatable__action' }>
+													<Link
+														to={ `/settings/entry/${ row.entry_id }` }
+													>
+														<Eye />
+													</Link>
+													<Button>
+														<Bin />
+													</Button>
+												</div>
+											);
+										},
+									}
+								} }
+								handleBulkAction={ ( ...v ) => { console.log( ...v )} }
+								customFilters={ {
+									components: [
+										FormFilter,
+									]
+								} }
+							/>
+						</div>
+					) }
+				</div>
 			) }
 		</div>
 	);
