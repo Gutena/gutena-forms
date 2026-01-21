@@ -80,6 +80,16 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Rest_Api' ) ) :
 					'callback'            => array( $this, 'get_entry_data' ),
 				)
 			);
+
+			register_rest_route(
+				Gutena_Forms_Rest_API_Controller::$namespace,
+				'entry/details',
+				array(
+					'methods'             => $server::READABLE,
+					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
+					'callback'            => array( $this, 'get_entry_details' ),
+				)
+			);
 		}
 
 		/**
@@ -216,6 +226,50 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Rest_Api' ) ) :
 				array(
 					'entry_data' => $value,
 					'status'     => 'success',
+				)
+			);
+		}
+
+		/**
+		 * Get entry data.
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function get_entry_details( $request ) {
+			global $wpdb;
+			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'id' ) ) );
+			$store    = new Gutena_Forms_Store();
+			$sql       = 'SELECT entry_id, form_id, user_id, added_time, entry_status FROM %i WHERE entry_id = %d AND trash = 0';
+			$sql       = $wpdb->prepare(
+				$sql,
+				$store->table_gutenaforms_entries,
+				$entry_id
+			);
+			$result    = $wpdb->get_row( $sql, ARRAY_A );
+
+			if ( ! empty( $result['user_id'] ) ) {
+				$user_info          = get_userdata( absint( $result['user_id'] ) );
+				$result['user_name'] = $user_info ? $user_info->user_login : __( 'Unknown User', 'gutena-forms' );
+				unset( $result['user_id'] );
+			}
+
+			if ( ! empty( $result['form_id'] ) ) {
+				$form_name = Gutena_Forms_Forms::get_form_name_by_id( $result['form_id'] );
+				$result['form_name'] = $form_name ? $form_name : __( 'Unknown Form', 'gutena-forms' );
+				unset( $result['form_id'] );
+			}
+
+			if ( ! empty( $result['added_time'] ) ) {
+				$result['added_time'] = gmdate( 'F j, Y H:i A', strtotime( $result['added_time'] ) );
+			}
+
+			return rest_ensure_response(
+				array(
+					'entry_details' => $result,
+					'status'        => 'success',
 				)
 			);
 		}

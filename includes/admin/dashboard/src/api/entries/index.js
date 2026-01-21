@@ -37,3 +37,19 @@ export async function gutenaFormsFetchEntryData( id ) {
 
 	return response.entry_data;
 }
+
+export async function gutenaFormsFetchEntryDetails( id ) {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: addQueryArgs(
+			`${ GutenaFormsRestConfiguration.namespace }entry/details`,
+			{ id }
+		)
+	} );
+
+	if ( ! response ) {
+		throw new Error( 'No response from server' );
+	}
+
+	return response.entry_details;
+}
