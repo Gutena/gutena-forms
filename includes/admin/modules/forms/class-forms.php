@@ -201,6 +201,10 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		public function save_settings( $settings ) {
 			// dummy function.
 		}
+
+		public static function get_form_name_by_id( $form_id ) {
+			return 'Placeholder name';
+		}
 	}
 
 	Gutena_Forms_Forms::register_module();

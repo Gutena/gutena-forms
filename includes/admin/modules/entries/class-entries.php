@@ -80,6 +80,16 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 					'callback'            => array( $this, 'get_entries' ),
 				)
 			);
+
+			register_rest_route(
+				Gutena_Forms_Rest_API_Controller::$namespace,
+				'entry',
+				array(
+					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
+					'methods'             => $server::READABLE,
+					'callback'            => array( $this, 'get_entry' ),
+				)
+			);
 		}
 
 		/**
@@ -87,6 +97,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 		 *
 		 * @since 1.6.0
 		 * @param WP_REST_Request $request REST request.
+		 *
 		 * @return WP_REST_Response
 		 */
 		public function get_entries( $request ) {
@@ -143,6 +154,42 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 				array(
 					'entries' => $formatted_entries,
 					'status'  => 'success',
+				)
+			);
+		}
+
+		/**
+		 * Get entry by Id
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request Rest request.
+		 *
+		 * @return WP_REST_Response|WP_Error
+		 */
+		public function get_entry( $request ) {
+			global $wpdb;
+			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'entryId' ) ) );
+			$store    = new Gutena_Forms_Store();
+
+			if ( empty( $entry_id ) ) {
+				return rest_ensure_response(
+					array(
+						'message' => 'Entry id was not found',
+						'status' => 404,
+					)
+				);
+			}
+
+			$query               = 'SELECT * FROM %i WHERE entry_id = %d AND trash = 0';
+			$query               = $wpdb->prepare( $query, $store->table_gutenaforms_entries, $entry_id );
+			$entry               = $wpdb->get_row( $query, ARRAY_A );
+			$entry['entry_data'] = maybe_unserialize( $entry['entry_data'] );
+			$entry['form_name']  = Gutena_Forms_Forms::get_form_name_by_id( $entry['form_id'] );
+
+			return rest_ensure_response(
+				array(
+					'entry'  => $entry,
+					'status' => 'success',
 				)
 			);
 		}

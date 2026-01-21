@@ -7,7 +7,7 @@ import { addQueryArgs } from '@wordpress/url';
  * @since 1.6.0
  * @type {{namespace: string}}
  */
-const GutenaFormsRestConfiguration = {
+export const GutenaFormsRestConfiguration = {
 	namespace: 'gutena-forms/v1/',
 	proNamespace: 'gutena-forms/pro/v1/',
 };
@@ -243,6 +243,12 @@ export async function deleteMultipleForms( formIds ) {
 	throw new Error( 'Gutena Forms DeleteForm Error' );
 }
 
+/**
+ * Fetch all entries from the Gutena Forms REST API.
+ *
+ * @since 1.6.0
+ * @returns {Promise<*>}
+ */
 export async function gutenaFormsFetchAllEntries() {
 	const response = await apiFetch( {
 		method: 'GET',
