@@ -41,65 +41,50 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Rest_Api' ) ) :
 		 * @since 1.6.0
 		 */
 		private function __construct() {
-			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
+			add_filter( 'gutena_forms__rest_routs', array( $this, 'rest_routes' ), 10, 2 );
 		}
 
 		/**
-		 * REST API Init
+		 * REST Routes
 		 *
 		 * @since 1.6.0
+		 * @param array          $routes REST routes.
 		 * @param WP_REST_Server $server REST server.
+		 *
+		 * @return array
 		 */
-		public function rest_api_init( $server ) {
-			register_rest_route(
-				Gutena_Forms_Rest_API_Controller::$namespace,
-				'entries/get-all',
-				array(
-					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
-					'methods'             => $server::READABLE,
-					'callback'            => array( $this, 'get_entries' ),
-				)
+		public function rest_routes( $routes, $server ) {
+			$routes[] = array(
+				'route'    => 'entries/get-all',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'get_entries' ),
 			);
 
-			register_rest_route(
-				Gutena_Forms_Rest_API_Controller::$namespace,
-				'entries/details',
-				array(
-					'methods'             => $server::READABLE,
-					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
-					'callback'            => array( $this, 'get_entries_details' ),
-				)
+			$routes[] = array(
+				'route'    => 'entries/details',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'get_entries_details' ),
 			);
 
-			register_rest_route(
-				Gutena_Forms_Rest_API_Controller::$namespace,
-				'entry/data',
-				array(
-					'methods'             => $server::READABLE,
-					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
-					'callback'            => array( $this, 'get_entry_data' ),
-				)
+			$routes[] = array(
+				'route'    => 'entry/data',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'get_entry_data' ),
 			);
 
-			register_rest_route(
-				Gutena_Forms_Rest_API_Controller::$namespace,
-				'entry/details',
-				array(
-					'methods'             => $server::READABLE,
-					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
-					'callback'            => array( $this, 'get_entry_details' ),
-				)
+			$routes[] = array(
+				'route'    => 'entry/details',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'get_entry_details' ),
 			);
 
-			register_rest_route(
-				Gutena_Forms_Rest_API_Controller::$namespace,
-				'entries/related',
-				array(
-					'methods'             => $server::READABLE,
-					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
-					'callback'            => array( $this, 'get_related_entries' ),
-				)
+			$routes[] = array(
+				'route'    => 'entries/related',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'get_related_entries' ),
 			);
+
+			return $routes;
 		}
 
 		/**

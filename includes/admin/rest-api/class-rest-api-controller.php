@@ -23,6 +23,12 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 		 */
 		private static $instance;
 
+		/**
+		 * REST API namespace
+		 *
+		 * @since 1.6.0
+		 * @var string $namespace REST API namespace.
+		 */
 		public static $namespace = 'gutena-forms/v1';
 
 		/**
@@ -104,6 +110,30 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'callback'            => array( $this, 'save_settings' ),
 				),
 			);
+
+			/**
+			 * Filter to add additional REST routes
+			 *
+			 * @since 1.6.0
+			 * @param array $rest_routes Array of REST routes to register.
+			 * @param WP_REST_Server $server The REST server.
+			 *
+			 * @return array Modified array of REST routes.
+			 */
+			$rest_routes = apply_filters( 'gutena_forms__rest_routs', array(), $server );
+
+			foreach ( $rest_routes as $rest_route ) {
+				$args = array(
+					'permission_callback' => array( self::class, 'permission_callback' ),
+					'methods'             => $rest_route['methods'],
+					'callback'            => $rest_route['callback'],
+				);
+				register_rest_route(
+					self::$namespace,
+					$rest_route['route'],
+					$args
+				);
+			}
 		}
 
 		/**
