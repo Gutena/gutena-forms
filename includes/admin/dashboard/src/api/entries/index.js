@@ -1,3 +1,3 @@
 import { GutenaFormsRestConfiguration } from '../index';
-import apiFetch from 'wp-api-fetch';
+import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
