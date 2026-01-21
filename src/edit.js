@@ -16,7 +16,7 @@ import {
 } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
 import { store as coreStore } from '@wordpress/core-data';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useDispatch, useSelect, dispatch } from '@wordpress/data';
 import {
 	PanelBody,
 	PanelRow,
@@ -31,6 +31,7 @@ import {
 	__experimentalUnitControl as UnitControl,
 	__experimentalVStack as VStack,
 	__experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue,
+	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 import {
 	createBlocksFromInnerBlocksTemplate,
@@ -62,6 +63,30 @@ const Placeholder = ( { clientId, name, setAttributes } ) => {
 	);
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const blockProps = useBlockProps();
+
+	// renaming the button from skip to 'Use Default'
+	useEffect( () => {
+		const skipButton = document.querySelector( '.wp-block-gutena-forms .block-editor-block-variation-picker__skip' );
+
+		if ( skipButton ) {
+			const textNode = Array.from( skipButton.childNodes ).find( ( node ) => {
+				return node.nodeType === Node.TEXT_NODE || ( node.nodeType === Node.ELEMENT_NODE && node.textContent?.trim() === 'Skip' );
+			} );
+
+			if ( textNode ) {
+				if ( textNode.nodeType === Node.TEXT_NODE ) {
+					textNode.textContent = textNode.textContent.replace( 'Skip', __( 'Continue with default', 'gutena-forms' ) );
+				} else {
+					textNode.textContent = __( 'Continue with default', 'gutena-forms' );
+				}
+			} else {
+				const skipText = skipButton.textContent;
+				if ( skipText.includes( 'Skip' ) ) {
+					skipButton.textContent = skipText.replace( 'Skip', __( 'Continue with default', 'gutena-forms' ) );
+				}
+			}
+		}
+	}, [ variations ] );
 
 	return (
 		<div { ...blockProps }>
@@ -134,7 +159,8 @@ export default function Edit( props ) {
 		formStyle,
 		style,
 		recaptcha,
-		cloudflareTurnstile
+		cloudflareTurnstile,
+		honeypot,
 	} = attributes;
 
 	const {
@@ -265,6 +291,7 @@ export default function Edit( props ) {
 				} );
 			}
 		}
+
 		//cleanup
 		return () => {
 			shouldRunFormID = false;
@@ -275,6 +302,19 @@ export default function Edit( props ) {
 	const hasInnerBlocks = useSelect(
 		( select ) =>
 			select( blockEditorStore ).getBlocks( clientId ).length > 0,
+		[ clientId ]
+	);
+
+	//Check if existing forms block is present
+	const hasExistingFormsBlock = useSelect(
+		( select ) => {
+			const blocks = select( blockEditorStore ).getBlocks( clientId );
+			if ( gfIsEmpty( blocks ) || 0 === blocks.length ) {
+				return false;
+			}
+			const existingFormsBlocks = getInnerBlocksbyNameAttr( blocks, 'gutena/existing-forms' );
+			return ! gfIsEmpty( existingFormsBlocks ) && existingFormsBlocks.length > 0;
+		},
 		[ clientId ]
 	);
 
@@ -560,7 +600,8 @@ export default function Edit( props ) {
 	return (
 		<>
 			<style>{ formStyle }</style>
-			<InspectorControls>
+			{ ! hasExistingFormsBlock && (
+				<InspectorControls>
 				<PanelBody title="Form settings" initialOpen={ true }>
 					<TextControl
 						label={ __( 'Form name', 'gutena-forms' ) }
@@ -706,6 +747,46 @@ export default function Edit( props ) {
 					</VStack>
 				</PanelBody>
 				{/* Cloudflare - Turnstile end */}
+
+				{ /* Honeypot start */ }
+				<PanelBody title={ "Honeypot Field" } initialOpen={ false }>
+					<VStack>
+						<p>Honeypot field settings</p>
+						<ToggleControl
+							label={ 'enable' }
+							checked={ honeypot?.enable }
+							onChange={ ( honeypot_status ) => {
+								setAttributes( {
+									honeypot: {
+										...honeypot,
+										enable: honeypot_status
+									}
+								} );
+							} }
+						/>
+
+						{
+							( ! gfIsEmpty( honeypot?.enable ) && honeypot?.enable ) &&
+							<>
+								<NumberControl
+									label={ __( 'Time limit (in seconds)', 'gutena-forms' ) }
+									value={ honeypot?.timeCheckValue }
+									min={ 1 }
+									onChange={ ( timeCheckValue ) => {
+										setAttributes( {
+											honeypot: {
+												...honeypot,
+												timeCheckValue: timeCheckValue
+											}
+										} );
+									} }
+									description={ 'Adds a time-based spam check that detects submissions made too quickly, a common bot behavior. The default threshold is 4 seconds, adjustable as needed. If unsure, leave it off.'}
+								/>
+							</>
+						}
+					</VStack>
+				</PanelBody>
+				{ /* Honeypot end */ }
 
 				<PanelColorSettings
 					title={ __( 'Form colors', 'gutena-forms' ) }
@@ -1330,6 +1411,7 @@ export default function Edit( props ) {
 					/>
 				</PanelBody>
 			</InspectorControls>
+			) }
 			{ hasInnerBlocks ? (
 				<form method="post" { ...blockProps }>
 					<input type="hidden" name="formid" value={ formID } />

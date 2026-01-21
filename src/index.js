@@ -163,7 +163,7 @@ domReady( () => {
     //check wp
     if ( typeof wp !== 'undefined' && typeof wp.data !== 'undefined' ){
 		/** https://github.com/WordPress/gutenberg/issues/14139 **/
-        wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( [ 'gutena/form-field', 'gutena/field-group' ] );
+        wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( [ 'gutena/form-field', 'gutena/field-group', 'gutena/existing-forms' ] );
     }
 });
 

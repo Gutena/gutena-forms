@@ -17,13 +17,22 @@ const Edit = ( { attributes } ) => {
 			},
 			[
 				[
-					'core/heading',
+					'gutena/field-label',
 					{
 						level: 3,
 						content: attributes.fieldLabelContent,
 						placeholder: attributes.fieldLabel,
 						className: 'heading-input-label-gutena',
-					},
+						htmlFor: '' === attributes.fieldLabelContent
+							? ''
+							: attributes.fieldLabelContent
+								.toLowerCase()
+								.replace( / /g, '_' ),
+						lock: {
+							remove: true,
+							move: true,
+						}
+					}
 				],
 				[
 					'gutena/form-field',

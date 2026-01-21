@@ -26,6 +26,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_footer', array( $this, 'admin_footer' ) );
 			add_filter( 'block_categories_all', array( $this, 'move_gutena_to_top' ), 100, 2 );
+			add_action( 'wp_trash_post', array( $this, 'when_trash_post' ) );
 			/**
 			 * add_filter( 'allowed_block_types_all', array( $this, 'only_gutena_blocks' ), 10, 2 );
 			 */
@@ -219,6 +220,18 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 				$form_name = isset( $block['attrs']['formName'] ) && ! empty( $block['attrs']['formName'] )
 					? sanitize_text_field( $block['attrs']['formName'] )
 					: 'Contact Form';
+
+				// Extract formID from block and set gutena_form_id meta if it doesn't exist
+				// This ensures the meta is set when a gutena_forms post is created directly
+				if ( $form_block && isset( $form_block['attrs']['formID'] ) && ! empty( $form_block['attrs']['formID'] ) ) {
+					$block_form_id = $form_block['attrs']['formID'];
+					// Only set meta if it doesn't already exist
+					if ( empty( $form_id ) ) {
+						update_post_meta( $post_id, 'gutena_form_id', $block_form_id );
+						$form_id = $block_form_id;
+					}
+				}
+
 				break;
 			}
 		}
@@ -331,8 +344,6 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 
 			echo '<style type="text/css">
 				.page-title-action {
-					display: none !important;
-					visibility: hidden !important;
 				    color: #FFF !important;
 				    border: none !important;
 				    font-size: 14px !important;
@@ -385,6 +396,13 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			            <div>
 			                <h2 style="display: inline-block;margin-right: 20px;">
 			                    ' . __( 'Gutena Forms', 'gutena-forms' ) . '
+			                    <a style="display: inline-block;margin: -6px 0 0 20px;" href="' . esc_url( admin_url( 'post-new.php?post_type=' . $this->post_type ) ) . '" rel="noopener noreferrer" class="button gutena-forms__add-new-form">
+			                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+			                            <circle cx="9" cy="9" r="9" fill="#D2FFF7"/>
+			                            <path d="M8.17405 12.6V6.00001H9.84158V12.6H8.17405ZM5.40002 10.0714V8.54287H12.6V10.0714H5.40002Z" fill="#0DA88C"/>
+			                        </svg>
+			                        ' . __( 'Add New Form', 'gutena-forms' ) . '
+			                    </a>
 			                </h2>
 			            </div>
 			            <div style="margin-top: 30px;display: flex;justify-content: center;align-items: center;">
@@ -406,7 +424,7 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			                        <div style="flex:1;text-align:right;display:flex;justify-content:center;align-items:center;">
 			                            <div style="display:inline-block;">
 			                                <img src="' . GUTENA_FORMS_PLUGIN_URL . 'assets/img/form-illustration.png" alt="form-illustration" style="max-width:100%;height:auto;display:block;"/>
-			                                <button aria-label="Play video" onclick="(function(){var m=document.getElementById(\'gf-video-modal\');var i=m.querySelector(\'iframe\');i.src=\'https://www.youtube.com/embed/u9sB-RSBQIE?si=cxD-pNwOW60-n8fc\';m.classList.add(\'show\');})();" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:none;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;width:83px;height:83px;">
+			                                <button aria-label="Play video" onclick="(function(){var m=document.getElementById(\'gf-video-modal\');var i=m.querySelector(\'iframe\');i.src=\'https://www.youtube.com/embed/jkQs_6kwT2g?si=F3Eij-KSQxlJTlg-\';m.classList.add(\'show\');})();" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:none;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;width:83px;height:83px;">
 			                                    <svg xmlns="http://www.w3.org/2000/svg" width="83" height="83" viewBox="0 0 83 83" fill="none">
 			                                        <path d="M41.5 7C22.4698 7 7 22.4836 7 41.5C7 60.5302 22.4698 76 41.5 76C60.5164 76 76 60.5302 76 41.5C76 22.4836 60.5164 7 41.5 7Z" fill="#0DA88C" fill-opacity="0.3"/>
 			                                        <path d="M36.8208 55.7548L53.5589 42.4193C53.8304 42.1975 54 41.8588 54 41.4968C54 41.1348 53.8304 40.7962 53.5589 40.5743L36.8208 27.2389C36.4815 26.9703 36.0179 26.9236 35.6333 27.1221C35.443 27.2184 35.2827 27.368 35.1707 27.5538C35.0587 27.7396 34.9996 27.9542 35 28.1731V54.8323C35 55.276 35.2488 55.6847 35.6333 55.8832C35.7917 55.9533 35.9613 56 36.131 56C36.3798 56 36.6173 55.9183 36.8208 55.7548Z" fill="white"/>
@@ -502,6 +520,71 @@ if ( ! class_exists( 'Gutena_CPT' ) ) :
 			}
 
 			return $allowed_blocks;
+		}
+
+		/**
+		 * When a Gutena Forms post is trashed, perform necessary cleanup.
+		 *
+		 * @since 1.6.0
+		 * @param int $post_id Post id.
+		 */
+		public function when_trash_post( $post_id ) {
+			$post = get_post( $post_id );
+			if ( empty( $post ) || $this->post_type !== $post->post_type ) {
+				return;
+			}
+
+			$form_id = get_post_meta( $post_id, 'gutena_form_id', true );
+			$connected_posts = get_post_meta( $post_id, '_gutena_connected_posts', true );
+
+			if ( ! is_array( $connected_posts ) || empty( $connected_posts ) ) {
+				return;
+			}
+
+			// Remove references to this form from connected posts and replace with a text notice. "The form has been removed."
+			foreach ( $connected_posts as $connected_post_id ) {
+				$connected_post = get_post( $connected_post_id );
+				if ( empty( $connected_post ) ) {
+					continue;
+				}
+
+				$connected_post_blocks = parse_blocks( $connected_post->post_content );
+				$updated               = false;
+
+				foreach ( $connected_post_blocks as $index => $block ) {
+					if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
+						$block_form_id = $block['attrs']['formID'];
+						if ( $form_id === $block_form_id ) {
+							// Replace block with a paragraph block indicating removal
+
+							$connected_post_blocks[ $index ] = array(
+								'blockName' => 'core/paragraph',
+								'attrs'     => array(),
+								'innerContent' => array(
+									'<p><em>' . esc_html__( 'This form has been deleted.', 'gutena-forms' ) . '</em></p>',
+								),
+								'innerHTML'    => '<p><em>' . esc_html__( 'This form has been deleted.', 'gutena-forms' ) . '</em></p>',
+								'innerBlocks' => array(),
+							);
+
+							$updated = true;
+						}
+					}
+				}
+
+				if ( $updated ) {
+					$new_content = serialize_blocks( $connected_post_blocks );
+					wp_update_post(
+						array(
+							'ID'           => $connected_post_id,
+							'post_content' => $new_content,
+						),
+						false,
+						false
+					);
+				}
+
+			}
 		}
 
 		public static function get_instance() {
