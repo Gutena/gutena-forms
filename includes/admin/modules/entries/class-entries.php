@@ -61,6 +61,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 		 * @since 1.6.0
 		 */
 		public function __construct() {
+			require_once plugin_dir_path( __FILE__ ) . 'class-entries-model.php';
 			require_once plugin_dir_path( __FILE__ ) . 'class-entries-endpoints.php';
 		}
 
