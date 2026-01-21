@@ -8,24 +8,24 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'Gutena_Forms_Entries_Rest_Api' ) ) :
+if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 	/**
 	 * Gutena Forms Entries REST API Module
 	 */
-	class Gutena_Forms_Entries_Rest_Api {
+	class Gutena_Forms_Entries_Endpoints {
 		/**
 		 * Singleton instance
 		 *
 		 * @since 1.6.0
-		 * @var Gutena_Forms_Entries_Rest_Api $instance Singleton instance of the class.
+		 * @var Gutena_Forms_Entries_Endpoints $instance Singleton instance of the class.
 		 */
 		private static $instance;
 
 		/**
 		 * Get singleton instance
 		 *
+		 * @return Gutena_Forms_Entries_Endpoints
 		 * @since 1.6.0
-		 * @return Gutena_Forms_Entries_Rest_Api
 		 */
 		public static function get_instance() {
 			if ( is_null( self::$instance ) ) {
@@ -312,6 +312,6 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Rest_Api' ) ) :
 		}
 	}
 
-	Gutena_Forms_Entries_Rest_Api::get_instance();
+	Gutena_Forms_Entries_Endpoints::get_instance();
 endif;
 

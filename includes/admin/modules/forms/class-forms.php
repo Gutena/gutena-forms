@@ -43,7 +43,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		 * @since 1.6.0
 		 */
 		public function __construct() {
-			require_once plugin_dir_path( __FILE__ ) . 'class-forms-rest-api.php';
+			require_once plugin_dir_path( __FILE__ ) . 'class-forms-endpoints.php';
 		}
 
 		/**
