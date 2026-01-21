@@ -53,3 +53,19 @@ export async function gutenaFormsFetchEntryDetails( id ) {
 
 	return response.entry_details;
 }
+
+export async function gutenaFormsFetchRelatedEntries( id ) {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: addQueryArgs(
+			`${ GutenaFormsRestConfiguration.namespace }entries/related`,
+			{ id }
+		),
+	} );
+
+	if ( ! response ) {
+		throw new Error( 'No response from server' );
+	}
+
+	return response.related_entries;
+}

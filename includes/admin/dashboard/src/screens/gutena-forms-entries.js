@@ -9,7 +9,7 @@ import { Bin } from '../icons/bin';
 
 const GutenaFormsEntries = () => {
 
-	const { id } = useParams();
+	const { id, slug } = useParams();
 	const [ entries, setEntries ] = useState( [] );
 	const [ loading, setLoading ] = useState( true );
 
@@ -52,7 +52,7 @@ const GutenaFormsEntries = () => {
 		<div>
 			{ ! loading && (
 				<div>
-					{ id && (
+					{ id && 'entry' === slug && (
 						<div>
 							<GutenaFormsSingleEntryPage entryId={ id } />
 						</div>

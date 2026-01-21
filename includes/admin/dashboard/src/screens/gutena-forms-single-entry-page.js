@@ -18,6 +18,8 @@ const GutenaFormsSingleEntryPage = ( { entryId } ) => {
 	const [ loading, setLoading ] = useState( false );
 	const [ currentEntry, setCurrentEntry ] = useState( 0 );
 
+	useEffect( () => {}, [ entryId ] );
+
 	return (
 		<div className={ 'gutena-forms__entry-screen' }>
 			{ ! loading && (

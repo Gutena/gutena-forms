@@ -14,7 +14,7 @@ const GutenaFormsEntryDetails = ( { entryId } ) => {
 				setEntryDetails( entryDetails );
 				setLoading( false );
 			} );
-	}, [] );
+	}, [ entryId ] );
 
 	console.log( entryDetails );
 	return (

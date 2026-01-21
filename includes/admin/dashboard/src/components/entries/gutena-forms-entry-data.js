@@ -14,7 +14,7 @@ const GutenaFormsEntryData = ( { entryId } ) => {
 				setLoading( false );
 				setEntryData( entryData );
 			} );
-	}, [] );
+	}, [ entryId ] );
 
 	const handleDataByFieldType = ( fieldType, value ) => {
 		console.log( fieldType )

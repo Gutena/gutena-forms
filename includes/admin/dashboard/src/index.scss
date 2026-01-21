@@ -984,6 +984,16 @@
 		.gutena-forms__col-30 {
 			width: calc( 30% - 7px );
 		}
+
+		.gutena-forms__list-unstyled {
+			li {
+				a {
+					color: #0DA88C;
+					font-size: 10px;
+					font-weight: 400;
+				}
+			}
+		}
 	}
 
 	// Custom Zoom In Animation

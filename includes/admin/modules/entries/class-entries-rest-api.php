@@ -90,6 +90,16 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Rest_Api' ) ) :
 					'callback'            => array( $this, 'get_entry_details' ),
 				)
 			);
+
+			register_rest_route(
+				Gutena_Forms_Rest_API_Controller::$namespace,
+				'entries/related',
+				array(
+					'methods'             => $server::READABLE,
+					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
+					'callback'            => array( $this, 'get_related_entries' ),
+				)
+			);
 		}
 
 		/**
@@ -270,6 +280,48 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Rest_Api' ) ) :
 				array(
 					'entry_details' => $result,
 					'status'        => 'success',
+				)
+			);
+		}
+
+		/**
+		 * Get related entries.
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function get_related_entries( $request ) {
+			global $wpdb;
+			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'id' ) ) );
+			$store    = new Gutena_Forms_Store();
+
+			$sql     = 'SELECT related.entry_id, related.added_time FROM %i main LEFT JOIN %i related ON main.user_id = related.user_id AND main.entry_id != related.entry_id WHERE main.entry_id = %d';
+			$sql     = $wpdb->prepare(
+				$sql,
+				$store->table_gutenaforms_entries,
+				$store->table_gutenaforms_entries,
+				$entry_id
+			);
+			$results = $wpdb->get_results( $sql, ARRAY_A );
+
+			$results = array_map(
+				function ( $entry ) {
+
+					if ( ! empty( $entry['added_time'] ) ) {
+						$entry['added_time'] = gmdate( 'F j, Y H:i A', strtotime( $entry['added_time'] ) );
+					}
+
+					return $entry;
+				},
+				$results
+			);
+
+			return rest_ensure_response(
+				array(
+					'related_entries' => $results,
+					'status'          => 'success',
 				)
 			);
 		}
