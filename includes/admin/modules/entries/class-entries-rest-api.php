@@ -1,0 +1,226 @@
+<?php
+/**
+ * Gutena Forms Entries REST API Module
+ *
+ * @since 1.6.0
+ * @package Gutena Forms
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+if ( ! class_exists( 'Gutena_Forms_Entries_Rest_Api' ) ) :
+	/**
+	 * Gutena Forms Entries REST API Module
+	 */
+	class Gutena_Forms_Entries_Rest_Api {
+		/**
+		 * Singleton instance
+		 *
+		 * @since 1.6.0
+		 * @var Gutena_Forms_Entries_Rest_Api $instance Singleton instance of the class.
+		 */
+		private static $instance;
+
+		/**
+		 * Get singleton instance
+		 *
+		 * @since 1.6.0
+		 * @return Gutena_Forms_Entries_Rest_Api
+		 */
+		public static function get_instance() {
+			if ( is_null( self::$instance ) ) {
+				self::$instance = new self();
+			}
+
+			return self::$instance;
+		}
+
+		/**
+		 * Constructor
+		 *
+		 * @since 1.6.0
+		 */
+		private function __construct() {
+			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
+		}
+
+		/**
+		 * REST API Init
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Server $server REST server.
+		 */
+		public function rest_api_init( $server ) {
+			register_rest_route(
+				Gutena_Forms_Rest_API_Controller::$namespace,
+				'entries/get-all',
+				array(
+					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
+					'methods'             => $server::READABLE,
+					'callback'            => array( $this, 'get_entries' ),
+				)
+			);
+
+			register_rest_route(
+				Gutena_Forms_Rest_API_Controller::$namespace,
+				'entries/details',
+				array(
+					'methods'             => $server::READABLE,
+					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
+					'callback'            => array( $this, 'get_entries_details' ),
+				)
+			);
+
+			register_rest_route(
+				Gutena_Forms_Rest_API_Controller::$namespace,
+				'entry/data',
+				array(
+					'methods'             => $server::READABLE,
+					'permission_callback' => array( 'Gutena_Forms_Rest_API_Controller', 'permission_callback' ),
+					'callback'            => array( $this, 'get_entry_data' ),
+				)
+			);
+		}
+
+		/**
+		 * Get Entries
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function get_entries( $request ) {
+			global $wpdb;
+
+			// Get Store instance for table names
+			$store = new Gutena_Forms_Store();
+
+			// Get optional form_id parameter
+			$form_id = $request->get_param( 'form_id' );
+
+			// Build base query
+			$query = "SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data
+					  FROM {$store->table_gutenaforms_entries} e
+					  LEFT JOIN {$store->table_gutenaforms} f ON e.form_id = f.form_id
+					  WHERE e.trash = %d";
+
+			$query_params = array( 0 );
+
+			// Add form_id filter if provided
+			if ( ! empty( $form_id ) && is_numeric( $form_id ) ) {
+				$query .= " AND e.form_id = %d";
+				$query_params[] = absint( $form_id );
+			}
+
+			$query .= " ORDER BY e.entry_id DESC";
+
+			// Execute query
+			$entries = $wpdb->get_results(
+				$wpdb->prepare( $query, $query_params ),
+				ARRAY_A
+			);
+
+			// Format entries to match required structure
+			$formatted_entries = array_map(
+				function ( $entry ) {
+					$value = array();
+					if ( is_serialized( $entry['entry_data'] ) ) {
+						$value = maybe_unserialize( $entry['entry_data'] );
+					}
+
+					return array(
+						'entry_id'  => absint( $entry['entry_id'] ),
+						'form_id'   => absint( $entry['form_id'] ),
+						'form_name' => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
+						'datetime'  => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
+						'value' => $value,
+					);
+				},
+				$entries
+			);
+
+			return rest_ensure_response(
+				array(
+					'entries' => $formatted_entries,
+					'status'  => 'success',
+				)
+			);
+		}
+
+		/**
+		 * Get Entries Details
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function get_entries_details( $request ) {
+			global $wpdb;
+			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'id' ) ) );
+			$store   = new Gutena_Forms_Store();
+
+			$sql = "SELECT e.form_id,
+				  ( SELECT COUNT(entry_id) FROM %i WHERE form_id = e.form_id AND trash = 0 ) AS total_count,
+				  ( SELECT entry_id FROM %i WHERE form_id = e.form_id AND trash = 0 AND entry_id < e.entry_id ORDER BY entry_id DESC LIMIT 1 ) AS previous_entry,
+				  ( SELECT entry_id FROM %i WHERE form_id = e.form_id AND trash = 0 AND entry_id > e.entry_id ORDER BY entry_id ASC LIMIT 1 ) AS next_entry
+				FROM %i AS e
+				WHERE e.entry_id = %d AND e.trash = 0";
+
+			$prepared = $wpdb->prepare(
+				$sql,
+				$store->table_gutenaforms_entries,
+				$store->table_gutenaforms_entries,
+				$store->table_gutenaforms_entries,
+				$store->table_gutenaforms_entries,
+				$entry_id
+			);
+
+			$result = $wpdb->get_row( $prepared, ARRAY_A );
+
+			return rest_ensure_response(
+				array(
+					'details' => $result,
+					'status'  => 'success',
+				)
+			);
+		}
+
+		/**
+		 * Get entry data.
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function get_entry_data( $request ) {
+			global $wpdb;
+			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'id' ) ) );
+			$store    = new Gutena_Forms_Store();
+			$sql       = 'SELECT entry_data FROM %i WHERE entry_id = %d AND trash = 0';
+			$sql       = $wpdb->prepare(
+				$sql,
+				$store->table_gutenaforms_entries,
+				$entry_id
+			);
+			$result    = $wpdb->get_var( $sql );
+			$value     = array();
+
+			if ( is_serialized( $result ) ) {
+				$value = maybe_unserialize( $result );
+			}
+
+			return rest_ensure_response(
+				array(
+					'entry_data' => $value,
+					'status'     => 'success',
+				)
+			);
+		}
+	}
+
+	Gutena_Forms_Entries_Rest_Api::get_instance();
+endif;
+
