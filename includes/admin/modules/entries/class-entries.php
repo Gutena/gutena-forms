@@ -91,21 +91,6 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 		public function save_settings( $settings ) {
 			// placeholder function.
 		}
-
-		public function get_entries_count_by_form_id( $form_id ) {
-			global $wpdb;
-			$store         = new Gutena_Forms_Store();
-			$block_form_id = get_post_meta( $form_id, 'gutena_form_id', true );
-			$sql           = 'SELECT COUNT( gutenaFormsEntries.entry_id ) FROM %i gutenaForms LEFT JOIN %i gutenaFormsEntries ON gutenaForms.form_id = gutenaFormsEntries.form_id WHERE gutenaForms.block_form_id = %s';
-			$sql           = $wpdb->prepare(
-				$sql,
-				$store->table_gutenaforms,
-				$store->table_gutenaforms_entries,
-				$block_form_id
-			);
-
-			return intval( $wpdb->get_var( $sql ) );
-		}
 	}
 
 	Gutena_Forms_Entries::register_module();

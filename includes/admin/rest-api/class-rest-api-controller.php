@@ -123,8 +123,19 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 			$rest_routes = apply_filters( 'gutena_forms__rest_routs', array(), $server );
 
 			foreach ( $rest_routes as $rest_route ) {
+
+				if ( isset( $rest_route['auth'] ) && $rest_route['auth'] ) {
+					if ( is_callable( $rest_route['auth'] ) ) {
+						$permission = $rest_route['auth'];
+					} else {
+						$permission = array( self::class, 'permission_callback' );
+					}
+				} else {
+					$permission = '__return_true';
+				}
+
 				$args = array(
-					'permission_callback' => array( self::class, 'permission_callback' ),
+					'permission_callback' => $permission,
 					'methods'             => $rest_route['methods'],
 					'callback'            => $rest_route['callback'],
 				);

@@ -22,6 +22,14 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		private static $instance;
 
 		/**
+		 * Entries Model instance
+		 *
+		 * @since 1.6.0
+		 * @var Gutena_Forms_Entries_Model $entries_model Entries Model instance.
+		 */
+		private $entries_model;
+
+		/**
 		 * Get singleton instance
 		 *
 		 * @return Gutena_Forms_Entries_Endpoints
@@ -41,6 +49,8 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		 * @since 1.6.0
 		 */
 		private function __construct() {
+			$this->entries_model = Gutena_Forms_Entries_Model::get_instance();
+
 			add_filter( 'gutena_forms__rest_routs', array( $this, 'rest_routes' ), 10, 2 );
 		}
 
@@ -54,34 +64,40 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		 * @return array
 		 */
 		public function rest_routes( $routes, $server ) {
+
 			$routes[] = array(
 				'route'    => 'entries/get-all',
 				'methods'  => $server::READABLE,
 				'callback' => array( $this, 'get_entries' ),
+				'auth'     => true,
 			);
 
 			$routes[] = array(
 				'route'    => 'entries/details',
 				'methods'  => $server::READABLE,
 				'callback' => array( $this, 'get_entries_details' ),
+				'auth'     => true,
 			);
 
 			$routes[] = array(
 				'route'    => 'entry/data',
 				'methods'  => $server::READABLE,
 				'callback' => array( $this, 'get_entry_data' ),
+				'auth'     => true,
 			);
 
 			$routes[] = array(
 				'route'    => 'entry/details',
 				'methods'  => $server::READABLE,
 				'callback' => array( $this, 'get_entry_details' ),
+				'auth'     => true,
 			);
 
 			$routes[] = array(
 				'route'    => 'entries/related',
 				'methods'  => $server::READABLE,
 				'callback' => array( $this, 'get_related_entries' ),
+				'auth'     => true,
 			);
 
 			return $routes;
@@ -96,35 +112,8 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		 * @return WP_REST_Response
 		 */
 		public function get_entries( $request ) {
-			global $wpdb;
-
-			// Get Store instance for table names
-			$store = new Gutena_Forms_Store();
-
-			// Get optional form_id parameter
 			$form_id = $request->get_param( 'form_id' );
-
-			// Build base query
-			$query = "SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data
-					  FROM {$store->table_gutenaforms_entries} e
-					  LEFT JOIN {$store->table_gutenaforms} f ON e.form_id = f.form_id
-					  WHERE e.trash = %d";
-
-			$query_params = array( 0 );
-
-			// Add form_id filter if provided
-			if ( ! empty( $form_id ) && is_numeric( $form_id ) ) {
-				$query .= " AND e.form_id = %d";
-				$query_params[] = absint( $form_id );
-			}
-
-			$query .= " ORDER BY e.entry_id DESC";
-
-			// Execute query
-			$entries = $wpdb->get_results(
-				$wpdb->prepare( $query, $query_params ),
-				ARRAY_A
-			);
+			$entries = $this->entries_model->get_all( $form_id );
 
 			// Format entries to match required structure
 			$formatted_entries = array_map(
@@ -201,21 +190,9 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		 * @return WP_REST_Response
 		 */
 		public function get_entry_data( $request ) {
-			global $wpdb;
 			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'id' ) ) );
-			$store    = new Gutena_Forms_Store();
-			$sql       = 'SELECT entry_data FROM %i WHERE entry_id = %d AND trash = 0';
-			$sql       = $wpdb->prepare(
-				$sql,
-				$store->table_gutenaforms_entries,
-				$entry_id
-			);
-			$result    = $wpdb->get_var( $sql );
-			$value     = array();
-
-			if ( is_serialized( $result ) ) {
-				$value = maybe_unserialize( $result );
-			}
+			$value    = $this->entries_model->get_data( $entry_id );
+			$value    = maybe_unserialize( $value );
 
 			return rest_ensure_response(
 				array(
@@ -234,16 +211,8 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		 * @return WP_REST_Response
 		 */
 		public function get_entry_details( $request ) {
-			global $wpdb;
 			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'id' ) ) );
-			$store    = new Gutena_Forms_Store();
-			$sql       = 'SELECT entry_id, form_id, user_id, added_time, entry_status FROM %i WHERE entry_id = %d AND trash = 0';
-			$sql       = $wpdb->prepare(
-				$sql,
-				$store->table_gutenaforms_entries,
-				$entry_id
-			);
-			$result    = $wpdb->get_row( $sql, ARRAY_A );
+			$result   = $this->entries_model->get_details( $entry_id );
 
 			if ( ! empty( $result['user_id'] ) ) {
 				$user_info          = get_userdata( absint( $result['user_id'] ) );
@@ -252,7 +221,8 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 			}
 
 			if ( ! empty( $result['form_id'] ) ) {
-				$form_name = Gutena_Forms_Forms::get_form_name_by_id( $result['form_id'] );
+				$form_name = Gutena_Forms_Forms_Model::get_instance()->get_name_by_id( $result['form_id'] );
+
 				$result['form_name'] = $form_name ? $form_name : __( 'Unknown Form', 'gutena-forms' );
 				unset( $result['form_id'] );
 			}
@@ -278,18 +248,8 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		 * @return WP_REST_Response
 		 */
 		public function get_related_entries( $request ) {
-			global $wpdb;
 			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'id' ) ) );
-			$store    = new Gutena_Forms_Store();
-
-			$sql     = 'SELECT related.entry_id, related.added_time FROM %i main LEFT JOIN %i related ON main.user_id = related.user_id AND main.entry_id != related.entry_id WHERE main.entry_id = %d';
-			$sql     = $wpdb->prepare(
-				$sql,
-				$store->table_gutenaforms_entries,
-				$store->table_gutenaforms_entries,
-				$entry_id
-			);
-			$results = $wpdb->get_results( $sql, ARRAY_A );
+			$results  = $this->entries_model->get_related( $entry_id );
 
 			$results = array_map(
 				function ( $entry ) {
