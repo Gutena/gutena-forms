@@ -2,7 +2,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { SelectControl, Button } from '@wordpress/components';
 import GutenaFormsDatatable from '../components/gutena-forms-datatable';
 import GutenaFormsSingleEntryPage from './gutena-forms-single-entry-page';
-import { gutenaFormsFetchAllEntries } from '../api';
+import { gutenaFormsFetchAllEntries, gutenaFromsIdTitle, gutenaFormsFetchEntriesByFormId } from '../api';
 import { Link, useParams } from 'react-router';
 import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
@@ -12,37 +12,56 @@ const GutenaFormsEntries = () => {
 	const { id, slug } = useParams();
 	const [ entries, setEntries ] = useState( [] );
 	const [ loading, setLoading ] = useState( true );
+	const [ formsFilter, setFormsFilter ] = useState( [] );
+	const [ selectedFormFilter, setSelectedFormFilter ] = useState( 'all' );
+
 
 	useEffect( () => {
 		setLoading( true );
+
 		gutenaFormsFetchAllEntries()
 			.then( entries => {
 				setLoading( false );
 				setEntries( entries );
-			} )
+			} );
+
+		gutenaFromsIdTitle()
+			.then( formsFilter => {
+				let formFilterOptions = [ { label: 'All Forms', value: 'all' } ];
+				Object.keys( formsFilter ).map( ( formFilterKey ) => {
+					formFilterOptions.push( { label: formsFilter[ formFilterKey ].title, value: formsFilter[ formFilterKey ].id } );
+				} );
+				setFormsFilter( formFilterOptions );
+			} );
 	}, [] );
 
 	const FormFilter = () => {
 
 		const onChangeFormName = ( value ) => {
+			setSelectedFormFilter( value );
+			setLoading( true );
+
+			if ( 'all' === value ) {
+				gutenaFormsFetchAllEntries()
+					.then( entries => {
+						setLoading( false );
+						setEntries( entries );
+					} );
+			} else {
+				gutenaFormsFetchEntriesByFormId( value )
+					.then( entries => {
+						setLoading( false );
+						setEntries( entries );
+					} );
+			}
 		}
 
 		return (
 			<div>
 				<SelectControl
-					options={ [
-						{ label: 'All Forms', value: 'all' },
-						{ label: 'Contact US', value: '1' },
-						{ label: 'Planning', value: '2' },
-						{ label: 'Feedback', value: '101' },
-						{ label: 'Rotating', value: '102' },
-						{ label: 'Feedback 2', value: '15' },
-						{ label: 'Conversation', value: '16' },
-						{ label: 'Conversation 2', value: '17' },
-						{ label: 'Conversation 3', value: '106' },
-						{ label: 'Contact US 2', value: '105' },
-					] }
+					options={ formsFilter }
 					onChange={ onChangeFormName }
+					value={ selectedFormFilter }
 				/>
 			</div>
 		);
@@ -56,6 +75,10 @@ const GutenaFormsEntries = () => {
 						<div>
 							<GutenaFormsSingleEntryPage entryId={ id } />
 						</div>
+					) }
+
+					{ id && 'entries' === slug && (
+						<>Hello World</>
 					) }
 
 					{ ! id && (

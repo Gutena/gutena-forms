@@ -126,5 +126,31 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		public function get_name_by_id( $form_id ) {
 			return 'Placeholder name';
 		}
+
+		/**
+		 * Get Name and Block ID
+		 *
+		 * @since 1.6.0
+		 * @return array|array[]
+		 */
+		public function get_name_and_block_id() {
+			$forms = get_posts(
+				array(
+					'post_type'      => 'gutena_forms',
+					'post_status'    => array( 'publish' ),
+					'posts_per_page' => -1,
+				)
+			);
+
+			return array_map(
+				function ( $form ) {
+					return array(
+						'title' => $form->post_title,
+						'id'    => get_post_meta( $form->ID, 'gutena_form_id', true ),
+					);
+				},
+				$forms
+			);
+		}
 	}
 endif;

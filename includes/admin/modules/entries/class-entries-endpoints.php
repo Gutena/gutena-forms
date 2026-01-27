@@ -100,6 +100,20 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				'auth'     => true,
 			);
 
+			$routes[] = array(
+				'route'    => 'forms/entry/search-options',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'entry_search_options' ),
+				'auth'     => true,
+			);
+
+			$routes[] = array(
+				'route'    => 'entries/get-by-form-id',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'fetch_entries_by_form_id' ),
+				'auth'     => true,
+			);
+
 			return $routes;
 		}
 
@@ -115,28 +129,9 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 			$form_id = $request->get_param( 'form_id' );
 			$entries = $this->entries_model->get_all( $form_id );
 
-			// Format entries to match required structure
-			$formatted_entries = array_map(
-				function ( $entry ) {
-					$value = array();
-					if ( is_serialized( $entry['entry_data'] ) ) {
-						$value = maybe_unserialize( $entry['entry_data'] );
-					}
-
-					return array(
-						'entry_id'  => absint( $entry['entry_id'] ),
-						'form_id'   => absint( $entry['form_id'] ),
-						'form_name' => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
-						'datetime'  => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
-						'value' => $value,
-					);
-				},
-				$entries
-			);
-
 			return rest_ensure_response(
 				array(
-					'entries' => $formatted_entries,
+					'entries' => $entries,
 					'status'  => 'success',
 				)
 			);
@@ -267,6 +262,45 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				array(
 					'related_entries' => $results,
 					'status'          => 'success',
+				)
+			);
+		}
+
+		/**
+		 * Get entry search options.
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function entry_search_options( $request ) {
+			$data = Gutena_Forms_Forms_Model::get_instance()->get_name_and_block_id();
+
+			return rest_ensure_response(
+				array(
+					'search_options' => $data,
+					'status'         => 'success',
+				)
+			);
+		}
+
+		/**
+		 * Fetch entries by form ID.
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function fetch_entries_by_form_id( $request ) {
+			$form_id = sanitize_text_field( wp_unslash( $request->get_param( 'formId' ) ) );
+			$entries = $this->entries_model->get_all( $form_id );
+
+			return rest_ensure_response(
+				array(
+					'entries' => $entries,
+					'status'  => 'success',
 				)
 			);
 		}

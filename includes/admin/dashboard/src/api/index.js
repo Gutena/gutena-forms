@@ -262,14 +262,25 @@ export async function gutenaFormsFetchAllEntries() {
 	throw new Error( 'Gutena Forms FetchAllEntries Error' );
 }
 
-export async function gutenaFormsFetchEntriesByForm( formId ) {
+export async function gutenaFromsIdTitle() {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: `${ GutenaFormsRestConfiguration.namespace }forms/entry/search-options`,
+	} );
+
+	if ( response.search_options ) {
+		return response.search_options;
+	}
+
+	throw new Error( 'Gutena Forms FetchAllEntries Error' );
+}
+
+export async function gutenaFormsFetchEntriesByFormId( formId ) {
 	const response = await apiFetch( {
 		method: 'GET',
 		path: addQueryArgs(
-			`${ GutenaFormsRestConfiguration.namespace }entries/get-all`,
-			{
-				form_id: formId,
-			}
+			`${ GutenaFormsRestConfiguration.namespace }entries/get-by-form-id/`,
+			{ formId }
 		),
 	} );
 
@@ -277,11 +288,5 @@ export async function gutenaFormsFetchEntriesByForm( formId ) {
 		return response.entries;
 	}
 
-	throw new Error( 'Gutena Forms FetchEntriesByForm Error' );
+	throw new Error( 'Gutena Forms FetchEntriesByFormId Error' );
 }
-
-export async function gutenaFormsFetchEntryDetails( entryId ) {}
-
-export async function gutenaFormsDeleteEntry( entryId ) {}
-
-export async function gutenaFormsDeleteMultipleEntries( entryIds ) {}

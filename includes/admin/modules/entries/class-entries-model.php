@@ -160,14 +160,32 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 				$this->store->table_gutenaforms
 			);
 
-			if ( ! empty( $form_id ) && is_numeric( $form_id ) ) {
-				$sql .= ' AND e.form_id = %d ';
+			if ( ! empty( $form_id ) ) {
+				$sql .= ' AND f.block_form_id = %s ';
 				$sql = $this->wpdb->prepare( $sql, $form_id );
 			}
 
 			$sql .= ' ORDER BY e.entry_id DESC ';
 
-			return $this->wpdb->get_results( $sql, ARRAY_A );
+			$results = $this->wpdb->get_results( $sql, ARRAY_A );
+
+			return array_map(
+				function ( $entry ) {
+					$value = array();
+					if ( is_serialized( $entry['entry_data'] ) ) {
+						$value = maybe_unserialize( $entry['entry_data'] );
+					}
+
+					return array(
+						'entry_id'  => absint( $entry['entry_id'] ),
+						'form_id'   => absint( $entry['form_id'] ),
+						'form_name' => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
+						'datetime'  => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
+						'value' => $value,
+					);
+				},
+				$results
+			);
 		}
 	}
 
