@@ -69,3 +69,19 @@ export async function gutenaFormsFetchRelatedEntries( id ) {
 
 	return response.related_entries;
 }
+
+export async function gutenaFormsFetchEntriesByFormId( id, type ) {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: addQueryArgs(
+			`${ GutenaFormsRestConfiguration.namespace }entries/${ type }`,
+			{ form_id: id }
+		),
+	} );
+
+	if ( ! response ) {
+		throw new Error( 'No response from server' );
+	}
+
+	return response[ type ];
+}

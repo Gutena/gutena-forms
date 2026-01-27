@@ -114,6 +114,20 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				'auth'     => true,
 			);
 
+			$routes[] = array(
+				'route'    => 'entries/headers',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'get_entries_header_by_form_id' ),
+				'auth'     => true,
+			);
+
+			$routes[] = array(
+				'route'    => 'entries/data',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'get_entries_by_form_id' ),
+				'auth'     => true,
+			);
+
 			return $routes;
 		}
 
@@ -301,6 +315,38 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				array(
 					'entries' => $entries,
 					'status'  => 'success',
+				)
+			);
+		}
+
+		/**
+		 * Get entries by form ID.
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function get_entries_header_by_form_id( $request ) {
+			$form_id        = sanitize_text_field( wp_unslash( $request->get_param( 'form_id' ) ) );
+			$entries_header = $this->entries_model->get_entries_header( $form_id );
+
+			return rest_ensure_response(
+				array(
+					'headers' => $entries_header,
+					'status'  => 'success',
+				)
+			);
+		}
+
+		public function get_entries_by_form_id( $request ) {
+			$form_id = sanitize_text_field( wp_unslash( $request->get_param( 'form_id' ) ) );
+			$entries = $this->entries_model->get_entry_data( $form_id );
+
+			return rest_ensure_response(
+				array(
+					'data' => $entries,
+					'status'       => 'success',
 				)
 			);
 		}

@@ -2,6 +2,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { SelectControl, Button } from '@wordpress/components';
 import GutenaFormsDatatable from '../components/gutena-forms-datatable';
 import GutenaFormsSingleEntryPage from './gutena-forms-single-entry-page';
+import GutenaFormsFormEntries from './gutena-forms-form-entries';
 import { gutenaFormsFetchAllEntries, gutenaFromsIdTitle, gutenaFormsFetchEntriesByFormId } from '../api';
 import { Link, useParams } from 'react-router';
 import Eye from '../icons/eye';
@@ -78,7 +79,7 @@ const GutenaFormsEntries = () => {
 					) }
 
 					{ id && 'entries' === slug && (
-						<>Hello World</>
+						<GutenaFormsFormEntries />
 					) }
 
 					{ ! id && (

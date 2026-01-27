@@ -187,6 +187,83 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 				$results
 			);
 		}
+
+		public function get_entries_header( $form_id ) {
+			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
+
+			$sql    = 'SELECT entries.entry_data FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s LIMIT 1';
+			$sql    = $this->wpdb->prepare(
+				$sql,
+				$this->store->table_gutenaforms,
+				$this->store->table_gutenaforms_entries,
+				$form_id
+			);
+			$result = $this->wpdb->get_var( $sql );
+
+			$headers = array(
+				array(
+					'key'   => 'checkbox',
+					'value' => 'entry_id',
+					'width' => '25px',
+				),
+				array(
+					'key'   => 'entry_id',
+					'value' => __( 'Entry ID', 'gutena-forms' ),
+					'width' => '100px',
+				),
+			);
+
+			$entry_data = maybe_unserialize( $result );
+
+			$i = 0;
+			foreach ( $entry_data as $entry_key => $entry ) {
+				if ( $i >= 5 )
+					break;
+
+				$headers[] = array(
+					'key'   => $entry_key,
+					'value' => $entry['label'],
+					'width' => '150px',
+				);
+
+				$i++;
+			}
+			$headers[] = array(
+				'key'   => 'datetime',
+				'value' => __( 'Submitted On', 'gutena-forms' ),
+				'width' => '150px',
+			);
+			$headers[] = array(
+				'key'   => 'actions',
+				'value' => __( 'Actions', 'gutena-forms' ),
+				'width' => '110px',
+			);
+
+			return $headers;
+		}
+
+		public function get_entry_data( $form_id ) {
+			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
+
+			$sql    = 'SELECT entries.entry_data, entries.entry_id, entries.added_time FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s';
+			$sql    = $this->wpdb->prepare(
+				$sql,
+				$this->store->table_gutenaforms,
+				$this->store->table_gutenaforms_entries,
+				$form_id
+			);
+			$result = $this->wpdb->get_results( $sql, ARRAY_A );
+
+			$result = array_map(
+				function ( $result ) {
+					$result['entry_data'] = maybe_unserialize( $result['entry_data'] );
+					return $result;
+				},
+				$result
+			);
+
+			return $result;
+		}
 	}
 
 	Gutena_Forms_Entries_Model::get_instance();
