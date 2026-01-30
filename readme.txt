@@ -345,6 +345,9 @@ Gutena Forms gives you full control over padding, colors, spacing, typography, f
 
 
 == Changelog ==
+= 1.6.1 - Jan 30, 2026 =
+* Fixed - Vulnerability reported by WordFence team.
+
 = 1.6.0 - Jan 21, 2026 =
 * NEW - Introducing Existing Forms for reusability.
 
