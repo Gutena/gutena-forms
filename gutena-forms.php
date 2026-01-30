@@ -45,6 +45,43 @@ if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
 	define( 'GUTENA_FORMS_VERSION', '1.6.1' );
 }
 
+/**
+ * Option name prefix for form schema (security: prevents arbitrary option overwrite).
+ */
+if ( ! defined( 'GUTENA_FORMS_SCHEMA_OPTION_PREFIX' ) ) {
+	define( 'GUTENA_FORMS_SCHEMA_OPTION_PREFIX', 'gutena_forms_schema_' );
+}
+
+if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) {
+	/**
+	 * Get form schema option value. Checks non-prefixed first, then prefixed; if both exist, returns prefixed.
+	 *
+	 * @param string $form_id Form ID (option key).
+	 * @param mixed  $default Default if neither option exists.
+	 * @return mixed Form schema array or $default.
+	 */
+	function gutena_forms_get_form_schema_option( $form_id, $default = false ) {
+		$form_id = sanitize_key( $form_id );
+		if ( '' === $form_id ) {
+			return $default;
+		}
+		$non_prefixed = get_option( $form_id, null );
+		$prefixed     = get_option( GUTENA_FORMS_SCHEMA_OPTION_PREFIX . $form_id, null );
+		$has_non_prefixed = ( null !== $non_prefixed );
+		$has_prefixed     = ( null !== $prefixed );
+		if ( $has_non_prefixed && $has_prefixed ) {
+			return $prefixed;
+		}
+		if ( $has_prefixed ) {
+			return $prefixed;
+		}
+		if ( $has_non_prefixed ) {
+			return $non_prefixed;
+		}
+		return $default;
+	}
+}
+
 if ( ! function_exists( 'gutena_forms__fs' ) ) :
 	/**
 	 * Initialize Freemius.
@@ -463,9 +500,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						}
 						//filter for formSchema
 						$formSchema_filtered = apply_filters( 'gutena_forms_save_form_schema', $formSchema, $formSchema['form_attrs']['formID'], $gutena_form_ids );
-						//Save form schema
+						//Save form schema (prefixed option name prevents arbitrary option overwrite)
 						update_option(
-							sanitize_key( $formSchema['form_attrs']['formID'] ),
+							GUTENA_FORMS_SCHEMA_OPTION_PREFIX . sanitize_key( $formSchema['form_attrs']['formID'] ),
 							$this->sanitize_array( $formSchema_filtered, true )
 						);
 

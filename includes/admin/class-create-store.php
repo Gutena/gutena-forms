@@ -59,7 +59,7 @@
 
                         //get form schema
                         $form_id = sanitize_key( $form_id );
-                        $form_schema = get_option( $form_id, false );
+                        $form_schema = gutena_forms_get_form_schema_option( $form_id, false );
 
                         if ( ! empty( $form_schema ) && ! empty( $form_schema['form_attrs'] ) ) {
                             $this->save_new_form( $form_id, $form_schema );

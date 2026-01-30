@@ -269,7 +269,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			}
 
 			$this->id     = sanitize_key( wp_unslash( $_POST['formid'] ) );
-			$this->schema = get_option( $this->id );
+			$this->schema = gutena_forms_get_form_schema_option( $this->id );
 
 			if ( empty( $this->schema ) || empty( $this->schema['form_attrs'] ) || empty( $this->schema['form_fields'] ) ) {
 				wp_send_json(
