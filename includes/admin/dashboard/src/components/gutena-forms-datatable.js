@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 
 
 const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren, customFilters } ) => {
+	console.log( data )
 	const [ numberOfRows, setNumberOfRows ] = useState( 10 );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
 	const [ searchTerm, setSearchTerm ] = useState( '' );

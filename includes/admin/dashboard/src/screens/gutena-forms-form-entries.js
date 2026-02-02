@@ -1,8 +1,11 @@
 import { useState, useEffect } from '@wordpress/element';
-import { useParams } from 'react-router';
+import {Link, useParams} from 'react-router';
 import { gutenaFormsFetchEntriesByFormId } from '../api/entries';
 import GutenaFormsDatatable from '../components/gutena-forms-datatable';
 import { gutenaFormsInArray } from '../utils/functions';
+import Eye from "../icons/eye";
+import {Button} from "@wordpress/components";
+import {Bin} from "../icons/bin";
 
 const GutenaFormsFormEntries = ( {  } ) => {
 
@@ -18,43 +21,41 @@ const GutenaFormsFormEntries = ( {  } ) => {
 
 		gutenaFormsFetchEntriesByFormId( id, 'headers' )
 			.then( tableHeaders => {
-				setLoading( false );
-
 				setTableHeaders( tableHeaders );
+
+				setLoading( false );
 			} );
-
-
 
 	}, [ id ] );
 
 	useEffect( () => {
 		setLoading( true );
+
 		gutenaFormsFetchEntriesByFormId( id, 'data' )
 			.then( tableData => {
-				const newTableData = [];
-				Object.keys( tableData ).map( ( key ) => {
-					const current = tableData[ key ];
+				const newTableData = {};
 
-					let currentTableData = {
-						entry_id: current.entry_id,
-						datetime: current.added_time
+				let i = 0;
+				for ( const entry of tableData ) {
+					newTableData[ i ] = {
+						entry_id: entry.entry_id,
+						datetime: entry.added_time,
 					};
 
-					Object.keys( tableHeaders ).map( ( key ) => {
+					let entryData = entry.entry_data;
 
-						const currentHeader = tableHeaders[ key ];
-						if ( ! gutenaFormsInArray( currentHeader.key, [ 'checkbox', 'entry_id', 'datetime', 'actions' ] ) ) {
-							currentTableData[ currentHeader.key ] = current.entry_data[ currentHeader.key ].value;
+					for ( const header of tableHeaders ) {
+						if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions' ] ) ) {
+							newTableData[ i ][ header.key ] = entryData[ header.key ].value;
 						}
-					} );
+					}
+					i++;
+				}
 
-					newTableData.push( currentTableData );
-					console.log( newTableData )
-				} );
-				setTableData( newTableData );
-
+				setTableData( Object.values( newTableData ) );
 				setLoading( false )
 			} );
+
 	}, [ tableHeaders ] );
 
 	return (
@@ -64,7 +65,25 @@ const GutenaFormsFormEntries = ( {  } ) => {
 					<GutenaFormsDatatable
 						data={ tableData }
 						headers={ tableHeaders }
-						tableChildren={ {} }
+						tableChildren={ {
+							body: {
+								actions: ( { row, header, index } ) => {
+
+									return (
+										<div className={ 'gutena-forms-datatable__action' }>
+											<Link
+												to={ `/settings/entry/${ row.entry_id }` }
+											>
+												<Eye />
+											</Link>
+											<Button>
+												<Bin />
+											</Button>
+										</div>
+									);
+								}
+							}
+						} }
 					/>
 				</>
 			) }

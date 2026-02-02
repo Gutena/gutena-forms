@@ -45,7 +45,7 @@ const GutenaFormsEntryDetails = ( { entryId } ) => {
 
 					<div className={ 'gutena-forms__entry-data-row' }>
 						<div className={ 'label' }>{ __( 'User', 'gutena-forms' ) }</div>
-						<div className={ 'value' }>{ entryDetails.user_name }</div>
+						<div className={ 'value' }>{ entryDetails.user_name ? entryDetails.user_name : 'Unknown User' }</div>
 					</div>
 				</div>
 			) }

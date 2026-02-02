@@ -134,7 +134,7 @@ const GutenaFormsEntries = () => {
 												<div>
 													{ row.value && Object.keys( row.value )[0] && row.value[ Object.keys( row.value )[0] ] && row.value[ Object.keys( row.value )[0] ].value && (
 														<div>
-															{ row.value[ Object.keys( row.value )[0] ].value }
+															<span style={ { color: '#414A51', fontWeight: '700' } }>{ row.value[ Object.keys( row.value )[0] ].label }:</span> { row.value[ Object.keys( row.value )[0] ].value }
 														</div>
 													) }
 												</div>

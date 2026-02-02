@@ -15,7 +15,7 @@ export const gutenaFormsUcFirst = ( string ) => {
  */
 export const gutenaFormsInArray = ( needle, haystack, strict = false ) => {
 	for ( let i = 0; i < haystack.length; i++ ) {
-		if ( ( strict && haystack[i] === needle ) || ( ! strict && haystack[i] == needle ) ) {
+		if ( ( strict && haystack[ i ] === needle ) || ( ! strict && haystack[ i ] == needle ) ) {
 			return true;
 		}
 	}
