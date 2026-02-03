@@ -26,7 +26,6 @@ const GutenaFormsForms = () => {
 			.catch( ( error ) => {
 				setLoading( false );
 				toast.error( __( 'Failed to load forms.', 'gutena-forms' ) );
-				console.error( error );
 			} );
 	}, [] );
 
@@ -44,13 +43,11 @@ const GutenaFormsForms = () => {
 					.catch( ( error ) => {
 						setLoading( false );
 						toast.error( __( 'Failed to refresh forms list.', 'gutena-forms' ) );
-						console.error( error );
 					} );
 			} )
 			.catch( ( error ) => {
 				setLoading( false );
 				toast.error( __( 'Failed to delete form.', 'gutena-forms' ) );
-				console.error( error );
 			} );
 	}
 
@@ -70,13 +67,11 @@ const GutenaFormsForms = () => {
 							.catch( ( error ) => {
 								setLoading( false );
 								toast.error( __( 'Failed to refresh forms list.', 'gutena-forms' ) );
-								console.error( error );
 							} );
 					} )
 					.catch( ( error ) => {
 						setLoading( false );
 						toast.error( __( 'Failed to delete forms.', 'gutena-forms' ) );
-						console.error( error );
 					} );
 				break;
 		}

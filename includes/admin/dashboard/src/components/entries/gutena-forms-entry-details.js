@@ -16,7 +16,6 @@ const GutenaFormsEntryDetails = ( { entryId } ) => {
 			} );
 	}, [ entryId ] );
 
-	console.log( entryDetails );
 	return (
 		<div className={ 'gutena-froms__entry-meta-box' }>
 			<h2 className={ 'heading' }>{ __( 'Entry Details', 'gutena-forms' ) }</h2>

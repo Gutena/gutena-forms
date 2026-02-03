@@ -17,7 +17,7 @@ const GutenaFormsEntryData = ( { entryId } ) => {
 	}, [ entryId ] );
 
 	const handleDataByFieldType = ( fieldType, value ) => {
-		console.log( fieldType )
+
 		switch ( fieldType ) {
 			case 'file':
 				let filename = String( value ).split( '/' );
