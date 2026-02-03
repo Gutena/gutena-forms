@@ -31,30 +31,32 @@ const GutenaFormsFormEntries = ( {  } ) => {
 	useEffect( () => {
 		setLoading( true );
 
-		gutenaFormsFetchEntriesByFormId( id, 'data' )
-			.then( tableData => {
-				const newTableData = {};
+		if ( tableHeaders ) {
+			gutenaFormsFetchEntriesByFormId( id, 'data' )
+				.then( tableData => {
+					const newTableData = {};
 
-				let i = 0;
-				for ( const entry of tableData ) {
-					newTableData[ i ] = {
-						entry_id: entry.entry_id,
-						datetime: entry.added_time,
-					};
+					let i = 0;
+					for ( const entry of tableData ) {
+						newTableData[ i ] = {
+							entry_id: entry.entry_id,
+							datetime: entry.added_time,
+						};
 
-					let entryData = entry.entry_data;
+						let entryData = entry.entry_data;
 
-					for ( const header of tableHeaders ) {
-						if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions' ] ) ) {
-							newTableData[ i ][ header.key ] = entryData[ header.key ].value;
+						for ( const header of tableHeaders ) {
+							if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions' ] ) ) {
+								newTableData[ i ][ header.key ] = entryData[ header.key ].value;
+							}
 						}
+						i++;
 					}
-					i++;
-				}
 
-				setTableData( Object.values( newTableData ) );
-				setLoading( false )
-			} );
+					setTableData( Object.values( newTableData ) );
+					setLoading( false )
+				} );
+		}
 
 	}, [ tableHeaders ] );
 
