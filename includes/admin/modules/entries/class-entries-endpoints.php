@@ -73,13 +73,6 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 			);
 
 			$routes[] = array(
-				'route'    => 'entries/details',
-				'methods'  => $server::READABLE,
-				'callback' => array( $this, 'get_entries_details' ),
-				'auth'     => true,
-			);
-
-			$routes[] = array(
 				'route'    => 'entry/data',
 				'methods'  => $server::READABLE,
 				'callback' => array( $this, 'get_entry_data' ),
@@ -128,6 +121,13 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				'auth'     => true,
 			);
 
+			$routes[] = array(
+				'route'    => 'entries/next-prev-current',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'fetch_current_prev_next_id' ),
+				'auth'     => true,
+			);
+
 			return $routes;
 		}
 
@@ -146,45 +146,6 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 			return rest_ensure_response(
 				array(
 					'entries' => $entries,
-					'status'  => 'success',
-				)
-			);
-		}
-
-		/**
-		 * Get Entries Details
-		 *
-		 * @since 1.6.0
-		 * @param WP_REST_Request $request REST request.
-		 *
-		 * @return WP_REST_Response
-		 */
-		public function get_entries_details( $request ) {
-			global $wpdb;
-			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'id' ) ) );
-			$store   = new Gutena_Forms_Store();
-
-			$sql = "SELECT e.form_id,
-				  ( SELECT COUNT(entry_id) FROM %i WHERE form_id = e.form_id AND trash = 0 ) AS total_count,
-				  ( SELECT entry_id FROM %i WHERE form_id = e.form_id AND trash = 0 AND entry_id < e.entry_id ORDER BY entry_id DESC LIMIT 1 ) AS previous_entry,
-				  ( SELECT entry_id FROM %i WHERE form_id = e.form_id AND trash = 0 AND entry_id > e.entry_id ORDER BY entry_id ASC LIMIT 1 ) AS next_entry
-				FROM %i AS e
-				WHERE e.entry_id = %d AND e.trash = 0";
-
-			$prepared = $wpdb->prepare(
-				$sql,
-				$store->table_gutenaforms_entries,
-				$store->table_gutenaforms_entries,
-				$store->table_gutenaforms_entries,
-				$store->table_gutenaforms_entries,
-				$entry_id
-			);
-
-			$result = $wpdb->get_row( $prepared, ARRAY_A );
-
-			return rest_ensure_response(
-				array(
-					'details' => $result,
 					'status'  => 'success',
 				)
 			);
@@ -339,6 +300,14 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 			);
 		}
 
+		/**
+		 * Get entries by form ID.
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
 		public function get_entries_by_form_id( $request ) {
 			$form_id = sanitize_text_field( wp_unslash( $request->get_param( 'form_id' ) ) );
 			$entries = $this->entries_model->get_entry_data( $form_id );
@@ -348,6 +317,27 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 					'data' => $entries,
 					'status'       => 'success',
 				)
+			);
+		}
+
+		/**
+		 * Fetch current, previous, and next entry IDs.
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request.
+		 *
+		 * @return WP_REST_Response
+		 */
+		public function fetch_current_prev_next_id( $request ) {
+			$entry_id = $request->get_param( 'id' );
+
+			$entry_data = $this->entries_model->fetch_current_prev_details( $entry_id, 0 );
+
+			return rest_ensure_response(
+				array(
+					'details' => $entry_data,
+				),
+				200
 			);
 		}
 	}

@@ -987,6 +987,9 @@
 
 		.gutena-forms__list-unstyled {
 			li {
+				display: inline-block;
+				margin-left: 15px;
+
 				a {
 					color: #0DA88C;
 					font-size: 10px;

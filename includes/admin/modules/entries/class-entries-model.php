@@ -264,6 +264,60 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 
 			return $result;
 		}
+
+		public function fetch_current_prev_details( $entry_id, $serial_no ) {
+			$sql = 'SELECT form_id FROM %i WHERE entry_id = %d';
+			$sql = $this->wpdb->prepare(
+				$sql,
+				$this->store->table_gutenaforms_entries,
+				$entry_id
+			);
+
+			$form_id = $this->wpdb->get_var( $sql );
+
+			$sql = 'SELECT entry_id FROM %i WHERE form_id = %d AND trash = 0 GROUP BY entry_id ORDER BY entry_id ASC';
+			$sql = $this->wpdb->prepare(
+				$sql,
+				$this->store->table_gutenaforms_entries,
+				$form_id
+			);
+
+			$results = $this->wpdb->get_col( $sql );
+
+			$total_entries = count( $results );
+
+			$previous = null;
+			$next     = null;
+			foreach ( $results as $k => $entry ) {
+				if ( absint( $entry ) > absint( $entry_id ) ) {
+					$next = $entry;
+					break;
+				}
+			}
+
+			for ( $i = $total_entries - 1; $i >= 0; $i-- ) {
+				if ( absint( $results[ $i ] ) < absint( $entry_id ) ) {
+					$previous = $results[ $i ];
+					break;
+				}
+			}
+
+			$serial_no = 0;
+			foreach ( $results as $k => $entry ) {
+				$serial_no++;
+				if ( absint( $entry ) === absint( $entry_id ) ) {
+					break;
+				}
+			}
+
+
+			return array(
+				'total_count' => $total_entries,
+				'previous_entry' => $previous,
+				'next_entry'     => $next,
+				'serial_no'   => $serial_no,
+			);
+		}
 	}
 
 	Gutena_Forms_Entries_Model::get_instance();

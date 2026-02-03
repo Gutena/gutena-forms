@@ -15,10 +15,22 @@ const GutenaFormsSingleEntryPage = ( { entryId } ) => {
 	const [ prevEntryId, setPrevEntryId ] = useState( null );
 	const [ nextEntryId, setNextEntryId ] = useState( null );
 	const [ totalEntries, setTotalEntries ] = useState( 0 );
-	const [ loading, setLoading ] = useState( false );
+	const [ loading, setLoading ] = useState( true );
 	const [ currentEntry, setCurrentEntry ] = useState( 0 );
 
-	useEffect( () => {}, [ entryId ] );
+	useEffect( () => {
+		setLoading( true );
+
+		gutenaFormsFetchPrevNextEntry( entryId )
+			.then( ( response ) => {
+				setPrevEntryId( response.prevEntryId );
+				setNextEntryId( response.nextEntryId );
+				setTotalEntries( response.totalEntries );
+				setCurrentEntry( response.serialNo );
+
+				setLoading( false );
+			} );
+	}, [ entryId ] );
 
 	return (
 		<div className={ 'gutena-forms__entry-screen' }>

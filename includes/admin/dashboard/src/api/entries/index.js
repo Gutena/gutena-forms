@@ -6,7 +6,7 @@ export async function gutenaFormsFetchPrevNextEntry( id ) {
 	const response = await apiFetch( {
 		method: 'GET',
 		path: addQueryArgs(
-			`${ GutenaFormsRestConfiguration.namespace }entries/details`,
+			`${ GutenaFormsRestConfiguration.namespace }entries/next-prev-current`,
 			{ id }
 		)
 	} );
@@ -19,6 +19,7 @@ export async function gutenaFormsFetchPrevNextEntry( id ) {
 		prevEntryId: response.details.previous_entry,
 		nextEntryId: response.details.next_entry,
 		totalEntries: response.details.total_count,
+		serialNo: response.details.serial_no,
 	}
 }
 
