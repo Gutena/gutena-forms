@@ -81,7 +81,13 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 				$entry_id
 			);
 
-			return $this->wpdb->get_row( $sql, ARRAY_A );
+			$details = $this->wpdb->get_row( $sql, ARRAY_A );
+
+			if ( ! empty( $details ) && ! empty( $details['entry_status'] ) && 'unread' === $details['entry_status'] ) {
+				$this->store->update_entries_status( 'read', $entry_id );
+			}
+
+			return $details;
 		}
 
 		/**
