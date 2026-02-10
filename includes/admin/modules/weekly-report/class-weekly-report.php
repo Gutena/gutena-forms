@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Weekly Report
+ * Weekly summary report admin settings module.
  *
  * @since 1.6.0
  * @package Gutena Forms
@@ -10,22 +10,22 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
-	 * Class Weekly Report
+	 * Settings module for weekly email summary reports (enable, email address).
 	 *
 	 * @since 1.6.0
 	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Weekly_Summary_Report extends Gutena_Forms_Forms_Settings {
 		/**
-		 * Settings array.
+		 * Cached options: enable_weekly_summary, summary_email.
 		 *
 		 * @since 1.6.0
-		 * @var array $settings Settings array.
+		 * @var array $settings
 		 */
 		private $settings = array();
 
 		/**
-		 * Constructor.
+		 * Load weekly report options from the database.
 		 *
 		 * @since 1.6.0
 		 */
@@ -40,7 +40,7 @@ if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gu
 		}
 
 		/**
-		 * Register Module
+		 * Register the weekly-summary settings module with the gutena_forms__settings filter.
 		 *
 		 * @since 1.6.0
 		 */
@@ -55,7 +55,7 @@ if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gu
 		}
 
 		/**
-		 * Get Settings
+		 * Get settings definition for weekly summary (toggle, email, submit).
 		 *
 		 * @since 1.6.0
 		 * @return array
@@ -91,12 +91,11 @@ if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gu
 		}
 
 		/**
-		 * Save Settings
+		 * Save weekly report settings to options table.
 		 *
 		 * @since 1.6.0
-		 * @param array $settings Settings to save.
-		 *
-		 * @return bool
+		 * @param array $settings Settings to save (enable_weekly_summary, summary_email).
+		 * @return bool True on success.
 		 */
 		public function save_settings( $settings ) {
 			update_option( 'gutena_forms_weekly_report', $settings );

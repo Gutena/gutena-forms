@@ -1,22 +1,23 @@
 <?php
 /**
- * Class Manage Status
+ * Manage Status admin settings module.
  *
  * @since 1.6.0
- * @package GutenaForms
+ * @package Gutena Forms
  */
 
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Manage_Status' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
-	 * Class to manage status settings module.
+	 * Settings module for entry status management (pro feature).
 	 *
 	 * @since 1.6.0
+	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Manage_Status extends Gutena_Forms_Forms_Settings {
 		/**
-		 * Register Module
+		 * Register the manage-status settings module with the gutena_forms__settings filter.
 		 *
 		 * @since 1.6.0
 		 */
@@ -31,7 +32,7 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Status' ) && class_exists( 'Gutena_For
 		}
 
 		/**
-		 * Get Settings
+		 * Get settings definition for the status management template (pro).
 		 *
 		 * @since 1.6.0
 		 * @return array
@@ -51,10 +52,10 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Status' ) && class_exists( 'Gutena_For
 		}
 
 		/**
-		 * Save Settings
+		 * Save settings (no-op for manage-status module).
 		 *
 		 * @since 1.6.0
-		 * @param $settings
+		 * @param array $settings Settings to save. Unused.
 		 */
 		public function save_settings( $settings ) {
 			// dummy function.

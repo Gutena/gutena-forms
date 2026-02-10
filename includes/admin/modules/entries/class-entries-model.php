@@ -10,9 +10,10 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 	/**
-	 * Gutena Forms Entries Model
+	 * Data access for form entries: get details, data, related entries, headers, delete.
 	 *
 	 * @since 1.6.0
+	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Entries_Model {
 		/**
@@ -40,7 +41,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		private $store;
 
 		/**
-		 * Constructor
+		 * Set WordPress database and store instances.
 		 *
 		 * @since 1.6.0
 		 */
@@ -194,6 +195,13 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			);
 		}
 
+		/**
+		 * Get table headers for entries list by form ID (block/post ID).
+		 *
+		 * @since 1.6.0
+		 * @param int|string $form_id Form block/post ID.
+		 * @return array[] Array of header definitions (key, value, width).
+		 */
 		public function get_entries_header( $form_id ) {
 			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
 
@@ -248,6 +256,13 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			return $headers;
 		}
 
+		/**
+		 * Get entry rows (data, entry_id, added_time) for a form by form block/post ID.
+		 *
+		 * @since 1.6.0
+		 * @param int|string $form_id Form block/post ID.
+		 * @return array[] List of entry records with entry_data unserialized.
+		 */
 		public function get_entry_data( $form_id ) {
 			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
 
@@ -271,6 +286,14 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			return $result;
 		}
 
+		/**
+		 * Fetch current entry context: total count, previous/next entry IDs, and serial number.
+		 *
+		 * @since 1.6.0
+		 * @param int|string $entry_id   Current entry ID.
+		 * @param int        $serial_no  Unused; serial number is computed from results.
+		 * @return array{total_count: int, previous_entry: int|null, next_entry: int|null, serial_no: int}
+		 */
 		public function fetch_current_prev_details( $entry_id, $serial_no ) {
 			$sql = 'SELECT form_id FROM %i WHERE entry_id = %d';
 			$sql = $this->wpdb->prepare(

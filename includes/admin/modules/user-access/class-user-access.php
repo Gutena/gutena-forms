@@ -1,6 +1,6 @@
 <?php
 /**
- * Class User Access
+ * User access and permissions admin settings module (pro).
  *
  * @since 1.6.0
  * @package Gutena Forms
@@ -10,13 +10,14 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_User_Access' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
-	 * Gutena Forms User Access Class
+	 * Settings module for user access and permissions (pro feature).
 	 *
 	 * @since 1.6.0
+	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_User_Access extends Gutena_Forms_Forms_Settings {
 		/**
-		 * Register Module
+		 * Register the user-access settings module with the gutena_forms__settings filter.
 		 *
 		 * @since 1.6.0
 		 */
@@ -31,7 +32,7 @@ if ( ! class_exists( 'Gutena_Forms_User_Access' ) && class_exists( 'Gutena_Forms
 		}
 
 		/**
-		 * Get Settings
+		 * Get settings definition for the user access template (pro).
 		 *
 		 * @since 1.6.0
 		 * @return array
@@ -51,10 +52,10 @@ if ( ! class_exists( 'Gutena_Forms_User_Access' ) && class_exists( 'Gutena_Forms
 		}
 
 		/**
-		 * Save Settings
+		 * Save settings (no-op for user-access module).
 		 *
 		 * @since 1.6.0
-		 * @param array $settings array Settings array.
+		 * @param array $settings Settings to save. Unused.
 		 */
 		public function save_settings( $settings ) {
 			// dummy function.

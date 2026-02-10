@@ -1,22 +1,23 @@
 <?php
 /**
- * Class Manage Tags
+ * Manage Tags admin settings module.
  *
  * @since 1.6.0
- * @package GutenaForms
+ * @package Gutena Forms
  */
 
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
-	 * Class to manage tags settings module.
+	 * Settings module for entry tags management (pro feature).
 	 *
 	 * @since 1.6.0
+	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Manage_Tags extends Gutena_Forms_Forms_Settings {
 		/**
-		 * Register Module
+		 * Register the manage-tags settings module with the gutena_forms__settings filter.
 		 *
 		 * @since 1.6.0
 		 */
@@ -31,7 +32,7 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms
 		}
 
 		/**
-		 * Get Settings
+		 * Get settings definition for the tags management template (pro).
 		 *
 		 * @since 1.6.0
 		 * @return array
@@ -51,10 +52,10 @@ if ( ! class_exists( 'Gutena_Forms_Manage_Tags' ) && class_exists( 'Gutena_Forms
 		}
 
 		/**
-		 * Save Settings
+		 * Save settings (no-op for manage-tags module).
 		 *
 		 * @since 1.6.0
-		 * @param $settings
+		 * @param array $settings Settings to save. Unused.
 		 */
 		public function save_settings( $settings ) {
 			// dummy function.

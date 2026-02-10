@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Forms
+ * Forms list and management admin settings module.
  *
  * @since 1.6.0
  * @package Gutena Forms
@@ -10,13 +10,14 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
-	 * Class Forms
+	 * Forms list and management admin settings module.
 	 *
 	 * @since 1.6.0
+	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Forms extends Gutena_Forms_Forms_Settings {
 		/**
-		 * Get Instance
+		 * Singleton instance.
 		 *
 		 * @since 1.6.0
 		 * @var Gutena_Forms_Forms $instance The single instance of the class.
@@ -24,7 +25,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		private static $instance;
 
 		/**
-		 * Get Instance
+		 * Get singleton instance.
 		 *
 		 * @since 1.6.0
 		 * @return Gutena_Forms_Forms
@@ -38,7 +39,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		}
 
 		/**
-		 * Constructor
+		 * Load forms model and REST endpoints.
 		 *
 		 * @since 1.6.0
 		 */
@@ -48,7 +49,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		}
 
 		/**
-		 * Register Module
+		 * Register the forms settings module with the gutena_forms__settings filter.
 		 *
 		 * @since 1.6.0
 		 */
@@ -65,7 +66,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		}
 
 		/**
-		 * Get Settings
+		 * Get settings definition for the forms list template.
 		 *
 		 * @since 1.6.0
 		 * @return array
@@ -82,10 +83,10 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		}
 
 		/**
-		 * Save Settings
+		 * Save settings (no-op for forms module).
 		 *
 		 * @since 1.6.0
-		 * @param array $settings Settings array.
+		 * @param array $settings Settings array. Unused.
 		 */
 		public function save_settings( $settings ) {
 			// dummy function.

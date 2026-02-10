@@ -10,13 +10,25 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
-	 * Honeypot Settings Class
+	 * Honeypot anti-spam settings: enable/disable and time limit.
 	 *
 	 * @since 1.6.0
 	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Honeypot extends Gutena_Forms_Forms_Settings {
+		/**
+		 * Current honeypot options (enable_honeypot, time_limit).
+		 *
+		 * @since 1.6.0
+		 * @var array $settings
+		 */
 		public $settings = array();
+
+		/**
+		 * Load saved honeypot options from the database.
+		 *
+		 * @since 1.6.0
+		 */
 		public function __construct() {
 			$this->settings = get_option(
 				'gutena_forms__honeypot',
@@ -28,9 +40,10 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 		}
 
 		/**
-		 * Get Settings
+		 * Get honeypot settings definition (title, description, toggle, number, submit).
 		 *
 		 * @since 1.6.0
+		 * @return array
 		 */
 		public function get_settings() {
 			return array(
@@ -66,10 +79,11 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 		}
 
 		/**
-		 * Save Settings
+		 * Save honeypot settings to options table.
 		 *
 		 * @since 1.6.0
-		 * @param array $settings Settings to save.
+		 * @param array $settings Settings to save (enable_honeypot, time_limit, etc.).
+		 * @return bool True on success.
 		 */
 		public function save_settings( $settings ) {
 			update_option( 'gutena_forms__honeypot', $settings );
@@ -78,7 +92,7 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 		}
 
 		/**
-		 * Register Honeypot Module
+		 * Register the honeypot settings module with the gutena_forms__settings filter.
 		 *
 		 * @since 1.6.0
 		 */
