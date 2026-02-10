@@ -124,6 +124,10 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 
 			foreach ( $rest_routes as $rest_route ) {
 
+				if ( isset( $rest_route['is-pro'] ) && $rest_route['is-pro'] ) {
+					self::$namespace = 'gutena-forms-pro/v1';
+				}
+
 				if ( isset( $rest_route['auth'] ) && $rest_route['auth'] ) {
 					if ( is_callable( $rest_route['auth'] ) ) {
 						$permission = $rest_route['auth'];

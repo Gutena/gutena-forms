@@ -1,4 +1,5 @@
 import { Icon } from '@wordpress/components';
+import { addFilter } from '@wordpress/hooks';
 
 export const Plus = () => (
 	<Icon
@@ -21,4 +22,15 @@ export const AddNew = () => (
 			</svg>
 		) }
 	/>
+);
+
+addFilter(
+	'gutenaFormsPro.core.components',
+	'gutena-forms-free',
+	( components ) => {
+
+		components['AddNew'] = AddNew;
+
+		return components;
+	}
 );
