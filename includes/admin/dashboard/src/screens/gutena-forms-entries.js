@@ -3,10 +3,12 @@ import { SelectControl, Button } from '@wordpress/components';
 import GutenaFormsDatatable from '../components/gutena-forms-datatable';
 import GutenaFormsSingleEntryPage from './gutena-forms-single-entry-page';
 import GutenaFormsFormEntries from './gutena-forms-form-entries';
-import { gutenaFormsFetchAllEntries, gutenaFromsIdTitle, gutenaFormsFetchEntriesByFormId } from '../api';
+import { gutenaFormsFetchAllEntries, gutenaFromsIdTitle, gutenaFormsFetchEntriesByFormId, gutenaFormsDeleteEntry, deleteMultipleEntries } from '../api';
 import { Link, useParams } from 'react-router';
+import { toast } from 'react-toastify';
 import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
+import { __ } from '@wordpress/i18n';
 
 const GutenaFormsEntries = () => {
 
@@ -66,6 +68,52 @@ const GutenaFormsEntries = () => {
 				/>
 			</div>
 		);
+	};
+
+	const refreshEntries = () => {
+		setLoading( true );
+		if ( 'all' === selectedFormFilter ) {
+			gutenaFormsFetchAllEntries()
+				.then( entries => {
+					setLoading( false );
+					setEntries( entries );
+				} )
+				.catch( () => setLoading( false ) );
+		} else {
+			gutenaFormsFetchEntriesByFormId( selectedFormFilter )
+				.then( entries => {
+					setLoading( false );
+					setEntries( entries );
+				} )
+				.catch( () => setLoading( false ) );
+		}
+	};
+
+	const handleDeleteEntry = ( row ) => {
+		if ( ! window.confirm( __( 'Move this entry to trash?', 'gutena-forms' ) ) ) {
+			return;
+		}
+		gutenaFormsDeleteEntry( row.entry_id )
+			.then( () => {
+				toast.success( __( 'Entry moved to trash successfully.', 'gutena-forms' ) );
+				refreshEntries();
+			} )
+			.catch( () => {
+				toast.error( __( 'Failed to delete entry.', 'gutena-forms' ) );
+			} );
+	};
+
+	const handleBulkAction = ( action, selectedData ) => {
+		if ( 'delete' === action ) {
+			deleteMultipleEntries( selectedData )
+				.then( () => {
+					toast.success( __( 'Selected entries moved to trash successfully.', 'gutena-forms' ) );
+					refreshEntries();
+				} )
+				.catch( () => {
+					toast.error( __( 'Failed to delete entries.', 'gutena-forms' ) );
+				} );
+		}
 	};
 
 	return (
@@ -150,7 +198,9 @@ const GutenaFormsEntries = () => {
 													>
 														<Eye />
 													</Link>
-													<Button>
+													<Button
+														onClick={ () => handleDeleteEntry( row ) }
+													>
 														<Bin />
 													</Button>
 												</div>
@@ -158,7 +208,7 @@ const GutenaFormsEntries = () => {
 										},
 									}
 								} }
-								handleBulkAction={ ( ...v ) => { console.log( ...v )} }
+								handleBulkAction={ handleBulkAction }
 								customFilters={ {
 									components: [
 										FormFilter,

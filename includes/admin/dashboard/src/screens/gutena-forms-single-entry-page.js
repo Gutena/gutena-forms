@@ -1,7 +1,11 @@
 import { ArrowLeft } from '../icons/arrow';
 import { useState, useEffect } from '@wordpress/element';
-import { Link } from 'react-router'
-import { gutenaFormsFetchPrevNextEntry } from '../api/entries';
+import { Link, useNavigate } from 'react-router';
+import { Button } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+import { toast } from 'react-toastify';
+import { gutenaFormsFetchPrevNextEntry, gutenaFormsDeleteEntry } from '../api/entries';
+import { Bin } from '../icons/bin';
 
 import GutenaFormsEntryData from '../components/entries/gutena-forms-entry-data';
 import GutenaFormsEntryDetails from '../components/entries/gutena-forms-entry-details';
@@ -12,11 +16,26 @@ import GutenaFormsStatus from '../components/entries/gutena-forms-status';
 
 
 const GutenaFormsSingleEntryPage = ( { entryId } ) => {
+	const navigate = useNavigate();
 	const [ prevEntryId, setPrevEntryId ] = useState( null );
 	const [ nextEntryId, setNextEntryId ] = useState( null );
 	const [ totalEntries, setTotalEntries ] = useState( 0 );
 	const [ loading, setLoading ] = useState( true );
 	const [ currentEntry, setCurrentEntry ] = useState( 0 );
+
+	const handleDeleteEntry = () => {
+		if ( ! window.confirm( __( 'Move this entry to trash?', 'gutena-forms' ) ) ) {
+			return;
+		}
+		gutenaFormsDeleteEntry( entryId )
+			.then( () => {
+				toast.success( __( 'Entry moved to trash successfully.', 'gutena-forms' ) );
+				navigate( '/settings/entries' );
+			} )
+			.catch( () => {
+				toast.error( __( 'Failed to delete entry.', 'gutena-forms' ) );
+			} );
+	};
 
 	useEffect( () => {
 		setLoading( true );
@@ -59,6 +78,16 @@ const GutenaFormsSingleEntryPage = ( { entryId } ) => {
 									</span>
 								</Link>
 							) }
+							&nbsp;
+							<Button
+								className={ 'gutena-forms__entry-delete-button' }
+								onClick={ handleDeleteEntry }
+								isDestructive
+								variant={ 'secondary' }
+							>
+								<Bin />
+								{ __( 'Trash', 'gutena-forms' ) }
+							</Button>
 						</h2>
 					</div>
 

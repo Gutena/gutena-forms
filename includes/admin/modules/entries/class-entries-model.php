@@ -133,7 +133,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 */
 		public function get_count_by_form_id( $form_id ) {
 			$block_form_id = get_post_meta( $form_id, 'gutena_form_id', true );
-			$sql           = 'SELECT COUNT( gutenaFormsEntries.entry_id ) FROM %i gutenaForms LEFT JOIN %i gutenaFormsEntries ON gutenaForms.form_id = gutenaFormsEntries.form_id WHERE gutenaForms.block_form_id = %s';
+			$sql           = 'SELECT COUNT( gutenaFormsEntries.entry_id ) FROM %i gutenaForms LEFT JOIN %i gutenaFormsEntries ON gutenaForms.form_id = gutenaFormsEntries.form_id WHERE gutenaForms.block_form_id = %s AND gutenaFormsEntries.trash = 0';
 			$sql           = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms,
@@ -245,7 +245,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		public function get_entry_data( $form_id ) {
 			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
 
-			$sql    = 'SELECT entries.entry_data, entries.entry_id, entries.added_time FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s';
+			$sql    = 'SELECT entries.entry_data, entries.entry_id, entries.added_time FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s AND entries.trash = 0';
 			$sql    = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms,
@@ -317,6 +317,17 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 				'next_entry'     => $next,
 				'serial_no'   => $serial_no,
 			);
+		}
+
+		/**
+		 * Delete entries (move to trash) by entry ID(s).
+		 *
+		 * @since 1.6.0
+		 * @param int|int[] $entry_ids Single entry ID or array of entry IDs.
+		 * @return bool True on success, false on failure.
+		 */
+		public function delete_entries( $entry_ids ) {
+			return $this->store->update_entries_status( 'trash', $entry_ids );
 		}
 	}
 

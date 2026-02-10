@@ -86,3 +86,45 @@ export async function gutenaFormsFetchEntriesByFormId( id, type ) {
 
 	return response[ type ];
 }
+
+/**
+ * Delete a single entry (move to trash) via the Gutena Forms REST API.
+ *
+ * @since 1.6.0
+ * @param {number} entryId Entry ID to delete.
+ * @returns {Promise<Object>} API response.
+ */
+export async function gutenaFormsDeleteEntry( entryId ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }entries/delete`,
+		data: { entry_id: entryId },
+	} );
+
+	if ( response && 'success' === response.status ) {
+		return response;
+	}
+
+	throw new Error( response?.message || 'Gutena Forms DeleteEntry Error' );
+}
+
+/**
+ * Delete multiple entries (move to trash) via the Gutena Forms REST API.
+ *
+ * @since 1.6.0
+ * @param {number[]} entryIds Array of entry IDs to delete.
+ * @returns {Promise<Object>} API response.
+ */
+export async function deleteMultipleEntries( entryIds ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }entries/delete`,
+		data: { entry_ids: entryIds },
+	} );
+
+	if ( response && 'success' === response.status ) {
+		return response;
+	}
+
+	throw new Error( response?.message || 'Gutena Forms DeleteEntries Error' );
+}

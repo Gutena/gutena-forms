@@ -1,11 +1,13 @@
 import { useState, useEffect } from '@wordpress/element';
-import {Link, useParams} from 'react-router';
-import { gutenaFormsFetchEntriesByFormId } from '../api/entries';
+import { Link, useParams } from 'react-router';
+import { gutenaFormsFetchEntriesByFormId, gutenaFormsDeleteEntry } from '../api/entries';
 import GutenaFormsDatatable from '../components/gutena-forms-datatable';
 import { gutenaFormsInArray } from '../utils/functions';
-import Eye from "../icons/eye";
-import {Button} from "@wordpress/components";
-import {Bin} from "../icons/bin";
+import { toast } from 'react-toastify';
+import { __ } from '@wordpress/i18n';
+import Eye from '../icons/eye';
+import { Button } from '@wordpress/components';
+import { Bin } from '../icons/bin';
 
 const GutenaFormsFormEntries = ( {  } ) => {
 
@@ -58,7 +60,46 @@ const GutenaFormsFormEntries = ( {  } ) => {
 				} );
 		}
 
-	}, [ tableHeaders ] );
+	}, [ tableHeaders, id ] );
+
+	const refreshFormEntries = () => {
+		setLoading( true );
+		gutenaFormsFetchEntriesByFormId( id, 'data' )
+			.then( tableData => {
+				const newTableData = {};
+				let i = 0;
+				for ( const entry of tableData ) {
+					newTableData[ i ] = {
+						entry_id: entry.entry_id,
+						datetime: entry.added_time,
+					};
+					const entryData = entry.entry_data;
+					for ( const header of tableHeaders ) {
+						if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions' ] ) ) {
+							newTableData[ i ][ header.key ] = entryData[ header.key ].value;
+						}
+					}
+					i++;
+				}
+				setTableData( Object.values( newTableData ) );
+				setLoading( false );
+			} )
+			.catch( () => setLoading( false ) );
+	};
+
+	const handleDeleteEntry = ( row ) => {
+		if ( ! window.confirm( __( 'Move this entry to trash?', 'gutena-forms' ) ) ) {
+			return;
+		}
+		gutenaFormsDeleteEntry( row.entry_id )
+			.then( () => {
+				toast.success( __( 'Entry moved to trash successfully.', 'gutena-forms' ) );
+				refreshFormEntries();
+			} )
+			.catch( () => {
+				toast.error( __( 'Failed to delete entry.', 'gutena-forms' ) );
+			} );
+	};
 
 	return (
 		<div>
@@ -78,7 +119,9 @@ const GutenaFormsFormEntries = ( {  } ) => {
 											>
 												<Eye />
 											</Link>
-											<Button>
+											<Button
+												onClick={ () => handleDeleteEntry( row ) }
+											>
 												<Bin />
 											</Button>
 										</div>

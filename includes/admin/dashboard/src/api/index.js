@@ -290,3 +290,5 @@ export async function gutenaFormsFetchEntriesByFormId( formId ) {
 
 	throw new Error( 'Gutena Forms FetchEntriesByFormId Error' );
 }
+
+export { gutenaFormsDeleteEntry, deleteMultipleEntries } from './entries';

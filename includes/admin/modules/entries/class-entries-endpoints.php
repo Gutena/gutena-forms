@@ -128,6 +128,13 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				'auth'     => true,
 			);
 
+			$routes[] = array(
+				'route'    => 'entries/delete',
+				'methods'  => $server::CREATABLE,
+				'callback' => array( $this, 'delete_entries_callback' ),
+				'auth'     => true,
+			);
+
 			return $routes;
 		}
 
@@ -339,6 +346,68 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				),
 				200
 			);
+		}
+
+		/**
+		 * Delete entries (move to trash) by entry ID(s).
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request. Expects entry_id (int) or entry_ids (array).
+		 * @return WP_REST_Response
+		 */
+		public function delete_entries_callback( $request ) {
+			$entry_ids = $request->get_param( 'entry_ids' );
+			if ( ! empty( $entry_ids ) && is_array( $entry_ids ) ) {
+				$entry_ids = array_map( 'absint', array_filter( $entry_ids, 'is_numeric' ) );
+			} else {
+				$entry_id = $request->get_param( 'entry_id' );
+				if ( ! empty( $entry_id ) && is_numeric( $entry_id ) ) {
+					$entry_ids = array( absint( $entry_id ) );
+				} else {
+					$response = rest_ensure_response(
+						array(
+							'message' => __( 'Invalid entry ID.', 'gutena-forms' ),
+							'status'  => 'error',
+						)
+					);
+					$response->set_status( 400 );
+					return $response;
+				}
+			}
+
+			if ( empty( $entry_ids ) ) {
+				$response = rest_ensure_response(
+					array(
+						'message' => __( 'No valid entry IDs provided.', 'gutena-forms' ),
+						'status'  => 'error',
+					)
+				);
+				$response->set_status( 400 );
+				return $response;
+			}
+
+			$result = $this->entries_model->delete_entries( $entry_ids );
+
+			if ( $result ) {
+				$message = count( $entry_ids ) > 1
+					? __( 'Entries moved to trash successfully.', 'gutena-forms' )
+					: __( 'Entry moved to trash successfully.', 'gutena-forms' );
+				return rest_ensure_response(
+					array(
+						'message' => $message,
+						'status'  => 'success',
+					)
+				);
+			}
+
+			$response = rest_ensure_response(
+				array(
+					'message' => __( 'Failed to delete entry or entries.', 'gutena-forms' ),
+					'status'  => 'error',
+				)
+			);
+			$response->set_status( 500 );
+			return $response;
 		}
 	}
 
