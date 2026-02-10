@@ -1,11 +1,18 @@
+/**
+ * Gutena Forms dashboard REST API client.
+ *
+ * @since 1.6.0
+ * @package Gutena Forms
+ */
+
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
- * Gutena Forms REST API Configuration.
+ * REST API base namespaces for Gutena Forms and Pro.
  *
  * @since 1.6.0
- * @type {{namespace: string}}
+ * @type {{namespace: string, proNamespace: string}}
  */
 export const GutenaFormsRestConfiguration = {
 	namespace: 'gutena-forms/v1/',
@@ -13,10 +20,10 @@ export const GutenaFormsRestConfiguration = {
 };
 
 /**
- * Fetch menus from the Gutena Forms REST API.
+ * Fetch main dashboard menus from the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @returns {Promise<string|Record<string, Omit<({onSearch: NonNullable<({onSearch: (searchString: string) => void} & {search: string})["onSearch"]>, search: NonNullable<({onSearch: (searchString: string) => void} & {search: string})["search"]>} & {backButtonLabel?: string, onBackButtonClick?: React.MouseEventHandler<HTMLElement>, children?: React.ReactNode, className?: string, hasSearch?: boolean, isEmpty?: boolean, isSearchDebouncing?: boolean, menu?: string, parentMenu?: string, title?: string, titleAction?: React.ReactNode}) | ({onSearch?: never} & {search?: string} & {backButtonLabel?: string, onBackButtonClick?: React.MouseEventHandler<HTMLElement>, children?: React.ReactNode, className?: string, hasSearch?: boolean, isEmpty?: boolean, isSearchDebouncing?: boolean, menu?: string, parentMenu?: string, title?: string, titleAction?: React.ReactNode}), "children"> & {menu: string}>|Record<string, Omit<Omit<({onSearch: NonNullable<({onSearch: (searchString: string) => void} & {search: string})["onSearch"]>, search: NonNullable<({onSearch: (searchString: string) => void} & {search: string})["search"]>} & {backButtonLabel?: string, onBackButtonClick?: React.MouseEventHandler<HTMLElement>, children?: React.ReactNode, className?: string, hasSearch?: boolean, isEmpty?: boolean, isSearchDebouncing?: boolean, menu?: string, parentMenu?: string, title?: string, titleAction?: React.ReactNode}) | ({onSearch?: never} & {search?: string} & {backButtonLabel?: string, onBackButtonClick?: React.MouseEventHandler<HTMLElement>, children?: React.ReactNode, className?: string, hasSearch?: boolean, isEmpty?: boolean, isSearchDebouncing?: boolean, menu?: string, parentMenu?: string, title?: string, titleAction?: React.ReactNode}), "children"> & {menu: string}, "children">>|Record<string, Omit<Menu, "children">>|*>}
+ * @returns {Promise<Object>} Menus object keyed by menu slug.
  */
 export async function gutenaFormsFetchMenus() {
 	const response = await apiFetch( {
@@ -31,10 +38,10 @@ export async function gutenaFormsFetchMenus() {
 }
 
 /**
- * Fetch forms from the Gutena Forms REST API.
+ * Fetch forms list from the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @returns {Promise<*>}
+ * @returns {Promise<Array>} List of forms.
  */
 export async function gutenaFormsFetchForms() {
 	const response = await apiFetch( {
@@ -49,10 +56,10 @@ export async function gutenaFormsFetchForms() {
 }
 
 /**
- * Fetch settings menus from the Gutena Forms REST API.
+ * Fetch left navigation settings menus from the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @returns {Promise<string|Record<string, Omit<({onSearch: NonNullable<({onSearch: (searchString: string) => void} & {search: string})["onSearch"]>, search: NonNullable<({onSearch: (searchString: string) => void} & {search: string})["search"]>} & {backButtonLabel?: string, onBackButtonClick?: React.MouseEventHandler<HTMLElement>, children?: React.ReactNode, className?: string, hasSearch?: boolean, isEmpty?: boolean, isSearchDebouncing?: boolean, menu?: string, parentMenu?: string, title?: string, titleAction?: React.ReactNode}) | ({onSearch?: never} & {search?: string} & {backButtonLabel?: string, onBackButtonClick?: React.MouseEventHandler<HTMLElement>, children?: React.ReactNode, className?: string, hasSearch?: boolean, isEmpty?: boolean, isSearchDebouncing?: boolean, menu?: string, parentMenu?: string, title?: string, titleAction?: React.ReactNode}), "children"> & {menu: string}>|Record<string, Omit<Omit<({onSearch: NonNullable<({onSearch: (searchString: string) => void} & {search: string})["onSearch"]>, search: NonNullable<({onSearch: (searchString: string) => void} & {search: string})["search"]>} & {backButtonLabel?: string, onBackButtonClick?: React.MouseEventHandler<HTMLElement>, children?: React.ReactNode, className?: string, hasSearch?: boolean, isEmpty?: boolean, isSearchDebouncing?: boolean, menu?: string, parentMenu?: string, title?: string, titleAction?: React.ReactNode}) | ({onSearch?: never} & {search?: string} & {backButtonLabel?: string, onBackButtonClick?: React.MouseEventHandler<HTMLElement>, children?: React.ReactNode, className?: string, hasSearch?: boolean, isEmpty?: boolean, isSearchDebouncing?: boolean, menu?: string, parentMenu?: string, title?: string, titleAction?: React.ReactNode}), "children"> & {menu: string}, "children">>|Record<string, Omit<Menu, "children">>|*>}
+ * @returns {Promise<Object>} Settings menus object keyed by menu slug.
  */
 export async function gutenaFormsFetchSettingsMenu() {
 	const response = await apiFetch( {
@@ -67,12 +74,11 @@ export async function gutenaFormsFetchSettingsMenu() {
 }
 
 /**
- * Fetch settings from the Gutena Forms REST API.
+ * Fetch settings for a given settings screen from the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @param settingsId
- *
- * @returns {Promise<*>}
+ * @param {string} settingsId Settings screen id (e.g. 'forms', 'entries', 'honeypot').
+ * @returns {Promise<Object>} Settings payload (fields, title, etc.).
  */
 export async function gutenaFormsFetchSettings( settingsId ) {
 	const response = await apiFetch( {
@@ -93,12 +99,12 @@ export async function gutenaFormsFetchSettings( settingsId ) {
 }
 
 /**
- * Update settings via the Gutena Forms REST API.
+ * Save/update settings for a given settings screen via the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @param settingsId
- * @param settingsData
- * @returns {Promise<unknown>}
+ * @param {string} settingsId   Settings screen id.
+ * @param {Object} settingsData Settings payload to save.
+ * @returns {Promise<Object>} API response.
  */
 export async function gutenaFormsUpdateSettings( settingsId, settingsData ) {
 	const response = await apiFetch({
@@ -121,7 +127,7 @@ export async function gutenaFormsUpdateSettings( settingsId, settingsData ) {
  * Fetch tags from the Gutena Forms Pro REST API.
  *
  * @since 1.6.0
- * @returns {Promise<*>}
+ * @returns {Promise<Array>} List of tags. Throws if not Pro.
  */
 export async function gutenaFormsFetchTags() {
 	const response = await apiFetch( {
@@ -137,10 +143,10 @@ export async function gutenaFormsFetchTags() {
 }
 
 /**
- * Fetch status from the Gutena Forms Pro REST API.
+ * Fetch status list from the Gutena Forms Pro REST API.
  *
  * @since 1.6.0
- * @returns {Promise<*>}
+ * @returns {Promise<Array>} List of statuses. Throws if not Pro.
  */
 export async function gutenaFormsFetchStatus() {
 	const response = await apiFetch( {
@@ -156,10 +162,10 @@ export async function gutenaFormsFetchStatus() {
 }
 
 /**
- * Fetch users from the Gutena Forms Pro REST API.
+ * Fetch users list from the Gutena Forms Pro REST API.
  *
  * @since 1.6.0
- * @returns {Promise<[*]|(function({byId: {}, queries: {}}=, *): ({byId: *, queries: {}}))|*>}
+ * @returns {Promise<Array>} List of users. Throws if not Pro.
  */
 export async function gutenaFormsFetchUsers() {
 	const response = await apiFetch( {
@@ -178,7 +184,7 @@ export async function gutenaFormsFetchUsers() {
  * Fetch all forms from the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @returns {Promise<*>}
+ * @returns {Promise<Array>} List of forms with id, datetime, title, status, entries, author, permalink.
  */
 export async function gutenaFormsFetchAllForms() {
 	const response = await apiFetch( {
@@ -194,11 +200,11 @@ export async function gutenaFormsFetchAllForms() {
 }
 
 /**
- * Delete form via the Gutena Forms REST API.
+ * Delete a single form via the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @param formId
- * @returns {Promise<unknown>}
+ * @param {number} formId Form (post) ID to delete.
+ * @returns {Promise<Object>} API response.
  */
 export async function gutenaFormsDeleteForm( formId ) {
 	const response = await apiFetch( {
@@ -222,8 +228,8 @@ export async function gutenaFormsDeleteForm( formId ) {
  * Delete multiple forms via the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @param formIds
- * @returns {Promise<unknown>}
+ * @param {number[]} formIds Array of form (post) IDs to delete.
+ * @returns {Promise<Object>} API response.
  */
 export async function deleteMultipleForms( formIds ) {
 	const response = await apiFetch( {
@@ -247,7 +253,7 @@ export async function deleteMultipleForms( formIds ) {
  * Fetch all entries from the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @returns {Promise<*>}
+ * @returns {Promise<Array>} List of entries (optionally filtered by form).
  */
 export async function gutenaFormsFetchAllEntries() {
 	const response = await apiFetch( {
@@ -262,6 +268,12 @@ export async function gutenaFormsFetchAllEntries() {
 	throw new Error( 'Gutena Forms FetchAllEntries Error' );
 }
 
+/**
+ * Fetch form search options (id and title) for entry search dropdown.
+ *
+ * @since 1.6.0
+ * @returns {Promise<Array>} List of { id, title } for published forms.
+ */
 export async function gutenaFromsIdTitle() {
 	const response = await apiFetch( {
 		method: 'GET',
@@ -275,6 +287,13 @@ export async function gutenaFromsIdTitle() {
 	throw new Error( 'Gutena Forms FetchAllEntries Error' );
 }
 
+/**
+ * Fetch all entries for a given form (block) ID.
+ *
+ * @since 1.6.0
+ * @param {string|number} formId Form block ID.
+ * @returns {Promise<Array>} List of entries for the form.
+ */
 export async function gutenaFormsFetchEntriesByFormId( formId ) {
 	const response = await apiFetch( {
 		method: 'GET',
