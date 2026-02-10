@@ -1,6 +1,6 @@
 import { useState, useEffect } from '@wordpress/element';
 import { Link, useParams } from 'react-router';
-import { gutenaFormsFetchEntriesByFormId, gutenaFormsDeleteEntry } from '../api/entries';
+import { gutenaFormsFetchEntriesByFormId, gutenaFormsDeleteEntry, deleteMultipleEntries } from '../api/entries';
 import GutenaFormsDatatable from '../components/gutena-forms-datatable';
 import { gutenaFormsInArray } from '../utils/functions';
 import { toast } from 'react-toastify';
@@ -101,6 +101,19 @@ const GutenaFormsFormEntries = ( {  } ) => {
 			} );
 	};
 
+	const handleBulkAction = ( action, selectedData ) => {
+		if ( 'delete' === action ) {
+			deleteMultipleEntries( selectedData )
+				.then( () => {
+					toast.success( __( 'Selected entries moved to trash successfully.', 'gutena-forms' ) );
+					refreshFormEntries();
+				} )
+				.catch( () => {
+					toast.error( __( 'Failed to delete entries.', 'gutena-forms' ) );
+				} );
+		}
+	};
+
 	return (
 		<div>
 			{ ! loading && tableData && tableHeaders && (
@@ -108,6 +121,7 @@ const GutenaFormsFormEntries = ( {  } ) => {
 					<GutenaFormsDatatable
 						data={ tableData }
 						headers={ tableHeaders }
+						handleBulkAction={ handleBulkAction }
 						tableChildren={ {
 							body: {
 								actions: ( { row, header, index } ) => {
