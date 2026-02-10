@@ -17,6 +17,7 @@
 	"devDependencies": {
 		"@wordpress/api-fetch": "^7.37.0",
 		"@wordpress/dom-ready": "^4.37.0",
+		"@wordpress/hooks": "^4.39.0",
 		"@wordpress/scripts": "^25.3.0",
 		"@wordpress/url": "^4.37.0"
 	},
