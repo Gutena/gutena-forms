@@ -13,6 +13,7 @@ import GutenaFormsListBox from '../components/gutena-forms-list-box';
 import { toast } from 'react-toastify';
 import Ellipse from '../icons/ellipse';
 import Tag from '../icons/tag';
+import Profile from '../icons/profile';
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -25,6 +26,7 @@ addFilter(
 		components['GutenaFormsListBox'] 	  = GutenaFormsListBox;
 		components['Ellipse'] 				  = Ellipse;
 		components['Tag']                     = Tag;
+		components['Profile']                 = Profile;
 
 		return components;
 	}
