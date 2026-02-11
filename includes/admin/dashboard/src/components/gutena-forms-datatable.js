@@ -11,7 +11,12 @@ import { toast } from 'react-toastify';
 
 
 
-const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren, customFilters } ) => {
+const DEFAULT_BULK_ACTION_OPTIONS = [
+	{ label: __( 'Bulk Actions', 'gutena-forms' ), value: 'bulk_actions' },
+	{ label: __( 'Delete', 'gutena-forms' ), value: 'delete' },
+];
+
+const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren, customFilters, bulkActionOptions } ) => {
 	const [ numberOfRows, setNumberOfRows ] = useState( 10 );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
 	const [ searchTerm, setSearchTerm ] = useState( '' );
@@ -193,10 +198,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 
 					<div className={ 'display-inline-block' }>
 						<SelectControl
-							options={ [
-								{ label: 'Bulk Actions', value: 'bulk_actions' },
-								{ label: 'Delete', value: 'delete' },
-							] }
+							options={ bulkActionOptions && bulkActionOptions.length > 0 ? bulkActionOptions : DEFAULT_BULK_ACTION_OPTIONS }
 							value={ bulkAction }
 							onChange={ ( value ) => setBulkAction( value ) }
 						/>

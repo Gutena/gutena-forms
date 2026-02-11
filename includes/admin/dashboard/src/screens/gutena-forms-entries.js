@@ -118,6 +118,11 @@ const GutenaFormsEntries = () => {
 		}
 	};
 
+	const bulkActionOptions = [
+		{ label: __( 'Bulk Actions', 'gutena-forms' ), value: 'bulk_actions' },
+		...( Array.isArray( capabilities ) && capabilities.includes( 'delete' ) ? [ { label: __( 'Delete', 'gutena-forms' ), value: 'delete' } ] : [] ),
+	];
+
 	return (
 		<div>
 			{ ! loading && (
@@ -135,6 +140,7 @@ const GutenaFormsEntries = () => {
 					{ ! id && (
 						<div>
 							<GutenaFormsDatatable
+								bulkActionOptions={ bulkActionOptions }
 								headers={ [
 									{
 										key: 'checkbox',

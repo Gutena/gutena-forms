@@ -126,6 +126,11 @@ const GutenaFormsFormEntries = ( {  } ) => {
 		}
 	};
 
+	const bulkActionOptions = [
+		{ label: __( 'Bulk Actions', 'gutena-forms' ), value: 'bulk_actions' },
+		...( Array.isArray( capabilities ) && capabilities.includes( 'delete' ) ? [ { label: __( 'Delete', 'gutena-forms' ), value: 'delete' } ] : [] ),
+	];
+
 	return (
 		<div>
 			{ ! loading && tableData && tableHeaders && (
@@ -134,6 +139,7 @@ const GutenaFormsFormEntries = ( {  } ) => {
 						data={ tableData }
 						headers={ tableHeaders }
 						handleBulkAction={ handleBulkAction }
+						bulkActionOptions={ bulkActionOptions }
 						tableChildren={ {
 							body: {
 								actions: ( { row, header, index } ) => {
