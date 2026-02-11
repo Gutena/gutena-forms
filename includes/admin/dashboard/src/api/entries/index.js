@@ -126,8 +126,10 @@ export async function gutenaFormsFetchEntriesByFormId( id, type ) {
 	if ( ! response ) {
 		throw new Error( 'No response from server' );
 	}
-
-	return response[ type ];
+	return {
+		[ type ]: response[ type ],
+		capabilities: response.current_user_can_manage || [],
+	};
 }
 
 /**

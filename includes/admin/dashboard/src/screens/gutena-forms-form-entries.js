@@ -16,14 +16,15 @@ const GutenaFormsFormEntries = ( {  } ) => {
 	const [ loading, setLoading ] = useState( true );
 	const [ tableHeaders, setTableHeaders ] = useState( false );
 	const [ tableData, setTableData ] = useState( false );
+	const [ capabilities, setCapabilities ] = useState( [] );
 
 	useEffect( () => {
 
 		setLoading( true );
 
 		gutenaFormsFetchEntriesByFormId( id, 'headers' )
-			.then( tableHeaders => {
-				setTableHeaders( tableHeaders );
+			.then( ( { headers } )=> {
+				setTableHeaders( headers );
 
 				setLoading( false );
 			} );
@@ -35,7 +36,12 @@ const GutenaFormsFormEntries = ( {  } ) => {
 
 		if ( tableHeaders ) {
 			gutenaFormsFetchEntriesByFormId( id, 'data' )
-				.then( tableData => {
+				.then( ( { data, capabilities } ) => {
+
+					setCapabilities( capabilities );
+
+					var tableData = data;
+
 					const newTableData = {};
 
 					let i = 0;
@@ -65,7 +71,13 @@ const GutenaFormsFormEntries = ( {  } ) => {
 	const refreshFormEntries = () => {
 		setLoading( true );
 		gutenaFormsFetchEntriesByFormId( id, 'data' )
-			.then( tableData => {
+			.then( ( { data, capabilities } ) => {
+
+				setCapabilities( capabilities );
+
+				var tableData = data;
+
+
 				const newTableData = {};
 				let i = 0;
 				for ( const entry of tableData ) {
@@ -128,16 +140,35 @@ const GutenaFormsFormEntries = ( {  } ) => {
 
 									return (
 										<div className={ 'gutena-forms-datatable__action' }>
-											<Link
-												to={ `/settings/entry/${ row.entry_id }` }
-											>
-												<Eye />
-											</Link>
-											<Button
-												onClick={ () => handleDeleteEntry( row ) }
-											>
-												<Bin />
-											</Button>
+
+											{
+												capabilities && capabilities.map( cap => {
+													if ( 'view' === cap ) {
+														return (
+															<>
+																<Link
+																	to={ `/settings/entry/${ row.entry_id }` }
+																>
+																	<Eye />
+																</Link>
+															</>
+														);
+													}
+
+													if ( 'delete' === cap ) {
+														return (
+															<>
+																<Button
+																	onClick={ () => handleDeleteEntry( row ) }
+																>
+																	<Bin />
+																</Button>
+															</>
+														);
+													}
+												} )
+											}
+
 										</div>
 									);
 								}

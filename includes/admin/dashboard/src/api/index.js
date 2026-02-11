@@ -253,7 +253,7 @@ export async function deleteMultipleForms( formIds ) {
  * Fetch all entries from the Gutena Forms REST API.
  *
  * @since 1.6.0
- * @returns {Promise<Array>} List of entries (optionally filtered by form).
+ * @returns {Promise<{entries: *, capabilities}>} List of entries (optionally filtered by form).
  */
 export async function gutenaFormsFetchAllEntries() {
 	const response = await apiFetch( {
@@ -262,7 +262,10 @@ export async function gutenaFormsFetchAllEntries() {
 	} );
 
 	if ( response.entries ) {
-		return response.entries;
+		return {
+			entries: response.entries,
+			capabilities: response.current_user_can_manage || {},
+		};
 	}
 
 	throw new Error( 'Gutena Forms FetchAllEntries Error' );

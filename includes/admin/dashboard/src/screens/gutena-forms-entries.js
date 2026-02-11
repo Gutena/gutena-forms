@@ -17,15 +17,17 @@ const GutenaFormsEntries = () => {
 	const [ loading, setLoading ] = useState( true );
 	const [ formsFilter, setFormsFilter ] = useState( [] );
 	const [ selectedFormFilter, setSelectedFormFilter ] = useState( 'all' );
+	const [ capabilities, setCapabilities ] = useState( {} );
 
 
 	useEffect( () => {
 		setLoading( true );
 
 		gutenaFormsFetchAllEntries()
-			.then( entries => {
+			.then( ({ entries, capabilities } ) => {
 				setLoading( false );
 				setEntries( entries );
+				setCapabilities( capabilities );
 			} );
 
 		gutenaFromsIdTitle()
@@ -193,16 +195,33 @@ const GutenaFormsEntries = () => {
 
 											return (
 												<div className={ 'gutena-forms-datatable__action' }>
-													<Link
-														to={ `/settings/entry/${ row.entry_id }` }
-													>
-														<Eye />
-													</Link>
-													<Button
-														onClick={ () => handleDeleteEntry( row ) }
-													>
-														<Bin />
-													</Button>
+													{
+														capabilities && capabilities.map( cap => {
+															if ( 'view' === cap ) {
+																return (
+																	<>
+																		<Link
+																			to={ `/settings/entry/${ row.entry_id }` }
+																		>
+																			<Eye />
+																		</Link>
+																	</>
+																);
+															}
+
+															if ( 'delete' === cap ) {
+																return (
+																	<>
+																		<Button
+																			onClick={ () => handleDeleteEntry( row ) }
+																		>
+																			<Bin />
+																		</Button>
+																	</>
+																);
+															}
+														} )
+													}
 												</div>
 											);
 										},

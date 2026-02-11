@@ -153,8 +153,13 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 
 			return rest_ensure_response(
 				array(
-					'entries' => $entries,
-					'status'  => 'success',
+					'entries'          => $entries,
+					'status'           => 'success',
+					'current_user_can_manage' => apply_filters(
+						'gutena_forms__current_user_can',
+						array( 'delete', 'view' ),
+						'get-all'
+					),
 				)
 			);
 		}
@@ -279,6 +284,11 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				array(
 					'entries' => $entries,
 					'status'  => 'success',
+					'current_user_can_manage' => apply_filters(
+						'gutena_forms__current_user_can',
+						array( 'delete', 'view' ),
+						'get-by-form-id'
+					),
 				)
 			);
 		}
@@ -317,6 +327,11 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				array(
 					'data' => $entries,
 					'status'       => 'success',
+					'current_user_can_manage' => apply_filters(
+						'gutena_forms__current_user_can',
+						array( 'delete', 'view' ),
+						'get-by-form-id'
+					),
 				)
 			);
 		}
