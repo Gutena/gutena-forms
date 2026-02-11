@@ -1,15 +1,4 @@
-import { ToastContainer, toast } from 'react-toastify';
-import { addFilter } from '@wordpress/hooks';
-
-addFilter(
-	'gutenaFormsPro.core.toast',
-	'gutena-forms/gutena-forms-toast',
-	() => {
-		return {
-			'toast': toast,
-		}
-	}
-);
+import { ToastContainer } from 'react-toastify';
 
 const GutenaFromsToast = () => {
 

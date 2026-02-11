@@ -1,4 +1,3 @@
-import { addFilter } from '@wordpress/hooks';
 const GutenaFormsListBox = ( { style = {}, leftContent, middleContent, rightContent } ) => {
 	return (
 		<div
@@ -27,16 +26,5 @@ const GutenaFormsListBox = ( { style = {}, leftContent, middleContent, rightCont
 		</div>
 	);
 }
-
-addFilter(
-	'gutenaFormsPro.core.components',
-	'gutena-forms-free',
-	( components ) => {
-
-		components['GutenaFormsListBox'] = GutenaFormsListBox;
-
-		return components;
-	}
-);
 
 export default GutenaFormsListBox;

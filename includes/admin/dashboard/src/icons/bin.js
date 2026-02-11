@@ -1,5 +1,4 @@
 import { Icon } from '@wordpress/components';
-import { addFilter } from '@wordpress/hooks';
 
 export const FadedBin = () => (
 	<Icon
@@ -27,15 +26,4 @@ export const Bin = () => (
 			</svg>
 		) }
 	/>
-);
-
-addFilter(
-	'gutenaFormsPro.core.components',
-	'gutena-forms-free',
-	( components ) => {
-
-		components['Bin'] = Bin;
-
-		return components;
-	}
 );

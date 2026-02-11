@@ -1,5 +1,4 @@
 import { Button } from '@wordpress/components';
-import { addFilter } from '@wordpress/hooks';
 
 const GutenaFormsSubmitButton = ( { label, onClick } ) => {
 
@@ -14,16 +13,5 @@ const GutenaFormsSubmitButton = ( { label, onClick } ) => {
 		</div>
 	);
 };
-
-addFilter(
-	'gutenaFormsPro.core.components',
-	'gutena-forms-free',
-	( components ) => {
-
-		components['GutenaFormsSubmitButton'] = GutenaFormsSubmitButton;
-
-		return components;
-	}
-);
 
 export default GutenaFormsSubmitButton;

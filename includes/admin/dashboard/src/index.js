@@ -7,6 +7,8 @@ import GutenaFormsHeader from './components/gutena-forms-header';
 import GutenaFormsBody from './screens/gutena-forms-body';
 import GutenaFormsProPopup from './components/gutena-forms-pro-popup';
 
+import './utils/register-components';
+
 const GutenaFormsApp = () => {
 
 	const [ showProPopup, setShowProPopup ] = useState( false );

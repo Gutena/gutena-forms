@@ -1,5 +1,4 @@
 import { Icon } from '@wordpress/components';
-import { addFilter } from '@wordpress/hooks';
 
 const Ellipse = ( { fill } ) => (
 	<Icon
@@ -9,17 +8,6 @@ const Ellipse = ( { fill } ) => (
 			</svg>
 		) }
 	/>
-);
-
-addFilter(
-	'gutenaFormsPro.core.components',
-	'gutena-forms-free',
-	( components ) => {
-
-		components['Ellipse'] = Ellipse;
-
-		return components;
-	}
 );
 
 export default Ellipse;
