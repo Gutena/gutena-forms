@@ -10,7 +10,7 @@ import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
 import { __ } from '@wordpress/i18n';
 
-const GutenaFormsEntries = () => {
+const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 
 	const { id, slug } = useParams();
 	const [ entries, setEntries ] = useState( [] );
@@ -129,7 +129,10 @@ const GutenaFormsEntries = () => {
 				<div>
 					{ id && 'entry' === slug && (
 						<div>
-							<GutenaFormsSingleEntryPage entryId={ id } />
+							<GutenaFormsSingleEntryPage
+								showProPopupHandler={ showProPopupHandler }
+								entryId={ id }
+							/>
 						</div>
 					) }
 

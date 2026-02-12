@@ -1,12 +1,14 @@
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
-const GutenaFormsNotes = ( { entryId } ) => {
+const GutenaFormsNotes = ( { entryId, showProPopupHandler } ) => {
+
+	const { NotesComponent } = applyFilters( 'gutenaFormsFree.core.pro-components', {} );
 
 	return (
-		<div className={ 'gutena-froms__entry-meta-box' }>
-			<h2 className={ 'heading' }>{ __( 'Notes', 'gutena-forms' ) }</h2>
-
-		</div>
+		<NotesComponent
+			onClick={ showProPopupHandler }
+		/>
 	);
 };
 

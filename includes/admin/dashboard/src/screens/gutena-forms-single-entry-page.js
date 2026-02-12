@@ -11,7 +11,7 @@ import GutenaFormsRelatedEntries from '../components/entries/gutena-forms-relate
 import GutenaFormsStatus from '../components/entries/gutena-forms-status';
 
 
-const GutenaFormsSingleEntryPage = ( { entryId } ) => {
+const GutenaFormsSingleEntryPage = ( { entryId, showProPopupHandler } ) => {
 	const [ prevEntryId, setPrevEntryId ] = useState( null );
 	const [ nextEntryId, setNextEntryId ] = useState( null );
 	const [ totalEntries, setTotalEntries ] = useState( 0 );
@@ -68,10 +68,21 @@ const GutenaFormsSingleEntryPage = ( { entryId } ) => {
 							<GutenaFormsEntryDetails entryId={ entryId } />
 						</div>
 						<div className={ 'gutena-forms__col-30' }>
-							<GutenaFormsNotes entryId={ entryId } />
-							<GutenaFormsStatus entryId={ entryId } />
-							<GutenaFormsTags entryId={ entryId } />
-							<GutenaFormsRelatedEntries entryId={ entryId } />
+							<GutenaFormsNotes
+								entryId={ entryId }
+								showProPopupHandler={ showProPopupHandler }
+							/>
+							<GutenaFormsStatus
+								entryId={ entryId }
+								showProPopupHandler={ showProPopupHandler }
+							/>
+							<GutenaFormsTags
+								entryId={ entryId }
+								showProPopupHandler={ showProPopupHandler }
+							/>
+							<GutenaFormsRelatedEntries
+								entryId={ entryId }
+							/>
 						</div>
 					</div>
 				</>

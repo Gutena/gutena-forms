@@ -3,7 +3,7 @@ import { gutenaFormsFetchSettings } from '../api';
 import { useParams } from 'react-router';
 import { PageTemplates } from '../utils/templates'
 
-const GutenaFormsPageLayout = () => {
+const GutenaFormsPageLayout = ( { showProPopupHandler } ) => {
 	const { slug } = useParams();
 	const [ template, setTemplate ] = useState( false );
 	const [ loading, setLoading ] = useState( true );
@@ -31,7 +31,7 @@ const GutenaFormsPageLayout = () => {
 			{ ! loading && (
 				<>
 					{ template && PageTemplates[ template ] && (
-						<TemplateComponent />
+						<TemplateComponent showProPopupHandler={ showProPopupHandler } />
 					) }
 				</>
 			) }

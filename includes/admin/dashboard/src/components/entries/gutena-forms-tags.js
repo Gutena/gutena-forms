@@ -1,15 +1,15 @@
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
-const GutenaFormsTags = ( { entryId } ) => {
+const GutenaFormsTags = ( { entryId, showProPopupHandler } ) => {
+
+	const { TagsComponent } = applyFilters( 'gutenaFormsFree.core.pro-components', {} );
 
 	return (
-		<div className={ 'gutena-froms__entry-meta-box' }>
-			<h2 className={ 'heading' }>{ __( 'Tags', 'gutena-forms' ) }</h2>
-			<p className="desc">
-				Separate with commas or the Enter key.
-			</p>
-
-		</div>
+		<TagsComponent
+			entryId={ entryId }
+			onClick={ showProPopupHandler }
+		/>
 	);
 };
 

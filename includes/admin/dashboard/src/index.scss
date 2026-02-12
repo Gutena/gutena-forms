@@ -946,6 +946,7 @@
 			color: #6E7376;
 			font-size: 12px;
 			font-weight: 500;
+			position: relative;
 
 			.gutena-forms__entry-data {
 				margin-top: 15px;
@@ -974,6 +975,45 @@
 
 			&:last-child {
 				margin-bottom: 0;
+			}
+
+			&.dummy-content {
+				.notes-button {
+					position: absolute;
+					color: #0DA88C;
+					font-size: 12px;
+					font-weight: 500;
+					border-radius: 2px;
+					border: 1px solid #0DA88C;
+					background: linear-gradient(0deg, #FFF 0%, #FFF 100%), #E0ECFF;
+					padding: 6px 10px;
+					top: 10px;
+					right: 10px
+				}
+
+				.notes-container {
+					border-radius: 4px;
+					background: #FAFAFA;
+					padding: 10px;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					height: 65px;
+					margin-top: 20px;
+
+				}
+
+				.notes-content {
+					p {
+						color: #6E7376;
+						font-size: 12px;
+						font-weight: 500;
+
+						svg {
+							margin: 0 10px -5px 0;
+						}
+					}
+				}
 			}
 		}
 

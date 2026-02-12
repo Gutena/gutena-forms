@@ -8,11 +8,11 @@ const GutenaFormsBody = ( { showProPopupHandler } ) => {
 		<Routes>
 			<Route
 				path={ 'settings/:slug/' }
-				element={ <GutenaFormsPageLayout /> }
+				element={ <GutenaFormsPageLayout showProPopupHandler={ showProPopupHandler } /> }
 			/>
 			<Route
 				path={ 'settings/:slug/:id' }
-				element={ <GutenaFormsPageLayout /> }
+				element={ <GutenaFormsPageLayout showProPopupHandler={ showProPopupHandler } /> }
 			/>
 			<Route
 				path={ 'settings/settings/:settings_id/' }
