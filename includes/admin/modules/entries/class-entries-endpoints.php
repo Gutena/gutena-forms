@@ -137,6 +137,13 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				'auth'     => true,
 			);
 
+			$routes[] = array(
+				'route'    => 'entry/status',
+				'methods'  => $server::READABLE,
+				'callback' => array( $this, 'get_entry_status' ),
+				'auth'     => true,
+			);
+
 			return $routes;
 		}
 
@@ -416,6 +423,24 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 			);
 			$response->set_status( 500 );
 			return $response;
+		}
+
+		/**
+		 * Get entry status (e.g., read/unread) by entry ID.
+		 *
+		 * @since 1.6.0
+		 * @param WP_REST_Request $request REST request. Expects 'id' (
+		 */
+		public function get_entry_status( $request ) {
+			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'entryId' ) ) );
+
+			$status = $this->entries_model->get_status_by_id( $entry_id );
+
+			return rest_ensure_response(
+				array(
+					'status' => $status,
+				)
+			);
 		}
 	}
 

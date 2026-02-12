@@ -358,6 +358,23 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		public function delete_entries( $entry_ids ) {
 			return $this->store->update_entries_status( 'trash', $entry_ids );
 		}
+
+		/**
+		 * Get entry status by entry ID.
+		 *
+		 * @since 1.6.0
+		 * @param string $entry_id Entry id.
+		 */
+		public function get_status_by_id( $entry_id ) {
+			$sql = 'SELECT entry_status FROM %i WHERE entry_id = %d';
+			$sql = $this->wpdb->prepare(
+				$sql,
+				$this->store->table_gutenaforms_entries,
+				$entry_id
+			);
+
+			return $this->wpdb->get_var( $sql );
+		}
 	}
 
 	Gutena_Forms_Entries_Model::get_instance();

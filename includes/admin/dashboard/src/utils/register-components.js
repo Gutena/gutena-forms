@@ -147,5 +147,5 @@ addFilter(
 
 		return components;
 	},
-	10
+	1
 );
