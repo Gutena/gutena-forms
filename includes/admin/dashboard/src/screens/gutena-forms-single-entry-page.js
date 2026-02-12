@@ -68,10 +68,6 @@ const GutenaFormsSingleEntryPage = ( { entryId, showProPopupHandler } ) => {
 							<GutenaFormsEntryDetails entryId={ entryId } />
 						</div>
 						<div className={ 'gutena-forms__col-30' }>
-							<GutenaFormsNotes
-								entryId={ entryId }
-								showProPopupHandler={ showProPopupHandler }
-							/>
 							<GutenaFormsStatus
 								entryId={ entryId }
 								showProPopupHandler={ showProPopupHandler }
@@ -82,6 +78,10 @@ const GutenaFormsSingleEntryPage = ( { entryId, showProPopupHandler } ) => {
 							/>
 							<GutenaFormsRelatedEntries
 								entryId={ entryId }
+							/>
+							<GutenaFormsNotes
+								entryId={ entryId }
+								showProPopupHandler={ showProPopupHandler }
 							/>
 						</div>
 					</div>
