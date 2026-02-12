@@ -76,12 +76,14 @@ const GutenaFormsSingleEntryPage = ( { entryId, showProPopupHandler } ) => {
 								entryId={ entryId }
 								showProPopupHandler={ showProPopupHandler }
 							/>
-							<GutenaFormsRelatedEntries
-								entryId={ entryId }
-							/>
+
 							<GutenaFormsNotes
 								entryId={ entryId }
 								showProPopupHandler={ showProPopupHandler }
+							/>
+
+							<GutenaFormsRelatedEntries
+								entryId={ entryId }
 							/>
 						</div>
 					</div>

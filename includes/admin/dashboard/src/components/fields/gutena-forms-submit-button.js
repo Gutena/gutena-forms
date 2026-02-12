@@ -1,9 +1,9 @@
 import { Button } from '@wordpress/components';
 
-const GutenaFormsSubmitButton = ( { label, onClick } ) => {
+const GutenaFormsSubmitButton = ( { label, onClick, type } ) => {
 
 	return (
-		<div className={ 'gutena-forms__submit-button' }>
+		<div className={ `gutena-forms__submit-button ${ type }` }>
 			<Button
 				isPrimary
 				onClick={ onClick }
