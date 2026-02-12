@@ -16,7 +16,7 @@ import Tag from '../icons/tag';
 import Profile from '../icons/profile';
 import { __ } from '@wordpress/i18n';
 import Notes from '../icons/notes';
-import {ComboboxControl, SelectControl} from '@wordpress/components';
+import { SelectControl } from '@wordpress/components';
 
 addFilter(
 	'gutenaFormsPro.core.components',
