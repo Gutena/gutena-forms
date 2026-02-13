@@ -36,3 +36,7 @@ export const gutenaFormsInArray = ( needle, haystack, strict = false ) => {
 
 	return false;
 };
+
+export const gutenaFormsStrContains = ( haystack, needle ) => {
+	return haystack.indexOf( needle ) !== -1;
+}

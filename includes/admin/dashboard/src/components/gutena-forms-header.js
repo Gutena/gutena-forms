@@ -4,11 +4,13 @@ import { __ } from '@wordpress/i18n';
 import { NavLink } from 'react-router';
 import Crown from '../icons/crown';
 import { gutenaFormsFetchMenus } from '../api';
+import { gutenaFormsStrContains } from '../utils/functions';
 
 const GutenaFormsHeader = () => {
 
 	const [ menus, setMenus ] = useState( false );
 	const [ loading, setLoading ] = useState( true );
+	const [ activeMenu, setActiveMenu ] = useState( 'dashboard' );
 
 	useEffect( () => {
 		setLoading( true );
@@ -45,6 +47,8 @@ const GutenaFormsHeader = () => {
 										<li key={ index }>
 											<NavLink
 												to={ `settings${ menu.slug }` }
+												className={ gutenaFormsStrContains( activeMenu, menu.slug ) ? 'active' : '' }
+												onClick={ () => setActiveMenu( menu.slug ) }
 											>
 												{ menu.title }
 											</NavLink>

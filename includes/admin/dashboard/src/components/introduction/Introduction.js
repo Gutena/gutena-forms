@@ -239,7 +239,7 @@ const Introduction = ( props ) => {
                         <div className="gf-pro-price">$59.99</div>
                         <div className="gf-pro-period">Per Year</div>
                         <a
-                            href={gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin'}
+                            href={gutenaFormsAdmin.gutenaFormsDashboard?.pricing_link || 'https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin'}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="gf-upgrade-button"
