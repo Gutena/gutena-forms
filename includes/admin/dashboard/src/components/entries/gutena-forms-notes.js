@@ -8,6 +8,7 @@ const GutenaFormsNotes = ( { entryId, showProPopupHandler } ) => {
 	return (
 		<NotesComponent
 			onClick={ showProPopupHandler }
+			entryId={ entryId }
 		/>
 	);
 };
