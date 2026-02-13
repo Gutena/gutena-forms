@@ -1,15 +1,13 @@
-import { Button } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
-import './style.scss';
 
 const Introduction = ( props ) => {
-    const welcome = gutenaFormsIntroduction?.section?.welcome;
-    const features = gutenaFormsIntroduction?.section?.features;
-    const fields = gutenaFormsIntroduction?.section?.fields;
-    const pricing = gutenaFormsIntroduction?.section?.pricing;
+    const welcome  = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.welcome;
+    const features = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.features;
+    const fields   = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.fields;
+    const pricing  = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.pricing;
 
     // Check if PRO version is active
-    const isProActive = gutenaFormsDashboard?.is_gutena_forms_pro === '1';
+    const isProActive = gutenaFormsAdmin?.hasPro === '1';
 
     // Get plugin URL from welcome image path
     const getPluginUrl = () => {
