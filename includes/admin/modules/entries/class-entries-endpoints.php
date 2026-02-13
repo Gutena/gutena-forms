@@ -429,7 +429,8 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		 * Get entry status (e.g., read/unread) by entry ID.
 		 *
 		 * @since 1.6.0
-		 * @param WP_REST_Request $request REST request. Expects 'id' (
+		 * @param WP_REST_Request $request REST request. Expects 'entryId' (entry ID).
+		 * @return WP_REST_Response REST response with entry status.
 		 */
 		public function get_entry_status( $request ) {
 			$entry_id = sanitize_text_field( wp_unslash( $request->get_param( 'entryId' ) ) );
