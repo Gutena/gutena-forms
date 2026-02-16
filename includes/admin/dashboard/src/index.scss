@@ -331,10 +331,12 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 					margin-top: 5px;
 				}
 
-				.gutena-forms__accordion-title {
+				.gutena-forms__accordion-title,
+				.gutena-forms__accordion-title a {
 					color: #424D55;
 					font-size: 12px;
 					font-weight: 500;
+					text-decoration: none;
 				}
 
 				.gutena-forms__accordion-arrow {

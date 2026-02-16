@@ -261,6 +261,12 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 						),
 					),
 				),
+				array(
+					'title' => __( 'Integrations', 'gutena-forms' ),
+					'icon'  => 'Shield',
+					'menus' => array(),
+					'slug'  => 'integrations',
+				),
 			);
 
 			if ( ! empty( $menus ) ) {
