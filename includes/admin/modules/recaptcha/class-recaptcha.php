@@ -71,6 +71,31 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 							),
 						),
 					),
+					array(
+						'id'      => 'site_key',
+						'type'    => 'text',
+						'name'    => __( 'Site Key', 'gutena-forms' ),
+						'default' => '',
+						'value'   => $this->settings['site_key'],
+						'attrs'   => array(
+							'placeholder' => __( 'Enter your reCAPTCHA site key', 'gutena-forms' ),
+						),
+					),
+					array(
+						'id'      => 'secret_key',
+						'type'    => 'text',
+						'name'    => __( 'Secret Key', 'gutena-forms' ),
+						'default' => '',
+						'value'   => $this->settings['secret_key'],
+						'attrs'   => array(
+							'placeholder' => __( 'Enter your reCAPTCHA secret key', 'gutena-forms' ),
+						),
+					),
+					array(
+						'id'   => 'submit_button',
+						'type' => 'submit',
+						'name' => __( 'Save Settings', 'gutena-forms' ),
+					),
 				),
 			);
 		}
@@ -82,6 +107,9 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 		 * @param array $settings Settings to save.
 		 */
 		public function save_settings( $settings ) {
+			update_option( 'gutena_forms__recaptcha', $settings );
+
+			return true;
 		}
 	}
 

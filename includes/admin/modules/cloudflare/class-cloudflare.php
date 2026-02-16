@@ -76,7 +76,9 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 		}
 
 		public function save_settings( $settings ) {
-			// TODO: Implement save_settings() method.
+			update_option( 'gutena_forms__cloudflare', $settings );
+
+			return true;
 		}
 	}
 
