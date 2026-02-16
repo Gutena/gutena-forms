@@ -303,14 +303,6 @@
 		}
 
 		/**
-		 * Add navigation to forms list page (edit.php?post_type=gutena_forms)
-		 *
-		 * @param string $hook Current admin page hook
-		 */
-		public function maybe_add_navigation_to_forms_list( $hook ) {
-		}
-
-		/**
 		 * Check if given keys in an array is empty or not
 		 *
 		 * @param array $check_array array to check
