@@ -4,6 +4,8 @@ import GutenaFormsNumberField from './fields/gutena-forms-number-field';
 import GutenaFormsToggleField from './fields/gutena-forms-toggle-field';
 import GutenaFormsEmailField from './fields/gutena-forms-email-field';
 import GutenaFormsSubmitButton from './fields/gutena-forms-submit-button';
+import GutenaFormsTextField from './fields/gutena-forms-text-field';
+import GutenaFormsRadioGroup from './fields/gutena-forms-radio-group';
 import { gutenaFormsUpdateSettings } from "../api";
 import { toast } from 'react-toastify';
 import { __ } from '@wordpress/i18n';
@@ -108,6 +110,33 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 					/>
 				);
 				break;
+
+			case 'text':
+				fieldElement = (
+					<GutenaFormsTextField
+						id={ field.id }
+						label={ field.label }
+						desc={ field.desc }
+						value={ field.value }
+						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						placeholder={ field.attrs.placeholder }
+					/>
+				);
+				break;
+
+			case 'radio-group':
+				fieldElement = (
+					<GutenaFormsRadioGroup
+						id={ field.id }
+						label={ field.label }
+						desc={ field.desc }
+						value={ field.value }
+						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						options={ field.attrs.options }
+					/>
+				)
+				break;
+
 			default:
 				console.log( 'Field not found', field )
 				fieldElement = null;
@@ -136,7 +165,10 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 					)
 				}
 			</h2>
-			<p>{ description }</p>
+			<p
+				className={ 'gutena-forms__settings-meta-box-desc' }
+				dangerouslySetInnerHTML={ { __html: description } }
+			/>
 
 			<div className={ 'gutena-forms__settings-meta-box' }>
 				{ ! template && ! loading && settings && Object.keys( settings ).map( ( key, index ) => {

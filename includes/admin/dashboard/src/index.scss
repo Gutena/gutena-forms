@@ -149,6 +149,20 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				font-weight: 400;
 			}
 
+			.gutena-forms__settings-meta-box-desc {
+				a {
+					color: #0DA88C;
+					font-size: 12px;
+					font-weight: 500;
+					text-decoration-line: underline;
+					text-decoration-style: solid;
+					text-decoration-skip-ink: auto;
+					text-decoration-thickness: auto;
+					text-underline-offset: auto;
+					text-underline-position: from-font;
+				}
+			}
+
 			.gutena-forms__settings-meta-box {
 				border-radius: 10px;
 				border: 1px solid #e2e2e2;
@@ -199,7 +213,8 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 					}
 				}
 
-				.gutena-forms__email-control {
+				.gutena-forms__email-control,
+				.gutena-forms__text-control {
 					margin-top: 20px;
 
 					.components-base-control__label {
@@ -1107,6 +1122,50 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				padding: 6px 10px;
 			}
 		}
+	}
+
+	.gutena-forms__radio-group-control {
+		.gutena-forms__field-label {
+			color: #000;
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		.gutena-forms__radio-group-options {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			height: 30px;
+			width: 250px;
+			padding: 5px;
+			border-radius: 4px;
+			border: 1px solid #E2E2E2;
+		}
+
+		.gutena-forms__radio-option-input {
+			display: none;
+
+			&:checked + .gutena-forms__radio-option-label {
+				border-radius: 4px;
+				background: #0DA88C;
+				color: #ffffff;
+			}
+		}
+
+		.gutena-forms__radio-option {
+			display: inline-block;
+			background: #ffffff;
+
+			.gutena-forms__radio-option-label {
+				cursor: pointer;
+				display: block;
+				height: 30px;
+				line-height: 30px;
+				padding: 0 20px;
+			}
+		}
+
+
 	}
 }
 

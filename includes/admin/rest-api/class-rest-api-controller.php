@@ -247,11 +247,19 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							'title' => __( 'Honeypot', 'gutena-forms' ),
 							'slug'  => 'honeypot',
 						),
+						array(
+							'title' => __( 'Google reCAPTCHA' ),
+							'slug'  => 'google-recaptcha',
+						),
+						array(
+							'title' => __( 'Cloudflare Turnstile' ),
+							'slug'  => 'cloudflare-turnstile',
+						),
 					),
-				)
+				),
 			);
 
-			if ( is_array( $menus ) && ! empty( $menus ) ) {
+			if ( ! empty( $menus ) ) {
 				return rest_ensure_response(
 					array(
 						'menus'   => $menus,
