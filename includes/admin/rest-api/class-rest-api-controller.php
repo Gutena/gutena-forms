@@ -234,10 +234,14 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							'slug'  => 'user-access',
 						),
 						array(
-								'title' => __( 'Weekly Summary', 'gutena-forms' ),
-								'slug'  => 'weekly-summary',
-							),
-						)
+							'title' => __( 'Weekly Summary', 'gutena-forms' ),
+							'slug'  => 'weekly-summary',
+						),
+						array(
+							'title' => __( 'Validation Messages', 'gutena-forms' ),
+							'slug'  => 'validation-messages',
+						),
+					),
 				),
 				array(
 					'title' => __( 'Spam Protection', 'gutena-forms' ),

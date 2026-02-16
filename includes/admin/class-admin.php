@@ -112,6 +112,7 @@
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/user-access/class-user-access.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/forms/class-forms.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/entries/class-entries.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/validation-messages/class-validation-messages.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/rest-api/class-rest-api-controller.php';
 		}
 
