@@ -1197,11 +1197,10 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 	}
 
 	.gutena-forms__integrations {
-		display: grid;
-		grid-template-columns: auto auto auto;
 
 		.gutena-forms__integration {
-			width: calc( 760px / 3 - 41px );
+			display: inline-block;
+			width: calc( 100% / 3 - 30px );
 			border: 1px solid #e2e2e2;
 			border-radius: 4px;
 			padding: 10px;
