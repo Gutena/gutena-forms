@@ -1196,6 +1196,12 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				color: #1E1E1E;
 				font-size: 12px;
 				font-weight: 400;
+
+				span {
+					color: #0DA88C;
+					font-weight: 700;
+					cursor: pointer;
+				}
 			}
 
 			&:last-child {
@@ -1206,6 +1212,11 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
+
+				button {
+					padding: 0;
+					height: auto;
+				}
 			}
 		}
 	}

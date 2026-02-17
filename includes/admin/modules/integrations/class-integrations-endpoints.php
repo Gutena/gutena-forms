@@ -37,6 +37,23 @@ if ( ! class_exists( 'Gutena_Forms_Integrations_Endpoints' ) ) :
 
 		public function get_all_integrations() {
 			$integrations = apply_filters( 'gutena_forms__integrations', array() );
+
+			foreach ( $integrations as $slug => $integration ) {
+				$object = new $integration();
+				if ( $object instanceof Gutena_Forms_Integration_Settings ) {
+					$integrations[ $slug ] = array(
+						'title'   => $object->title,
+						'desc'    => $object->description,
+						'name'    => $object->id,
+						'enabled' => $object->is_enabled,
+						'icon'    => $object->id,
+					);
+				} else {
+					unset( $integrations[ $slug ] );
+				}
+
+			}
+
 			return rest_ensure_response(
 				array(
 					'integrations' => $integrations,

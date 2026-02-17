@@ -28,6 +28,7 @@ if ( ! class_exists( 'Gutena_Forms_Integrations' ) && class_exists( 'Gutena_Form
 			);
 
 			include_once plugin_dir_path( __FILE__ ) . 'class-integrations-endpoints.php';
+			include_once plugin_dir_path( __FILE__ ) . 'abstract-integrations.php';
 			include_once plugin_dir_path( __FILE__ ) . 'mailchimp/class-mailchimp.php';
 			include_once plugin_dir_path( __FILE__ ) . 'brevo/class-brevo.php';
 			include_once plugin_dir_path( __FILE__ ) . 'active-campaign/class-active-campaign.php';
