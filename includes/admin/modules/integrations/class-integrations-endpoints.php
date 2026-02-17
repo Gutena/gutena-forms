@@ -24,7 +24,24 @@ if ( ! class_exists( 'Gutena_Forms_Integrations_Endpoints' ) ) :
 		 * @return array
 		 */
 		public function rest_routes( $routes, $server ) {
+
+			$routes[] = array(
+				'route'    => 'integrations/get-all',
+				'methods'  => $server::READABLE,
+				'auth'     => true,
+				'callback' => array( $this, 'get_all_integrations' ),
+			);
+
 			return $routes;
+		}
+
+		public function get_all_integrations() {
+			$integrations = apply_filters( 'gutena_forms__integrations', array() );
+			return rest_ensure_response(
+				array(
+					'integrations' => $integrations,
+				)
+			);
 		}
 
 		public static function get_instance() {

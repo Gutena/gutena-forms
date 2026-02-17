@@ -1169,6 +1169,46 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 
 	}
+
+	.gutena-forms__integrations {
+		display: grid;
+		grid-template-columns: auto auto auto;
+
+		.gutena-forms__integration {
+			border: 1px solid #e2e2e2;
+			border-radius: 4px;
+			padding: 10px;
+			margin-right: 10px;
+
+			h3 {
+				color: #000;
+				font-size: 16px;
+				font-weight: 700;
+				margin: 0;
+
+				svg {
+					margin: 0 10px -8px 0;
+				}
+			}
+
+			p {
+				margin: 15px 0 20px 0;
+				color: #1E1E1E;
+				font-size: 12px;
+				font-weight: 400;
+			}
+
+			&:last-child {
+				margin-right: 0;
+			}
+
+			.gutena-forms__integration-actions {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+		}
+	}
 }
 
 // Import Satoshi font (add this if not already loaded globally)

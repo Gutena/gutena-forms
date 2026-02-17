@@ -14,8 +14,6 @@ if ( ! class_exists( 'Gutena_Forms_Integrations' ) && class_exists( 'Gutena_Form
 
 		public function __construct() {
 			$this->settings = get_option( 'gutena_forms__integrations', array() );
-
-			include_once plugin_dir_path( __FILE__ ) . 'class-integrations-endpoints.php';
 		}
 
 		public static function register_module() {
@@ -28,6 +26,11 @@ if ( ! class_exists( 'Gutena_Forms_Integrations' ) && class_exists( 'Gutena_Form
 					return $settings;
 				}
 			);
+
+			include_once plugin_dir_path( __FILE__ ) . 'class-integrations-endpoints.php';
+			include_once plugin_dir_path( __FILE__ ) . 'mailchimp/class-mailchimp.php';
+			include_once plugin_dir_path( __FILE__ ) . 'brevo/class-brevo.php';
+			include_once plugin_dir_path( __FILE__ ) . 'active-campaign/class-active-campaign.php';
 		}
 
 		public function get_settings() {
