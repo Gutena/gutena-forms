@@ -35,6 +35,7 @@ if ( ! class_exists( 'Gutena_Forms_Brevo' ) && class_exists( 'Gutena_Forms_Integ
 				'id'          => $this->id,
 				'title'       => sprintf( __( '%1$s Settings', 'gutena-froms' ), $this->title ),
 				'description' => $this->description,
+				'back'        => '/settings/settings/integrations',
 				'fields'      => array(
 					array(
 						'id'      => 'api_key',

@@ -21,6 +21,17 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 .gutena-froms#gutena-forms__root {
 
+	a {
+		outline: none;
+		box-shadow: none;
+
+		&:active,
+		&:focus {
+			outline: none;
+			box-shadow: none;
+		}
+	}
+
 	svg {
 		fill: transparent;
 	}
@@ -757,6 +768,10 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 	.gutena-forms__meta-box-wrapper {
 		h2 {
+			width: 780px;
+			display: flex;
+			justify-content: space-between;
+
 			svg {
 				margin-bottom: -7px;
 			}
@@ -1116,12 +1131,15 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 	}
 
 	.gutena-forms__submit-button {
-		button {
+		button,
+		a {
 			background: #28a98c;
+			text-decoration: none;
 		}
 
 		&.secondary {
-			button {
+			button,
+			a {
 				border-radius: 2px;
 				border: 1px solid #0DA88C;
 				background: linear-gradient(0deg, #FFF 0%, #FFF 100%), #E0ECFF;
@@ -1183,10 +1201,12 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		grid-template-columns: auto auto auto;
 
 		.gutena-forms__integration {
+			width: calc( 760px / 3 - 41px );
 			border: 1px solid #e2e2e2;
 			border-radius: 4px;
 			padding: 10px;
 			margin-right: 10px;
+			margin-bottom: 10px;
 
 			h3 {
 				color: #000;

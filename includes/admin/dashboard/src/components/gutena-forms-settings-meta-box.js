@@ -1,5 +1,5 @@
 import { useEffect, useState } from '@wordpress/element';
-import { useParams } from 'react-router';
+import {NavLink, useParams} from 'react-router';
 import GutenaFormsNumberField from './fields/gutena-forms-number-field';
 import GutenaFormsToggleField from './fields/gutena-forms-toggle-field';
 import GutenaFormsEmailField from './fields/gutena-forms-email-field';
@@ -14,8 +14,9 @@ import GutenaFormsProBadge from './gutena-forms-pro-badge';
 import Activecampaign from '../icons/activecampaign';
 import Brevo from '../icons/brevo';
 import Mailchimp from '../icons/mailchimp';
+import {Button} from "@wordpress/components";
 
-const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = false, onClick } ) => {
+const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = false, onClick, goBack } ) => {
 	const { settings_id } = useParams();
 	const [ settings, setSettings ] = useState( false );
 	const [ fieldValue, setFieldValue ] = useState( {} );
@@ -167,12 +168,25 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	return (
 		<div className={ 'gutena-forms__meta-box-wrapper' } onClick={ showProPopup }>
 			<h2>
-				{ IconMap[ id ] && IconMap[ id ] } { title }
-				{
-					isPro && (
-						<GutenaFormsProBadge />
-					)
-				}
+				<div>
+					{ IconMap[ id ] && IconMap[ id ] } { title }
+					{
+						isPro && (
+							<GutenaFormsProBadge />
+						)
+					}
+				</div>
+				<div>
+					{ goBack && (
+						<div className={ 'gutena-forms__submit-button secondary' }>
+							<NavLink
+								to={ goBack }
+							>
+								{ __( 'Go Back', 'gutena-forms' ) }
+							</NavLink>
+						</div>
+					) }
+				</div>
 			</h2>
 			<p
 				className={ 'gutena-forms__settings-meta-box-desc' }

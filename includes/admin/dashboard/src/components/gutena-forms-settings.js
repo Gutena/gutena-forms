@@ -27,6 +27,7 @@ const GutenaFormsSettings = ( { showProPopupHandler } ) => {
 					items={ settings.fields }
 					isPro={ settings['is-pro'] }
 					onClick={ e => showProPopupHandler() }
+					goBack={ settings.back }
 				/>
 			) }
 		</div>
