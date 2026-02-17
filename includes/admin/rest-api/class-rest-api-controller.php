@@ -300,31 +300,35 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 			$settings_id = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
 
 			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
+			$integration_settings  = apply_filters( 'gutena_forms__integrations', array() );
+			$gutena_forms_settings = array_merge( $gutena_forms_settings, $integration_settings );
 
-			if ( is_array( $gutena_forms_settings ) ) {
-				if ( isset( $gutena_forms_settings[ $settings_id ] ) ) {
-					if ( class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
-						$settings = new $gutena_forms_settings[ $settings_id ]();
-						if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
-							return rest_ensure_response(
-								array(
-									'settings' => $settings->get_settings(),
-									'status'   => 200,
-									'message'  => __( 'Settings fetched successfully.', 'gutena-forms' ),
-								)
-							);
-						}
-					}
+			if ( isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
+				$settings = $gutena_forms_settings[ $settings_id ];
+				$settings = new $settings();
+
+				if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
+					return rest_ensure_response(
+						array(
+							'settings' => $settings->get_settings(),
+							'status'   => 200,
+							'message'  => __( 'Settings fetched successfully.', 'gutena-forms' ),
+						)
+					);
 				}
 			}
 
-			return rest_ensure_response(
+			$response = rest_ensure_response(
 				array(
 					'settings' => array(),
 					'status'   => 404,
 					'message'  => __( 'Settings not found.', 'gutena-forms' ),
 				)
 			);
+
+			$response->set_status( 404 );
+
+			return $response;
 		}
 
 		/**
@@ -340,8 +344,12 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 			$settings_data = $request->get_param( 'settings_data' );
 
 			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
-			if ( is_array( $gutena_forms_settings ) && isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
-				$settings = new $gutena_forms_settings[ $settings_id ]();
+			$integration_settings  = apply_filters( 'gutena_forms__integrations', array() );
+			$gutena_forms_settings = array_merge( $gutena_forms_settings, $integration_settings );
+
+			if ( isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
+				$settings = $gutena_forms_settings[ $settings_id ];
+				$settings = new $settings();
 				if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
 					$save_result = $settings->save_settings( $settings_data );
 					if ( $save_result ) {

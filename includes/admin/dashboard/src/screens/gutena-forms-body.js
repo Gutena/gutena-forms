@@ -4,6 +4,12 @@ import GutenaFormsPageLayout from '../layouts/gutena-forms-page-layout';
 import GutenaFormsDashboard from './gutena-forms-dashboard';
 import GuennaFormsKnowledgeBase from './gutena-forms-knowledge-base';
 
+const HelloWorld = () => {
+
+	return (
+		<>Hello World</>
+	);
+}
 const GutenaFormsBody = ( { showProPopupHandler } ) => {
 
 	return (
@@ -31,6 +37,10 @@ const GutenaFormsBody = ( { showProPopupHandler } ) => {
 			<Route
 				path={ 'settings/settings/:settings_id/' }
 				element={ <GutenaFormsSettingsLayout showProPopupHandler={ showProPopupHandler } /> }
+			/>
+			<Route
+				path={ 'settings/settings/integration/:settings_id' }
+				element={ <GutenaFormsSettingsLayout /> }
 			/>
 		</Routes>
 	);

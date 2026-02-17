@@ -11,8 +11,11 @@ import { toast } from 'react-toastify';
 import { __ } from '@wordpress/i18n';
 import { SettingsTemplates } from '../utils/templates';
 import GutenaFormsProBadge from './gutena-forms-pro-badge';
+import Activecampaign from '../icons/activecampaign';
+import Brevo from '../icons/brevo';
+import Mailchimp from '../icons/mailchimp';
 
-const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false, onClick } ) => {
+const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = false, onClick } ) => {
 	const { settings_id } = useParams();
 	const [ settings, setSettings ] = useState( false );
 	const [ fieldValue, setFieldValue ] = useState( {} );
@@ -155,10 +158,16 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 		onClick();
 	}
 
+	const IconMap = {
+		'active-campaign': <Activecampaign />,
+		'brevo': <Brevo />,
+		'mailchimp': <Mailchimp />,
+	};
+
 	return (
-		<div onClick={ showProPopup }>
+		<div className={ 'gutena-forms__meta-box-wrapper' } onClick={ showProPopup }>
 			<h2>
-				{ title }
+				{ IconMap[ id ] && IconMap[ id ] } { title }
 				{
 					isPro && (
 						<GutenaFormsProBadge />

@@ -755,6 +755,14 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		}
 	}
 
+	.gutena-forms__meta-box-wrapper {
+		h2 {
+			svg {
+				margin-bottom: -7px;
+			}
+		}
+	}
+
 	// Empty State Styles
 	.gutena-forms__empty-state {
 		display: flex;

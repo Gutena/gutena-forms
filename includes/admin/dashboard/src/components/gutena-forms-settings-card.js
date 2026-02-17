@@ -1,16 +1,16 @@
 import GutenaFormsDescWrapper from "./gutena-forms-desc-wrapper";
 import GutenaFormsToggleField from "./fields/gutena-forms-toggle-field";
-import { Button } from '@wordpress/components';
 import Settings from "../icons/settings";
 import { useState, useEffect } from '@wordpress/element';
+import { NavLink } from 'react-router';
 
 const GutenaFormsSettingsCard = ( { title, desc, isEnabled, icon, name, handleSettingsEnable } ) => {
 
-    const [ enabled, setEnabled ] = useState( false );
+    const [ enabled, setEnabled ] = useState( isEnabled );
 
     useEffect( () => {
         setEnabled( isEnabled );
-    }, [] );
+    }, [ isEnabled ] );
 
     const handleToggleChange = ( value ) => {
         setEnabled( value );
@@ -40,9 +40,11 @@ const GutenaFormsSettingsCard = ( { title, desc, isEnabled, icon, name, handleSe
                 </div>
                 <div>
                     { enabled ? (
-                        <Button>
+                        <NavLink
+                            to={ `/settings/settings/integration/${name}` }
+                        >
                             <Settings />
-                        </Button>
+                        </NavLink>
                     ) : <Settings disabled={ true } /> }
                 </div>
             </div>

@@ -27,7 +27,10 @@ const GutenaFormsTextField = ( { onChange, label, id, desc, value, placeholder }
                 placeholder={ placeholder }
             />
             { desc && (
-                <p className={ 'gutena-forms__field-description' }>{ desc }</p>
+                <p
+                    className={ 'gutena-forms__field-description' }
+                    dangerouslySetInnerHTML={ { __html: desc } }
+              />
             ) }
         </div>
     );

@@ -30,9 +30,43 @@ if ( ! class_exists( 'Gutena_Forms_Brevo' ) && class_exists( 'Gutena_Forms_Integ
 		}
 
 		public function get_settings() {
-		}
 
-		public function save_settings( $settings ) {
+			return array(
+				'id'          => $this->id,
+				'title'       => sprintf( __( '%1$s Settings', 'gutena-froms' ), $this->title ),
+				'description' => $this->description,
+				'fields'      => array(
+					array(
+						'id'      => 'api_key',
+						'type'    => 'text',
+						'name'    => __( 'Brevo API Key', 'gutena-forms' ),
+						'desc'    => sprintf(
+							__( 'Enter your Brevo API key. You can find this in your Brevo account under %1$s. %2$s', 'gutena-forms' ),
+							'<a href="https://help.brevo.com/hc/en-us/articles/360002078479-How-to-find-your-API-key" target="_blank">' . __( 'SMTP & API > API', 'gutena-forms' ) . '</a>',
+							'<br><br>' . __( 'Note: This API key is used to connect your forms to Brevo and will allow us to add contacts to your list. It does not have access to any other parts of your Brevo account.', 'gutena-forms' ),
+						),
+						'default' => '',
+						'value'   => $this->settings['api_key'] ?? '',
+					),
+					array(
+						'id'      => 'list_id',
+						'type'    => 'text',
+						'name'    => __( 'Brevo List ID', 'gutena-forms' ),
+						'desc'    => sprintf(
+							__( 'Enter the List ID for the Brevo list you want to add contacts to. You can find this in your Brevo account under %1$s. %2$s', 'gutena-forms' ),
+							'<a href="https://help.brevo.com/hc/en-us/articles/360002078479-How-to-find-your-API-key" target="_blank">' . __( 'SMTP & API > API', 'gutena-forms' ) . '</a>',
+							'<br><br>' . __( 'Note: This List ID is used to specify which list new contacts will be added to when they submit your forms.', 'gutena-forms' ),
+						),
+						'default' => '',
+						'value'   => $this->settings['list_id'] ?? '',
+					),
+					array(
+						'id'   => 'submit_button',
+						'type' => 'submit',
+						'name' => __( 'Save Settings', 'gutena-forms' ),
+					),
+				),
+			);
 		}
 	}
 

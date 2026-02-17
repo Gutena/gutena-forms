@@ -65,7 +65,7 @@ const GutenaFormsIntegrations = () => {
                                     <GutenaFormsSettingsCard
                                         title={ integration.title }
                                         desc={ integration.desc }
-                                        isEnabled={ integration.isEnabled }
+                                        isEnabled={ integration.enabled }
                                         name={ integration.name }
                                         icon={ IconComponent ? <IconComponent /> : null }
                                         handleSettingsEnable={ handleEnableIntegration }

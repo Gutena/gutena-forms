@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 import { useState, useEffect } from '@wordpress/element';
 import { gutenaFormsFetchSettings } from '../api';
 import GutenaFormsSettingsMetaBox from './gutena-forms-settings-meta-box';
+
 const GutenaFormsSettings = ( { showProPopupHandler } ) => {
 	const { settings_id } = useParams();
 	const [ settings, setSettings ] = useState( false );
@@ -20,6 +21,7 @@ const GutenaFormsSettings = ( { showProPopupHandler } ) => {
 		<div>
 			{ ! loading && settings && (
 				<GutenaFormsSettingsMetaBox
+					id={ settings.id }
 					title={ settings.title }
 					description={ settings.description }
 					items={ settings.fields }

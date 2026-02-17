@@ -12,7 +12,14 @@ if ( ! class_exists( 'Gutena_Forms_Integrations_Endpoints' ) ) :
 	class Gutena_Forms_Integrations_Endpoints {
 		private static $instance;
 
+		private $settings;
+
 		private function __construct() {
+			$this->settings = get_option( 'gutena_forms__integration_settings', array() );
+			if ( ! is_array( $this->settings ) ) {
+				$this->settings = array();
+			}
+
 			add_filter( 'gutena_forms__rest_routs', array( $this, 'rest_routes' ), 10, 2 );
 		}
 
@@ -30,6 +37,13 @@ if ( ! class_exists( 'Gutena_Forms_Integrations_Endpoints' ) ) :
 				'methods'  => $server::READABLE,
 				'auth'     => true,
 				'callback' => array( $this, 'get_all_integrations' ),
+			);
+
+			$routes[] = array(
+				'route'    => 'integrations/toggle',
+				'methods'  => $server::CREATABLE,
+				'auth'     => true,
+				'callback' => array( $this, 'toggle_integration' ),
 			);
 
 			return $routes;
@@ -57,6 +71,25 @@ if ( ! class_exists( 'Gutena_Forms_Integrations_Endpoints' ) ) :
 			return rest_ensure_response(
 				array(
 					'integrations' => $integrations,
+				)
+			);
+		}
+
+		/**
+		 * @param WP_REST_Request $request
+		 */
+		public function toggle_integration( $request ) {
+			$integration = $request->get_param( 'integration' );
+			$status      = $request->get_param( 'toggle' );
+
+			$this->settings[ $integration ]['is_enabled'] = 'true' === $status;
+
+			update_option( 'gutena_forms__integration_settings', $this->settings );
+
+			return rest_ensure_response(
+				array(
+					'success' => true,
+					'message' => sprintf( __( 'Integration %s has been %s', 'gutena-forms' ), $integration, $status === 'true' ? __( 'enabled', 'gutena-forms' ) : __( 'disabled', 'gutena-forms' ) ),
 				)
 			);
 		}
