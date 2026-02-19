@@ -8,8 +8,9 @@ import { __ } from '@wordpress/i18n';
 import Eye from '../icons/eye';
 import { Button } from '@wordpress/components';
 import { Bin } from '../icons/bin';
+import { doAction, applyFilters } from '@wordpress/hooks';
 
-const GutenaFormsFormEntries = ( {  } ) => {
+const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 
 	const { id } = useParams();
 
@@ -17,10 +18,13 @@ const GutenaFormsFormEntries = ( {  } ) => {
 	const [ tableHeaders, setTableHeaders ] = useState( false );
 	const [ tableData, setTableData ] = useState( false );
 	const [ capabilities, setCapabilities ] = useState( [] );
+	const [ statuses, setStatuses ] = useState( [] );
 
 	useEffect( () => {
 
 		setLoading( true );
+
+		doAction( 'gutenaForms.core.functions.fetchAllStatuses', setStatuses );
 
 		gutenaFormsFetchEntriesByFormId( id, 'headers' )
 			.then( ( { headers } )=> {
@@ -49,12 +53,13 @@ const GutenaFormsFormEntries = ( {  } ) => {
 						newTableData[ i ] = {
 							entry_id: entry.entry_id,
 							datetime: entry.added_time,
+							status: entry.entry_status,
 						};
 
 						let entryData = entry.entry_data;
 
 						for ( const header of tableHeaders ) {
-							if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions' ] ) ) {
+							if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions', 'status' ] ) ) {
 								newTableData[ i ][ header.key ] = entryData[ header.key ].value;
 							}
 						}
@@ -142,6 +147,10 @@ const GutenaFormsFormEntries = ( {  } ) => {
 						bulkActionOptions={ bulkActionOptions }
 						tableChildren={ {
 							body: {
+								status: ( { row, header, index } ) => {
+									return applyFilters( 'gutenaForms.entries.status', null, { row, header, index }, statuses, showProPopupHandler );
+								},
+
 								actions: ( { row, header, index } ) => {
 
 									return (

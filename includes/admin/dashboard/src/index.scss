@@ -1118,6 +1118,16 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			}
 		}
 	}
+
+	.gutena-forms__dummy-select {
+		display: flex;
+		width: 100px;
+		padding: 6px 10px;
+		justify-content: space-between;
+		align-items: center;
+		border-radius: 2px;
+		border: 1px solid #E2E2E2;
+	}
 }
 
 // Import Satoshi font (add this if not already loaded globally)

@@ -242,6 +242,13 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 
 				$i++;
 			}
+
+			$headers[] = array(
+				'key'   => 'status',
+				'value' => __( 'Status', 'gutena-forms' ),
+				'width' => '150px',
+			);
+
 			$headers[] = array(
 				'key'   => 'datetime',
 				'value' => __( 'Submitted On', 'gutena-forms' ),
@@ -266,7 +273,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		public function get_entry_data( $form_id ) {
 			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
 
-			$sql    = 'SELECT entries.entry_data, entries.entry_id, entries.added_time FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s AND entries.trash = 0';
+			$sql    = 'SELECT entries.entry_data, entries.entry_id, entries.added_time, entries.entry_status FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s AND entries.trash = 0';
 			$sql    = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms,

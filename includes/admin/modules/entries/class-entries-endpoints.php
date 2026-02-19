@@ -332,7 +332,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 
 			return rest_ensure_response(
 				array(
-					'data' => $entries,
+					'data'         => $entries,
 					'status'       => 'success',
 					'current_user_can_manage' => apply_filters(
 						'gutena_forms__current_user_can',

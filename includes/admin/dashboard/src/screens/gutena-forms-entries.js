@@ -137,7 +137,7 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 					) }
 
 					{ id && 'entries' === slug && (
-						<GutenaFormsFormEntries />
+						<GutenaFormsFormEntries showProPopupHandler={ showProPopupHandler } />
 					) }
 
 					{ ! id && (

@@ -17,6 +17,7 @@ import Profile from '../icons/profile';
 import { __ } from '@wordpress/i18n';
 import Notes from '../icons/notes';
 import { SelectControl } from '@wordpress/components';
+import { ArrowDown } from '../icons/arrow';
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -146,6 +147,25 @@ addFilter(
 		};
 
 		return components;
+	},
+	1
+);
+
+addFilter(
+	'gutenaForms.entries.status',
+	'gutena-forms-free-dummy-status',
+	( component, args, statuses, proPopup ) => {
+		return (
+			<div
+				className={ 'gutena-forms__dummy-select' }
+				onClick={ proPopup }
+			>
+				<div>{ args.row.status }</div>
+				<div>
+					<ArrowDown />
+				</div>
+			</div>
+		);
 	},
 	1
 );
