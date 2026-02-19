@@ -1,6 +1,6 @@
 import { ArrowLeft } from '../icons/arrow';
 import { useState, useEffect } from '@wordpress/element';
-import { Link } from 'react-router';
+import { Link, NavLink } from 'react-router';
 import { gutenaFormsFetchPrevNextEntry } from '../api/entries';
 
 import GutenaFormsEntryData from '../components/entries/gutena-forms-entry-data';
@@ -36,30 +36,40 @@ const GutenaFormsSingleEntryPage = ( { entryId, showProPopupHandler } ) => {
 		<div className={ 'gutena-forms__entry-screen' }>
 			{ ! loading && (
 				<>
-					<div>
-						<h2 className={ 'heading' } style={ { marginBottom: '30px' } }>
-							{ prevEntryId && (
-								<Link
-									className={ 'gutena-forms__entry-nav-button' }
-									to={ `/settings/entry/${ prevEntryId }` }
-								>
-									<ArrowLeft />
-								</Link>
-							) }
-							&nbsp;
-							Entry { currentEntry } / { totalEntries }
-							&nbsp;
-							{ nextEntryId && (
-								<Link
-									className={ 'gutena-forms__entry-nav-button' }
-									to={ `/settings/entry/${ nextEntryId }` }
-								>
+					<div style={ { display: 'flex', justifyContent: 'space-between' } }>
+						<div>
+							<h2 className={ 'heading' } style={ { marginBottom: '30px' } }>
+								{ prevEntryId && (
+									<Link
+										className={ 'gutena-forms__entry-nav-button' }
+										to={ `/settings/entry/${ prevEntryId }` }
+									>
+										<ArrowLeft />
+									</Link>
+								) }
+								&nbsp;
+								Entry { currentEntry } / { totalEntries }
+								&nbsp;
+								{ nextEntryId && (
+									<Link
+										className={ 'gutena-forms__entry-nav-button' }
+										to={ `/settings/entry/${ nextEntryId }` }
+									>
 									<span style={ { display: 'inline-block', transform: 'scaleX( -1 )' } }>
 										<ArrowLeft />
 									</span>
-								</Link>
-							) }
-						</h2>
+									</Link>
+								) }
+							</h2>
+						</div>
+
+						<div className={ 'gutena-forms__submit-button secondary' }>
+							<NavLink
+								to={ '/settings/entries' }
+							>
+								<ArrowLeft color={ '#0DA88C' } /> Go Back
+							</NavLink>
+						</div>
 					</div>
 
 					<div className={ 'gutena-forms__entry-screen-container' }>

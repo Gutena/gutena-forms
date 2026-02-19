@@ -1091,12 +1091,14 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 	}
 
 	.gutena-forms__submit-button {
-		button {
+		button,
+		a {
 			background: #28a98c;
 		}
 
 		&.secondary {
-			button {
+			button,
+			a {
 				border-radius: 2px;
 				border: 1px solid #0DA88C;
 				background: linear-gradient(0deg, #FFF 0%, #FFF 100%), #E0ECFF;
@@ -1105,6 +1107,14 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				font-weight: 500;
 				box-shadow: none;
 				padding: 6px 10px;
+			}
+
+			a {
+				text-decoration: none;
+
+				svg {
+					margin: 0 5px -1px 0;
+				}
 			}
 		}
 	}
