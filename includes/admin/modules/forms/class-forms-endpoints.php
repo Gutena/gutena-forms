@@ -2,7 +2,7 @@
 /**
  * REST API endpoints for forms (get all, delete).
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package Gutena Forms
  */
 
@@ -12,14 +12,14 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Endpoints' ) ) :
 	/**
 	 * Handles REST API endpoints for forms (get all, delete).
 	 *
-	 * @since 1.6.0
+	 * @since 1.7.0
 	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Forms_Endpoints {
 		/**
 		 * Singleton instance.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Forms_Endpoints $instance The single instance of the class.
 		 */
 		private static $instance;
@@ -27,7 +27,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Endpoints' ) ) :
 		/**
 		 * Forms model instance.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Forms_Model $forms_model Forms model instance.
 		 */
 		private $forms_model;
@@ -35,7 +35,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Endpoints' ) ) :
 		/**
 		 * Get singleton instance.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return Gutena_Forms_Forms_Endpoints
 		 */
 		public static function get_instance() {
@@ -48,7 +48,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Endpoints' ) ) :
 		/**
 		 * Set forms model and register REST routes with gutena_forms__rest_routs filter.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 */
 		private function __construct() {
 			$this->forms_model = Gutena_Forms_Forms_Model::get_instance();
@@ -59,7 +59,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Endpoints' ) ) :
 		/**
 		 * Add forms REST routes (get-all, delete).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param array          $routes Existing REST routes.
 		 * @param WP_REST_Server $server REST server.
 		 * @return array Modified routes.
@@ -86,7 +86,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Endpoints' ) ) :
 		/**
 		 * Get all forms (id, datetime, title, status, entries count, author, permalink).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return WP_REST_Response
 		 */
 		public function get_forms() {
@@ -103,7 +103,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Endpoints' ) ) :
 		/**
 		 * Delete one or more forms by form_id (post ID).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'form_id' (int or array of ints).
 		 * @return WP_REST_Response
 		 */

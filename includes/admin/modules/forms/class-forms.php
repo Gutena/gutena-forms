@@ -2,7 +2,7 @@
 /**
  * Forms list and management admin settings module.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package Gutena Forms
  */
 
@@ -12,14 +12,14 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 	/**
 	 * Forms list and management admin settings module.
 	 *
-	 * @since 1.6.0
+	 * @since 1.7.0
 	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Forms extends Gutena_Forms_Forms_Settings {
 		/**
 		 * Singleton instance.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Forms $instance The single instance of the class.
 		 */
 		private static $instance;
@@ -27,7 +27,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		/**
 		 * Get singleton instance.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return Gutena_Forms_Forms
 		 */
 		public static function get_instance() {
@@ -41,7 +41,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		/**
 		 * Load forms model and REST endpoints.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 */
 		public function __construct() {
 			require_once plugin_dir_path( __FILE__ ) . 'class-forms-model.php';
@@ -51,7 +51,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		/**
 		 * Register the forms settings module with the gutena_forms__settings filter.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 */
 		public static function register_module() {
 			add_filter(
@@ -68,7 +68,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		/**
 		 * Get settings definition for the forms list template.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return array
 		 */
 		public function get_settings() {
@@ -85,7 +85,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms' ) && class_exists( 'Gutena_Forms_Forms
 		/**
 		 * Save settings (no-op for forms module).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param array $settings Settings array. Unused.
 		 */
 		public function save_settings( $settings ) {

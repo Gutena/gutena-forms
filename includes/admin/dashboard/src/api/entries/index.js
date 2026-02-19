@@ -1,7 +1,7 @@
 /**
  * Gutena Forms entries REST API helpers (single entry, prev/next, data, details, delete).
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package Gutena Forms
  */
 
@@ -12,7 +12,7 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Fetch previous/next entry context for the given entry ID (for entry detail navigation).
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {number|string} id Entry ID.
  * @returns {Promise<Object>} Object with prevEntryId, nextEntryId, totalEntries, serialNo.
  */
@@ -40,7 +40,7 @@ export async function gutenaFormsFetchPrevNextEntry( id ) {
 /**
  * Fetch raw entry data (submitted field values) by entry ID.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {number|string} id Entry ID.
  * @returns {Promise<Object>} Entry data object.
  */
@@ -63,7 +63,7 @@ export async function gutenaFormsFetchEntryData( id ) {
 /**
  * Fetch full entry details (metadata, user name, form name, formatted date) by entry ID.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {number|string} id Entry ID.
  * @returns {Promise<Object>} Entry details object.
  */
@@ -86,7 +86,7 @@ export async function gutenaFormsFetchEntryDetails( id ) {
 /**
  * Fetch entries from the same user as the given entry (related entries).
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {number|string} id Entry ID.
  * @returns {Promise<Array>} List of related entry objects.
  */
@@ -109,7 +109,7 @@ export async function gutenaFormsFetchRelatedEntries( id ) {
 /**
  * Fetch entries data or headers for a form by form ID and type ('headers' or 'data').
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {number|string} id   Form (block) ID.
  * @param {string}        type One of 'headers' or 'data'.
  * @returns {Promise<Array>} Headers array or entries data array depending on type.
@@ -135,7 +135,7 @@ export async function gutenaFormsFetchEntriesByFormId( id, type ) {
 /**
  * Delete a single entry (move to trash) via the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {number} entryId Entry ID to delete (move to trash).
  * @returns {Promise<Object>} API response.
  */
@@ -156,7 +156,7 @@ export async function gutenaFormsDeleteEntry( entryId ) {
 /**
  * Delete multiple entries (move to trash) via the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {number[]} entryIds Array of entry IDs to delete (move to trash).
  * @returns {Promise<Object>} API response.
  */

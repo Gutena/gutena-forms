@@ -2,7 +2,7 @@
 /**
  * Gutena Forms Entries REST API Module
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package Gutena Forms
  */
 
@@ -12,14 +12,14 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 	/**
 	 * Handles REST API endpoints for form entries (list, get, delete, search, etc.).
 	 *
-	 * @since 1.6.0
+	 * @since 1.7.0
 	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Entries_Endpoints {
 		/**
 		 * Singleton instance
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Entries_Endpoints $instance Singleton instance of the class.
 		 */
 		private static $instance;
@@ -27,7 +27,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Entries Model instance
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Entries_Model $entries_model Entries Model instance.
 		 */
 		private $entries_model;
@@ -36,7 +36,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		 * Get singleton instance
 		 *
 		 * @return Gutena_Forms_Entries_Endpoints
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 */
 		public static function get_instance() {
 			if ( is_null( self::$instance ) ) {
@@ -49,7 +49,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Set entries model and register REST routes with gutena_forms__rest_routs filter.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 */
 		private function __construct() {
 			$this->entries_model = Gutena_Forms_Entries_Model::get_instance();
@@ -60,7 +60,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Add entries REST routes (get-all, entry/data, entry/details, related, search, delete, etc.).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param array          $routes Existing REST routes.
 		 * @param WP_REST_Server $server REST server.
 		 * @return array Modified routes.
@@ -150,7 +150,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Get all entries, optionally filtered by form_id.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Optional 'form_id' param.
 		 * @return WP_REST_Response
 		 */
@@ -174,7 +174,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Get raw entry data (submitted field values) by entry ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'id' (entry ID).
 		 * @return WP_REST_Response
 		 */
@@ -194,7 +194,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Get full entry details (metadata and formatted fields) by entry ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'id' (entry ID).
 		 * @return WP_REST_Response
 		 */
@@ -230,7 +230,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Get entries from the same user as the given entry.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'id' (entry ID).
 		 * @return WP_REST_Response
 		 */
@@ -261,7 +261,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Get form list (title and block id) for entry search dropdown.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request (unused).
 		 * @return WP_REST_Response
 		 */
@@ -279,7 +279,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Fetch all entries for a form by form (block) ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'formId'.
 		 * @return WP_REST_Response
 		 */
@@ -303,7 +303,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Get entries table headers for a form by form ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'form_id'.
 		 * @return WP_REST_Response
 		 */
@@ -322,7 +322,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Get entries data (rows) for a form by form ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'form_id'.
 		 * @return WP_REST_Response
 		 */
@@ -346,7 +346,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Fetch current entry context: total count, previous/next entry IDs, serial number.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'id' (entry ID).
 		 * @return WP_REST_Response
 		 */
@@ -366,7 +366,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Delete entries (move to trash) by entry ID(s).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'entry_id' (int) or 'entry_ids' (array).
 		 * @return WP_REST_Response Success or error response with appropriate status code.
 		 */
@@ -428,7 +428,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 		/**
 		 * Get entry status (e.g., read/unread) by entry ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param WP_REST_Request $request REST request. Expects 'entryId' (entry ID).
 		 * @return WP_REST_Response REST response with entry status.
 		 */

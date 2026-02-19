@@ -1,7 +1,7 @@
 /**
  * Register Free Components to Pro Version
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package GutenaForms
  */
 

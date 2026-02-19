@@ -2,7 +2,7 @@
 /**
  * Entries admin module: form submissions list and entry management.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package Gutena Forms
  */
 
@@ -12,14 +12,14 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 	/**
 	 * Admin settings module for viewing and managing form entries.
 	 *
-	 * @since 1.6.0
+	 * @since 1.7.0
 	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Entries extends Gutena_Forms_Forms_Settings {
 		/**
 		 * Singleton instance
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Entries $instance Singleton instance of the class.
 		 */
 		private static $instance;
@@ -27,7 +27,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 		/**
 		 * Register the entries and entry settings modules with the gutena_forms__settings filter.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 */
 		public static function register_module() {
 			add_filter(
@@ -45,7 +45,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 		/**
 		 * Get singleton instance.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return Gutena_Forms_Entries
 		 */
 		public static function get_instance() {
@@ -59,7 +59,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 		/**
 		 * Load entries model and REST endpoints.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 */
 		public function __construct() {
 			require_once plugin_dir_path( __FILE__ ) . 'class-entries-model.php';
@@ -69,7 +69,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 		/**
 		 * Get settings definition for the entries list template.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return array
 		 */
 		public function get_settings() {
@@ -86,7 +86,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries' ) && class_exists( 'Gutena_Forms_For
 		/**
 		 * Save settings (no-op for entries module).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param array $settings Settings to save. Unused.
 		 */
 		public function save_settings( $settings ) {

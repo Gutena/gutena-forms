@@ -1,7 +1,7 @@
 /**
  * Dashboard screen template mappings (settings and main pages).
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package Gutena Forms
  */
 
@@ -13,7 +13,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * React components for settings sub-screens (pro: tags, status, user access).
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @type {Object.<string, React.ComponentType>}
  */
 export const SettingsTemplates = {
@@ -29,7 +29,7 @@ import GutenaFormsEntries from '../screens/gutena-forms-entries';
 /**
  * React components for main dashboard pages (forms list, entries list).
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @type {Object.<string, React.ComponentType>}
  */
 export const PageTemplates = {

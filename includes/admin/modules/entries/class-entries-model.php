@@ -2,7 +2,7 @@
 /**
  * Gutena Forms Entries Model
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package Gutena Forms
  */
 
@@ -12,14 +12,14 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 	/**
 	 * Data access for form entries: get details, data, related entries, headers, delete.
 	 *
-	 * @since 1.6.0
+	 * @since 1.7.0
 	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Entries_Model {
 		/**
 		 * Singleton instance
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Entries_Model Singleton instance of the class.
 		 */
 		private static $instance;
@@ -27,7 +27,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * WordPress database global object
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var WPDB $wpdb WordPress database global object.
 		 */
 		private $wpdb;
@@ -35,7 +35,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Store instance
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Store $store Store instance.
 		 */
 		private $store;
@@ -43,7 +43,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Set WordPress database and store instances.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 */
 		public function __construct() {
 			global $wpdb;
@@ -55,7 +55,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Get singleton instance
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return Gutena_Forms_Entries_Model
 		 */
 		public static function get_instance() {
@@ -69,7 +69,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Get entry details
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|string $entry_id Entry ID.
 		 *
 		 * @return array|object|stdClass|null
@@ -94,7 +94,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Get entry data
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|string $entry_id Entry ID.
 		 *
 		 * @return string|null
@@ -113,7 +113,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Get related entries
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|string $entry_id Entry ID.
 		 *
 		 * @return array|object|stdClass[]|null
@@ -133,7 +133,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Get count of entries by form ID
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|string $form_id Form ID.
 		 *
 		 * @return string|null
@@ -154,7 +154,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Get all entries, optionally by form ID
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int $form_id Form ID.
 		 *
 		 * @return array|object|stdClass[]|null
@@ -198,7 +198,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Get table headers for entries list by form ID (block/post ID).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|string $form_id Form block/post ID.
 		 * @return array[] Array of header definitions (key, value, width).
 		 */
@@ -259,7 +259,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Get entry rows (data, entry_id, added_time) for a form by form block/post ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|string $form_id Form block/post ID.
 		 * @return array[] List of entry records with entry_data unserialized.
 		 */
@@ -289,7 +289,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Fetch current entry context: total count, previous/next entry IDs, and serial number.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|string $entry_id   Current entry ID.
 		 * @param int        $serial_no  Unused; serial number is computed from results.
 		 * @return array{total_count: int, previous_entry: int|null, next_entry: int|null, serial_no: int}
@@ -351,7 +351,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Delete entries (move to trash) by entry ID(s).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|int[] $entry_ids Single entry ID or array of entry IDs.
 		 * @return bool True on success, false on failure.
 		 */
@@ -362,7 +362,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		/**
 		 * Get entry status by entry ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param string $entry_id Entry id.
 		 */
 		public function get_status_by_id( $entry_id ) {

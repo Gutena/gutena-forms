@@ -2,7 +2,7 @@
 /**
  * Forms model: list, delete, get name/block id for gutena_forms post type.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package Gutena Forms
  */
 
@@ -12,14 +12,14 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 	/**
 	 * Data access for Gutena forms (CPT gutena_forms): list, delete, get name/block id.
 	 *
-	 * @since 1.6.0
+	 * @since 1.7.0
 	 * @package Gutena Forms
 	 */
 	class Gutena_Forms_Forms_Model {
 		/**
 		 * Singleton instance.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Forms_Model $instance The single instance of the class.
 		 */
 		private static $instance;
@@ -27,7 +27,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		/**
 		 * WordPress database instance.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var wpdb $wpdb WordPress database instance.
 		 */
 		private $wpdb;
@@ -35,7 +35,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		/**
 		 * Store instance for table names and entry updates.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @var Gutena_Forms_Store $store Store instance.
 		 */
 		private $store;
@@ -43,7 +43,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		/**
 		 * Set WordPress database and store instances.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 */
 		public function __construct() {
 			global $wpdb;
@@ -54,7 +54,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		/**
 		 * Get singleton instance.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return Gutena_Forms_Forms_Model
 		 */
 		public static function get_instance() {
@@ -68,7 +68,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		/**
 		 * Get all published/draft forms with id, datetime, title, status, entries count, author, permalink.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return array[] List of form arrays.
 		 */
 		public function get_all() {
@@ -99,7 +99,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		/**
 		 * Permanently delete a form post by ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|string $form_id Form (post) ID.
 		 * @return WP_Post|false|null Post object on success, false if not gutena_forms, null on failure.
 		 */
@@ -118,7 +118,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		/**
 		 * Get form display name by form ID.
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @param int|string $form_id Form ID.
 		 * @return string Form name (currently placeholder).
 		 */
@@ -129,7 +129,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		/**
 		 * Get list of published forms with title and block id (for search options).
 		 *
-		 * @since 1.6.0
+		 * @since 1.7.0
 		 * @return array[] List of arrays with 'title' and 'id' (block id).
 		 */
 		public function get_name_and_block_id() {

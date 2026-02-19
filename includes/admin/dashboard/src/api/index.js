@@ -1,7 +1,7 @@
 /**
  * Gutena Forms dashboard REST API client.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @package Gutena Forms
  */
 
@@ -11,7 +11,7 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * REST API base namespaces for Gutena Forms and Pro.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @type {{namespace: string, proNamespace: string}}
  */
 export const GutenaFormsRestConfiguration = {
@@ -22,7 +22,7 @@ export const GutenaFormsRestConfiguration = {
 /**
  * Fetch main dashboard menus from the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @returns {Promise<Object>} Menus object keyed by menu slug.
  */
 export async function gutenaFormsFetchMenus() {
@@ -40,7 +40,7 @@ export async function gutenaFormsFetchMenus() {
 /**
  * Fetch forms list from the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @returns {Promise<Array>} List of forms.
  */
 export async function gutenaFormsFetchForms() {
@@ -58,7 +58,7 @@ export async function gutenaFormsFetchForms() {
 /**
  * Fetch left navigation settings menus from the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @returns {Promise<Object>} Settings menus object keyed by menu slug.
  */
 export async function gutenaFormsFetchSettingsMenu() {
@@ -76,7 +76,7 @@ export async function gutenaFormsFetchSettingsMenu() {
 /**
  * Fetch settings for a given settings screen from the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {string} settingsId Settings screen id (e.g. 'forms', 'entries', 'honeypot').
  * @returns {Promise<Object>} Settings payload (fields, title, etc.).
  */
@@ -101,7 +101,7 @@ export async function gutenaFormsFetchSettings( settingsId ) {
 /**
  * Save/update settings for a given settings screen via the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {string} settingsId   Settings screen id.
  * @param {Object} settingsData Settings payload to save.
  * @returns {Promise<Object>} API response.
@@ -126,7 +126,7 @@ export async function gutenaFormsUpdateSettings( settingsId, settingsData ) {
 /**
  * Fetch tags from the Gutena Forms Pro REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @returns {Promise<Array>} List of tags. Throws if not Pro.
  */
 export async function gutenaFormsFetchTags() {
@@ -145,7 +145,7 @@ export async function gutenaFormsFetchTags() {
 /**
  * Fetch status list from the Gutena Forms Pro REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @returns {Promise<Array>} List of statuses. Throws if not Pro.
  */
 export async function gutenaFormsFetchStatus() {
@@ -164,7 +164,7 @@ export async function gutenaFormsFetchStatus() {
 /**
  * Fetch users list from the Gutena Forms Pro REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @returns {Promise<Array>} List of users. Throws if not Pro.
  */
 export async function gutenaFormsFetchUsers() {
@@ -183,7 +183,7 @@ export async function gutenaFormsFetchUsers() {
 /**
  * Fetch all forms from the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @returns {Promise<Array>} List of forms with id, datetime, title, status, entries, author, permalink.
  */
 export async function gutenaFormsFetchAllForms() {
@@ -202,7 +202,7 @@ export async function gutenaFormsFetchAllForms() {
 /**
  * Delete a single form via the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {number} formId Form (post) ID to delete.
  * @returns {Promise<Object>} API response.
  */
@@ -227,7 +227,7 @@ export async function gutenaFormsDeleteForm( formId ) {
 /**
  * Delete multiple forms via the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {number[]} formIds Array of form (post) IDs to delete.
  * @returns {Promise<Object>} API response.
  */
@@ -252,7 +252,7 @@ export async function deleteMultipleForms( formIds ) {
 /**
  * Fetch all entries from the Gutena Forms REST API.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @returns {Promise<{entries: *, capabilities}>} List of entries (optionally filtered by form).
  */
 export async function gutenaFormsFetchAllEntries() {
@@ -274,7 +274,7 @@ export async function gutenaFormsFetchAllEntries() {
 /**
  * Fetch form search options (id and title) for entry search dropdown.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @returns {Promise<Array>} List of { id, title } for published forms.
  */
 export async function gutenaFromsIdTitle() {
@@ -293,7 +293,7 @@ export async function gutenaFromsIdTitle() {
 /**
  * Fetch all entries for a given form (block) ID.
  *
- * @since 1.6.0
+ * @since 1.7.0
  * @param {string|number} formId Form block ID.
  * @returns {Promise<Array>} List of entries for the form.
  */
