@@ -3,7 +3,7 @@ import { SelectControl, Button } from '@wordpress/components';
 import GutenaFormsDatatable from '../components/gutena-forms-datatable';
 import GutenaFormsSingleEntryPage from './gutena-forms-single-entry-page';
 import GutenaFormsFormEntries from './gutena-forms-form-entries';
-import { gutenaFormsFetchAllEntries, gutenaFromsIdTitle, gutenaFormsFetchEntriesByFormId, gutenaFormsDeleteEntry, deleteMultipleEntries } from '../api';
+import { gutenaFormsFetchAllEntries, gutenaFromsIdTitle, gutenaFormsFetchEntriesByFormId, gutenaFormsFetchEntriesFiltered, gutenaFormsFetchTags, gutenaFormsFetchStatus, gutenaFormsDeleteEntry, deleteMultipleEntries } from '../api';
 import { Link, useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import Eye from '../icons/eye';
@@ -13,82 +13,145 @@ import { __ } from '@wordpress/i18n';
 const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 
 	const { id, slug } = useParams();
+	const hasPro = ! ! ( typeof gutenaFormsAdmin !== 'undefined' && gutenaFormsAdmin.hasPro );
+
 	const [ entries, setEntries ] = useState( [] );
 	const [ loading, setLoading ] = useState( true );
 	const [ formsFilter, setFormsFilter ] = useState( [] );
 	const [ selectedFormFilter, setSelectedFormFilter ] = useState( 'all' );
 	const [ capabilities, setCapabilities ] = useState( {} );
 
+	const [ tagsOptions, setTagsOptions ] = useState( [ { label: __( 'All Tags', 'gutena-forms' ), value: 'all' } ] );
+	const [ statusesOptions, setStatusesOptions ] = useState( [ { label: __( 'All Statuses', 'gutena-forms' ), value: 'all' } ] );
+	const [ selectedTag, setSelectedTag ] = useState( 'all' );
+	const [ selectedStatus, setSelectedStatus ] = useState( 'all' );
 
 	useEffect( () => {
-		setLoading( true );
-
-		gutenaFormsFetchAllEntries()
-			.then( ({ entries, capabilities } ) => {
-				setLoading( false );
-				setEntries( entries );
-				setCapabilities( capabilities );
-			} );
-
 		gutenaFromsIdTitle()
-			.then( formsFilter => {
-				let formFilterOptions = [ { label: 'All Forms', value: 'all' } ];
-				Object.keys( formsFilter ).map( ( formFilterKey ) => {
-					formFilterOptions.push( { label: formsFilter[ formFilterKey ].title, value: formsFilter[ formFilterKey ].id } );
+			.then( formFilterData => {
+				const formFilterOptions = [ { label: __( 'All Forms', 'gutena-forms' ), value: 'all' } ];
+				Object.keys( formFilterData ).forEach( ( formFilterKey ) => {
+					formFilterOptions.push( { label: formFilterData[ formFilterKey ].title, value: formFilterData[ formFilterKey ].id } );
 				} );
 				setFormsFilter( formFilterOptions );
 			} );
-	}, [] );
 
-	const FormFilter = () => {
+		if ( hasPro ) {
+			gutenaFormsFetchTags()
+				.then( tags => {
+					const opts = [ { label: __( 'All Tags', 'gutena-forms' ), value: 'all' } ];
+					if ( tags && typeof tags === 'object' ) {
+						Object.keys( tags ).forEach( slug => {
+							const t = tags[ slug ];
+							if ( t && t.title ) {
+								opts.push( { label: t.title, value: slug } );
+							}
+						} );
+					}
+					setTagsOptions( opts );
+				} )
+				.catch( () => {} );
 
-		const onChangeFormName = ( value ) => {
-			setSelectedFormFilter( value );
-			setLoading( true );
+			gutenaFormsFetchStatus()
+				.then( statuses => {
+					const opts = [ { label: __( 'All Statuses', 'gutena-forms' ), value: 'all' } ];
+					if ( statuses && Array.isArray( statuses ) ) {
+						statuses.forEach( s => {
+							if ( s && s.slug && s.title ) {
+								opts.push( { label: s.title, value: s.slug } );
+							}
+						} );
+					} else if ( statuses && typeof statuses === 'object' ) {
+						Object.keys( statuses ).forEach( slug => {
+							const s = statuses[ slug ];
+							if ( s && s.title ) {
+								opts.push( { label: s.title, value: slug } );
+							}
+						} );
+					}
+					setStatusesOptions( opts );
+				} )
+				.catch( () => {} );
+		}
+	}, [ hasPro ] );
 
-			if ( 'all' === value ) {
-				gutenaFormsFetchAllEntries()
-					.then( entries => {
-						setLoading( false );
-						setEntries( entries.entries );
-					} );
-			} else {
-				gutenaFormsFetchEntriesByFormId( value )
-					.then( entries => {
-						setLoading( false );
-						setEntries( entries );
-					} );
-			}
+	const fetchEntriesForCurrentFilters = () => {
+		setLoading( true );
+
+		const useProFilter = hasPro && ( selectedTag !== 'all' || selectedStatus !== 'all' );
+
+		if ( useProFilter ) {
+			gutenaFormsFetchEntriesFiltered( {
+				formId: selectedFormFilter === 'all' ? undefined : selectedFormFilter,
+				tag: selectedTag === 'all' ? undefined : selectedTag,
+				status: selectedStatus === 'all' ? undefined : selectedStatus,
+			} )
+				.then( ( { entries: list, capabilities: caps } ) => {
+					setLoading( false );
+					setEntries( list );
+					setCapabilities( caps );
+				} )
+				.catch( () => setLoading( false ) );
+			return;
 		}
 
-		return (
-			<div>
-				<SelectControl
-					options={ formsFilter }
-					onChange={ onChangeFormName }
-					value={ selectedFormFilter }
-				/>
-			</div>
-		);
-	};
-
-	const refreshEntries = () => {
-		setLoading( true );
-		if ( 'all' === selectedFormFilter ) {
+		if ( selectedFormFilter === 'all' ) {
 			gutenaFormsFetchAllEntries()
-				.then( entries => {
+				.then( ( { entries: list, capabilities: caps } ) => {
 					setLoading( false );
-					setEntries( entries.entries );
+					setEntries( list );
+					setCapabilities( caps );
 				} )
 				.catch( () => setLoading( false ) );
 		} else {
 			gutenaFormsFetchEntriesByFormId( selectedFormFilter )
-				.then( entries => {
+				.then( list => {
 					setLoading( false );
-					setEntries( entries );
+					setEntries( list );
 				} )
 				.catch( () => setLoading( false ) );
 		}
+	};
+
+	useEffect( () => {
+		fetchEntriesForCurrentFilters();
+	}, [ selectedFormFilter, selectedTag, selectedStatus ] );
+
+	const FormFilter = () => (
+		<div>
+			<SelectControl
+				style={ { width: '100px' } }
+				options={ formsFilter }
+				onChange={ value => setSelectedFormFilter( value ) }
+				value={ selectedFormFilter }
+			/>
+		</div>
+	);
+
+	const TagFilter = () => (
+		<div>
+			<SelectControl
+				style={ { width: '100px' } }
+				options={ tagsOptions }
+				onChange={ value => setSelectedTag( value ) }
+				value={ selectedTag }
+			/>
+		</div>
+	);
+
+	const StatusFilter = () => (
+		<div>
+			<SelectControl
+				style={ { width: '100px' } }
+				options={ statusesOptions }
+				onChange={ value => setSelectedStatus( value ) }
+				value={ selectedStatus }
+			/>
+		</div>
+	);
+
+	const refreshEntries = () => {
+		fetchEntriesForCurrentFilters();
 	};
 
 	const handleDeleteEntry = ( row ) => {
@@ -240,6 +303,7 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 								customFilters={ {
 									components: [
 										FormFilter,
+										...( hasPro ? [ TagFilter, StatusFilter ] : [] ),
 									]
 								} }
 							/>

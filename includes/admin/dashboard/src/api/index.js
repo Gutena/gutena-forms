@@ -16,7 +16,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 export const GutenaFormsRestConfiguration = {
 	namespace: 'gutena-forms/v1/',
-	proNamespace: 'gutena-forms/pro/v1/',
+	proNamespace: 'gutena-forms-pro/v1/',
 };
 
 /**
@@ -151,7 +151,7 @@ export async function gutenaFormsFetchTags() {
 export async function gutenaFormsFetchStatus() {
 	const response = await apiFetch( {
 		method: 'GET',
-		path: `${ GutenaFormsRestConfiguration.proNamespace }status/get-all`,
+		path: `${ GutenaFormsRestConfiguration.proNamespace }statuses/get-all`,
 	} );
 
 	if ( response.status ) {
@@ -311,6 +311,47 @@ export async function gutenaFormsFetchEntriesByFormId( formId ) {
 	}
 
 	throw new Error( 'Gutena Forms FetchEntriesByFormId Error' );
+}
+
+/**
+ * Fetch entries filtered by optional form_id, tag, status (Pro API).
+ *
+ * @since 1.7.0
+ * @param {Object} params Optional filters.
+ * @param {string|number} [params.formId] Form block ID.
+ * @param {string} [params.tag] Tag slug.
+ * @param {string} [params.status] Status slug.
+ * @returns {Promise<{entries: *, capabilities}>} List of entries and capabilities.
+ */
+export async function gutenaFormsFetchEntriesFiltered( { formId, tag, status } = {} ) {
+	const query = {};
+	if ( formId ) {
+		query.form_id = formId;
+	}
+	if ( tag ) {
+		query.tag = tag;
+	}
+	if ( status ) {
+		query.status = status;
+	}
+
+	const path = Object.keys( query ).length
+		? addQueryArgs( `${ GutenaFormsRestConfiguration.proNamespace }entries/get-all`, query )
+		: `${ GutenaFormsRestConfiguration.proNamespace }entries/get-all`;
+
+	const response = await apiFetch( {
+		method: 'GET',
+		path,
+	} );
+
+	if ( response.entries ) {
+		return {
+			entries: response.entries,
+			capabilities: response.current_user_can_manage || {},
+		};
+	}
+
+	throw new Error( 'Gutena Forms FetchEntriesFiltered Error' );
 }
 
 export { gutenaFormsDeleteEntry, deleteMultipleEntries } from './entries';
