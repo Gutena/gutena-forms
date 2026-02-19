@@ -50,7 +50,7 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 				gutenaFormsFetchAllEntries()
 					.then( entries => {
 						setLoading( false );
-						setEntries( entries );
+						setEntries( entries.entries );
 					} );
 			} else {
 				gutenaFormsFetchEntriesByFormId( value )
