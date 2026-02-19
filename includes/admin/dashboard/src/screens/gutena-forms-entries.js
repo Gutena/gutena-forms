@@ -78,7 +78,7 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 			gutenaFormsFetchAllEntries()
 				.then( entries => {
 					setLoading( false );
-					setEntries( entries.entries );
+					setEntries( entries );
 				} )
 				.catch( () => setLoading( false ) );
 		} else {
