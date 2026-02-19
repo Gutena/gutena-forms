@@ -208,7 +208,7 @@ export async function gutenaFormsFetchAllForms() {
  */
 export async function gutenaFormsDeleteForm( formId ) {
 	const response = await apiFetch( {
-		method: 'DELETE',
+		method: 'GET',
 		path: addQueryArgs(
 			`${ GutenaFormsRestConfiguration.namespace }forms/delete/`,
 			{
@@ -233,7 +233,7 @@ export async function gutenaFormsDeleteForm( formId ) {
  */
 export async function deleteMultipleForms( formIds ) {
 	const response = await apiFetch( {
-		method: 'DELETE',
+		method: 'GET',
 		path: addQueryArgs(
 			`${ GutenaFormsRestConfiguration.namespace }forms/delete/`,
 			{
