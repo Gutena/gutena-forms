@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
 import { __ } from '@wordpress/i18n';
+import {applyFilters, doAction} from "@wordpress/hooks";
 
 const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 
@@ -26,6 +27,8 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 	const [ selectedTag, setSelectedTag ] = useState( 'all' );
 	const [ selectedStatus, setSelectedStatus ] = useState( 'all' );
 
+	const [ statuses, setStatuses ] = useState( [] );
+
 	useEffect( () => {
 		gutenaFromsIdTitle()
 			.then( formFilterData => {
@@ -35,6 +38,8 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 				} );
 				setFormsFilter( formFilterOptions );
 			} );
+
+		doAction( 'gutenaForms.core.functions.fetchAllStatuses', setStatuses );
 
 		if ( hasPro ) {
 			gutenaFormsFetchTags()
@@ -228,6 +233,11 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 										value: 'First Value',
 									},
 									{
+										'key': 'status',
+										'value': 'Status',
+										'width': '100px',
+									},
+									{
 										key: 'datetime',
 										value: 'Date & Time',
 										width: '150px',
@@ -261,6 +271,10 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 													) }
 												</div>
 											);
+										},
+
+										status: ( { row, header, index } ) => {
+											return applyFilters( 'gutenaForms.entries.status', null, { row, header, index }, statuses, showProPopupHandler );
 										},
 
 										actions: ( { row } ) => {

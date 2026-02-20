@@ -160,7 +160,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 * @return array|object|stdClass[]|null
 		 */
 		public function get_all( $form_id = 0 ) {
-			$sql = 'SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data FROM %i e LEFT JOIN %i f ON e.form_id = f.form_id WHERE e.trash = 0';
+			$sql = 'SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data, e.entry_status as status FROM %i e LEFT JOIN %i f ON e.form_id = f.form_id WHERE e.trash = 0';
 			$sql = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms_entries,
@@ -188,7 +188,8 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 						'form_id'   => absint( $entry['form_id'] ),
 						'form_name' => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
 						'datetime'  => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
-						'value' => $value,
+						'value'     => $value,
+						'status'    => ! empty( $entry['status'] ) ? $entry['status'] : 'unknown',
 					);
 				},
 				$results
