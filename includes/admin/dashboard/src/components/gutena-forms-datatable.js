@@ -270,7 +270,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 								setSearchTerm( '' );
 								setSelectedDates( '' );
 							} }
-						>{ __( 'Clear Filters', 'gutena-forms' ) }</Button>
+						>{ __( 'Reset', 'gutena-forms' ) }</Button>
 					</div>
 
 				</div>
