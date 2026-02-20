@@ -236,6 +236,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 									readOnly
 									value={ selectedDates && `${ selectedDates[0] } - ${ selectedDates[1] }` }
 									onClick={ () => setCalendarActive( ! calendarActive ) }
+									style={ { width: '160px' } }
 								/>
 							</span>
 							<Calendar />
@@ -258,6 +259,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 								type={ 'text' }
 								value={ searchTerm }
 								onChange={ ( e ) => setSearchTerm( e.target.value ) }
+								style={ { width: '160px' } }
 							/>
 						</div>
 					</div>
