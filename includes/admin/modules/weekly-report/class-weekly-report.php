@@ -69,7 +69,6 @@ if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gu
 						'id'      => 'enable_weekly_summary',
 						'type'    => 'toggle',
 						'name'    => __( 'Enable Weekly Summary Reports', 'gutena-forms' ),
-						'desc'    => __( 'Enable to receive weekly email reports of your forms.', 'gutena-forms' ),
 						'default' => false,
 						'value'   => $this->settings['enable_weekly_summary'],
 					),

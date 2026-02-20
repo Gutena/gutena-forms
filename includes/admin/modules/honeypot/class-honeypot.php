@@ -54,7 +54,6 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 						'id'      => 'enable_honeypot',
 						'type'    => 'toggle',
 						'name'    => __( 'Enable Honeypot Security', 'gutena-forms' ),
-						'desc'    => __( 'Enable Honeypot Security for better spam protection', 'gutena-forms' ),
 						'default' => false,
 						'value'   => $this->settings['enable_honeypot'],
 					),
