@@ -9,7 +9,6 @@ import GutenaFormsManageTags from '../screens/gutena-forms-manage-tags';
 import GutenaFormsManageStatus from '../screens/gutena-forms-manage-status';
 import GutenaFormsUserAccess from '../screens/gutena-forms-user-access';
 import { applyFilters } from '@wordpress/hooks';
-import GutenaFormsIntegrations from '../screens/gutena-forms-integrations';
 
 /**
  * React components for settings sub-screens (pro: tags, status, user access).
@@ -21,7 +20,6 @@ export const SettingsTemplates = {
 	'manage-tags': GutenaFormsManageTags,
 	'manage-status': GutenaFormsManageStatus,
 	'user-access': GutenaFormsUserAccess,
-	'integrations': GutenaFormsIntegrations,
 	...applyFilters( 'gutena-forms.components', {} )
 };
 

@@ -17,6 +17,12 @@ import Profile from '../icons/profile';
 import { __ } from '@wordpress/i18n';
 import Notes from '../icons/notes';
 import { SelectControl } from '@wordpress/components';
+import Activecampaign from '../icons/activecampaign';
+import Brevo from '../icons/brevo';
+import Mailchimp from '../icons/mailchimp';
+import { NavLink } from 'react-router';
+import GutenaFormsDescWrapper from '../components/gutena-forms-desc-wrapper';
+import GutenaFormsToggleField from '../components/fields/gutena-forms-toggle-field';
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -31,6 +37,12 @@ addFilter(
 		components['Tag']                     = Tag;
 		components['Profile']                 = Profile;
 		components['Notes'] 				  = Notes;
+		components['Activecampaign'] 		  = Activecampaign;
+		components['Brevo'] 				  = Brevo;
+		components['Mailchimp'] 			  = Mailchimp;
+		components['NavLink'] 			      = NavLink;
+		components['GutenaFormsDescWrapper']  = GutenaFormsDescWrapper;
+		components['GutenaFormsToggleField']  = GutenaFormsToggleField;
 
 		return components;
 	}
