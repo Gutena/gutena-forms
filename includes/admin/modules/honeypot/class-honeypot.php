@@ -24,19 +24,20 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 		 */
 		public $settings = array();
 
+		private static $instance;
+
 		/**
 		 * Load saved honeypot options from the database.
 		 *
 		 * @since 1.6.0
 		 */
 		public function __construct() {
-			$this->settings = get_option(
-				'gutena_forms__honeypot',
-				array(
-					'enable_honeypot' => false,
-					'time_limit'      => false,
-				)
-			);
+			$this->settings = get_option( 'gutena_forms__honeypot', array() );
+			if ( ! is_array( $this->settings ) ) {
+				$this->settings = array();
+			}
+
+			$this->run();
 		}
 
 		/**
@@ -51,19 +52,19 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 				'description' => __( 'Enable Honeypot Security, which helps block automated bots without affecting real users.', 'gutena-forms' ),
 				'fields' => array(
 					array(
-						'id'      => 'enable_honeypot',
+						'id'      => 'enable',
 						'type'    => 'toggle',
 						'name'    => __( 'Enable Honeypot Security', 'gutena-forms' ),
 						'desc'    => __( 'Enable Honeypot Security for better spam protection', 'gutena-forms' ),
 						'default' => false,
-						'value'   => $this->settings['enable_honeypot'],
+						'value'   => $this->settings['enable'],
 					),
 					array(
-						'id'      => 'time_limit',
+						'id'      => 'timeCheckValue',
 						'type'    => 'number',
 						'name'    => __( 'Time Limit (in seconds)', 'gutena-forms' ),
 						'default' => 6,
-						'value'   => $this->settings['time_limit'],
+						'value'   => $this->settings['timeCheckValue'],
 						'attrs'   => array(
 							'min'  => 1,
 							'step' => 1,
@@ -106,6 +107,39 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 					return $settings;
 				}
 			);
+
+			self::get_instance();
+		}
+
+		public static function get_instance() {
+			if ( is_null( self::$instance ) ) {
+				self::$instance = new self();
+			}
+
+			return self::$instance;
+		}
+
+		private function run() {
+			add_action( 'gutena_forms__saving_block', array( $this, 'save_honeypot' ), 10, 3 );
+		}
+
+		/**
+		 * @param array   $attributes
+		 * @param array   $blocks
+		 * @param WP_Post $post
+		 */
+		public function save_honeypot( $attributes, $blocks, $post ) {
+			$default_values = get_option( 'gutena_forms__honeypot', array() );
+
+			if ( ! empty( $default_values ) || ! empty( $this->settings ) ) {
+				return;
+			}
+
+			foreach ( $attributes['honeypot'] as $k => $v ) {
+				$this->settings[ $k ] = $v;
+			}
+
+			$this->save_settings( $this->settings );
 		}
 	}
 

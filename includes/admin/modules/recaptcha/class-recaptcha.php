@@ -16,9 +16,14 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 	 */
 	class Gutena_Forms_ReCAPTCHA extends Gutena_Forms_Forms_Settings {
 
+		private static $instance;
+
 		public $settings = array();
+
 		public function __construct() {
 			$this->settings = get_option( 'gutena_forms__recaptcha', array() );
+
+			$this->run();
 		}
 
 		/**
@@ -34,6 +39,8 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 					return $settings;
 				}
 			);
+
+			self::get_instance();
 		}
 
 		/**
@@ -59,11 +66,11 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 						'value'   => $this->settings['enable'],
 					),
 					array(
-						'id'      => 'version',
+						'id'      => 'type',
 						'type'    => 'radio-group',
 						'name'    => __( 'reCAPTCHA Version', 'gutena-forms' ),
 						'default' => 'v2',
-						'value'   => $this->settings['version'],
+						'value'   => $this->settings['type'],
 						'attrs'   => array(
 							'options' => array(
 								'v2' => __( 'reCAPTCHA v2', 'gutena-forms' ),
@@ -110,6 +117,35 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 			update_option( 'gutena_forms__recaptcha', $settings );
 
 			return true;
+		}
+
+		public static function get_instance() {
+			if ( is_null( self::$instance ) ) {
+				self::$instance = new self();
+			}
+			return self::$instance;
+		}
+
+		public function run() {
+			add_action( 'gutena_forms__saving_block', array( $this, 'save_recaptcha_settings' ), 10, 3 );
+		}
+
+		/**
+		 * @param array   $attributes
+		 * @param array   $block
+		 * @param WP_Post $post
+		 */
+		public function save_recaptcha_settings( $attributes, $block, $post ) {
+			$default_settings = get_option( 'gutena_forms__recaptcha', array() );
+			if ( ! empty( $this->settings ) || ! empty( $default_settings ) ) {
+				return;
+			}
+
+			foreach ( $attributes['recaptcha'] as $k => $v ) {
+				$this->settings[ $k ] = $v;
+			}
+
+			$this->save_settings( $this->settings );
 		}
 	}
 

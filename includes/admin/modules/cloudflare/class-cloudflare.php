@@ -12,12 +12,29 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 	class Gutena_Forms_Cloudflare extends Gutena_Forms_Forms_Settings {
 		public $settings = array();
 
+		private static $instance;
+
 		public function __construct() {
 			$this->settings = get_option(
 				'gutena_forms__cloudflare',
 				array()
 			);
+
+			if ( ! is_array( $this->settings ) ) {
+				$this->settings = array();
+			}
+
+			$this->run();
 		}
+
+		public static function get_instance() {
+			if ( is_null( self::$instance ) ) {
+				self::$instance = new self();
+			}
+
+			return self::$instance;
+		}
+
 		public static function register_module() {
 			add_filter(
 				'gutena_forms__settings',
@@ -28,6 +45,8 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 					return $settings;
 				}
 			);
+
+			self::get_instance();
 		}
 
 		public function get_settings() {
@@ -47,21 +66,21 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 						'value'   => $this->settings['enable'],
 					),
 					array(
-						'id'      => 'site-key',
+						'id'      => 'site_key',
 						'type'    => 'text',
 						'name'    => __( 'Site Key', 'gutena-forms' ),
 						'default' => false,
-						'value'   => $this->settings['site-key'],
+						'value'   => $this->settings['site_key'],
 						'attrs'   => array(
 							'placeholder' => 'Enter your Cloudflare Turnstile Site Key',
 						),
 					),
 					array(
-						'id'      => 'secret-key',
+						'id'      => 'secret_key',
 						'type'    => 'text',
 						'name'    => __( 'Secret Key', 'gutena-forms' ),
 						'default' => false,
-						'value'   => $this->settings['secret-key'],
+						'value'   => $this->settings['secret_key'],
 						'attrs'   => array(
 							'placeholder' => 'Enter your Cloudflare Turnstile Secret Key',
 						),
@@ -79,6 +98,29 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 			update_option( 'gutena_forms__cloudflare', $settings );
 
 			return true;
+		}
+
+		private function run() {
+			add_action( 'gutena_forms__saving_block', array( $this, 'save_cloudflare' ), 10, 3 );
+		}
+
+		/**
+		 * @param array   $attributes
+		 * @param array   $block
+		 * @param WP_Post $post
+		 */
+		public function save_cloudflare( $attributes, $block, $post ) {
+			$default_settings = get_option( 'gutena_forms__cloudflare', array() );
+
+			if ( ! empty( $this->settings ) || ! empty( $default_settings ) ) {
+				return;
+			}
+
+			foreach ( $attributes['cloudflareTurnstile'] as $k => $v ) {
+				$this->settings[ $k ] = $v;
+			}
+
+			$this->save_settings( $this->settings );
 		}
 	}
 
