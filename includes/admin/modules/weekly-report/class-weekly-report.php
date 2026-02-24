@@ -22,7 +22,7 @@ if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gu
 		 * @since 1.6.0
 		 * @var array $settings
 		 */
-		private $settings = array();
+		public $settings = array();
 
 		/**
 		 * Load weekly report options from the database.

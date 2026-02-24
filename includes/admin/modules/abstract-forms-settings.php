@@ -16,6 +16,8 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	 * @package Gutena Forms
 	 */
 	abstract class Gutena_Forms_Forms_Settings {
+		public $settings;
+
 		/**
 		 * Register this settings module (e.g. add to gutena_forms__settings filter).
 		 *
