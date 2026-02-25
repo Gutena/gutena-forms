@@ -123,9 +123,9 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 			$rest_routes = apply_filters( 'gutena_forms__rest_routs', array(), $server );
 
 			foreach ( $rest_routes as $rest_route ) {
-
+				$namespace = self::$namespace;
 				if ( isset( $rest_route['is-pro'] ) && $rest_route['is-pro'] ) {
-					self::$namespace = 'gutena-forms-pro/v1';
+					$namespace = 'gutena-forms-pro/v1';
 				}
 
 				if ( isset( $rest_route['auth'] ) && $rest_route['auth'] ) {
@@ -144,7 +144,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'callback'            => $rest_route['callback'],
 				);
 				register_rest_route(
-					self::$namespace,
+					$namespace,
 					$rest_route['route'],
 					$args
 				);

@@ -23,6 +23,7 @@ import Mailchimp from '../icons/mailchimp';
 import { NavLink } from 'react-router';
 import GutenaFormsDescWrapper from '../components/gutena-forms-desc-wrapper';
 import GutenaFormsToggleField from '../components/fields/gutena-forms-toggle-field';
+import Settings from '../icons/settings';
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -43,6 +44,7 @@ addFilter(
 		components['NavLink'] 			      = NavLink;
 		components['GutenaFormsDescWrapper']  = GutenaFormsDescWrapper;
 		components['GutenaFormsToggleField']  = GutenaFormsToggleField;
+		components['Settings']  			  = Settings;
 
 		return components;
 	}
