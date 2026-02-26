@@ -35,6 +35,35 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 					'render_callback' => array( $this, 'render_block' ),
 				)
 			);
+
+			$settings        = apply_filters( 'gutena_forms__settings', array() );
+			$integrations    = apply_filters( 'gutena_forms__integrations', array() );
+			$settings        = array_merge( $settings, $integrations );
+			$allowed_modules = array( 'honeypot', 'google-recaptcha', 'cloudflare-turnstile', 'validation-messages' );
+			$field_settings  = array(
+				'settings' => array(
+					'validation-messages'  => array(),
+					'google-recaptcha'     => array(),
+					'cloudflare-turnstile' => array(),
+					'honeypot'             => array(),
+				),
+			);
+
+			foreach ( $settings as $module_key => $module ) {
+				if ( in_array( $module_key, $allowed_modules, true ) ) {
+					$class = new $module();
+
+					if ( $class instanceof Gutena_Forms_Forms_Settings ) {
+						$field_settings['settings'][ $module_key ] = $class->settings;
+					}
+				}
+			}
+
+			wp_localize_script(
+				'gutena-forms-editor-script',
+				'gutenaFormsFormFieldsSettings',
+				$field_settings
+			);
 		}
 
 		/**
