@@ -21,7 +21,7 @@ if ( ! class_exists( 'Gutena_Forms_handle_Save_Form' ) ) :
 
 		private function __construct() {
 			add_action( 'save_post', array( $this, 'save_post' ), 10, 3 );
-			add_action( 'init', array( $this, 'save_form_settings_env' ) );
+			add_action( 'admin_init', array( $this, 'save_form_settings_env' ) );
 		}
 
 		public function save_form_settings_env() {
@@ -61,7 +61,7 @@ if ( ! class_exists( 'Gutena_Forms_handle_Save_Form' ) ) :
 			}
 
 			$post = $post[0];
-			$this->update_settings( $post );
+//			$this->update_settings( $post );
 		}
 
 		/**
@@ -73,15 +73,18 @@ if ( ! class_exists( 'Gutena_Forms_handle_Save_Form' ) ) :
 			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE || wp_is_post_revision( $id ) ) {
 				return;
 			}
+
 			$this->update_settings( $post );
 		}
 
 		/**
-		 * @param $post
-		 *
-		 * @return void
+		 * @param WP_Post $post
 		 */
-		private function update_settings( $post ): void {
+		private function update_settings( $post ) {
+			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE || wp_is_post_revision( $post->ID ) ) {
+				return;
+			}
+
 			$content = $post->post_content;
 
 			if ( empty( $content ) || ! has_block( 'gutena/forms', $content ) ) {
