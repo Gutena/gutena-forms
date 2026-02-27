@@ -597,6 +597,33 @@ export default function Edit( props ) {
 		className: formClasses,
 	} );
 
+	useEffect( () => {
+		if ( ! formID ) {
+			// validation-messages: messages, google-recaptcha: recaptcha, cloudflare-turnstile: cloudflareTurnstile, honeypot: honeypot
+			const defaultSettings = gutenaFormsFormFieldsSettings.settings;
+			setAttributes( { messages: defaultSettings['validation-messages'] } );
+			setAttributes( { recaptcha: defaultSettings['google-recaptcha'] } );
+			setAttributes( { cloudflareTurnstile: defaultSettings['cloudflare-turnstile'] } );
+			setAttributes( { honeypot: defaultSettings['honeypot'] } );
+
+			if ( defaultSettings.activecampaign || defaultSettings.brevo || defaultSettings.mailchimp ) {
+				let settings = {
+					activecampaign: defaultSettings.activecampaign,
+					brevo: defaultSettings.brevo,
+					mailchimp: defaultSettings.mailchimp
+				};
+
+				setAttributes(
+					{
+						settings: {
+							integration: settings
+						}
+					}
+				);
+			}
+		}
+	}, [] );
+
 	return (
 		<>
 			<style>{ formStyle }</style>

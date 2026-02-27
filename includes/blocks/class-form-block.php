@@ -36,10 +36,14 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				)
 			);
 
+			$this->localize_block_scripts();
+		}
+
+		private function localize_block_scripts() {
 			$settings        = apply_filters( 'gutena_forms__settings', array() );
 			$integrations    = apply_filters( 'gutena_forms__integrations', array() );
 			$settings        = array_merge( $settings, $integrations );
-			$allowed_modules = array( 'honeypot', 'google-recaptcha', 'cloudflare-turnstile', 'validation-messages' );
+			$allowed_modules = apply_filters( 'gutena_forms__settings_merge',  array( 'honeypot', 'google-recaptcha', 'cloudflare-turnstile', 'validation-messages' ) );
 			$field_settings  = array(
 				'settings' => array(
 					'validation-messages'  => array(),
