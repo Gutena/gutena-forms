@@ -33,8 +33,8 @@ if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gu
 			$this->settings = get_option(
 				'gutena_forms_weekly_report',
 				array(
-					'enable_weekly_summary' => false,
-					'summary_email'         => false,
+					'recipient_email' => false,
+					'enabled'         => false,
 				)
 			);
 		}
@@ -66,19 +66,19 @@ if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gu
 				'description' => __( 'Manage user access and permissions to control form data security and privacy.', 'gutena-forms' ),
 				'fields'      => array(
 					array(
-						'id'      => 'enable_weekly_summary',
+						'id'      => 'enabled',
 						'type'    => 'toggle',
 						'name'    => __( 'Enable Weekly Summary Reports', 'gutena-forms' ),
 						'default' => false,
-						'value'   => $this->settings['enable_weekly_summary'],
+						'value'   => $this->settings['enabled'],
 					),
 					array(
-						'id'      => 'summary_email',
+						'id'      => 'recipient_email',
 						'type'    => 'email',
 						'name'    => __( 'Email', 'gutena-forms' ),
 						'desc'    => __( 'Enter the email address where you want to receive the weekly reports.', 'gutena-forms' ),
 						'default' => get_bloginfo( 'admin_email' ),
-						'value'   => $this->settings['summary_email'],
+						'value'   => $this->settings['recipient_email'],
 					),
 					array(
 						'id'   => 'submit_button',
