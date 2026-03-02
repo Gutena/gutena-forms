@@ -4,33 +4,51 @@ import GutenaFormsPageLayout from '../layouts/gutena-forms-page-layout';
 import GutenaFormsDashboard from './gutena-forms-dashboard';
 import GuennaFormsKnowledgeBase from './gutena-forms-knowledge-base';
 
-const GutenaFormsBody = ( { showProPopupHandler } ) => {
+const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 
 	return (
 		<Routes>
 			<Route
 				path={ '/' }
-				element={ <GutenaFormsDashboard showProPopupHandler={ showProPopupHandler } /> }
+				element={ <GutenaFormsDashboard
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
 			/>
 			<Route
 				path={ '/settings/dashboard' }
-				element={ <GutenaFormsDashboard showProPopupHandler={ showProPopupHandler } /> }
+				element={ <GutenaFormsDashboard
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
 			/>
 			<Route
 				path={ '/settings/knowledge-base' }
-				element={ <GuennaFormsKnowledgeBase showProPopupHandler={ showProPopupHandler } /> }
+				element={ <GuennaFormsKnowledgeBase
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
 			/>
 			<Route
 				path={ 'settings/:slug/' }
-				element={ <GutenaFormsPageLayout showProPopupHandler={ showProPopupHandler } /> }
+				element={ <GutenaFormsPageLayout
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
 			/>
 			<Route
 				path={ 'settings/:slug/:id' }
-				element={ <GutenaFormsPageLayout showProPopupHandler={ showProPopupHandler } /> }
+				element={ <GutenaFormsPageLayout
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
 			/>
 			<Route
 				path={ 'settings/settings/:settings_id/' }
-				element={ <GutenaFormsSettingsLayout showProPopupHandler={ showProPopupHandler } /> }
+				element={ <GutenaFormsSettingsLayout
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
 			/>
 		</Routes>
 	);

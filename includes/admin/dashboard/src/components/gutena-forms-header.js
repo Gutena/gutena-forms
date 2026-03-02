@@ -6,11 +6,10 @@ import Crown from '../icons/crown';
 import { gutenaFormsFetchMenus } from '../api';
 import { gutenaFormsStrContains } from '../utils/functions';
 
-const GutenaFormsHeader = () => {
+const GutenaFormsHeader = ( { activeMenu, setActiveMenu } ) => {
 
 	const [ menus, setMenus ] = useState( false );
 	const [ loading, setLoading ] = useState( true );
-	const [ activeMenu, setActiveMenu ] = useState( 'dashboard' );
 
 	useEffect( () => {
 		setLoading( true );

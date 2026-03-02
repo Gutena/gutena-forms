@@ -12,7 +12,7 @@ import './utils/register-components';
 const GutenaFormsApp = () => {
 
 	const [ showProPopup, setShowProPopup ] = useState( false );
-
+	const [ activeMenu, setActiveMenu ] = useState( '' );
 	return (
 		<div>
 			<GutenaFormsToast />
@@ -28,11 +28,15 @@ const GutenaFormsApp = () => {
 			}
 
 			<div className={ '' }>
-				<GutenaFormsHeader />
+				<GutenaFormsHeader
+					activeMenu={ activeMenu }
+					setActiveMenu={ setActiveMenu }
+				/>
 
 				<div className={ 'gutena-froms__container' }>
 					<GutenaFormsBody
 						showProPopupHandler={ () => setShowProPopup( true ) }
+						setActiveMenu={ setActiveMenu }
 					/>
 				</div>
 			</div>

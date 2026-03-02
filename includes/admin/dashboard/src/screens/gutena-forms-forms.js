@@ -12,7 +12,7 @@ import { useEffect, useState } from '@wordpress/element';
 import {gutenaFormsFetchAllForms, gutenaFormsDeleteForm, deleteMultipleForms} from '../api';
 import { toast } from 'react-toastify';
 
-const GutenaFormsForms = () => {
+const GutenaFormsForms = ( { setActiveMenu } ) => {
 	const [ forms, setForms ] = useState( false );
 	const [ loading, setLoading ] = useState( true );
 
@@ -224,6 +224,7 @@ const GutenaFormsForms = () => {
 												<>
 													<Link
 														to={ `/settings/entries/${ row.id }` }
+														onClick={ () => setActiveMenu( 'entries' ) }
 													>{ row.entries }</Link>
 												</>
 											);
