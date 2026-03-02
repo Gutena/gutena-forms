@@ -286,6 +286,12 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$result = array_map(
 				function ( $result ) {
 					$result['entry_data'] = maybe_unserialize( $result['entry_data'] );
+
+					foreach ( $result['entry_data'] as $k => $v ) {
+						$v['value'] = substr( $v['value'], 0, 30 );
+						$result['entry_data'][ $k ] = $v;
+					}
+
 					return $result;
 				},
 				$result
