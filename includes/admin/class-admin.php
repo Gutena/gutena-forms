@@ -36,6 +36,7 @@
 			add_action( 'admin_init', array( $this, 'load_admin_classes' ) );
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts_admin' ) );
+			add_action( 'current_screen', array( $this, 'redirect_when_old_screen' ) );
 
 		if ( ! is_gutena_forms_pro( false ) ) {
 			add_action( 'admin_notices', array( $this, 'view_dashboard_notice' ) );
@@ -742,6 +743,23 @@
 					$assets['version'],
 					true
 				);
+			}
+		}
+
+		public function redirect_when_old_screen() {
+			if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) {
+				global $current_screen;
+				if ( ! is_null( $current_screen ) && 'edit-gutena_forms' === $current_screen->id ) {
+					wp_safe_redirect(
+						add_query_arg(
+							array(
+								'page' => 'gutena-forms#/settings/forms',
+							),
+							admin_url( 'admin.php' )
+						)
+					);
+					exit;
+				}
 			}
 		}
 
