@@ -189,7 +189,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 						'form_name' => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
 						'datetime'  => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
 						'value'     => $value,
-						'status'    => ! empty( $entry['status'] ) ? $entry['status'] : 'unknown',
+						'status'    => ucfirst( ! empty( $entry['status'] ) ? $entry['status'] : 'unknown' ),
 					);
 				},
 				$results
@@ -285,7 +285,8 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 
 			$result = array_map(
 				function ( $result ) {
-					$result['entry_data'] = maybe_unserialize( $result['entry_data'] );
+					$result['entry_data']   = maybe_unserialize( $result['entry_data'] );
+					$result['entry_status'] = ! empty( $result['entry_status'] ) ? ucfirst( $result['entry_status'] ) : 'Unknown';
 
 					foreach ( $result['entry_data'] as $k => $v ) {
 						$v['value'] = substr( $v['value'], 0, 30 );
@@ -318,7 +319,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 
 			$form_id = $this->wpdb->get_var( $sql );
 
-			$sql = 'SELECT entry_id FROM %i WHERE form_id = %d AND trash = 0 GROUP BY entry_id ORDER BY entry_id ASC';
+			$sql = 'SELECT entry_id FROM %i WHERE form_id = %d AND trash = 0 GROUP BY entry_id ORDER BY entry_id';
 			$sql = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms_entries,

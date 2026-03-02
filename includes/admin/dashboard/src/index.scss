@@ -504,7 +504,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			color: #2C3338;
 			font-size: 24px;
 			font-weight: 700;
-			margin: 0;
+			margin-top: 0;
 		}
 
 		.gutena-forms-add-new-form-button {
@@ -1167,6 +1167,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		align-items: center;
 		border-radius: 2px;
 		border: 1px solid #E2E2E2;
+		cursor: default;
 	}
 
 	.components-select-control__input {

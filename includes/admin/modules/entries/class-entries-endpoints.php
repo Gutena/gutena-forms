@@ -164,7 +164,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 					'status'           => 'success',
 					'current_user_can_manage' => apply_filters(
 						'gutena_forms__current_user_can',
-						array( 'delete', 'view' ),
+						array( 'view', 'delete' ),
 						'get-all'
 					),
 				)
@@ -293,7 +293,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 					'status'  => 'success',
 					'current_user_can_manage' => apply_filters(
 						'gutena_forms__current_user_can',
-						array( 'delete', 'view' ),
+						array( 'view', 'delete' ),
 						'get-by-form-id'
 					),
 				)
@@ -336,7 +336,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 					'status'       => 'success',
 					'current_user_can_manage' => apply_filters(
 						'gutena_forms__current_user_can',
-						array( 'delete', 'view' ),
+						array( 'view', 'delete' ),
 						'get-by-form-id'
 					),
 				)

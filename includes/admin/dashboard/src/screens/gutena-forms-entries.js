@@ -10,6 +10,7 @@ import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
 import { __ } from '@wordpress/i18n';
 import {applyFilters, doAction} from "@wordpress/hooks";
+import {ArrowDown} from "../icons/arrow";
 
 const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 
@@ -135,23 +136,47 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 
 	const TagFilter = () => (
 		<div>
-			<SelectControl
-				style={ { width: '100px' } }
-				options={ tagsOptions }
-				onChange={ value => setSelectedTag( value ) }
-				value={ selectedTag }
-			/>
+			{ hasPro ? (
+				<SelectControl
+					style={ { width: '100px' } }
+					options={ tagsOptions }
+					onChange={ value => setSelectedTag( value ) }
+					value={ selectedTag }
+				/>
+			) : (
+				<div
+					className={ 'gutena-forms__dummy-select' }
+					onClick={ showProPopupHandler }
+				>
+					<div>All Tags</div>
+					<div>
+						<ArrowDown />
+					</div>
+				</div>
+			) }
 		</div>
 	);
 
 	const StatusFilter = () => (
 		<div>
-			<SelectControl
-				style={ { width: '100px' } }
-				options={ statusesOptions }
-				onChange={ value => setSelectedStatus( value ) }
-				value={ selectedStatus }
-			/>
+			{ hasPro ? (
+				<SelectControl
+					style={ { width: '100px' } }
+					options={ statusesOptions }
+					onChange={ value => setSelectedStatus( value ) }
+					value={ selectedStatus }
+				/>
+				) : (
+				<div
+					className={ 'gutena-forms__dummy-select' }
+					onClick={ showProPopupHandler }
+				>
+					<div>All Statuses</div>
+					<div>
+						<ArrowDown />
+					</div>
+				</div>
+				) }
 		</div>
 	);
 
@@ -205,11 +230,17 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 					) }
 
 					{ id && 'entries' === slug && (
-						<GutenaFormsFormEntries showProPopupHandler={ showProPopupHandler } />
+						<div>
+							<h2 className={ 'gutena-forms__page-title' }>Form Entries</h2>
+
+							<GutenaFormsFormEntries showProPopupHandler={ showProPopupHandler } />
+						</div>
 					) }
 
 					{ ! id && (
 						<div>
+							<h2 className={ 'gutena-forms__page-title' }>All Forms Entries</h2>
+
 							<GutenaFormsDatatable
 								bulkActionOptions={ bulkActionOptions }
 								headers={ [
@@ -317,7 +348,8 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 								customFilters={ {
 									components: [
 										FormFilter,
-										...( hasPro ? [ TagFilter, StatusFilter ] : [] ),
+										TagFilter,
+										StatusFilter
 									]
 								} }
 							/>
