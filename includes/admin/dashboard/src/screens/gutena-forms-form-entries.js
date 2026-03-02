@@ -110,7 +110,7 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 		}
 		gutenaFormsDeleteEntry( row.entry_id )
 			.then( () => {
-				toast.success( __( 'Entry moved to trash successfully.', 'gutena-forms' ) );
+				toast.success( __( 'Entry deleted successfully.', 'gutena-forms' ) );
 				refreshFormEntries();
 			} )
 			.catch( () => {
@@ -151,7 +151,7 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 									return applyFilters( 'gutenaForms.entries.status', null, { row, header, index }, statuses, showProPopupHandler );
 								},
 
-								actions: ( { row, header, index } ) => {
+								actions: ( { row } ) => {
 
 									return (
 										<div className={ 'gutena-forms-datatable__action' }>

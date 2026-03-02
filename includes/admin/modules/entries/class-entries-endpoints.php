@@ -405,8 +405,8 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 
 			if ( $result ) {
 				$message = count( $entry_ids ) > 1
-					? __( 'Entries moved to trash successfully.', 'gutena-forms' )
-					: __( 'Entry moved to trash successfully.', 'gutena-forms' );
+					? __( 'Entries deleted successfully.', 'gutena-forms' )
+					: __( 'Entry deleted successfully.', 'gutena-forms' );
 				return rest_ensure_response(
 					array(
 						'message' => $message,

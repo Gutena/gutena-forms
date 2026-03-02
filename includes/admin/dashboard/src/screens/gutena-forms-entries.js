@@ -190,7 +190,7 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 		}
 		gutenaFormsDeleteEntry( row.entry_id )
 			.then( () => {
-				toast.success( __( 'Entry moved to trash successfully.', 'gutena-forms' ) );
+				toast.success( __( 'Entry deleted successfully', 'gutena-forms' ) );
 				refreshEntries();
 			} )
 			.catch( () => {
