@@ -24,7 +24,14 @@ const GutenaFormsHeader = ( { activeMenu, setActiveMenu } ) => {
 		<div className={ 'gutena-forms__header-container' }>
 			<div className={ 'gutena-forms_icon-menu-container' }>
 				<div className={ 'gutena-forms_icon-menu' }>
-					<img src={ `${ gutenaFormsAdmin.pluginURL }assets/img/logo.png` } alt={ 'Gutena Forms Logo' } />
+					<NavLink
+						to={ '/settings/dashboard' }
+					>
+						<img
+							src={ `${ gutenaFormsAdmin.pluginURL }assets/img/logo.png` }
+							alt={ 'Gutena Forms Logo' }
+						/>
+					</NavLink>
 				</div>
 
 				{ ! loading && menus && (
