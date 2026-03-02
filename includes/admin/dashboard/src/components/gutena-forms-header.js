@@ -61,16 +61,20 @@ const GutenaFormsHeader = () => {
 				) }
 			</div>
 			<div>
-				<Button
-					className={ 'gutena-forms__upgrade-button' }
-					variant="primary"
-					href="https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<Crown />
-					{ __( 'Upgrade Now', 'gutena-froms' ) }
-				</Button>
+				{
+					! gutenaFormsAdmin.hasPro && (
+						<Button
+							className={ 'gutena-forms__upgrade-button' }
+							variant="primary"
+							href="https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<Crown />
+							{ __( 'Upgrade Now', 'gutena-froms' ) }
+						</Button>
+					)
+				}
 			</div>
 		</div>
 	);
