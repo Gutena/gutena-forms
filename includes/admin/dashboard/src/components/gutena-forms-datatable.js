@@ -206,7 +206,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 
 					<div className={ 'display-inline-block' }>
 						<Button
-							className={ 'secondary-button' }
+							className={ 'gutena-forms__primary-button' }
 							onClick={ handleBulkActions }
 						>{ __( 'Apply', 'gutena-forms' ) }</Button>
 					</div>
@@ -265,7 +265,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 					</div>
 					<div className={ 'display-inline-block' }>
 						<Button
-							className={ 'gutena-forms__clear-filters-button secondary-button' }
+							className={ 'gutena-forms__clear-filters-button gutena-forms__primary-button' }
 							onClick={ () => {
 								setSearchTerm( '' );
 								setSelectedDates( '' );
@@ -298,7 +298,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 					},
 
 					body: {
-						checkbox: ( { row, index, header } ) => {
+						checkbox: ( { row, header } ) => {
 							return (
 								<label htmlFor={ `select_for_${ row[ header.value ] }` }>
 									<input

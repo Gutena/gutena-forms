@@ -23,7 +23,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 				setLoading( false );
 				setForms( forms );
 			} )
-			.catch( ( error ) => {
+			.catch( () => {
 				setLoading( false );
 				toast.error( __( 'Failed to load forms.', 'gutena-forms' ) );
 			} );
@@ -32,7 +32,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 	const handleDeleteForm = ( formId ) => {
 		setLoading( true );
 		gutenaFormsDeleteForm( formId )
-			.then( response => {
+			.then( () => {
 				toast.success( __( 'Form deleted successfully.', 'gutena-forms' ) );
 				// Refresh forms list
 				return gutenaFormsFetchAllForms()
@@ -40,12 +40,12 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 						setLoading( false );
 						setForms( response );
 					} )
-					.catch( ( error ) => {
+					.catch( () => {
 						setLoading( false );
 						toast.error( __( 'Failed to refresh forms list.', 'gutena-forms' ) );
 					} );
 			} )
-			.catch( ( error ) => {
+			.catch( () => {
 				setLoading( false );
 				toast.error( __( 'Failed to delete form.', 'gutena-forms' ) );
 			} );
@@ -56,7 +56,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 		switch ( action ) {
 			case 'delete':
 				deleteMultipleForms( selectedData )
-					.then( response => {
+					.then( () => {
 						toast.success( __( 'Selected forms deleted successfully.', 'gutena-forms' ) );
 						// Refresh forms list
 						return gutenaFormsFetchAllForms()
@@ -64,12 +64,12 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 								setLoading( false );
 								setForms( response );
 							} )
-							.catch( ( error ) => {
+							.catch( () => {
 								setLoading( false );
 								toast.error( __( 'Failed to refresh forms list.', 'gutena-forms' ) );
 							} );
 					} )
-					.catch( ( error ) => {
+					.catch( () => {
 						setLoading( false );
 						toast.error( __( 'Failed to delete forms.', 'gutena-forms' ) );
 					} );
@@ -221,12 +221,12 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 									entries: ( { row } ) => {
 										if ( row.entries && row.entries > 0 ) {
 											return (
-												<>
+												<div className={ 'gutena-forms-datatable__entries' }>
 													<Link
 														to={ `/settings/entries/${ row.id }` }
 														onClick={ () => setActiveMenu( 'entries' ) }
 													>{ row.entries }</Link>
-												</>
+												</div>
 											);
 										}
 
