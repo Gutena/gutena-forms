@@ -597,32 +597,12 @@ export default function Edit( props ) {
 		className: formClasses,
 	} );
 
-	useEffect( () => {
-		if ( ! formID ) {
-			// validation-messages: messages, google-recaptcha: recaptcha, cloudflare-turnstile: cloudflareTurnstile, honeypot: honeypot
-			const defaultSettings = gutenaFormsFormFieldsSettings.settings;
-			setAttributes( { messages: defaultSettings['validation-messages'] } );
-			setAttributes( { recaptcha: defaultSettings['google-recaptcha'] } );
-			setAttributes( { cloudflareTurnstile: defaultSettings['cloudflare-turnstile'] } );
-			setAttributes( { honeypot: defaultSettings['honeypot'] } );
-
-			if ( defaultSettings.activecampaign || defaultSettings.brevo || defaultSettings.mailchimp ) {
-				let settings = {
-					activecampaign: defaultSettings.activecampaign,
-					brevo: defaultSettings.brevo,
-					mailchimp: defaultSettings.mailchimp
-				};
-
-				setAttributes(
-					{
-						settings: {
-							integration: settings
-						}
-					}
-				);
-			}
-		}
-	}, [] );
+	// Use global settings for display when block has no override; only save to block when user changes.
+	const defaultSettings = typeof gutenaFormsFormFieldsSettings !== 'undefined' && gutenaFormsFormFieldsSettings?.settings ? gutenaFormsFormFieldsSettings.settings : {};
+	const displayRecaptcha = recaptcha ?? defaultSettings['google-recaptcha'] ?? {};
+	const displayCloudflareTurnstile = cloudflareTurnstile ?? defaultSettings['cloudflare-turnstile'] ?? {};
+	const displayHoneypot = honeypot ?? defaultSettings['honeypot'] ?? {};
+	const displayMessages = messages ?? defaultSettings['validation-messages'] ?? {};
 
 	return (
 		<>
@@ -675,27 +655,27 @@ export default function Edit( props ) {
 
 					<ToggleControl
 						label={ __( 'Enable', 'gutena-forms' ) }
-						checked={ recaptcha?.enable }
+						checked={ displayRecaptcha?.enable }
 						onChange={ ( recaptcha_status ) =>
 							setAttributes( { recaptcha:{
-								...recaptcha,
+								...displayRecaptcha,
 								enable:recaptcha_status
 							} } )
 						}
 					/>
-					{ ( ! gfIsEmpty( recaptcha?.enable ) && recaptcha?.enable ) &&
+					{ ( ! gfIsEmpty( displayRecaptcha?.enable ) && displayRecaptcha?.enable ) &&
 					<>
 						<RadioControl
 							className="gutena-forms-horizontal-radio"
 							label={ __( 'reCAPTCHA Type', 'gutena-forms' ) }
-							selected={ recaptcha?.type }
+							selected={ displayRecaptcha?.type }
 							options={ [
 								{ label: 'v2', value: 'v2' },
 								{ label: 'v3', value: 'v3' },
 							] }
 							onChange={ ( type ) =>
 								setAttributes( { recaptcha:{
-									...recaptcha,
+									...displayRecaptcha,
 									type
 								} } )
 							}
@@ -703,20 +683,20 @@ export default function Edit( props ) {
 
 						<TextControl
 							label={ __( 'Site Key', 'gutena-forms' ) }
-							value={ recaptcha?.site_key }
+							value={ displayRecaptcha?.site_key }
 							onChange={ ( site_key ) =>
 								setAttributes( { recaptcha:{
-									...recaptcha,
+									...displayRecaptcha,
 									site_key
 								} } )
 							}
 						/>
 						<TextControl
 							label={ __( 'Secret key', 'gutena-forms' ) }
-							value={ recaptcha?.secret_key }
+							value={ displayRecaptcha?.secret_key }
 							onChange={ ( secret_key ) =>
 								setAttributes( { recaptcha:{
-									...recaptcha,
+									...displayRecaptcha,
 									secret_key
 								} } )
 							}
@@ -735,24 +715,24 @@ export default function Edit( props ) {
 
 						<ToggleControl
 							label={ 'Enable' }
-							checked={ cloudflareTurnstile?.enable }
+							checked={ displayCloudflareTurnstile?.enable }
 							onChange={ ( turnstile_status ) =>
 								setAttributes( { cloudflareTurnstile:{
-									...cloudflareTurnstile,
+									...displayCloudflareTurnstile,
 									enable:turnstile_status
 								} } )
 							}
 						/>
 
 						{
-							( ! gfIsEmpty( cloudflareTurnstile?.enable ) && cloudflareTurnstile?.enable ) &&
+							( ! gfIsEmpty( displayCloudflareTurnstile?.enable ) && displayCloudflareTurnstile?.enable ) &&
 							<>
 								<TextControl
 									label={ __( 'Site Key', 'gutena-forms' ) }
-									value={ cloudflareTurnstile?.site_key }
+									value={ displayCloudflareTurnstile?.site_key }
 									onChange={ ( site_key ) =>
 										setAttributes( { cloudflareTurnstile:{
-											...cloudflareTurnstile,
+											...displayCloudflareTurnstile,
 											site_key
 										} } )
 									}
@@ -760,10 +740,10 @@ export default function Edit( props ) {
 
 								<TextControl
 									label={ __( 'Secret Key', 'gutena-forms' ) }
-									value={ cloudflareTurnstile?.secret_key }
+									value={ displayCloudflareTurnstile?.secret_key }
 									onChange={ ( secret_key ) =>
 										setAttributes( { cloudflareTurnstile:{
-											...cloudflareTurnstile,
+											...displayCloudflareTurnstile,
 											secret_key
 										} } )
 									}
@@ -781,11 +761,11 @@ export default function Edit( props ) {
 						<p>Honeypot field settings</p>
 						<ToggleControl
 							label={ 'enable' }
-							checked={ honeypot?.enable }
+							checked={ displayHoneypot?.enable }
 							onChange={ ( honeypot_status ) => {
 								setAttributes( {
 									honeypot: {
-										...honeypot,
+										...displayHoneypot,
 										enable: honeypot_status
 									}
 								} );
@@ -793,16 +773,16 @@ export default function Edit( props ) {
 						/>
 
 						{
-							( ! gfIsEmpty( honeypot?.enable ) && honeypot?.enable ) &&
+							( ! gfIsEmpty( displayHoneypot?.enable ) && displayHoneypot?.enable ) &&
 							<>
 								<NumberControl
 									label={ __( 'Time limit (in seconds)', 'gutena-forms' ) }
-									value={ honeypot?.timeCheckValue }
+									value={ displayHoneypot?.timeCheckValue }
 									min={ 1 }
 									onChange={ ( timeCheckValue ) => {
 										setAttributes( {
 											honeypot: {
-												...honeypot,
+												...displayHoneypot,
 												timeCheckValue: timeCheckValue
 											}
 										} );
@@ -1354,10 +1334,10 @@ export default function Edit( props ) {
 					<TextControl
 						type="text"
 						label={ __( 'Required Field', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg ) ? '' : messages?.required_msg }
-						onChange={ ( required_msg ) =>
+						value={ gfIsEmpty( displayMessages?.required_msg ) ? '' : displayMessages?.required_msg }
+							onChange={ ( required_msg ) =>
 							setAttributes( { messages:{
-								...messages,
+								...displayMessages,
 								required_msg
 							} } )
 						}
@@ -1366,10 +1346,10 @@ export default function Edit( props ) {
 					<TextControl
 						type="text"
 						label={ __( 'Required Select Field', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg_select ) ? '' : messages?.required_msg_select }
-						onChange={ ( required_msg_select ) =>
+						value={ gfIsEmpty( displayMessages?.required_msg_select ) ? '' : displayMessages?.required_msg_select }
+							onChange={ ( required_msg_select ) =>
 							setAttributes( { messages:{
-								...messages,
+								...displayMessages,
 								required_msg_select
 							} } )
 						}
@@ -1378,10 +1358,10 @@ export default function Edit( props ) {
 					<TextControl
 						type="text"
 						label={ __( 'Required Checkbox or Radio Field', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg_check ) ? '' : messages?.required_msg_check }
-						onChange={ ( required_msg_check ) =>
+						value={ gfIsEmpty( displayMessages?.required_msg_check ) ? '' : displayMessages?.required_msg_check }
+							onChange={ ( required_msg_check ) =>
 							setAttributes( { messages:{
-								...messages,
+								...displayMessages,
 								required_msg_check
 							} } )
 						}
@@ -1390,10 +1370,10 @@ export default function Edit( props ) {
 					<TextControl
 						type="text"
 						label={ __( 'Required Opt-in checkbox', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg_optin ) ? '' : messages?.required_msg_optin }
-						onChange={ ( required_msg_optin ) =>
+						value={ gfIsEmpty( displayMessages?.required_msg_optin ) ? '' : displayMessages?.required_msg_optin }
+							onChange={ ( required_msg_optin ) =>
 							setAttributes( { messages:{
-								...messages,
+								...displayMessages,
 								required_msg_optin
 							} } )
 						}
@@ -1403,10 +1383,10 @@ export default function Edit( props ) {
 					<TextControl
 						type="text"
 						label={ __( 'Invalid Email', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.invalid_email_msg ) ? '' : messages?.invalid_email_msg }
-						onChange={ ( invalid_email_msg ) =>
+						value={ gfIsEmpty( displayMessages?.invalid_email_msg ) ? '' : displayMessages?.invalid_email_msg }
+							onChange={ ( invalid_email_msg ) =>
 							setAttributes( { messages:{
-								...messages,
+								...displayMessages,
 								invalid_email_msg
 							} } )
 						}
@@ -1415,10 +1395,10 @@ export default function Edit( props ) {
 					<TextControl
 						type="text"
 						label={ __( 'Minimum value', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.min_value_msg ) ? '' : messages?.min_value_msg }
-						onChange={ ( min_value_msg ) =>
+						value={ gfIsEmpty( displayMessages?.min_value_msg ) ? '' : displayMessages?.min_value_msg }
+							onChange={ ( min_value_msg ) =>
 							setAttributes( { messages:{
-								...messages,
+								...displayMessages,
 								min_value_msg
 							} } )
 						}
@@ -1427,10 +1407,10 @@ export default function Edit( props ) {
 					<TextControl
 						type="text"
 						label={ __( 'Maximum value', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.max_value_msg ) ? '' : messages?.max_value_msg }
-						onChange={ ( max_value_msg ) =>
+						value={ gfIsEmpty( displayMessages?.max_value_msg ) ? '' : displayMessages?.max_value_msg }
+							onChange={ ( max_value_msg ) =>
 							setAttributes( { messages:{
-								...messages,
+								...displayMessages,
 								max_value_msg
 							} } )
 						}

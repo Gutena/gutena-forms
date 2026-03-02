@@ -158,28 +158,15 @@
 		},
 		"recaptcha": {
 			"type": "object",
-			"default": {
-				"enable": false,
-				"type": "v3",
-				"site_key": "",
-				"secret_key": "",
-				"thresholdScore":"0.50"
-			}
+			"default": null
 		},
 		"cloudflareTurnstile": {
 			"type": "object",
-			"default": {
-				"enable": false,
-				"site_key": "",
-				"secret_key": ""
-			}
+			"default": null
 		},
 		"honeypot": {
 			"type": "object",
-			"default": {
-				"enable": false,
-				"timeCheckValue": 4
-			}
+			"default": null
 		}
 	},
 	"providesContext": {

@@ -464,35 +464,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						}
 						//filter for formSchema
 						$formSchema_filtered = apply_filters( 'gutena_forms_save_form_schema', $formSchema, $formSchema['form_attrs']['formID'], $gutena_form_ids );
-						//Save form schema
+						//Save form schema (global options are managed only via dashboard; block attrs are per-form overrides).
 						update_option(
 							sanitize_key( $formSchema['form_attrs']['formID'] ),
 							$this->sanitize_array( $formSchema_filtered, true )
 						);
-
-						//Save Google reCAPTCHA details
-						if ( ! empty( $formSchema['form_attrs']['recaptcha'] ) && ! empty( $formSchema['form_attrs']['recaptcha']['site_key'] ) && ! empty( $formSchema['form_attrs']['recaptcha']['secret_key'] ) ) {
-							update_option(
-								'gutena_forms_grecaptcha',
-								$this->sanitize_array( $formSchema['form_attrs']['recaptcha'] )
-							);
-						}
-
-						// cloudflare turnstile
-						if ( ! empty( $formSchema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['site_key'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['secret_key'] ) ) {
-							update_option(
-								'gutena_forms_cloudflare_turnstile',
-								$this->sanitize_array( $formSchema['form_attrs']['cloudflareTurnstile'] )
-							);
-						}
-
-						//Save common form messages
-						if ( ! empty( $formSchema['form_attrs']['messages'] ) && is_array( $formSchema['form_attrs']['messages'] ) ) {
-							update_option(
-								'gutena_forms_messages',
-								$formSchema['form_attrs']['messages']
-							);
-						}
 					}
 				}
 			}

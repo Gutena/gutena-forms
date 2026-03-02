@@ -63,11 +63,105 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				}
 			}
 
+			// Add integrations for Pro (used for global display in editor).
+			if ( in_array( 'activecampaign', $allowed_modules, true ) || in_array( 'brevo', $allowed_modules, true ) || in_array( 'mailchimp', $allowed_modules, true ) ) {
+				$field_settings['settings']['integrations'] = get_option( 'gutena_forms__integration_settings', array() );
+			}
+
 			wp_localize_script(
 				'gutena-forms-editor-script',
 				'gutenaFormsFormFieldsSettings',
 				$field_settings
 			);
+		}
+
+		/**
+		 * Check if block has a form-level override for the given attribute.
+		 *
+		 * @since 1.8.0
+		 * @param array  $block_attrs Block attributes.
+		 * @param string $key         Attribute key (e.g. 'recaptcha', 'cloudflareTurnstile').
+		 * @return bool True if block has a non-empty override.
+		 */
+		private function has_form_override( $block_attrs, $key ) {
+			if ( empty( $block_attrs ) || ! isset( $block_attrs[ $key ] ) ) {
+				return false;
+			}
+			$val = $block_attrs[ $key ];
+			if ( null === $val || array() === $val ) {
+				return false;
+			}
+			if ( ! is_array( $val ) ) {
+				return '' !== $val;
+			}
+			// For objects: consider it override if any meaningful key has a value.
+			$meaningful_keys = array(
+				'recaptcha'           => array( 'enable', 'site_key', 'type' ),
+				'cloudflareTurnstile' => array( 'enable', 'site_key' ),
+				'honeypot'            => array( 'enable', 'timeCheckValue' ),
+				'messages'            => array( 'required_msg', 'required_msg_select', 'required_msg_check', 'required_msg_optin', 'invalid_email_msg', 'min_value_msg', 'max_value_msg' ),
+			);
+			$check = isset( $meaningful_keys[ $key ] ) ? $meaningful_keys[ $key ] : array_keys( $val );
+			foreach ( $check as $k ) {
+				if ( isset( $val[ $k ] ) && '' !== $val[ $k ] && null !== $val[ $k ] ) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * Merge block attributes with global settings. Block override takes precedence when present.
+		 *
+		 * @since 1.8.0
+		 * @param array $block_attrs Block attributes.
+		 * @return array Effective form attributes (block + global merged).
+		 */
+		public function get_effective_form_attrs( $block_attrs ) {
+			if ( ! is_array( $block_attrs ) ) {
+				$block_attrs = array();
+			}
+			$global = array(
+				'recaptcha'           => get_option( 'gutena_forms__recaptcha', array() ),
+				'cloudflareTurnstile' => get_option( 'gutena_forms__cloudflare', array() ),
+				'honeypot'            => get_option( 'gutena_forms__honeypot', array() ),
+				'messages'            => get_option( 'gutena_forms__form_validation_messages', array() ),
+			);
+			$effective = $block_attrs;
+			if ( ! $this->has_form_override( $block_attrs, 'recaptcha' ) ) {
+				$effective['recaptcha'] = wp_parse_args( (array) ( $block_attrs['recaptcha'] ?? array() ), (array) $global['recaptcha'] );
+			}
+			if ( ! $this->has_form_override( $block_attrs, 'cloudflareTurnstile' ) ) {
+				$effective['cloudflareTurnstile'] = wp_parse_args( (array) ( $block_attrs['cloudflareTurnstile'] ?? array() ), (array) $global['cloudflareTurnstile'] );
+			}
+			if ( ! $this->has_form_override( $block_attrs, 'honeypot' ) ) {
+				$effective['honeypot'] = wp_parse_args( (array) ( $block_attrs['honeypot'] ?? array() ), (array) $global['honeypot'] );
+			}
+			if ( ! $this->has_form_override( $block_attrs, 'messages' ) ) {
+				$effective['messages'] = wp_parse_args( (array) ( $block_attrs['messages'] ?? array() ), (array) $global['messages'] );
+			}
+			$allowed = apply_filters( 'gutena_forms__settings_merge', array( 'honeypot', 'google-recaptcha', 'cloudflare-turnstile', 'validation-messages' ) );
+			$has_integrations = in_array( 'activecampaign', $allowed, true ) || in_array( 'brevo', $allowed, true ) || in_array( 'mailchimp', $allowed, true );
+			if ( $has_integrations ) {
+				$global_integration = get_option( 'gutena_forms__integration_settings', array() );
+				$block_settings     = $block_attrs['settings'] ?? array();
+				$block_integration  = $block_settings['integration'] ?? array();
+				$has_integration_override = ! empty( $block_integration ) && is_array( $block_integration );
+				foreach ( array( 'mailchimp', 'activecampaign', 'brevo' ) as $crm ) {
+					if ( $has_integration_override && ! empty( $block_integration[ $crm ] ) ) {
+						continue;
+					}
+					if ( isset( $global_integration[ $crm ] ) ) {
+						$effective['settings']             = isset( $effective['settings'] ) ? $effective['settings'] : array();
+						$effective['settings']['integration'] = isset( $effective['settings']['integration'] ) ? $effective['settings']['integration'] : array();
+						$effective['settings']['integration'][ $crm ] = wp_parse_args(
+							(array) ( $effective['settings']['integration'][ $crm ] ?? array() ),
+							(array) $global_integration[ $crm ]
+						);
+					}
+				}
+			}
+			return apply_filters( 'gutena_forms_effective_form_attrs', $effective, $block_attrs );
 		}
 
 		/**
@@ -86,6 +180,8 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				return $content;
 			}
 
+			$attributes = $this->get_effective_form_attrs( $attributes );
+
 			$html = '';
 			if ( ! empty( $attributes['redirectUrl'] ) ) {
 				$html = '<input type="hidden" name="redirect_url" value="' . esc_attr( esc_url( $attributes['redirectUrl'] ) ) . '" />';
@@ -94,7 +190,13 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			//google recaptcha
 			$recaptcha_html = '';
 			if ( ! empty( $attributes['recaptcha'] ) && ! empty( $attributes['recaptcha']['enable'] ) && ! empty( $attributes['recaptcha']['site_key'] ) && ! empty( $attributes['recaptcha']['type'] ) ) {
-				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_grecaptcha_scripts' ));
+				$effective_recaptcha = $attributes['recaptcha'];
+				add_action(
+					'wp_enqueue_scripts',
+					function () use ( $effective_recaptcha ) {
+						$this->enqueue_grecaptcha_scripts_with_settings( $effective_recaptcha );
+					}
+				);
 
 				//input box for v2 type only
 				if ( 'v2' === $attributes['recaptcha']['type'] ){
@@ -107,9 +209,14 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 
 			//cloudflare turnstile
 			$turnstile_html = '';
-			if ( ! empty( $attributes['cloudflareTurnstile'] ) && ! empty( $attributes['cloudflareTurnstile']['enable'] && ! empty( $attributes['cloudflareTurnstile']['site_key'] ) ) ) {
-
-				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_cloudflare_turnstile_scripts' ));
+			if ( ! empty( $attributes['cloudflareTurnstile'] ) && ! empty( $attributes['cloudflareTurnstile']['enable'] ) && ! empty( $attributes['cloudflareTurnstile']['site_key'] ) ) {
+				$effective_turnstile = $attributes['cloudflareTurnstile'];
+				add_action(
+					'wp_enqueue_scripts',
+					function () use ( $effective_turnstile ) {
+						$this->enqueue_cloudflare_turnstile_scripts_with_settings( $effective_turnstile );
+					}
+				);
 
 				$turnstile_html .= '<div
 					class="cf-turnstile"
@@ -225,20 +332,28 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		 * @since 1.0.0
 		 */
 		public function enqueue_grecaptcha_scripts() {
-			static $recaptcha_start = 0;
-			if ( 0 === $recaptcha_start  ) {
-				$grecaptcha = get_option( 'gutena_forms_grecaptcha', false );
-				if ( ! empty( $grecaptcha ) && ! empty( $grecaptcha['site_key'] ) && ! empty( $grecaptcha['type'] ) ) {
+			$grecaptcha = get_option( 'gutena_forms__recaptcha', false );
+			$this->enqueue_grecaptcha_scripts_with_settings( is_array( $grecaptcha ) ? $grecaptcha : array() );
+		}
 
+		/**
+		 * Enqueue Google Recaptcha Scripts with provided settings.
+		 *
+		 * @since 1.8.0
+		 * @param array $grecaptcha Recaptcha settings (site_key, type, etc.).
+		 */
+		public function enqueue_grecaptcha_scripts_with_settings( $grecaptcha ) {
+			static $recaptcha_start = 0;
+			if ( 0 === $recaptcha_start ) {
+				if ( ! empty( $grecaptcha ) && ! empty( $grecaptcha['site_key'] ) && ! empty( $grecaptcha['type'] ) ) {
 					wp_enqueue_script(
 						'google-recaptcha',
-						esc_url( 'https://www.google.com/recaptcha/api.js'.( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render='. esc_attr( $grecaptcha['site_key'] )  ) ),
+						esc_url( 'https://www.google.com/recaptcha/api.js' . ( ( 'v2' === $grecaptcha['type'] ) ? '' : '?render=' . esc_attr( $grecaptcha['site_key'] ) ) ),
 						array(),
 						GUTENA_FORMS_VERSION,
 						false
 					);
 				}
-
 				++$recaptcha_start;
 			}
 		}
@@ -249,9 +364,19 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		 * @since 1.3.0
 		 */
 		public function enqueue_cloudflare_turnstile_scripts() {
+			$cloudflare_turnstile = get_option( 'gutena_forms__cloudflare', false );
+			$this->enqueue_cloudflare_turnstile_scripts_with_settings( is_array( $cloudflare_turnstile ) ? $cloudflare_turnstile : array() );
+		}
+
+		/**
+		 * Enqueue Cloudflare Turnstile scripts with provided settings.
+		 *
+		 * @since 1.8.0
+		 * @param array $cloudflare_turnstile Turnstile settings (site_key, etc.).
+		 */
+		public function enqueue_cloudflare_turnstile_scripts_with_settings( $cloudflare_turnstile ) {
 			static $turnstile_start = 0;
-			if ( 0 === $turnstile_start  ) {
-				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
+			if ( 0 === $turnstile_start ) {
 				if ( ! empty( $cloudflare_turnstile ) && ! empty( $cloudflare_turnstile['site_key'] ) ) {
 					wp_enqueue_script(
 						'cloudflare-turnstile',
@@ -263,7 +388,6 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 							'async' => true,
 						)
 					);
-
 					++$turnstile_start;
 				}
 			}
