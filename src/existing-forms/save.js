@@ -1,11 +1,11 @@
 import { useBlockProps } from '@wordpress/block-editor';
 
-const Save = ( { attributes } ) => {
+const Save = () => {
 	const blockProps = useBlockProps.save();
 
 	return (
 		<div { ...blockProps }>
-			Something went wrong. Please update Gutena Forms to the latest version.
+			This form has been deleted.
 		</div>
 	);
 };
