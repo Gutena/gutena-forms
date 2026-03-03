@@ -40,3 +40,14 @@ export const gutenaFormsInArray = ( needle, haystack, strict = false ) => {
 export const gutenaFormsStrContains = ( haystack, needle ) => {
 	return haystack.indexOf( needle ) !== -1;
 }
+
+export const activateLeftMenu = ( $index ) => {
+	document.querySelectorAll( '#toplevel_page_gutena-forms > ul > li' )
+		.forEach( function ( e ) {
+			if ( e.classList.contains( 'current' ) ) {
+				e.classList.remove( 'current' );
+			}
+		} );
+
+	document.querySelectorAll( '#toplevel_page_gutena-forms > ul > li' )[ $index ].classList.add( 'current' );
+}

@@ -1,6 +1,11 @@
 import { Button } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
-const GutenaFormsKnowledgeBase = () => {
+const GutenaFormsKnowledgeBase = ( { setActiveMenu } ) => {
+
+    useEffect( () => {
+        setActiveMenu( '/knowledge-base' );
+    }, [] );
 
     return (
         <div id={ 'gfp-page-doc' }>

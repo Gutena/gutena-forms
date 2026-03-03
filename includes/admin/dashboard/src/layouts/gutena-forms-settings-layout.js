@@ -1,8 +1,12 @@
 import GutenaFormsLeftMenuNavigation from '../components/gutena-forms-left-menu-navigation';
-import GutenaFormsSettingsMetaBox from '../components/gutena-forms-settings-meta-box';
 import GutenaFormsSettings from '../components/gutena-forms-settings';
+import { useEffect } from '@wordpress/element';
 
-const GutenaFormsSettingsLayout = ( { showProPopupHandler } ) => {
+const GutenaFormsSettingsLayout = ( { showProPopupHandler, setActiveMenu } ) => {
+
+	useEffect( () => {
+		setActiveMenu( '/settings' );
+	}, [] );
 
 	return (
 		<div className={ 'gutena-froms__settings-layout' }>

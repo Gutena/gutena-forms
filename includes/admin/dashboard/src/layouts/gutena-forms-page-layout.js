@@ -9,6 +9,7 @@ const GutenaFormsPageLayout = ( { showProPopupHandler, setActiveMenu } ) => {
 	const [ loading, setLoading ] = useState( true );
 
 	useEffect( () => {
+		setActiveMenu( `/${ slug }` );
 		setLoading( true );
 		gutenaFormsFetchSettings( slug )
 			.then( data => {

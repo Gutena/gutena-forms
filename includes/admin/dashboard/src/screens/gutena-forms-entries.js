@@ -11,6 +11,7 @@ import { Bin } from '../icons/bin';
 import { __ } from '@wordpress/i18n';
 import {applyFilters, doAction} from "@wordpress/hooks";
 import {ArrowDown} from "../icons/arrow";
+import { activateLeftMenu } from '../utils/functions';
 
 const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 
@@ -29,6 +30,10 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 	const [ selectedStatus, setSelectedStatus ] = useState( 'all' );
 
 	const [ statuses, setStatuses ] = useState( [] );
+
+	useEffect( () => {
+		activateLeftMenu( 4 );
+	}, [] )
 
 	useEffect( () => {
 		gutenaFromsIdTitle()

@@ -11,12 +11,15 @@ import { Bin } from '../icons/bin';
 import { useEffect, useState } from '@wordpress/element';
 import {gutenaFormsFetchAllForms, gutenaFormsDeleteForm, deleteMultipleForms} from '../api';
 import { toast } from 'react-toastify';
+import { activateLeftMenu } from '../utils/functions';
 
 const GutenaFormsForms = ( { setActiveMenu } ) => {
 	const [ forms, setForms ] = useState( false );
 	const [ loading, setLoading ] = useState( true );
 
 	useEffect( () => {
+		activateLeftMenu( 2 );
+
 		setLoading( true );
 		gutenaFormsFetchAllForms()
 			.then( ( forms ) => {
