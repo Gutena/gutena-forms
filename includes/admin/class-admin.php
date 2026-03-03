@@ -231,13 +231,15 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 				'admin.php?page=gutena-forms#/settings/settings/manage-status'
 			);
 
-			add_submenu_page(
-				'gutena-forms',
-				__( 'Upgrade', 'gutena-forms' ),
-				__( 'Upgrade', 'gutena-forms' ),
-				'manage_options',
-				'https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin'
-			);
+			if ( ! is_gutena_forms_pro() ) {
+				add_submenu_page(
+					'gutena-forms',
+					__( 'Upgrade', 'gutena-forms' ),
+					__( 'Upgrade', 'gutena-forms' ),
+					'manage_options',
+					'https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin'
+				);
+			}
 
 			if ( ! empty( $page_hook_suffix ) ) {
 				add_action( 'admin_print_styles-' . $page_hook_suffix, array( $this, 'forms_listing_styles' ) );
