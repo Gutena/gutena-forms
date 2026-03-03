@@ -30,16 +30,15 @@ const GutenaFormsKnowledgeBase = () => {
                             <Button
                                 href={ gutenaFormsAdmin.gutenaFormsDoc?.support?.documentation_link }
                                 target='_blank'
-                                className='gf-dark-btn'
-                                variant='primary'
+                                className='gutena-forms__primary-button'
+                                style={ { marginRight: '20px' } }
                             >
                                 { gutenaFormsAdmin.gutenaFormsDoc?.support?.documentation_text }
                             </Button>
                             <Button
                                 href={ gutenaFormsAdmin.gutenaFormsDashboard?.support_link }
                                 target='_blank'
-                                className='gf-primary-btn'
-                                variant='primary'
+                                className='secondary-button'
                             >
                                 { gutenaFormsAdmin.gutenaFormsDoc?.support?.link_text }
                             </Button>

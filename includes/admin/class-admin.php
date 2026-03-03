@@ -604,6 +604,14 @@
 							'description' => $this->get_changelog(),
 						),
 					),
+					'gutenaFormsDashboard'    => array(
+						'support_link' => esc_url(
+							apply_filters(
+								'gutena_forms_support_link',
+								'https://objectsws.atlassian.net/servicedesk/customer/portal/239'
+							)
+						),
+					),
 				)
 			);
 		}
