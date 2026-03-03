@@ -25,6 +25,19 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		fill: transparent;
 	}
 
+	.gutena-forms__page-title {
+		color: #2C3338;
+		font-size: 24px;
+		font-weight: 700;
+		margin-top: 0;
+	}
+
+	.gutena-forms__field-container {
+		.components-base-control__field {
+			width: 330px;
+		}
+	}
+
 	.gutena-forms__header-container {
 		background: #FFFFFF;
 		border-bottom: 0.5px solid #E2E2E2;
@@ -499,13 +512,6 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 	.gutena-forms__page-layout-wrapper {
 		padding: 40px;
-
-		.gutena-forms__page-title {
-			color: #2C3338;
-			font-size: 24px;
-			font-weight: 700;
-			margin-top: 0;
-		}
 
 		.gutena-forms-add-new-form-button {
 			border-radius: 4px;

@@ -48,9 +48,9 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 		setFieldValue( fieldValue );
 	}
 
-	const handleSubmit = ( e ) => {
+	const handleSubmit = () => {
 		gutenaFormsUpdateSettings( settings_id, fieldValue )
-			.then( response => {
+			.then( () => {
 				toast.success(
 					__( 'Settings updated successfully.', 'gutena-forms' )
 				);
@@ -114,7 +114,11 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 				break;
 		}
 
-		return fieldElement;
+		return (
+			<div className={ 'gutena-forms__field-container' }>
+				{ fieldElement }
+			</div>
+		);
 	}
 
 	const ScreenTemplate = SettingsTemplates[ template ];
@@ -128,7 +132,7 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 
 	return (
 		<div onClick={ showProPopup }>
-			<h2>
+			<h2 className={ 'gutena-forms__page-title' }>
 				{ title }
 				{
 					isPro && (
