@@ -1,10 +1,12 @@
 import { Button } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
+import { activateLeftMenu } from '../utils/functions';
 
 const GutenaFormsKnowledgeBase = ( { setActiveMenu } ) => {
 
     useEffect( () => {
         setActiveMenu( '/knowledge-base' );
+        activateLeftMenu( 0 );
     }, [] );
 
     return (

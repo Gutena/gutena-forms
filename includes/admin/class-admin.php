@@ -81,6 +81,8 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 
 		/**
 		 * Load classes
+		 *
+		 * @return false|void
 		 */
 		private function load_classes() {
 
@@ -219,6 +221,14 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 				__( 'Entries', 'gutena-forms' ),
 				'manage_options',
 				'admin.php?page=gutena-forms#/settings/entries'
+			);
+
+			add_submenu_page(
+				'gutena-forms',
+				__( 'Settings', 'gutena-forms' ),
+				__( 'Settings', 'gutena-forms' ),
+				'manage_options',
+				'admin.php?page=gutena-forms#/settings/settings/manage-status'
 			);
 
 			add_submenu_page(
