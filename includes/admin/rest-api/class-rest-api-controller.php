@@ -239,16 +239,21 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							),
 						)
 				),
-				array(
-					'title' => __( 'Spam Protection', 'gutena-forms' ),
-					'icon'  => 'Shield',
-					'menus' => array(
-						array(
-							'title' => __( 'Honeypot', 'gutena-forms' ),
-							'slug'  => 'honeypot',
-						),
-					),
-				)
+				/**
+				 * Disabling this due to some reasons, will enable it in future
+				 *
+				 * @todo Enable this in future after adding necessary functionalities
+				 * array(
+				 * 'title' => __( 'Spam Protection', 'gutena-forms' ),
+				 * 'icon'  => 'Shield',
+				 * 'menus' => array(
+				 * array(
+				 * 'title' => __( 'Honeypot', 'gutena-forms' ),
+				 * 'slug'  => 'honeypot',
+				 * ),
+				 * ),
+				* )
+				*/
 			);
 
 			if ( is_array( $menus ) && ! empty( $menus ) ) {
