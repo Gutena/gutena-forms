@@ -12,7 +12,7 @@ WordPress form builder to create lightweight contact forms, survey forms, feedba
 
 = WordPress Contact Form Builder Plugin =
 
-[👑Checkout Premium Version](https://gutenaforms.com/pricing/?utm_source=wp_org&utm_medium=website&utm_campaign=free_plugin) | [💻 Live Demo](https://app.instawp.io/launch?t=gutena-forms-demo&d=v2) | [Support](https://objectsws.atlassian.net/servicedesk/customer/portal/239)
+[👑Checkout Premium Version](https://gutenaforms.com/pricing/?utm_source=wp_org&utm_medium=website&utm_campaign=free_plugin) | [💻 Live Demo](https://app.instawp.io/launch?s=demo-gutena-forms&d=v2) | [Support](https://objectsws.atlassian.net/servicedesk/customer/portal/239)
 
 [Gutena Forms](https://gutenaforms.com/) is the easiest WordPress form builder plugin for creating responsive, lightweight forms in the WordPress block editor (Gutenberg). It works as a Gutenberg native form plugin that lets you build contact forms, survey forms, feedback forms, booking forms, and any custom form with a dedicated Gutenberg block.
 
@@ -346,10 +346,10 @@ Gutena Forms gives you full control over padding, colors, spacing, typography, f
 
 == Changelog ==
 = 1.6.1 - Feb 17, 2026 =
-* Fixed - Vulnerability reported by WordFence team.
+* FIX - Patched Security vulnerability reported by WordFence team.
 
 = 1.6.0 - Jan 21, 2026 =
-* NEW - Introducing Existing Forms for reusability.
+* NEW - Introducing Existing Forms for re-usability.
 
 = 1.5.1 - Dec 31, 2025 =
 * Improved user experience.
