@@ -279,12 +279,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 					)
 				);
 			}
-
-			// Merge form_attrs with global settings (block override takes precedence when present).
-			$form_block = class_exists( 'Gutena_Forms_Form_Block' ) ? Gutena_Forms_Form_Block::get_instance() : null;
-			if ( $form_block && method_exists( $form_block, 'get_effective_form_attrs' ) ) {
-				$this->schema['form_attrs'] = $form_block->get_effective_form_attrs( $this->schema['form_attrs'] );
-			}
 		}
 
 		/**
@@ -367,17 +361,8 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				$_POST['recaptcha_error'] = 'Recaptcha input missing';
 				return false;
 			} else {
-				// Prefer merged form_attrs, fall back to global option for backward compatibility.
-				$recaptcha_settings = null;
-				if ( ! empty( $this->schema['form_attrs']['recaptcha'] ) && ! empty( $this->schema['form_attrs']['recaptcha']['secret_key'] ) ) {
-					$recaptcha_settings = $this->schema['form_attrs']['recaptcha'];
-				}
-				if ( empty( $recaptcha_settings ) ) {
-					$recaptcha_settings = get_option( 'gutena_forms__recaptcha', false );
-				}
-				if ( empty( $recaptcha_settings ) ) {
-					$recaptcha_settings = get_option( 'gutena_forms_grecaptcha', false );
-				}
+				//get reCAPTCHA settings
+				$recaptcha_settings= get_option( 'gutena_forms_grecaptcha', false );
 
 				if ( empty( $recaptcha_settings ) ) {
 					return false;
@@ -431,19 +416,8 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 */
 		private function cloudflare_turnstile_verify() {
 			if ( isset( $_POST['cf-turnstile-response'] ) && ! empty( $_POST['cf-turnstile-response'] ) ) {
-				$token = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
-
-				// Prefer merged form_attrs, fall back to global options for backward compatibility.
-				$cloudflare_turnstile = null;
-				if ( ! empty( $this->schema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $this->schema['form_attrs']['cloudflareTurnstile']['secret_key'] ) ) {
-					$cloudflare_turnstile = $this->schema['form_attrs']['cloudflareTurnstile'];
-				}
-				if ( empty( $cloudflare_turnstile ) ) {
-					$cloudflare_turnstile = get_option( 'gutena_forms__cloudflare', false );
-				}
-				if ( empty( $cloudflare_turnstile ) ) {
-					$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
-				}
+				$token 				  = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
+				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
 
 				if ( empty( $cloudflare_turnstile ) ) {
 					return false;

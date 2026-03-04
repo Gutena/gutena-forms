@@ -21,6 +21,47 @@ if ( ! class_exists( 'Gutena_Forms_handle_Save_Form' ) ) :
 
 		private function __construct() {
 			add_action( 'save_post', array( $this, 'save_post' ), 10, 3 );
+			add_action( 'admin_init', array( $this, 'save_form_settings_env' ) );
+		}
+
+		public function save_form_settings_env() {
+
+			$gutena_form_settings = apply_filters( 'gutena_forms__settings', array() );
+
+			$settings_to_verify = apply_filters(
+				'gutena_forms__settings_to_verify',
+				array(
+					'honeypot',
+					'google-recaptcha',
+					'cloudflare-turnstile',
+					'validation-messages',
+				)
+			);
+			foreach ( $gutena_form_settings as $k => $v ) {
+				if ( in_array( $k, $settings_to_verify ) ) {
+					$settings = new $v();
+					if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
+						if ( ! empty( $settings->settings ) ) {
+							return;
+						}
+					}
+				}
+			}
+
+			$post = get_posts(
+				array(
+					'post_type' => 'gutena_forms',
+					'numberposts' => 1,
+					'post_status' => 'publish',
+				)
+			);
+
+			if ( empty( $post ) ) {
+				return;
+			}
+
+			$post = $post[0];
+//			$this->update_settings( $post );
 		}
 
 		/**
