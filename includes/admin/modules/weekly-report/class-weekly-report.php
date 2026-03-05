@@ -63,7 +63,7 @@ if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gu
 		public function get_settings() {
 			return array(
 				'title'       => __( 'Weekly Forms Summary', 'gutena-forms' ),
-				'description' => __( 'Manage user access and permissions to control form data security and privacy.', 'gutena-forms' ),
+				'description' => __( 'Would you like to receive a weekly report showing how your forms are performing? Enable Email Summaries to receive a detailed report every week at your selected email address.', 'gutena-forms' ),
 				'fields'      => array(
 					array(
 						'id'      => 'enabled',
