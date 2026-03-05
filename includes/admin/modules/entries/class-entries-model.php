@@ -189,7 +189,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 						'form_name' => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
 						'datetime'  => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
 						'value'     => $value,
-						'status'    => ucfirst( ! empty( $entry['status'] ) ? $entry['status'] : 'unknown' ),
+						'status'    => ! empty( $entry['status'] ) ? $entry['status'] : 'unknown',
 					);
 				},
 				$results
@@ -286,7 +286,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$result = array_map(
 				function ( $result ) {
 					$result['entry_data']   = maybe_unserialize( $result['entry_data'] );
-					$result['entry_status'] = ! empty( $result['entry_status'] ) ? ucfirst( $result['entry_status'] ) : 'Unknown';
+					$result['entry_status'] = ! empty( $result['entry_status'] ) ? $result['entry_status'] : 'Unknown';
 
 					foreach ( $result['entry_data'] as $k => $v ) {
 						$v['value'] = substr( $v['value'], 0, 30 );
