@@ -5,3 +5,4 @@ output/
 .env
 *-lock.json
 phpcs.xml
+test-data/

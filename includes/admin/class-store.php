@@ -95,7 +95,7 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 		public function update_entries_status( $action, $form_entry_id ) {
 			// check for valid action
 			global $wpdb;
-			if ( ! empty( $action ) && ! empty( $wpdb ) && ! empty( $form_entry_id ) && $this->is_gfadmin( 'delete_posts' ) ) {
+			if ( ! empty( $action ) && ! empty( $wpdb ) && ! empty( $form_entry_id ) ) {
 				$form_entry_ids = array();
 				if ( is_array( $form_entry_id ) ) {
 					foreach ( $form_entry_id as $id ) {
@@ -120,9 +120,7 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 						$action_query = "UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'unread' WHERE entry_id IN ({$form_entry_ids})";
 						break;
 					case 'trash':
-						if ( apply_filters( 'gutena_forms_check_user_access', $this->is_gfadmin(), 'delete_entries' ) ) {
-							$action_query = "UPDATE {$this->table_gutenaforms_entries} SET trash = 1 WHERE entry_id IN ({$form_entry_ids})";
-						}
+						$action_query = "UPDATE {$this->table_gutenaforms_entries} SET trash = 1 WHERE entry_id IN ({$form_entry_ids})";
 						break;
 					default:
 						break;

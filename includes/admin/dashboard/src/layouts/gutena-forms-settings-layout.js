@@ -1,0 +1,31 @@
+import GutenaFormsLeftMenuNavigation from '../components/gutena-forms-left-menu-navigation';
+import GutenaFormsSettings from '../components/gutena-forms-settings';
+import { useEffect } from '@wordpress/element';
+import { activateLeftMenu } from '../utils/functions';
+
+const GutenaFormsSettingsLayout = ( { showProPopupHandler, setActiveMenu } ) => {
+
+	useEffect( () => {
+		setActiveMenu( '/settings' );
+		activateLeftMenu( 5 );
+	}, [] );
+
+	return (
+		<div className={ 'gutena-froms__settings-layout' }>
+
+			<div style={ { float: 'left', marginTop: '-1px' } }>
+				<GutenaFormsLeftMenuNavigation />
+			</div>
+			<div style={ { float: 'left' } } className={ 'gutena-forms__main-content-container' }>
+
+
+				<div className={ 'gutena-forms__container' }>
+					<GutenaFormsSettings showProPopupHandler={ showProPopupHandler } />
+				</div>
+
+			</div>
+		</div>
+	);
+};
+
+export default GutenaFormsSettingsLayout;

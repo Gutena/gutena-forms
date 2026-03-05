@@ -15,6 +15,15 @@
 		"start": "wp-scripts start"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^25.3.0"
+		"@wordpress/api-fetch": "^7.37.0",
+		"@wordpress/dom-ready": "^4.37.0",
+		"@wordpress/hooks": "^4.39.0",
+		"@wordpress/scripts": "^25.3.0",
+		"@wordpress/url": "^4.37.0"
+	},
+	"dependencies": {
+		"react-date-range": "^2.0.1",
+		"react-router": "^7.11.0",
+		"react-toastify": "^11.0.5"
 	}
 }

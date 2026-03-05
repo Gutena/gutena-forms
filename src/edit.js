@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import {__, sprintf} from '@wordpress/i18n';
 import { get } from 'lodash';
 import { useEffect } from '@wordpress/element';
 import { gfIsEmpty, getInnerBlocksbyNameAttr, slugToName } from './helper';
@@ -644,7 +644,14 @@ export default function Edit( props ) {
 				</PanelBody>
 				<PanelBody title="Google reCAPTCHA" initialOpen={ false }>
 				<VStack >
-					<p><a href="https://gutenaforms.com/how-to-generate-google-recaptcha-site-key-and-secret-key" target="_blank">{ __( 'reCAPTCHA', 'gutena-forms' ) }</a> { __( ' v3 and v2 help you protect your sites from fraudulent activities, spam, and abuse. By using this integration in your forms, you can block spam form submissions.', 'gutena-forms' ) } </p>
+					<p
+						dangerouslySetInnerHTML={ {
+							__html: sprintf(
+								__( 'Enable %1$s v2 or v3 to protect your forms from spam and bot submissions.', 'gutena-forms' ),
+								`<a href="https://gutenaforms.com/how-to-generate-google-recaptcha-site-key-and-secret-key" target="_blank">${ __( 'reCAPTCHA', 'gutena-forms' ) }</a>`
+							)
+						} }
+					/>
 
 					<ToggleControl
 						label={ __( 'Enable', 'gutena-forms' ) }
@@ -702,9 +709,14 @@ export default function Edit( props ) {
 				{/* Cloudflare - Turnstile start */}
 				<PanelBody title="Cloudflare Turnstile" initialOpen={ false }>
 					<VStack>
-						<p>
-							<a>Cloudflare Turnstile</a>
-						</p>
+						<p
+							dangerouslySetInnerHTML={ {
+								__html: sprintf(
+									__( 'Enable %1$s to protect your forms from spam and bot submissions.', 'gutena-forms' ),
+									`<a href="https://developers.cloudflare.com/turnstile/get-started/">${ __( 'Cloudflare CAPTCHA', 'gutena-forms' ) }</a>`
+								)
+							} }
+						/>
 
 						<ToggleControl
 							label={ 'Enable' }
