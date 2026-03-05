@@ -144,9 +144,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 	};
 
 	const handleDeleteEntry = ( row ) => {
-		if ( ! window.confirm( __( 'Move this entry to trash?', 'gutena-forms' ) ) ) {
-			return;
-		}
+
 		gutenaFormsDeleteEntry( row.entry_id )
 			.then( () => {
 				toast.success( __( 'Entry deleted successfully', 'gutena-forms' ) );
