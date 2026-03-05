@@ -5,6 +5,7 @@
  * @package GutenaForms
  */
 
+import './pro-components';
 import { addFilter } from '@wordpress/hooks';
 import { AddNew } from '../icons/plus';
 import GutenaFormsSubmitButton from '../components/fields/gutena-forms-submit-button';
@@ -15,7 +16,7 @@ import Ellipse from '../icons/ellipse';
 import Tag from '../icons/tag';
 import Profile from '../icons/profile';
 import Notes from '../icons/notes';
-import './pro-components';
+import Edit from '../icons/edit';
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -30,6 +31,7 @@ addFilter(
 		components['Tag']                     = Tag;
 		components['Profile']                 = Profile;
 		components['Notes'] 				  = Notes;
+		components['Edit'] 				      = Edit;
 
 		return components;
 	}
