@@ -10,7 +10,6 @@ import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
 import { __ } from '@wordpress/i18n';
 import {applyFilters, doAction} from "@wordpress/hooks";
-import {ArrowDown} from "../icons/arrow";
 import { activateLeftMenu } from '../utils/functions';
 
 const GutenaFormsEntries = ( { showProPopupHandler } ) => {
@@ -25,7 +24,7 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 	const [ capabilities, setCapabilities ] = useState( {} );
 
 	const [ tagsOptions, setTagsOptions ] = useState( [ { label: __( 'All Tags', 'gutena-forms' ), value: 'all' } ] );
-	const [ statusesOptions, setStatusesOptions ] = useState( [ { label: __( 'All Statuses', 'gutena-forms' ), value: 'all' } ] );
+	const [ statusesOptions, setStatusesOptions ] = useState( [ { label: __( 'All Status', 'gutena-forms' ), value: 'all' } ] );
 	const [ selectedTag, setSelectedTag ] = useState( 'all' );
 	const [ selectedStatus, setSelectedStatus ] = useState( 'all' );
 
@@ -136,52 +135,6 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 				onChange={ value => setSelectedFormFilter( value ) }
 				value={ selectedFormFilter }
 			/>
-		</div>
-	);
-
-	const TagFilter = () => (
-		<div>
-			{ hasPro ? (
-				<SelectControl
-					style={ { width: '100px' } }
-					options={ tagsOptions }
-					onChange={ value => setSelectedTag( value ) }
-					value={ selectedTag }
-				/>
-			) : (
-				<div
-					className={ 'gutena-forms__dummy-select' }
-					onClick={ showProPopupHandler }
-				>
-					<div>All Tags</div>
-					<div>
-						<ArrowDown />
-					</div>
-				</div>
-			) }
-		</div>
-	);
-
-	const StatusFilter = () => (
-		<div>
-			{ hasPro ? (
-				<SelectControl
-					style={ { width: '100px' } }
-					options={ statusesOptions }
-					onChange={ value => setSelectedStatus( value ) }
-					value={ selectedStatus }
-				/>
-				) : (
-				<div
-					className={ 'gutena-forms__dummy-select' }
-					onClick={ showProPopupHandler }
-				>
-					<div>All Statuses</div>
-					<div>
-						<ArrowDown />
-					</div>
-				</div>
-				) }
 		</div>
 	);
 
@@ -350,13 +303,19 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 									}
 								} }
 								handleBulkAction={ handleBulkAction }
-								customFilters={ {
+								customFilters={ applyFilters( 'gutenaForms.entries.components', {
+									showProPopupHandler: showProPopupHandler,
+									statusesOptions: statusesOptions,
+									setSelectedStatus: setSelectedStatus,
+									selectedStatus: selectedStatus,
+									tagsOptions: tagsOptions,
+									selectedTag: selectedTag,
+									setSelectedTag: setSelectedTag,
+									hasPro: hasPro,
 									components: [
 										FormFilter,
-										TagFilter,
-										StatusFilter
 									]
-								} }
+								} ) }
 							/>
 						</div>
 					) }

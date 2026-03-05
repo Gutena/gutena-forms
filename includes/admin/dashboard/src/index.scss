@@ -1190,6 +1190,11 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		border-radius: 2px;
 		border: 1px solid #E2E2E2;
 		cursor: default;
+		position: relative;
+
+		svg {
+			margin: 0 0 -4px 0;
+		}
 	}
 
 	.components-select-control__input {
