@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from '@wordpress/element';
-import { Icon, Panel, PanelRow, PanelBody, PanelHeader, Button, Dashicon } from '@wordpress/components';
+import { Icon, Panel, PanelBody, PanelHeader, Button, Dashicon } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { InnerBlocks, useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { addQueryArgs } from '@wordpress/url';
 import Logo from './logo';
 import { __ } from '@wordpress/i18n';
@@ -73,7 +73,26 @@ const Edit = ( { attributes, setAttributes } ) => {
 			<div style={ { display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '220px', border: '1px solid #E2E2E2', background: '#FAFAFA', } }>
 				{
 					attributes.formID ? (
-						<div>Loading form</div>
+						<div style={ { textAlign: 'center', marginBottom: '20px' } }>
+							<Logo />
+							<p style={ { textAlign: 'center', marginBottom: '20px' } }>
+								Loading form...
+								<br />
+								If it doesn’t appear, it may have been removed or is unavailable.
+							</p>
+
+							<Button
+								style={ { width: '100%', display: 'block' } }
+								isSecondary
+								onClick={ () => {
+									setFormId( false );
+									setForm( null );
+									setAttributes( { formID: false } );
+								} }
+							>
+								{ __( 'Change Form', 'gutena-forms' ) }
+							</Button>
+						</div>
 					) : (
 						<div style={ { display: 'flex', alignItems: 'center', flexDirection: 'column' } }>
 
