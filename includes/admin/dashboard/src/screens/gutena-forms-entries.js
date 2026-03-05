@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
 import {applyFilters, doAction} from "@wordpress/hooks";
 import { activateLeftMenu } from '../utils/functions';
 
-const GutenaFormsEntries = ( { showProPopupHandler } ) => {
+const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
 	const { id, slug } = useParams();
 	const hasPro = ! ! ( typeof gutenaFormsAdmin !== 'undefined' && gutenaFormsAdmin.hasPro );
@@ -32,6 +32,7 @@ const GutenaFormsEntries = ( { showProPopupHandler } ) => {
 
 	useEffect( () => {
 		activateLeftMenu( 4 );
+		setActiveMenu( '/entries' );
 	}, [] )
 
 	useEffect( () => {
