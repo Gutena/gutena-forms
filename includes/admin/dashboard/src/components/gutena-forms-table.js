@@ -14,12 +14,15 @@ const GutenaFormsTable = ( { children, headers, data } ) => {
 					<tr>
 						{ headers.map( ( header, index ) => {
 
+							let Element = children && children.header && children.header[ header.key ];
 							return (
 								<th
 									key={ index }
 									style={ { width: header.width ? header.width : 'auto' } }
 								>
-									{ children && children.header && children.header[ header.key ] ? children.header[ header.key ]( { header, index } ) : header.value }
+									{
+										Element ? <Element header={ header } index={ index } /> : header.value
+									}
 								</th>
 							);
 						} ) }
@@ -36,14 +39,19 @@ const GutenaFormsTable = ( { children, headers, data } ) => {
 						<tr
 							key={ index }
 						>
-							{ headers.map( ( header, index ) => (
-								<td
-									key={ index }
-									style={ { width: header.width ? header.width : 'auto' } }
-								>
-									{ children && children.body && children.body[ header.key ] ? children.body[ header.key ]( { row, index, header } ) : row[ header.key ] }
-								</td>
-							) ) }
+							{ headers.map( ( header, index ) => {
+
+								let Element = children && children.body && children.body[ header.key ];
+
+								return (
+									<td
+										key={ index }
+										style={ { width: header.width ? header.width : 'auto' } }
+									>
+										{ Element ? <Element row={ row } index={ index } header={ header } /> : row[ header.key ] }
+									</td>
+								);
+							} ) }
 						</tr>
 					);
 				} )
