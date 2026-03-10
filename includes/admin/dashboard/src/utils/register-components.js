@@ -17,6 +17,7 @@ import Tag from '../icons/tag';
 import Profile from '../icons/profile';
 import Notes from '../icons/notes';
 import Edit from '../icons/edit';
+import { FilledStar, Star } from "../icons/star";
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -32,6 +33,8 @@ addFilter(
 		components['Profile']                 = Profile;
 		components['Notes'] 				  = Notes;
 		components['Edit'] 				      = Edit;
+		components['Star'] 				  	  = Star;
+		components['FilledStar'] 			  = FilledStar;
 
 		return components;
 	}

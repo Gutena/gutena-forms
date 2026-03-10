@@ -54,6 +54,7 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 							entry_id: entry.entry_id,
 							datetime: entry.added_time,
 							status: entry.entry_status,
+							starred: entry.starred,
 						};
 
 						let entryData = entry.entry_data;
@@ -149,10 +150,14 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 									return applyFilters( 'gutenaForms.entries.status', null, { row, header, index }, statuses, showProPopupHandler );
 								},
 
-								actions: ( { row } ) => {
+								actions: ( { row, header, index } ) => {
 
 									return (
 										<div className={ 'gutena-forms-datatable__action' }>
+
+											<>
+												{ applyFilters( 'gutenaForms.entries.actions', null, { row, header, index } ) }
+											</>
 
 											{
 												capabilities && capabilities.map( cap => {

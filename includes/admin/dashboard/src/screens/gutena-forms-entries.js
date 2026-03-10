@@ -265,10 +265,14 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 											return applyFilters( 'gutenaForms.entries.status', null, { row, header, index }, statuses, showProPopupHandler );
 										},
 
-										actions: ( { row } ) => {
+										actions: ( { row, header, index } ) => {
 
 											return (
 												<div className={ 'gutena-forms-datatable__action' }>
+													<>
+														{ applyFilters( 'gutenaForms.entries.actions', null, { row, header, index } ) }
+													</>
+
 													{
 														capabilities && capabilities.map( cap => {
 															if ( 'view' === cap ) {

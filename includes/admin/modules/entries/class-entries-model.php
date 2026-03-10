@@ -160,11 +160,12 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 * @return array|object|stdClass[]|null
 		 */
 		public function get_all( $form_id = 0 ) {
-			$sql = 'SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data, e.entry_status as status FROM %i e LEFT JOIN %i f ON e.form_id = f.form_id WHERE e.trash = 0';
+			$sql = "SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data, e.entry_status AS status, m.metadata AS starred FROM %i e LEFT JOIN %i f ON e.form_id = f.form_id LEFT JOIN %i m ON e.entry_id = m.entry_id AND m.data_type = 'starred' WHERE e.trash = 0 ";
 			$sql = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms_entries,
-				$this->store->table_gutenaforms
+				$this->store->table_gutenaforms,
+				$this->store->table_gutenaforms_meta
 			);
 
 			if ( ! empty( $form_id ) ) {
@@ -190,6 +191,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 						'datetime'  => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
 						'value'     => $value,
 						'status'    => ! empty( $entry['status'] ) ? $entry['status'] : 'unknown',
+						'starred'   => ! empty( $entry['starred'] ) && '1' == $entry['starred'],
 					);
 				},
 				$results
@@ -274,11 +276,12 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		public function get_entry_data( $form_id ) {
 			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
 
-			$sql    = 'SELECT entries.entry_data, entries.entry_id, entries.added_time, entries.entry_status FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s AND entries.trash = 0';
+			$sql    = "SELECT entries.entry_data, entries.entry_id, entries.added_time, entries.entry_status, metadata.metadata AS starred FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id LEFT JOIN %i metadata ON entries.entry_id = metadata.entry_id AND metadata.data_type = 'starred' WHERE forms.block_form_id = %s AND entries.trash = 0";
 			$sql    = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms,
 				$this->store->table_gutenaforms_entries,
+				$this->store->table_gutenaforms_meta,
 				$form_id
 			);
 			$result = $this->wpdb->get_results( $sql, ARRAY_A );
@@ -389,6 +392,19 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			);
 
 			return $this->wpdb->get_var( $sql );
+		}
+
+		public function get_form_id_by_entry_id( $entry_id ) {
+			$sql = 'SELECT form_id FROM %i WHERE entry_id = %d';
+			$sql = $this->wpdb->prepare(
+				$sql,
+				$this->store->table_gutenaforms_entries,
+				$entry_id
+			);
+
+			$form_id = $this->wpdb->get_var( $sql );
+
+			return is_null( $form_id ) ? 0 : $form_id;
 		}
 	}
 
