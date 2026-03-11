@@ -39,43 +39,12 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 		setLoading( true );
 
 		if ( tableHeaders ) {
-			gutenaFormsFetchEntriesByFormId( id, 'data' )
-				.then( ( { data, capabilities } ) => {
-
-					setCapabilities( capabilities );
-
-					var tableData = data;
-
-					const newTableData = {};
-
-					let i = 0;
-					for ( const entry of tableData ) {
-						newTableData[ i ] = {
-							entry_id: entry.entry_id,
-							datetime: entry.added_time,
-							status: entry.entry_status,
-							starred: entry.starred,
-						};
-
-						let entryData = entry.entry_data;
-
-						for ( const header of tableHeaders ) {
-							if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions', 'status' ] ) ) {
-								newTableData[ i ][ header.key ] = entryData[ header.key ].value;
-							}
-						}
-						i++;
-					}
-
-					setTableData( Object.values( newTableData ) );
-					setLoading( false )
-				} );
+			loadData();
 		}
 
 	}, [ tableHeaders, id ] );
 
-	const refreshFormEntries = () => {
-		setLoading( true );
+	const loadData = () => {
 		gutenaFormsFetchEntriesByFormId( id, 'data' )
 			.then( ( { data, capabilities } ) => {
 
@@ -83,34 +52,38 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 
 				var tableData = data;
 
-
 				const newTableData = {};
+
 				let i = 0;
 				for ( const entry of tableData ) {
 					newTableData[ i ] = {
 						entry_id: entry.entry_id,
 						datetime: entry.added_time,
+						status: entry.entry_status,
+						starred: '1' === entry.starred,
 					};
-					const entryData = entry.entry_data;
+
+					let entryData = entry.entry_data;
+
 					for ( const header of tableHeaders ) {
-						if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions' ] ) ) {
+						if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions', 'status' ] ) ) {
 							newTableData[ i ][ header.key ] = entryData[ header.key ].value;
 						}
 					}
 					i++;
 				}
+
 				setTableData( Object.values( newTableData ) );
-				setLoading( false );
-			} )
-			.catch( () => setLoading( false ) );
-	};
+				setLoading( false )
+			} );
+	}
 
 	const handleDeleteEntry = ( row ) => {
-
+		setLoading( true );
 		gutenaFormsDeleteEntry( row.entry_id )
 			.then( () => {
 				toast.success( __( 'Entry deleted successfully.', 'gutena-forms' ) );
-				refreshFormEntries();
+				loadData();
 			} )
 			.catch( () => {
 				toast.error( __( 'Failed to delete entry.', 'gutena-forms' ) );
@@ -119,20 +92,24 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 
 	const handleBulkAction = ( action, selectedData ) => {
 		if ( 'delete' === action ) {
+			setLoading( true );
 			deleteMultipleEntries( selectedData )
 				.then( () => {
-					toast.success( __( 'Selected entries moved to trash successfully.', 'gutena-forms' ) );
-					refreshFormEntries();
+					toast.success( __( 'Selected entries deleted successfully.', 'gutena-forms' ) );
+					loadData();
 				} )
 				.catch( () => {
 					toast.error( __( 'Failed to delete entries.', 'gutena-forms' ) );
 				} );
+		} else {
+			doAction( 'gutenaForms.entries.handle.bulk_actions', action, selectedData, { refresh: loadData, toast: toast, loading: setLoading } );
 		}
 	};
 
 	const bulkActionOptions = [
 		{ label: __( 'Bulk Actions', 'gutena-forms' ), value: 'bulk_actions' },
 		...( Array.isArray( capabilities ) && capabilities.includes( 'delete' ) ? [ { label: __( 'Delete', 'gutena-forms' ), value: 'delete' } ] : [] ),
+		...applyFilters( 'gutenaForms.entries.bulk_actions', [] ),
 	];
 
 	return (
@@ -147,7 +124,7 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 						tableChildren={ {
 							body: {
 								status: ( { row, header, index } ) => {
-									return applyFilters( 'gutenaForms.entries.status', null, { row, header, index }, statuses, showProPopupHandler );
+									return applyFilters( 'gutenaForms.entries.status', null, { row, header, index, form_id: id }, statuses, showProPopupHandler );
 								},
 
 								actions: ( { row, header, index } ) => {
@@ -156,7 +133,7 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 										<div className={ 'gutena-forms-datatable__action' }>
 
 											<>
-												{ applyFilters( 'gutenaForms.entries.actions', null, { row, header, index } ) }
+												{ applyFilters( 'gutenaForms.entries.actions', null, { row, header, index, form_id: id } ) }
 											</>
 
 											{

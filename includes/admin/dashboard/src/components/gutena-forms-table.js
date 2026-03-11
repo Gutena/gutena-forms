@@ -21,7 +21,7 @@ const GutenaFormsTable = ( { children, headers, data } ) => {
 									style={ { width: header.width ? header.width : 'auto' } }
 								>
 									{
-										Element ? <Element header={ header } index={ index } /> : header.value
+										Element ? Element( { header, index } ) : header.value
 									}
 								</th>
 							);
@@ -48,7 +48,7 @@ const GutenaFormsTable = ( { children, headers, data } ) => {
 										key={ index }
 										style={ { width: header.width ? header.width : 'auto' } }
 									>
-										{ Element ? <Element row={ row } index={ index } header={ header } /> : row[ header.key ] }
+										{ Element ? Element( { row, index, header } ) : row[ header.key ] }
 									</td>
 								);
 							} ) }

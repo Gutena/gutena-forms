@@ -159,18 +159,22 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 		if ( 'delete' === action ) {
 			deleteMultipleEntries( selectedData )
 				.then( () => {
-					toast.success( __( 'Selected entries moved to trash successfully.', 'gutena-forms' ) );
+					toast.success( __( 'Selected entries deleted successfully.', 'gutena-forms' ) );
 					refreshEntries();
 				} )
 				.catch( () => {
 					toast.error( __( 'Failed to delete entries.', 'gutena-forms' ) );
 				} );
+		} else {
+			doAction( 'gutenaForms.entries.handle.bulk_actions', action, selectedData, { refresh: refreshEntries, toast: toast } );
 		}
+
 	};
 
 	const bulkActionOptions = [
 		{ label: __( 'Bulk Actions', 'gutena-forms' ), value: 'bulk_actions' },
 		...( Array.isArray( capabilities ) && capabilities.includes( 'delete' ) ? [ { label: __( 'Delete', 'gutena-forms' ), value: 'delete' } ] : [] ),
+		...applyFilters( 'gutenaForms.entries.bulk_actions', [] ),
 	];
 
 	return (
@@ -270,7 +274,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 											return (
 												<div className={ 'gutena-forms-datatable__action' }>
 													<>
-														{ applyFilters( 'gutenaForms.entries.actions', null, { row, header, index } ) }
+														{ applyFilters( 'gutenaForms.entries.actions', null, { row, header, index, form_id: row.form_id } ) }
 													</>
 
 													{
