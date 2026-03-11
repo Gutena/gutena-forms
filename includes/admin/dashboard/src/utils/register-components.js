@@ -18,6 +18,7 @@ import Profile from '../icons/profile';
 import Notes from '../icons/notes';
 import Edit from '../icons/edit';
 import { FilledStar, Star } from "../icons/star";
+import {gutenaFormsStrContains} from "./functions";
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -50,3 +51,10 @@ addFilter(
 		return data;
 	}
 );
+
+addFilter( 'gutenaFormsPro.core.functions', 'gutena-forms-free-fetch-functions', ( functions ) => {
+
+	functions['gutenaFormsStrContains'] = gutenaFormsStrContains;
+
+	return functions;
+} );
