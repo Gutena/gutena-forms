@@ -40,6 +40,10 @@ import {
 import RangeControlUnit from './components/RangeControlUnit';
 import './editor.scss';
 import variations from './variations';
+import CloudflareSettings from "./settings/cloudflare-settings";
+import GoogleRecaptchaSettings from "./settings/google-recaptcha-settings";
+import HoneypotSettings from "./settings/honeypot-settings";
+import ValidationMessagesSettings from "./settings/validation-messages-settings";
 /** Hook that retrieves the given setting for the block instance in use.
  * https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#usesetting
  */
@@ -597,33 +601,6 @@ export default function Edit( props ) {
 		className: formClasses,
 	} );
 
-	useEffect( () => {
-		if ( ! formID ) {
-			// validation-messages: messages, google-recaptcha: recaptcha, cloudflare-turnstile: cloudflareTurnstile, honeypot: honeypot
-			const defaultSettings = gutenaFormsFormFieldsSettings.settings;
-			setAttributes( { messages: defaultSettings['validation-messages'] } );
-			setAttributes( { recaptcha: defaultSettings['google-recaptcha'] } );
-			setAttributes( { cloudflareTurnstile: defaultSettings['cloudflare-turnstile'] } );
-			setAttributes( { honeypot: defaultSettings['honeypot'] } );
-
-			if ( defaultSettings.activecampaign || defaultSettings.brevo || defaultSettings.mailchimp ) {
-				let settings = {
-					activecampaign: defaultSettings.activecampaign,
-					brevo: defaultSettings.brevo,
-					mailchimp: defaultSettings.mailchimp
-				};
-
-				setAttributes(
-					{
-						settings: {
-							integration: settings
-						}
-					}
-				);
-			}
-		}
-	}, [] );
-
 	return (
 		<>
 			<style>{ formStyle }</style>
@@ -669,150 +646,26 @@ export default function Edit( props ) {
 					</span>
 					</p>
 				</PanelBody>
-				<PanelBody title="Google reCAPTCHA" initialOpen={ false }>
-				<VStack >
-					<p><a href="https://gutenaforms.com/how-to-generate-google-recaptcha-site-key-and-secret-key" target="_blank">{ __( 'reCAPTCHA', 'gutena-forms' ) }</a> { __( ' v3 and v2 help you protect your sites from fraudulent activities, spam, and abuse. By using this integration in your forms, you can block spam form submissions.', 'gutena-forms' ) } </p>
 
-					<ToggleControl
-						label={ __( 'Enable', 'gutena-forms' ) }
-						checked={ recaptcha?.enable }
-						onChange={ ( recaptcha_status ) =>
-							setAttributes( { recaptcha:{
-								...recaptcha,
-								enable:recaptcha_status
-							} } )
-						}
-					/>
-					{ ( ! gfIsEmpty( recaptcha?.enable ) && recaptcha?.enable ) &&
-					<>
-						<RadioControl
-							className="gutena-forms-horizontal-radio"
-							label={ __( 'reCAPTCHA Type', 'gutena-forms' ) }
-							selected={ recaptcha?.type }
-							options={ [
-								{ label: 'v2', value: 'v2' },
-								{ label: 'v3', value: 'v3' },
-							] }
-							onChange={ ( type ) =>
-								setAttributes( { recaptcha:{
-									...recaptcha,
-									type
-								} } )
-							}
-						/>
-
-						<TextControl
-							label={ __( 'Site Key', 'gutena-forms' ) }
-							value={ recaptcha?.site_key }
-							onChange={ ( site_key ) =>
-								setAttributes( { recaptcha:{
-									...recaptcha,
-									site_key
-								} } )
-							}
-						/>
-						<TextControl
-							label={ __( 'Secret key', 'gutena-forms' ) }
-							value={ recaptcha?.secret_key }
-							onChange={ ( secret_key ) =>
-								setAttributes( { recaptcha:{
-									...recaptcha,
-									secret_key
-								} } )
-							}
-						/>
-					</>
-					}
-					</VStack>
-				</PanelBody>
+				{/* Google - Recaptcha start */}
+				<GoogleRecaptchaSettings
+					setAttributes={ setAttributes }
+					recaptcha={ recaptcha }
+				/>
+				{/* Google - Recaptcha end */}
 
 				{/* Cloudflare - Turnstile start */}
-				<PanelBody title="Cloudflare Turnstile" initialOpen={ false }>
-					<VStack>
-						<p>
-							<a>Cloudflare Turnstile</a>
-						</p>
-
-						<ToggleControl
-							label={ 'Enable' }
-							checked={ cloudflareTurnstile?.enable }
-							onChange={ ( turnstile_status ) =>
-								setAttributes( { cloudflareTurnstile:{
-									...cloudflareTurnstile,
-									enable:turnstile_status
-								} } )
-							}
-						/>
-
-						{
-							( ! gfIsEmpty( cloudflareTurnstile?.enable ) && cloudflareTurnstile?.enable ) &&
-							<>
-								<TextControl
-									label={ __( 'Site Key', 'gutena-forms' ) }
-									value={ cloudflareTurnstile?.site_key }
-									onChange={ ( site_key ) =>
-										setAttributes( { cloudflareTurnstile:{
-											...cloudflareTurnstile,
-											site_key
-										} } )
-									}
-								/>
-
-								<TextControl
-									label={ __( 'Secret Key', 'gutena-forms' ) }
-									value={ cloudflareTurnstile?.secret_key }
-									onChange={ ( secret_key ) =>
-										setAttributes( { cloudflareTurnstile:{
-											...cloudflareTurnstile,
-											secret_key
-										} } )
-									}
-								/>
-							</>
-						}
-
-					</VStack>
-				</PanelBody>
+				<CloudflareSettings
+					setAttributes={ setAttributes }
+					cloudflareTurnstile={ cloudflareTurnstile }
+				/>
 				{/* Cloudflare - Turnstile end */}
 
 				{ /* Honeypot start */ }
-				<PanelBody title={ "Honeypot Field" } initialOpen={ false }>
-					<VStack>
-						<p>Honeypot field settings</p>
-						<ToggleControl
-							label={ 'enable' }
-							checked={ honeypot?.enable }
-							onChange={ ( honeypot_status ) => {
-								setAttributes( {
-									honeypot: {
-										...honeypot,
-										enable: honeypot_status
-									}
-								} );
-							} }
-						/>
-
-						{
-							( ! gfIsEmpty( honeypot?.enable ) && honeypot?.enable ) &&
-							<>
-								<NumberControl
-									label={ __( 'Time limit (in seconds)', 'gutena-forms' ) }
-									value={ honeypot?.timeCheckValue }
-									min={ 1 }
-									onChange={ ( timeCheckValue ) => {
-										setAttributes( {
-											honeypot: {
-												...honeypot,
-												timeCheckValue: timeCheckValue
-											}
-										} );
-									} }
-									description={ 'Adds a time-based spam check that detects submissions made too quickly, a common bot behavior. The default threshold is 4 seconds, adjustable as needed. If unsure, leave it off.'}
-								/>
-							</>
-						}
-					</VStack>
-				</PanelBody>
+				<HoneypotSettings
+					setAttributes={ setAttributes }
+					honeypot={ honeypot }
+				/>
 				{ /* Honeypot end */ }
 
 				<PanelColorSettings
@@ -1350,93 +1203,13 @@ export default function Edit( props ) {
 						''
 					) }
 				</PanelBody>
-				<PanelBody title={__( 'Messages', 'gutena-forms' ) } initialOpen={ false }>
-					<TextControl
-						type="text"
-						label={ __( 'Required Field', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg ) ? '' : messages?.required_msg }
-						onChange={ ( required_msg ) =>
-							setAttributes( { messages:{
-								...messages,
-								required_msg
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.required_msg }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Required Select Field', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg_select ) ? '' : messages?.required_msg_select }
-						onChange={ ( required_msg_select ) =>
-							setAttributes( { messages:{
-								...messages,
-								required_msg_select
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.required_msg_select }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Required Checkbox or Radio Field', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg_check ) ? '' : messages?.required_msg_check }
-						onChange={ ( required_msg_check ) =>
-							setAttributes( { messages:{
-								...messages,
-								required_msg_check
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.required_msg_check }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Required Opt-in checkbox', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg_optin ) ? '' : messages?.required_msg_optin }
-						onChange={ ( required_msg_optin ) =>
-							setAttributes( { messages:{
-								...messages,
-								required_msg_optin
-							} } )
-						}
-						help={ __( 'Privacy policy, Terms', 'gutena-forms' ) }
-						placeholder={ gutenaFormsBlock?.required_msg_optin }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Invalid Email', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.invalid_email_msg ) ? '' : messages?.invalid_email_msg }
-						onChange={ ( invalid_email_msg ) =>
-							setAttributes( { messages:{
-								...messages,
-								invalid_email_msg
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.invalid_email_msg }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Minimum value', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.min_value_msg ) ? '' : messages?.min_value_msg }
-						onChange={ ( min_value_msg ) =>
-							setAttributes( { messages:{
-								...messages,
-								min_value_msg
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.min_value_msg }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Maximum value', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.max_value_msg ) ? '' : messages?.max_value_msg }
-						onChange={ ( max_value_msg ) =>
-							setAttributes( { messages:{
-								...messages,
-								max_value_msg
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.max_value_msg }
-					/>
-				</PanelBody>
+
+			{/* Messages - setting start  */}
+				<ValidationMessagesSettings
+					setAttributes={ setAttributes }
+					messages={ messages }
+				/>
+			{/* Messages - setting end  */}
 			</InspectorControls>
 			) }
 			{ hasInnerBlocks ? (
