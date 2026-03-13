@@ -102,6 +102,17 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				</div>';
 			}
 
+			// Add validation messages data attribute
+			if ( ! empty( $attributes['messages'] ) && ( ! isset( $attributes['messages']['defaultSettings'] ) || false === $attributes['messages']['defaultSettings'] ) ) {
+				$messages_json = wp_json_encode( $attributes['messages'] );
+				$content = preg_replace(
+					'/' . preg_quote( '>', '/' ) . '/',
+					' data-validation-messages="' . esc_attr( $messages_json ) . '">',
+					$content,
+					1
+				);
+			}
+
 			// Add required html
 			if ( ! empty( $html ) ) {
 				$content = preg_replace(

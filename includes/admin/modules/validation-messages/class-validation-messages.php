@@ -130,17 +130,18 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 		 * @param WP_Post $post
 		 */
 		public function save_messages_to_default_option( $attributes, $block, $post ) {
-			$default_messages = get_option( 'gutena_forms__form_validation_messages', array() );
-			if ( ! empty( $this->settings ) || ! empty( $default_messages ) ) {
-				return;
-			}
+			$all_form_ids = get_option( 'gutena_form_ids', array() );
+			$current_form_id = $attributes['formID'];
 
-			$messages = $attributes['messages'];
-			foreach ( $messages as $mk => $mv ) {
-				$this->settings[ $mk ] = $mv;
-			}
+			// Only sync if this is the Primary Form (only one form exists)
+			if ( empty( $all_form_ids ) || ( count( $all_form_ids ) === 1 && in_array( $current_form_id, $all_form_ids ) ) ) {
+				$messages = $attributes['messages'];
+				foreach ( $messages as $mk => $mv ) {
+					$this->settings[ $mk ] = $mv;
+				}
 
-			$this->save_settings( $this->settings );
+				$this->save_settings( $this->settings );
+			}
 		}
 	}
 

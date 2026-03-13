@@ -22,55 +22,57 @@ const GutenaFormsHeader = () => {
 	}, [] );
 
 	return (
-		<div className={ 'gutena-forms__header-container' }>
-			<div className={ 'gutena-forms_icon-menu-container' }>
-				<div className={ 'gutena-forms_icon-menu' }>
-					<img src={ `${ gutenaFormsAdmin.pluginURL }assets/img/logo.png` } alt={ 'Gutena Forms Logo' } />
-				</div>
+		<div style={ { position: 'absolute', top: 0, right: 0, width: '100%' } }>
+			<div className={ 'gutena-forms__header-container' }>
+				<div className={ 'gutena-forms_icon-menu-container' }>
+					<div className={ 'gutena-forms_icon-menu' }>
+						<img src={ `${ gutenaFormsAdmin.pluginURL }assets/img/logo.png` } alt={ 'Gutena Forms Logo' } />
+					</div>
 
-				{ ! loading && menus && (
-					<nav className={ 'gutena-forms__header-menu' }>
-						<ul>
-							{ menus.map( ( menu, index ) => {
-								if ( menu.external ) {
-									return (
-										<li key={ index }>
-											<a
-												href={ menu.slug }
-												target="_blank"
-												rel="noopener noreferrer"
-											>{ menu.title }</a>
-										</li>
-									);
-								} else {
-									return (
-										<li key={ index }>
-											<NavLink
-												to={ `settings${ menu.slug }` }
-												className={ gutenaFormsStrContains( activeMenu, menu.slug ) ? 'active' : '' }
-												onClick={ () => setActiveMenu( menu.slug ) }
-											>
-												{ menu.title }
-											</NavLink>
-										</li>
-									);
-								}
-							} ) }
-						</ul>
-					</nav>
-				) }
-			</div>
-			<div>
-				<Button
-					className={ 'gutena-forms__upgrade-button' }
-					variant="primary"
-					href="https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<Crown />
-					{ __( 'Upgrade Now', 'gutena-froms' ) }
-				</Button>
+					{ ! loading && menus && (
+						<nav className={ 'gutena-forms__header-menu' }>
+							<ul>
+								{ menus.map( ( menu, index ) => {
+									if ( menu.external ) {
+										return (
+											<li key={ index }>
+												<a
+													href={ menu.slug }
+													target="_blank"
+													rel="noopener noreferrer"
+												>{ menu.title }</a>
+											</li>
+										);
+									} else {
+										return (
+											<li key={ index }>
+												<NavLink
+													to={ `settings${ menu.slug }` }
+													className={ gutenaFormsStrContains( activeMenu, menu.slug ) ? 'active' : '' }
+													onClick={ () => setActiveMenu( menu.slug ) }
+												>
+													{ menu.title }
+												</NavLink>
+											</li>
+										);
+									}
+								} ) }
+							</ul>
+						</nav>
+					) }
+				</div>
+				<div>
+					<Button
+						className={ 'gutena-forms__upgrade-button' }
+						variant="primary"
+						href="https://gutenaforms.com/pricing/?utm_source=plugin_dashboard&utm_medium=website&utm_campaign=free_plugin"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<Crown />
+						{ __( 'Upgrade Now', 'gutena-froms' ) }
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

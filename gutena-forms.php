@@ -212,7 +212,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
 
 			//Form messages
-			$gutena_forms_messages = get_option( 'gutena_forms_messages', array() );
+			$gutena_forms_messages = get_option( 'gutena_forms__form_validation_messages', array() );
 
 			// cloudflare turnstile
 			$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', array() );
@@ -486,12 +486,18 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 							);
 						}
 
-						//Save common form messages
+						//Save common form messages (Primary Form Sync Logic)
 						if ( ! empty( $formSchema['form_attrs']['messages'] ) && is_array( $formSchema['form_attrs']['messages'] ) ) {
-							update_option(
-								'gutena_forms_messages',
-								$formSchema['form_attrs']['messages']
-							);
+							$all_form_ids = get_option( 'gutena_form_ids', array() );
+							$current_form_id = $formSchema['form_attrs']['formID'];
+
+							// If no forms exist yet, or only this form exists, it is the Primary Form
+							if ( empty( $all_form_ids ) || ( count( $all_form_ids ) === 1 && in_array( $current_form_id, $all_form_ids ) ) ) {
+								update_option(
+									'gutena_forms__form_validation_messages',
+									$formSchema['form_attrs']['messages']
+								);
+							}
 						}
 					}
 				}
