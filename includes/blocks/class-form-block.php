@@ -58,38 +58,33 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				$html = '<input type="hidden" name="redirect_url" value="' . esc_attr( esc_url( $attributes['redirectUrl'] ) ) . '" />';
 			}
 
-			//google recaptcha
-			$recaptcha_html = '';
-			if ( ! empty( $attributes['recaptcha'] ) && ! empty( $attributes['recaptcha']['enable'] ) && ! empty( $attributes['recaptcha']['site_key'] ) && ! empty( $attributes['recaptcha']['type'] ) ) {
-				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_grecaptcha_scripts' ));
+			$recaptcha_html = $turnstile_html = $honeypot_html = '';
 
-				//input box for v2 type only
-				if ( 'v2' === $attributes['recaptcha']['type'] ){
-					$recaptcha_html = '<div class="g-recaptcha" data-sitekey="' . esc_attr( $attributes['recaptcha']['site_key'] ) . '"></div><br>';
+			if ( isset( $attributes['recaptcha']['enable'] ) && $attributes['recaptcha']['enable'] ) {
+				if ( ! empty( $attributes['recaptcha']['site_key'] ) && ! empty( $attributes['recaptcha']['type'] ) && ! empty( $attributes['recaptcha']['secret_key'] ) ) {
+					$recaptcha_html = '<input type="hidden" name="recaptcha_enable" value="1" />';
+					if ( 'v2' === $attributes['recaptcha']['type'] ) {
+						$recaptcha_html  .= '<div class="g-recaptcha" data-sitekey="' . esc_attr( $attributes['recaptcha']['site_key'] ) . '"></div>';
+					}
+
+					if ( 'v3' === $attributes['recaptcha']['type'] ) {
+						$recaptcha_html .= '<script type="text/javascript">
+							grecaptcha.ready( function () {
+                                grecaptcha.execute( "' . esc_attr( $attributes['recaptcha']['site_key'] ) . '", { action: "submit" } ).then( function ( token ) {
+                                } );
+							} );
+						</script><input type="hidden" name="recaptcha_enable" value="1" />';
+					}
+			    }
+			}
+
+			if ( isset( $attributes['cloudflareTurnstile']['enable'] ) && $attributes['cloudflareTurnstile']['enable'] ) {
+				if ( ! empty( $attributes['cloudflareTurnstile']['site_key'] ) && ! empty( $attributes['cloudflareTurnstile']['secret_key'] ) ) {
+					$turnstile_html = '<div class="cf-turnstile" data-sitekey="' . esc_attr( $attributes['cloudflareTurnstile']['site_key'] ) . '"></div>';
 				}
-
-				//input field to check if recaptcha or not
-				$html .= '<input type="hidden" name="recaptcha_enable" value="' . esc_attr( $attributes['recaptcha']['enable'] ) . '" />';
 			}
 
-			//cloudflare turnstile
-			$turnstile_html = '';
-			if ( ! empty( $attributes['cloudflareTurnstile'] ) && ! empty( $attributes['cloudflareTurnstile']['enable'] && ! empty( $attributes['cloudflareTurnstile']['site_key'] ) ) ) {
 
-				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_cloudflare_turnstile_scripts' ));
-
-				$turnstile_html .= '<div
-					class="cf-turnstile"
-					data-sitekey="' . esc_attr( $attributes['cloudflareTurnstile']['site_key'] ) . '"
-					data-theme="light"
-					data-size="normal"
-					data-callback="onSuccess"
-				></div><br />';
-
-				$html .= '<input type="hidden" name="turnstile_enable" value="' . esc_attr( $attributes['cloudflareTurnstile']['enable'] ) . '" />';
-			}
-
-			$honeypot_html = '';
 			if ( ! empty( $attributes['honeypot'] ) && ! empty( $attributes['honeypot']['enable'] ) ) {
 				$time_check_value = ! empty( $attributes['honeypot']['timeCheckValue'] )
 					? intval( $attributes['honeypot']['timeCheckValue'] )
@@ -126,7 +121,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			//Submit Button HTML markup : change link to button tag
 			$content = $this->str_last_replace(
 				'<a',
-				$recaptcha_html . $turnstile_html . $honeypot_html . '<button',
+				$recaptcha_html . $turnstile_html . $honeypot_html . '<button ',
 				$content
 			);
 

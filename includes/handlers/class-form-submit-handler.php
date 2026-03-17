@@ -350,7 +350,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @return bool
 		 */
 		private function recaptcha_verify(){
-			//check if reCAPTCHA not embedded in the form
+
 			if ( empty( $_POST['recaptcha_enable'] ) && empty( $_POST['g-recaptcha-response'] ) ) {
 				return true;
 			}

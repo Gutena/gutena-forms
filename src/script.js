@@ -43,43 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	};
 
 	//enqueue recaptcha if not enqueued 
-	const check_and_load_grecaptcha = () => {
-		if ('undefined' !== typeof gutenaFormsBlock && !isEmpty(gutenaFormsBlock.grecaptcha_type) && !isEmpty(gutenaFormsBlock.grecaptcha_site_key)) {
-			//gutena form block
-			let gutena_form_0 = document.querySelector(
-				'.wp-block-gutena-forms'
-			);
-			if (!isEmpty(gutena_form_0)) {
-				//check if recaptcha is enabled
-				let grecaptcha_enable = gutena_form_0.querySelector(
-					'input[name="recaptcha_enable"]'
-				);
-				if (!isEmpty(grecaptcha_enable) && 0 != grecaptcha_enable.length && grecaptcha_enable.value) {
-					//check if grecaptcha is defined or not
-					if ('undefined' === typeof grecaptcha || null === grecaptcha) {
-						//check if grecaptcha script is loading or not
-						let grecaptcha_script_html = document.getElementById('google-recaptcha-js');
-						if (isEmpty(grecaptcha_script_html)) {
-							//form script
-							let gutena_forms_script_html = document.getElementById('gutena-forms-script-js');
-							if (!isEmpty(gutena_forms_script_html)) {
-								grecaptcha_script_html = document.createElement('script');
-								grecaptcha_script_html.id = 'google-recaptcha-js';
-								grecaptcha_url = 'https://www.google.com/recaptcha/api.js';
-								if ('v3' === gutenaFormsBlock.grecaptcha_type) {
-									grecaptcha_url += '?render=' + gutenaFormsBlock.grecaptcha_site_key
-								}
-								grecaptcha_script_html.src = grecaptcha_url;
-								//insert before form script
-								document.head.insertBefore(grecaptcha_script_html, gutena_forms_script_html);
-								//console.log("recaptcha loaded");
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+	const check_and_load_grecaptcha = () => {}
 
 	/**
 	 * Check and load Cloudflare Turnstile
@@ -87,9 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	 * 
 	 * @since 1.3.0
 	 */
-	const check_and_load_cloudflare_turnstile = () => {
-		// function to handle turnstile success
-	}
+	const check_and_load_cloudflare_turnstile = () => {}
 
 	const form_sumbit = () => {
 		let submitButton = document.querySelectorAll(
