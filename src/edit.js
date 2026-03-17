@@ -277,6 +277,7 @@ export default function Edit( props ) {
 						type: gutenaFormsBlock.grecaptcha_type,
 						site_key: gutenaFormsBlock.grecaptcha_site_key,
 						secret_key: gutenaFormsBlock.grecaptcha_secret_key,
+						defaultSettings: true,
 					},
 					formID: GutenaFormsID
 				} );

@@ -171,8 +171,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				$i = 0;
 				foreach ( $blocks as $block ) {
 					if ( ! empty( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
-						if ( isset( $block['attrs']['recaptcha']['enable'] ) && $block['attrs']['recaptcha']['enable'] ) {
-							if ( 'v2' === $block['attrs']['recaptcha']['type'] ) {
+						$effective_recaptcha = isset( $block['attrs']['recaptcha'] ) ? Gutena_Forms_Form_Block::get_effective_recaptcha( $block['attrs']['recaptcha'] ) : null;
+						if ( ! empty( $effective_recaptcha ) ) {
+							if ( 'v2' === $effective_recaptcha['type'] ) {
 								wp_enqueue_script(
 									'gutena-forms-recaptcha-scripts',
 									'https://www.google.com/recaptcha/api.js',
@@ -182,10 +183,10 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 								);
 							}
 
-							if ( 'v3' === $block['attrs']['recaptcha']['type'] ) {
+							if ( 'v3' === $effective_recaptcha['type'] ) {
 								wp_enqueue_script(
 									'gutena-forms-recaptcha-v3-' . $i . '-scripts',
-									'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $block['attrs']['recaptcha']['site_key'] ),
+									'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $effective_recaptcha['site_key'] ),
 									array(),
 									null,
 									false
@@ -260,7 +261,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			register_block_type( __DIR__ . '/build/field-group' );
 
 			//google recaptcha
-			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
+			$grecaptcha = get_option( 'gutena_forms__recaptcha', array() );
 
 			//Form messages
 			$gutena_forms_messages = get_option( 'gutena_forms__form_validation_messages', array() );
@@ -521,13 +522,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 							$this->sanitize_array( $formSchema_filtered, true )
 						);
 
-						//Save Google reCAPTCHA details
-						if ( ! empty( $formSchema['form_attrs']['recaptcha'] ) && ! empty( $formSchema['form_attrs']['recaptcha']['site_key'] ) && ! empty( $formSchema['form_attrs']['recaptcha']['secret_key'] ) ) {
-							update_option(
-								'gutena_forms_grecaptcha',
-								$this->sanitize_array( $formSchema['form_attrs']['recaptcha'] )
-							);
-						}
+						// Global reCAPTCHA is set only from global settings UI, not from form block save.
 
 						// cloudflare turnstile
 						if ( ! empty( $formSchema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['site_key'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['secret_key'] ) ) {

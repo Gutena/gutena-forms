@@ -361,10 +361,20 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				$_POST['recaptcha_error'] = 'Recaptcha input missing';
 				return false;
 			} else {
-				//get reCAPTCHA settings
-				$recaptcha_settings= get_option( 'gutena_forms_grecaptcha', false );
+				// Use form's own settings when overridden, otherwise global.
+				$schema_recaptcha = ! empty( $this->schema['form_attrs']['recaptcha'] ) ? $this->schema['form_attrs']['recaptcha'] : array();
+				$use_form_settings = (
+					isset( $schema_recaptcha['defaultSettings'] )
+					&& false === $schema_recaptcha['defaultSettings']
+					&& ! empty( $schema_recaptcha['secret_key'] )
+					&& ! empty( $schema_recaptcha['site_key'] )
+					&& ! empty( $schema_recaptcha['type'] )
+				);
+				$recaptcha_settings = $use_form_settings
+					? $schema_recaptcha
+					: get_option( 'gutena_forms_grecaptcha', false );
 
-				if ( empty( $recaptcha_settings ) ) {
+				if ( empty( $recaptcha_settings ) || empty( $recaptcha_settings['secret_key'] ) ) {
 					return false;
 				}
 				//verify reCAPTCHA

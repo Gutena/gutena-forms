@@ -169,7 +169,8 @@
         "type": "v3",
         "site_key": "",
         "secret_key": "",
-        "thresholdScore": "0.50"
+        "thresholdScore": "0.50",
+        "defaultSettings": true
       }
     },
     "cloudflareTurnstile": {

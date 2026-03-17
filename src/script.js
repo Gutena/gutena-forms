@@ -134,8 +134,10 @@ document.addEventListener("DOMContentLoaded", function () {
 					gutena_forms.classList.remove('display-success-message');
 
 
-					//Google recaptcha
-					if (!isEmpty(gutenaFormsBlock.grecaptcha_type) && 'v3' === gutenaFormsBlock.grecaptcha_type && !isEmpty(gutenaFormsBlock.grecaptcha_site_key)) {
+					//Google recaptcha: use per-form data attributes when present, else global (gutenaFormsBlock)
+					let recaptcha_site_key = gutena_forms.getAttribute('data-recaptcha-site-key') || gutenaFormsBlock.grecaptcha_site_key;
+					let recaptcha_type = gutena_forms.getAttribute('data-recaptcha-type') || gutenaFormsBlock.grecaptcha_type;
+					if (!isEmpty(recaptcha_type) && 'v3' === recaptcha_type && !isEmpty(recaptcha_site_key)) {
 						let grecaptcha_enable = gutena_forms.querySelector(
 							'input[name="recaptcha_enable"]'
 						);
@@ -145,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
 								save_gutena_forms(gutena_forms, form_data, submitButton[i], submitBtnLink, submitBtnLinkHtml);
 							} else {
 								grecaptcha.ready(function () {
-									grecaptcha.execute(gutenaFormsBlock.grecaptcha_site_key, { action: 'submit' }).then(function (token) {
+									grecaptcha.execute(recaptcha_site_key, { action: 'submit' }).then(function (token) {
 										/* for v3 - append g-recaptcha-response input 
 										 for v2 - already present */
 										form_data.append('g-recaptcha-response', token);

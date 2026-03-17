@@ -38,6 +38,42 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		}
 
 		/**
+		 * Get effective reCAPTCHA settings (global default or form override).
+		 *
+		 * @since 1.6.0
+		 * @param array $block_recaptcha Block recaptcha attributes.
+		 * @return array|null Effective recaptcha settings (type, site_key, secret_key, thresholdScore) or null if disabled/empty.
+		 */
+		public static function get_effective_recaptcha( $block_recaptcha ) {
+			if ( empty( $block_recaptcha ) || empty( $block_recaptcha['enable'] ) ) {
+				return null;
+			}
+			$global = get_option( 'gutena_forms__recaptcha', false );
+			$use_global = (
+				( ! isset( $block_recaptcha['defaultSettings'] ) || false !== $block_recaptcha['defaultSettings'] )
+				|| ( ( empty( $block_recaptcha['site_key'] ) || empty( $block_recaptcha['secret_key'] ) ) && ! empty( $global['site_key'] ) && ! empty( $global['secret_key'] ) )
+			);
+			if ( $use_global && ! empty( $global ) && ! empty( $global['site_key'] ) && ! empty( $global['secret_key'] ) && ! empty( $global['type'] ) ) {
+				return array_merge(
+					array(
+						'type'           => 'v3',
+						'thresholdScore' => 0.5,
+					),
+					$global
+				);
+			}
+			if ( ! empty( $block_recaptcha['site_key'] ) && ! empty( $block_recaptcha['secret_key'] ) && ! empty( $block_recaptcha['type'] ) ) {
+				return array_merge(
+					array(
+						'thresholdScore' => 0.5,
+					),
+					$block_recaptcha
+				);
+			}
+			return null;
+		}
+
+		/**
 		 * Render Form Block
 		 *
 		 * @since 1.6.0
@@ -59,23 +95,22 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			}
 
 			$recaptcha_html = $turnstile_html = $honeypot_html = '';
+			$effective_recaptcha = isset( $attributes['recaptcha'] ) ? self::get_effective_recaptcha( $attributes['recaptcha'] ) : null;
 
-			if ( isset( $attributes['recaptcha']['enable'] ) && $attributes['recaptcha']['enable'] ) {
-				if ( ! empty( $attributes['recaptcha']['site_key'] ) && ! empty( $attributes['recaptcha']['type'] ) && ! empty( $attributes['recaptcha']['secret_key'] ) ) {
-					$recaptcha_html = '<input type="hidden" name="recaptcha_enable" value="1" />';
-					if ( 'v2' === $attributes['recaptcha']['type'] ) {
-						$recaptcha_html  .= '<div class="g-recaptcha" data-sitekey="' . esc_attr( $attributes['recaptcha']['site_key'] ) . '"></div>';
-					}
+			if ( ! empty( $effective_recaptcha ) ) {
+				$recaptcha_html = '<input type="hidden" name="recaptcha_enable" value="1" />';
+				if ( 'v2' === $effective_recaptcha['type'] ) {
+					$recaptcha_html .= '<div class="g-recaptcha" data-sitekey="' . esc_attr( $effective_recaptcha['site_key'] ) . '"></div>';
+				}
 
-					if ( 'v3' === $attributes['recaptcha']['type'] ) {
-						$recaptcha_html .= '<script type="text/javascript">
+				if ( 'v3' === $effective_recaptcha['type'] ) {
+					$recaptcha_html .= '<script type="text/javascript">
 							grecaptcha.ready( function () {
-                                grecaptcha.execute( "' . esc_attr( $attributes['recaptcha']['site_key'] ) . '", { action: "submit" } ).then( function ( token ) {
+                                grecaptcha.execute( "' . esc_attr( $effective_recaptcha['site_key'] ) . '", { action: "submit" } ).then( function ( token ) {
                                 } );
 							} );
 						</script><input type="hidden" name="recaptcha_enable" value="1" />';
-					}
-			    }
+				}
 			}
 
 			if ( isset( $attributes['cloudflareTurnstile']['enable'] ) && $attributes['cloudflareTurnstile']['enable'] ) {
@@ -103,6 +138,17 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				$content = preg_replace(
 					'/' . preg_quote( '>', '/' ) . '/',
 					' data-validation-messages="' . esc_attr( $messages_json ) . '">',
+					$content,
+					1
+				);
+			}
+
+			// Add recaptcha data attributes for frontend (per-form site key / type)
+			if ( ! empty( $effective_recaptcha ) ) {
+				$recaptcha_attrs = ' data-recaptcha-site-key="' . esc_attr( $effective_recaptcha['site_key'] ) . '" data-recaptcha-type="' . esc_attr( $effective_recaptcha['type'] ) . '"';
+				$content = preg_replace(
+					'/' . preg_quote( '>', '/' ) . '/',
+					$recaptcha_attrs . '>',
 					$content,
 					1
 				);
