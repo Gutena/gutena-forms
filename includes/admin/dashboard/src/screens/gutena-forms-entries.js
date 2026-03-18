@@ -65,7 +65,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
 			gutenaFormsFetchStatus()
 				.then( statuses => {
-					const opts = [ { label: __( 'All Statuses', 'gutena-forms' ), value: 'all' } ];
+					const opts = [ { label: __( 'All Status', 'gutena-forms' ), value: 'all' } ];
 					if ( statuses && Array.isArray( statuses ) ) {
 						statuses.forEach( s => {
 							if ( s && s.slug && s.title ) {
