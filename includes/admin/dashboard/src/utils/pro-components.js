@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { SelectControl } from '@wordpress/components';
 import Notes from '../icons/notes';
 import { ColouredLock } from '../icons/lock';
+import { ucFirst } from './functions';
 
 addFilter(
     'gutenaFormsFree.core.pro-components',
@@ -116,7 +117,7 @@ addFilter(
                 className={ 'gutena-forms__dummy-select' }
                 onClick={ proPopup }
             >
-                <div>{ args.row.status }</div>
+                <div>{ ucFirst( args.row.status ) }</div>
                 <div>
                     <ColouredLock />
                 </div>

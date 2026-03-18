@@ -51,3 +51,9 @@ export const activateLeftMenu = ( $index ) => {
 
 	document.querySelectorAll( '#toplevel_page_gutena-forms > ul > li' )[ $index ].classList.add( 'current' );
 }
+
+export const ucFirst = ( string ) => {
+	string = String( string );
+
+	return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
+}
