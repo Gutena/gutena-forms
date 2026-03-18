@@ -174,7 +174,8 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 	const bulkActionOptions = [
 		{ label: __( 'Bulk Actions', 'gutena-forms' ), value: 'bulk_actions' },
 		...( Array.isArray( capabilities ) && capabilities.includes( 'delete' ) ? [ { label: __( 'Delete', 'gutena-forms' ), value: 'delete' } ] : [] ),
-		...applyFilters( 'gutenaForms.entries.bulk_actions', [] ),
+		...applyFilters( 'gutenaForms.entries.bulk_actions.star', [] ),
+		...applyFilters( 'gutenaForms.entries.bulk_actions.status', [] ),
 	];
 
 	return (
