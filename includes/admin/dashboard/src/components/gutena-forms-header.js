@@ -53,7 +53,7 @@ const GutenaFormsHeader = ( { activeMenu, setActiveMenu } ) => {
 										<li key={ index }>
 											<NavLink
 												to={ `settings${ menu.slug }` }
-												className={ gutenaFormsStrContains( activeMenu, menu.slug ) ? 'active' : '' }
+												className={ gutenaFormsStrContains( menu.slug, activeMenu ) ? 'active' : '' }
 												onClick={ () => setActiveMenu( menu.slug ) }
 											>
 												{ menu.title }
