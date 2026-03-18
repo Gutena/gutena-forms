@@ -276,7 +276,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		public function get_entry_data( $form_id ) {
 			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
 
-			$sql    = "SELECT entries.entry_data, entries.entry_id, entries.added_time, entries.entry_status, metadata.metadata AS starred FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id LEFT JOIN %i metadata ON entries.entry_id = metadata.entry_id AND metadata.data_type = 'starred' WHERE forms.block_form_id = %s AND entries.trash = 0";
+			$sql    = "SELECT entries.entry_data, entries.entry_id, entries.added_time, entries.entry_status, metadata.metadata AS starred FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id LEFT JOIN %i metadata ON entries.entry_id = metadata.entry_id AND metadata.data_type = 'starred' WHERE forms.block_form_id = %s AND entries.trash = 0 ORDER BY entries.entry_id DESC";
 			$sql    = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms,
