@@ -175,12 +175,15 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				font-weight: 400;
 			}
 
+			.gutena-forms__meta-box-container {
+				width: 760px;
+			}
+
 			.gutena-forms__settings-meta-box {
 				border-radius: 10px;
 				border: 1px solid #e2e2e2;
 				background: #ffffff;
 				padding: 20px;
-				width: 760px;
 				position: relative;
 
 				.gutena-forms__settings-meta-box--overlay {

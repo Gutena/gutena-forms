@@ -131,7 +131,10 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 	}
 
 	return (
-		<div onClick={ showProPopup }>
+		<div
+			onClick={ showProPopup }
+			className={ 'gutena-forms__meta-box-container' }
+		>
 			<h2 className={ 'gutena-forms__page-title' }>
 				{ title }
 				{
