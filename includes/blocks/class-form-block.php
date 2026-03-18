@@ -127,21 +127,25 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			}
 
 			$recaptcha_html = $turnstile_html = $honeypot_html = '';
-			$effective_recaptcha = isset( $attributes['recaptcha'] ) ? self::get_effective_recaptcha( $attributes['recaptcha'] ) : null;
 
-			if ( ! empty( $effective_recaptcha ) ) {
-				$recaptcha_html = '<input type="hidden" name="recaptcha_enable" value="1" />';
-				if ( 'v2' === $effective_recaptcha['type'] ) {
-					$recaptcha_html .= '<div class="g-recaptcha" data-sitekey="' . esc_attr( $effective_recaptcha['site_key'] ) . '"></div>';
-				}
+			$recaptcha_settings = array();
+			if ( isset( $attributes['recaptcha']['defaultSettings'] ) && $attributes['recaptcha']['defaultSettings'] ) {
+				$recaptcha_settings = get_option( 'gutena_forms__recaptcha', false );
+			} else {
+				$recaptcha_settings = $attributes['recaptcha'];
+			}
 
-				if ( 'v3' === $effective_recaptcha['type'] ) {
+			if ( isset( $recaptcha_settings['enable'] ) && $recaptcha_settings['enable'] ) {
+				if  ( 'v2' === $recaptcha_settings['type'] ) {
+					$recaptcha_html .= '<div class="g-recaptcha" data-sitekey="' . esc_attr( $recaptcha_settings['site_key'] ) . '"></div><input type="hidden" name="recaptcha_enable" value="1" />';
+				} elseif ( 'v3' === $recaptcha_settings['type'] ) {
 					$recaptcha_html .= '<script type="text/javascript">
-							grecaptcha.ready( function () {
-                                grecaptcha.execute( "' . esc_attr( $effective_recaptcha['site_key'] ) . '", { action: "submit" } ).then( function ( token ) {
-                                } );
-							} );
-						</script><input type="hidden" name="recaptcha_enable" value="1" />';
+						grecaptcha.ready( function () {
+                            grecaptcha.execute( "' . esc_attr( $recaptcha_settings['site_key'] ) . '", { action: "submit" } ).then( function ( token ) {
+                        } );
+						} );
+					</script>
+					<input type="hidden" name="recaptcha_enable" value="1" />';
 				}
 			}
 

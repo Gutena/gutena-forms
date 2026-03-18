@@ -169,45 +169,52 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			if ( ! empty( $post->post_content ) && function_exists( 'has_block' ) && has_block( 'gutena/forms', $post->post_content ) ) {
 				$blocks = parse_blocks( $post->post_content );
 				$i = 0;
+
 				foreach ( $blocks as $block ) {
 					if ( ! empty( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
-						$effective_recaptcha = isset( $block['attrs']['recaptcha'] ) ? Gutena_Forms_Form_Block::get_effective_recaptcha( $block['attrs']['recaptcha'] ) : null;
-						if ( ! empty( $effective_recaptcha ) ) {
-							if ( 'v2' === $effective_recaptcha['type'] ) {
+						$attributes = $block['attrs'];
+
+						if ( isset( $attributes['recaptcha']['defaultSettings'] ) && $attributes['recaptcha']['defaultSettings'] ) {
+							$recaptcha_settings = get_option( 'gutena_forms__recaptcha', array() );
+						} else {
+							if ( isset( $attributes['recaptcha']['enable'] ) && $attributes['recaptcha']['enable'] ) {
+								$recaptcha_settings = $attributes['recaptcha'];
+							}
+						}
+
+						if ( isset( $recaptcha_settings['enable'] ) && $recaptcha_settings['enable'] ) {
+
+							if ( 'v2' === $recaptcha_settings['type'] ) {
 								wp_enqueue_script(
-									'gutena-forms-recaptcha-scripts',
+									'gutena-forms-recaptcha-v2-scripts',
 									'https://www.google.com/recaptcha/api.js',
 									array(),
 									null,
 									false
 								);
+							} elseif ( 'v3' === $recaptcha_settings['type'] ) {
+								if ( isset( $recaptcha_settings['defaultSettings'] ) && $recaptcha_settings['defaultSettings'] ) {
+									wp_enqueue_script(
+										'gutena-forms-recaptcha-v3-scripts',
+										'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_settings['site_key'] ),
+										array(),
+										null,
+										false
+									);
+								} else {
+
+									wp_enqueue_script(
+										'gutena-forms-recaptcha-v3-' . esc_attr( $i ) . '-scripts',
+										'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_settings['site_key'] ),
+										array(),
+										null,
+										false
+									);
+
+									$i++;
+								}
 							}
 
-							if ( 'v3' === $effective_recaptcha['type'] ) {
-								wp_enqueue_script(
-									'gutena-forms-recaptcha-v3-' . $i . '-scripts',
-									'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $effective_recaptcha['site_key'] ),
-									array(),
-									null,
-									false
-								);
-								$i++;
-							}
-						}
-
-						$effective_turnstile = isset( $block['attrs']['cloudflareTurnstile'] ) ? Gutena_Forms_Form_Block::get_effective_turnstile( $block['attrs']['cloudflareTurnstile'] ) : null;
-						if ( ! empty( $effective_turnstile ) && ! empty( $effective_turnstile['site_key'] ) ) {
-							wp_enqueue_script(
-								'gutena-forms-cloudflare-turnstile-scripts',
-								'https://challenges.cloudflare.com/turnstile/v0/api.js',
-								array(),
-								null,
-								array(
-									'defer'     => true,
-									'async'     => true,
-									'in_footer' => false,
-								)
-							);
 						}
 					}
 				}
