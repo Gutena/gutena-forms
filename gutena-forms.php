@@ -195,7 +195,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 							}
 						}
 
-						if ( isset( $block['attrs']['cloudflareTurnstile']['enable'] ) && $block['attrs']['cloudflareTurnstile']['enable'] ) {
+						$effective_turnstile = isset( $block['attrs']['cloudflareTurnstile'] ) ? Gutena_Forms_Form_Block::get_effective_turnstile( $block['attrs']['cloudflareTurnstile'] ) : null;
+						if ( ! empty( $effective_turnstile ) && ! empty( $effective_turnstile['site_key'] ) ) {
 							wp_enqueue_script(
 								'gutena-forms-cloudflare-turnstile-scripts',
 								'https://challenges.cloudflare.com/turnstile/v0/api.js',
@@ -266,8 +267,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			//Form messages
 			$gutena_forms_messages = get_option( 'gutena_forms__form_validation_messages', array() );
 
-			// cloudflare turnstile
-			$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', array() );
+			// cloudflare turnstile: global default settings (option gutena_forms__cloudflare)
+			$cloudflare_turnstile_defaults = get_option( 'gutena_forms__cloudflare', array() );
 
 			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array(): $gutena_forms_messages;
 			$gf_message = array(
@@ -325,7 +326,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'grecaptcha_site_key'       => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
 					'grecaptcha_secret_key'     => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
 					'pricing_link' 		        => 'https://gutenaforms.com/pricing/',
-					'cloudflare_turnstile'      => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile,
+					'cloudflare_turnstile_defaults' => is_array( $cloudflare_turnstile_defaults ) ? $cloudflare_turnstile_defaults : array(),
 					'is_pro' 			        => is_gutena_forms_pro(),
 					'is_gutena_forms_post_type' => $gutena_forms_post_type,
 					'forms_available'			=> $forms_available,
@@ -523,14 +524,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 						);
 
 						// Global reCAPTCHA is set only from global settings UI, not from form block save.
-
-						// cloudflare turnstile
-						if ( ! empty( $formSchema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['site_key'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['secret_key'] ) ) {
-							update_option(
-								'gutena_forms_cloudflare_turnstile',
-								$this->sanitize_array( $formSchema['form_attrs']['cloudflareTurnstile'] )
-							);
-						}
+						// Cloudflare Turnstile: verification uses form schema + gutena_forms__cloudflare (global defaults).
 
 						//Save common form messages (Primary Form Sync Logic)
 						if ( ! empty( $formSchema['form_attrs']['messages'] ) && is_array( $formSchema['form_attrs']['messages'] ) ) {

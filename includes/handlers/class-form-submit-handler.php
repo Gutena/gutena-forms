@@ -420,41 +420,46 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 
 		/**
 		 * Verify Cloudflare Turnstile
+		 * Uses form schema + global defaults (gutena_forms__cloudflare) when defaultSettings is true.
 		 *
 		 * @since 1.3.0
 		 * @return boolean
 		 */
 		private function cloudflare_turnstile_verify() {
-			if ( isset( $_POST['cf-turnstile-response'] ) && ! empty( $_POST['cf-turnstile-response'] ) ) {
-				$token 				  = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
-				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
-
-				if ( empty( $cloudflare_turnstile ) ) {
-					return false;
-				}
-
-				$response = wp_remote_post(
-					'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-					array(
-						'body' => array(
-							'secret' => $cloudflare_turnstile['secret_key'],
-							'response' => $token,
-						),
-					)
-				);
-
-				if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
-					return false;
-				}
-
-				$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
-
-				if ( ! empty( $api_response ) && $api_response['success'] ) {
-					return true;
-				}
+			if ( empty( $_POST['cf-turnstile-response'] ) ) {
+				return false;
+			}
+			$token = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
+			$schema_turnstile = ! empty( $this->schema['form_attrs']['cloudflareTurnstile'] ) ? $this->schema['form_attrs']['cloudflareTurnstile'] : array();
+			$use_form_settings = (
+				isset( $schema_turnstile['defaultSettings'] )
+				&& false === $schema_turnstile['defaultSettings']
+				&& ! empty( $schema_turnstile['site_key'] )
+				&& ! empty( $schema_turnstile['secret_key'] )
+			);
+			$effective = $use_form_settings
+				? $schema_turnstile
+				: get_option( 'gutena_forms__cloudflare', array() );
+			if ( empty( $effective ) || empty( $effective['secret_key'] ) ) {
+				return false;
 			}
 
-			return false;
+			$response = wp_remote_post(
+				'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+				array(
+					'body' => array(
+						'secret'   => $effective['secret_key'],
+						'response' => $token,
+					),
+				)
+			);
+
+			if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
+				return false;
+			}
+
+			$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
+			return ! empty( $api_response ) && ! empty( $api_response['success'] );
 		}
 
 		/**

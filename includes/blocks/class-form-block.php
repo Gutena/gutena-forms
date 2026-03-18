@@ -74,6 +74,38 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		}
 
 		/**
+		 * Get effective Cloudflare Turnstile settings (global default or form override).
+		 *
+		 * @since 1.8.0
+		 * @param array $block_turnstile Block cloudflareTurnstile attributes.
+		 * @return array|null Effective turnstile settings (enable, site_key, secret_key) or null if disabled/empty.
+		 */
+		public static function get_effective_turnstile( $block_turnstile ) {
+			if ( empty( $block_turnstile ) || empty( $block_turnstile['enable'] ) ) {
+				return null;
+			}
+			$global = get_option( 'gutena_forms__cloudflare', array() );
+			$use_global = (
+				( ! isset( $block_turnstile['defaultSettings'] ) || false !== $block_turnstile['defaultSettings'] )
+				|| ( ( empty( $block_turnstile['site_key'] ) || empty( $block_turnstile['secret_key'] ) ) && ! empty( $global['site_key'] ) && ! empty( $global['secret_key'] ) )
+			);
+			if ( $use_global && ! empty( $global['site_key'] ) && ! empty( $global['secret_key'] ) ) {
+				return array_merge(
+					array(
+						'enable' => true,
+						'site_key' => '',
+						'secret_key' => '',
+					),
+					$global
+				);
+			}
+			if ( ! empty( $block_turnstile['site_key'] ) && ! empty( $block_turnstile['secret_key'] ) ) {
+				return array_merge( array( 'enable' => true ), $block_turnstile );
+			}
+			return null;
+		}
+
+		/**
 		 * Render Form Block
 		 *
 		 * @since 1.6.0
@@ -113,10 +145,9 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				}
 			}
 
-			if ( isset( $attributes['cloudflareTurnstile']['enable'] ) && $attributes['cloudflareTurnstile']['enable'] ) {
-				if ( ! empty( $attributes['cloudflareTurnstile']['site_key'] ) && ! empty( $attributes['cloudflareTurnstile']['secret_key'] ) ) {
-					$turnstile_html = '<div class="cf-turnstile" data-sitekey="' . esc_attr( $attributes['cloudflareTurnstile']['site_key'] ) . '"></div>';
-				}
+			$effective_turnstile = isset( $attributes['cloudflareTurnstile'] ) ? self::get_effective_turnstile( $attributes['cloudflareTurnstile'] ) : null;
+			if ( ! empty( $effective_turnstile ) && ! empty( $effective_turnstile['site_key'] ) ) {
+				$turnstile_html = '<div class="cf-turnstile" data-sitekey="' . esc_attr( $effective_turnstile['site_key'] ) . '"></div>';
 			}
 
 

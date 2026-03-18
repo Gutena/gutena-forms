@@ -172,7 +172,8 @@
 			"default": {
 				"enable": false,
 				"site_key": "",
-				"secret_key": ""
+				"secret_key": "",
+				"defaultSettings": true
 			}
 		},
 		"honeypot": {

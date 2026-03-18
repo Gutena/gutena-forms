@@ -63,14 +63,14 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 						'name'    => __( 'Enable Cloudflare', 'gutena-forms' ),
 						'desc'    => __( 'Enable cloudflare for preventing bots.', 'gutena-forms' ),
 						'default' => false,
-						'value'   => $this->settings['enable'],
+						'value'   => isset( $this->settings['enable'] ) ? $this->settings['enable'] : false,
 					),
 					array(
 						'id'      => 'site_key',
 						'type'    => 'text',
 						'name'    => __( 'Site Key', 'gutena-forms' ),
 						'default' => false,
-						'value'   => $this->settings['site_key'],
+						'value'   => isset( $this->settings['site_key'] ) ? $this->settings['site_key'] : '',
 						'attrs'   => array(
 							'placeholder' => 'Enter your Cloudflare Turnstile Site Key',
 						),
@@ -80,7 +80,7 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 						'type'    => 'text',
 						'name'    => __( 'Secret Key', 'gutena-forms' ),
 						'default' => false,
-						'value'   => $this->settings['secret_key'],
+						'value'   => isset( $this->settings['secret_key'] ) ? $this->settings['secret_key'] : '',
 						'attrs'   => array(
 							'placeholder' => 'Enter your Cloudflare Turnstile Secret Key',
 						),
@@ -116,8 +116,14 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 				return;
 			}
 
+			if ( empty( $attributes['cloudflareTurnstile'] ) || ! is_array( $attributes['cloudflareTurnstile'] ) ) {
+				return;
+			}
+
 			foreach ( $attributes['cloudflareTurnstile'] as $k => $v ) {
-				$this->settings[ $k ] = $v;
+				if ( in_array( $k, array( 'enable', 'site_key', 'secret_key' ), true ) ) {
+					$this->settings[ $k ] = $v;
+				}
 			}
 
 			$this->save_settings( $this->settings );

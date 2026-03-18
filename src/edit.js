@@ -282,7 +282,12 @@ export default function Edit( props ) {
 					formID: GutenaFormsID
 				} );
 			} else {
-				setAttributes( { formID: GutenaFormsID } );
+				const updates = { formID: GutenaFormsID };
+				// When Turnstile is enabled with default settings and block keys empty, use global defaults.
+				if ( ! gfIsEmpty( cloudflareTurnstile ) && cloudflareTurnstile.enable && ( cloudflareTurnstile.defaultSettings !== false ) && ( gfIsEmpty( cloudflareTurnstile.site_key ) || gfIsEmpty( cloudflareTurnstile.secret_key ) ) && ! gfIsEmpty( gutenaFormsBlock?.cloudflare_turnstile_defaults?.site_key ) && ! gfIsEmpty( gutenaFormsBlock?.cloudflare_turnstile_defaults?.secret_key ) ) {
+					updates.cloudflareTurnstile = { ...cloudflareTurnstile, defaultSettings: true };
+				}
+				setAttributes( updates );
 			}
 		}
 		//set replyToEmailID
@@ -659,6 +664,7 @@ export default function Edit( props ) {
 				<CloudflareSettings
 					setAttributes={ setAttributes }
 					cloudflareTurnstile={ cloudflareTurnstile }
+					cloudflareTurnstileDefaults={ ( typeof gutenaFormsBlock !== 'undefined' && gutenaFormsBlock?.cloudflare_turnstile_defaults ) ? gutenaFormsBlock.cloudflare_turnstile_defaults : {} }
 				/>
 				{/* Cloudflare - Turnstile end */}
 
