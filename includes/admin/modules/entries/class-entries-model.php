@@ -185,13 +185,14 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 					}
 
 					return array(
-						'entry_id'  => absint( $entry['entry_id'] ),
-						'form_id'   => absint( $entry['form_id'] ),
-						'form_name' => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
-						'datetime'  => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
-						'value'     => $value,
-						'status'    => ! empty( $entry['status'] ) ? $entry['status'] : 'unknown',
-						'starred'   => ! empty( $entry['starred'] ) && '1' == $entry['starred'],
+						'entry_id'    => absint( $entry['entry_id'] ),
+						'form_id'     => absint( $entry['form_id'] ),
+						'form_name'   => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
+						'datetime'    => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
+						'value'       => $value,
+						'first_value' => is_array( $value ) && isset( $value[ array_key_first( $value ) ]['value'] ) ? $value[ array_key_first( $value ) ]['value'] : '',
+						'status'      => ! empty( $entry['status'] ) ? $entry['status'] : 'unknown',
+						'starred'     => ! empty( $entry['starred'] ) && '1' == $entry['starred'],
 					);
 				},
 				$results
