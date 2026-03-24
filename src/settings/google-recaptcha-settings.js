@@ -3,7 +3,7 @@ import { gfIsEmpty } from '../helper';
 import { __ } from '@wordpress/i18n';
 
 const GoogleRecaptchaSettings = ( { recaptcha, setAttributes } ) => {
-
+console.log( recaptcha )
     const handleValueChange = ( key, value ) => {
         setAttributes( {
             recaptcha: {

@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "gutena/forms",
 	"version": "1.0.0",
 	"title": "Form",
@@ -180,7 +180,8 @@
 			"type": "object",
 			"default": {
 				"enable": false,
-				"timeCheckValue": 4
+				"timeCheckValue": 4,
+				"defaultSettings": true
 			}
 		}
 	},

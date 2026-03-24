@@ -163,9 +163,15 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				$turnstile_html .= '<div class="cf-turnstile" data-sitekey="' . esc_attr( $turnstile_settings['site_key'] ) . '"></div><input type="hidden" name="turnstile_enable" value="1" />';
 			}
 
-			if ( ! empty( $attributes['honeypot'] ) && ! empty( $attributes['honeypot']['enable'] ) ) {
-				$time_check_value = ! empty( $attributes['honeypot']['timeCheckValue'] )
-					? intval( $attributes['honeypot']['timeCheckValue'] )
+			if ( isset( $attributes['honeypot']['defaultSettings'] ) && $attributes['honeypot']['defaultSettings'] ) {
+				$honeypot_settings = get_option( 'gutena_forms__honeypot', array() );
+			} else {
+				$honeypot_settings = $attributes['honeypot'];
+			}
+
+			if ( isset( $honeypot_settings['enable'] ) && $honeypot_settings['enable'] ) {
+				$time_check_value = ! empty( $honeypot_settings['timeCheckValue'] )
+					? intval( $honeypot_settings['timeCheckValue'] )
 					: 4; // default 4 seconds
 				// we need to different hidden fields 1 for checking time second for check honeypot
 				$honeypot_html .= '<div style="display:none;">

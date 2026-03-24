@@ -287,8 +287,14 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @since 1.6.0
 		 */
 		private function validate_captcha() {
+
 			$use_global = isset( $this->schema['form_attrs']['recaptcha']['defaultSettings'] ) && ! empty( $this->schema['form_attrs']['recaptcha']['defaultSettings'] ) && 1 === absint( $this->schema['form_attrs']['recaptcha']['defaultSettings'] );
 			$this->schema['form_attrs']['recaptcha'] = $use_global ? get_option( 'gutena_forms_grecaptcha', array() ) : $this->schema['form_attrs']['recaptcha'];
+			$use_global = isset( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] ) && ! empty( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] ) && 1 === absint( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] );
+			$this->schema['form_attrs']['cloudflareTurnstile'] = $use_global ? get_option( 'gutena_forms__cloudflare', array() ) : $this->schema['form_attrs']['cloudflareTurnstile'];
+			$use_global = isset( $this->schema['form_attrs']['honeypot']['defaultSettings'] ) && ! empty( $this->schema['form_attrs']['honeypot']['defaultSettings'] ) && 1 === absint( $this->schema['form_attrs']['honeypot']['defaultSettings'] );
+			$this->schema['form_attrs']['honeypot'] = $use_global ? get_option( 'gutena_forms__honeypot', array() ) : $this->schema['form_attrs']['honeypot'];
+
 			if ( ! empty( $this->schema['form_attrs']['recaptcha'] ) && ! empty( $this->schema['form_attrs']['recaptcha']['enable'] ) && ! $this->recaptcha_verify() ) {
 				wp_send_json(
 					array(
@@ -299,8 +305,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				);
 			}
 
-			$use_global = isset( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] ) && ! empty( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] ) && 1 === absint( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] );
-			$this->schema['form_attrs']['cloudflareTurnstile'] = $use_global ? get_option( 'gutena_forms__cloudflare', array() ) : $this->schema['form_attrs']['cloudflareTurnstile'];
 			if ( ! empty( $this->schema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $this->schema['form_attrs']['cloudflareTurnstile']['enable'] ) && ! $this->cloudflare_turnstile_verify() ) {
 				wp_send_json(
 					array(

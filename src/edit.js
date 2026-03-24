@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
 import { useEffect } from '@wordpress/element';
-import { gfIsEmpty, getInnerBlocksbyNameAttr, slugToName } from './helper';
+import { gfIsEmpty, getInnerBlocksbyNameAttr } from './helper';
 import {
 	InspectorControls,
 	__experimentalBlockVariationPicker,
@@ -14,24 +14,19 @@ import {
 	__experimentalFontFamilyControl as FontFamilyControl,
 	useSettings,
 } from '@wordpress/block-editor';
-import { store as editorStore } from '@wordpress/editor';
 import { store as coreStore } from '@wordpress/core-data';
-import { useDispatch, useSelect, dispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	PanelBody,
 	PanelRow,
 	TextControl,
 	ToggleControl,
 	RangeControl,
-	RadioControl,
 	SelectControl,
 	__experimentalUseCustomUnits as useCustomUnits,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
-	__experimentalUnitControl as UnitControl,
-	__experimentalVStack as VStack,
 	__experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue,
-	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 import {
 	createBlocksFromInnerBlocksTemplate,
@@ -118,17 +113,9 @@ const Placeholder = ( { clientId, name, setAttributes } ) => {
 	);
 };
 
-const MAX_SPACE_VALUES = {
-	px: 100,
-	em: 20,
-	rem: 20,
-	vh: 1,
-	vw: 1,
-};
-
 export default function Edit( props ) {
 	//props
-	const { className, attributes, setAttributes, isSelected, clientId } =
+	const { attributes, setAttributes, clientId } =
 		props;
 
 	//Attributes
@@ -158,7 +145,6 @@ export default function Edit( props ) {
 		replyToLastName,
 		adminEmailSubject,
 		emailNotifyAdmin,
-		emailNotifyUser,
 		messages={},
 		formStyle,
 		style,
@@ -168,7 +154,6 @@ export default function Edit( props ) {
 	} = attributes;
 
 	const {
-		getClientIdsOfDescendants,
 		getBlock
 	} = useSelect( blockEditorStore );
 
@@ -193,7 +178,7 @@ export default function Edit( props ) {
 			}
 		}
 
-		if ( gfIsEmpty( fontFamilies ) || 0 == fontFamilies.length ) {
+		if ( gfIsEmpty( fontFamilies ) || 0 === fontFamilies.length ) {
 			return [];
 		}
 
@@ -270,13 +255,14 @@ export default function Edit( props ) {
 				d.getSeconds() );
 
 			//set recaptcha and formID if not set initially as per data available
-			if ( ! gfIsEmpty( recaptcha ) && gfIsEmpty( recaptcha.secret_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_type ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_site_key ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_secret_key ) ) {
+			if ( ! gfIsEmpty( recaptcha ) && gfIsEmpty( recaptcha.secret_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha ) ) {
+				console.log( gutenaFormsBlock )
 				setAttributes( {
 					recaptcha: {
-						...recaptcha,
-						type: gutenaFormsBlock.grecaptcha_type,
-						site_key: gutenaFormsBlock.grecaptcha_site_key,
-						secret_key: gutenaFormsBlock.grecaptcha_secret_key,
+						enable: gutenaFormsBlock.grecaptcha.enable,
+						type: gutenaFormsBlock.grecaptcha.type,
+						site_key: gutenaFormsBlock.grecaptcha.site_key,
+						secret_key: gutenaFormsBlock.grecaptcha.secret_key,
 						defaultSettings: true,
 					},
 				} );
@@ -288,8 +274,22 @@ export default function Edit( props ) {
 				if ( ! gfIsEmpty( cloudflare_turnstile_defaults.site_key ) && ! gfIsEmpty( cloudflare_turnstile_defaults.secret_key ) ) {
 					setAttributes( {
 						cloudflareTurnstile: {
+							enable: cloudflare_turnstile_defaults.enable,
 							site_key: cloudflare_turnstile_defaults.site_key,
 							secret_key: cloudflare_turnstile_defaults.secret_key,
+							defaultSettings: true,
+						},
+					} );
+				}
+			}
+
+			if ( ! gfIsEmpty( honeypot ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.honeypot ) ) {
+				const honeypot_defaults = gutenaFormsBlock.honeypot;
+				if ( ! gfIsEmpty( honeypot_defaults.timeCheckValue ) ) {
+					setAttributes( {
+						honeypot: {
+							enable: honeypot_defaults.enable,
+							timeCheckValue: honeypot_defaults.timeCheckValue,
 							defaultSettings: true,
 						},
 					} );
@@ -338,7 +338,7 @@ export default function Edit( props ) {
 
 	//Get Author Email
 	const currentUser = useSelect( ( select ) => {
-		return '' == adminEmails
+		return '' === adminEmails
 			? select( coreStore ).getUsers( { who: 'authors' } )
 			: [];
 	}, [] );
@@ -348,7 +348,7 @@ export default function Edit( props ) {
 		let shouldRunAuthorEmail = true;
 		if ( shouldRunAuthorEmail ) {
 			if (
-				'' == adminEmails &&
+				'' === adminEmails &&
 				'undefined' !== typeof currentUser &&
 				null !== currentUser &&
 				'undefined' !== typeof currentUser[ 0 ].email &&
@@ -369,28 +369,6 @@ export default function Edit( props ) {
 		gfIsEmpty( variations ) || gfIsEmpty( variations[ 0 ].innerBlocks )
 			? [ [ 'gutena/field-group' ] ]
 			: variations[ 0 ].innerBlocks;
-
-	//Spacing units
-	const units = useCustomUnits( {
-		availableUnits: [ 'px', 'em', 'rem', 'vh', 'vw' ],
-		defaultValues: { px: 0, em: 0, rem: 0, vh: 0, vw: 0 },
-	} );
-
-	const getQtyOrunit = ( rawUnit, quantityOrUnit = 'unit' ) => {
-		const [ quantityToReturn, unitToReturn ] =
-			parseQuantityAndUnitFromRawValue( rawUnit );
-		let unit =
-			'undefined' === typeof unitToReturn || null === unitToReturn
-				? 'px'
-				: unitToReturn;
-		let Qty =
-			'undefined' === typeof quantityToReturn ||
-			null === quantityToReturn ||
-			'' == quantityToReturn
-				? 0
-				: quantityToReturn;
-		return 'unit' === quantityOrUnit ? unit : quantityToReturn;
-	};
 
 	//Form Styles : local css variable for forms inner blocks styles
 	useEffect( () => {
