@@ -139,10 +139,15 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				if  ( 'v2' === $recaptcha_settings['type'] ) {
 					$recaptcha_html .= '<div class="g-recaptcha" data-sitekey="' . esc_attr( $recaptcha_settings['site_key'] ) . '"></div><input type="hidden" name="recaptcha_enable" value="1" />';
 				} elseif ( 'v3' === $recaptcha_settings['type'] ) {
+					$recaptcha_html .= '<input type="hidden" name="g-recaptcha-response" value="" id="g-recaptcha-response-' . esc_attr( strtolower( $attributes['formID'] ) ) . '" />';
 					$recaptcha_html .= '<script type="text/javascript">
 						grecaptcha.ready( function () {
                             grecaptcha.execute( "' . esc_attr( $recaptcha_settings['site_key'] ) . '", { action: "submit" } ).then( function ( token ) {
-                        } );
+                                var recaptchaResponse = document.getElementById( "g-recaptcha-response-' . esc_attr( strtolower( $attributes['formID'] ) ) . '" );
+								if ( recaptchaResponse ) {
+									recaptchaResponse.value = token;
+								}
+                        	} );
 						} );
 					</script>
 					<input type="hidden" name="recaptcha_enable" value="1" />';

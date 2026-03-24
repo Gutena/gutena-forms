@@ -287,6 +287,8 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @since 1.6.0
 		 */
 		private function validate_captcha() {
+			$use_global = isset( $this->schema['form_attrs']['recaptcha']['defaultSettings'] ) && ! empty( $this->schema['form_attrs']['recaptcha']['defaultSettings'] ) && 1 === absint( $this->schema['form_attrs']['recaptcha']['defaultSettings'] );
+			$this->schema['form_attrs']['recaptcha'] = $use_global ? get_option( 'gutena_forms_grecaptcha', array() ) : $this->schema['form_attrs']['recaptcha'];
 			if ( ! empty( $this->schema['form_attrs']['recaptcha'] ) && ! empty( $this->schema['form_attrs']['recaptcha']['enable'] ) && ! $this->recaptcha_verify() ) {
 				wp_send_json(
 					array(
@@ -350,7 +352,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @return bool
 		 */
 		private function recaptcha_verify(){
-
 			if ( empty( $_POST['recaptcha_enable'] ) && empty( $_POST['g-recaptcha-response'] ) ) {
 				return true;
 			}
@@ -362,18 +363,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				return false;
 			} else {
 				// Use form's own settings when overridden, otherwise global.
-				$schema_recaptcha = ! empty( $this->schema['form_attrs']['recaptcha'] ) ? $this->schema['form_attrs']['recaptcha'] : array();
-				$use_form_settings = (
-					isset( $schema_recaptcha['defaultSettings'] )
-					&& false === $schema_recaptcha['defaultSettings']
-					&& ! empty( $schema_recaptcha['secret_key'] )
-					&& ! empty( $schema_recaptcha['site_key'] )
-					&& ! empty( $schema_recaptcha['type'] )
-				);
-				$recaptcha_settings = $use_form_settings
-					? $schema_recaptcha
-					: get_option( 'gutena_forms_grecaptcha', false );
-
+				$recaptcha_settings = $this->schema['form_attrs']['recaptcha'];
 				if ( empty( $recaptcha_settings ) || empty( $recaptcha_settings['secret_key'] ) ) {
 					return false;
 				}
