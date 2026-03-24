@@ -216,6 +216,22 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 							}
 
 						}
+
+						if ( isset( $attributes['cloudflareTurnstile']['defaultSettings'] ) && $attributes['cloudflareTurnstile']['defaultSettings'] ) {
+							$cloudflare_settings = get_option( 'gutena_forms__cloudflare', array() );
+						} else {
+							$cloudflare_settings = $attributes['cloudflareTurnstile'];
+						}
+
+						if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
+							wp_enqueue_script(
+								'gutena-forms-cloudflare-turnstile-scripts',
+								'https://challenges.cloudflare.com/turnstile/v0/api.js',
+								array(),
+								null,
+								false
+							);
+						}
 					}
 				}
 			}
@@ -631,7 +647,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		// Get Form schema from block parsing
 		private function get_form_schema( $blocks, $formID = 0 ) {
 			if ( empty( $blocks ) || ! is_array( $blocks ) ) {
-				return;
+				return [];
 			}
 
 			$form_schema = array();

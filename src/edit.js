@@ -279,16 +279,24 @@ export default function Edit( props ) {
 						secret_key: gutenaFormsBlock.grecaptcha_secret_key,
 						defaultSettings: true,
 					},
-					formID: GutenaFormsID
 				} );
-			} else {
-				const updates = { formID: GutenaFormsID };
-				// When Turnstile is enabled with default settings and block keys empty, use global defaults.
-				if ( ! gfIsEmpty( cloudflareTurnstile ) && cloudflareTurnstile.enable && ( cloudflareTurnstile.defaultSettings !== false ) && ( gfIsEmpty( cloudflareTurnstile.site_key ) || gfIsEmpty( cloudflareTurnstile.secret_key ) ) && ! gfIsEmpty( gutenaFormsBlock?.cloudflare_turnstile_defaults?.site_key ) && ! gfIsEmpty( gutenaFormsBlock?.cloudflare_turnstile_defaults?.secret_key ) ) {
-					updates.cloudflareTurnstile = { ...cloudflareTurnstile, defaultSettings: true };
-				}
-				setAttributes( updates );
+
 			}
+
+			if ( ! gfIsEmpty( cloudflareTurnstile ) && gfIsEmpty( cloudflareTurnstile.site_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock?.cloudflare_turnstile_defaults ) ) {
+				const cloudflare_turnstile_defaults = gutenaFormsBlock.cloudflare_turnstile_defaults;
+				if ( ! gfIsEmpty( cloudflare_turnstile_defaults.site_key ) && ! gfIsEmpty( cloudflare_turnstile_defaults.secret_key ) ) {
+					setAttributes( {
+						cloudflareTurnstile: {
+							site_key: cloudflare_turnstile_defaults.site_key,
+							secret_key: cloudflare_turnstile_defaults.secret_key,
+							defaultSettings: true,
+						},
+					} );
+				}
+			}
+
+			setAttributes( { formID: GutenaFormsID } );
 		}
 		//set replyToEmailID
 		if ( shouldRunFormID && gfIsEmpty( replyToEmail ) && gfIsEmpty( replyToName ) ) {

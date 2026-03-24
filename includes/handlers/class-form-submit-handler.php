@@ -299,6 +299,8 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				);
 			}
 
+			$use_global = isset( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] ) && ! empty( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] ) && 1 === absint( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] );
+			$this->schema['form_attrs']['cloudflareTurnstile'] = $use_global ? get_option( 'gutena_forms__cloudflare', array() ) : $this->schema['form_attrs']['cloudflareTurnstile'];
 			if ( ! empty( $this->schema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $this->schema['form_attrs']['cloudflareTurnstile']['enable'] ) && ! $this->cloudflare_turnstile_verify() ) {
 				wp_send_json(
 					array(
@@ -420,25 +422,13 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				return false;
 			}
 			$token = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
-			$schema_turnstile = ! empty( $this->schema['form_attrs']['cloudflareTurnstile'] ) ? $this->schema['form_attrs']['cloudflareTurnstile'] : array();
-			$use_form_settings = (
-				isset( $schema_turnstile['defaultSettings'] )
-				&& false === $schema_turnstile['defaultSettings']
-				&& ! empty( $schema_turnstile['site_key'] )
-				&& ! empty( $schema_turnstile['secret_key'] )
-			);
-			$effective = $use_form_settings
-				? $schema_turnstile
-				: get_option( 'gutena_forms__cloudflare', array() );
-			if ( empty( $effective ) || empty( $effective['secret_key'] ) ) {
-				return false;
-			}
+			$schema_turnstile =  $this->schema['form_attrs']['cloudflareTurnstile'];
 
 			$response = wp_remote_post(
 				'https://challenges.cloudflare.com/turnstile/v0/siteverify',
 				array(
 					'body' => array(
-						'secret'   => $effective['secret_key'],
+						'secret'   => $schema_turnstile['secret_key'],
 						'response' => $token,
 					),
 				)

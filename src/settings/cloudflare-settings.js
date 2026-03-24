@@ -3,7 +3,6 @@ import { gfIsEmpty } from '../helper';
 import { __ } from '@wordpress/i18n';
 
 const CloudflareSettings = ( { cloudflareTurnstile, setAttributes, cloudflareTurnstileDefaults = {} } ) => {
-
     const handleValueChange = ( key, value ) => {
         setAttributes( {
             cloudflareTurnstile: {
@@ -13,10 +12,6 @@ const CloudflareSettings = ( { cloudflareTurnstile, setAttributes, cloudflareTur
             }
         } );
     };
-
-    const useDefaultSettings = cloudflareTurnstile?.defaultSettings !== false;
-    const defaultHasKeys = ! gfIsEmpty( cloudflareTurnstileDefaults?.site_key ) && ! gfIsEmpty( cloudflareTurnstileDefaults?.secret_key );
-    const showKeyFields = ! gfIsEmpty( cloudflareTurnstile?.enable ) && cloudflareTurnstile?.enable && ( ! useDefaultSettings || ! defaultHasKeys );
 
     return (
         <PanelBody title={ __( 'Cloudflare Turnstile', 'gutena-forms' ) } initialOpen={ false }>
@@ -33,28 +28,17 @@ const CloudflareSettings = ( { cloudflareTurnstile, setAttributes, cloudflareTur
                     onChange={ ( turnstile_status ) => handleValueChange( 'enable', turnstile_status ) }
                 />
 
-                { ( ! gfIsEmpty( cloudflareTurnstile?.enable ) && cloudflareTurnstile?.enable ) && useDefaultSettings && defaultHasKeys && (
-                    <p className="description">
-                        { __( 'Using default settings from Forms Settings.', 'gutena-forms' ) }
-                        { cloudflareTurnstileDefaults?.site_key && (
-                            <span> { __( 'Site Key:', 'gutena-forms' ) } { String( cloudflareTurnstileDefaults.site_key ).slice( 0, 12 ) }…</span>
-                        ) }
-                    </p>
-                ) }
-
-                { showKeyFields && (
+                { cloudflareTurnstile?.enable && (
                     <>
                         <TextControl
                             label={ __( 'Site Key', 'gutena-forms' ) }
                             value={ cloudflareTurnstile?.site_key ?? '' }
                             onChange={ ( site_key ) => handleValueChange( 'site_key', site_key ) }
-                            placeholder={ useDefaultSettings && cloudflareTurnstileDefaults?.site_key ? cloudflareTurnstileDefaults.site_key : undefined }
                         />
                         <TextControl
                             label={ __( 'Secret Key', 'gutena-forms' ) }
                             value={ cloudflareTurnstile?.secret_key ?? '' }
                             onChange={ ( secret_key ) => handleValueChange( 'secret_key', secret_key ) }
-                            placeholder={ useDefaultSettings && cloudflareTurnstileDefaults?.secret_key ? '••••••••' : undefined }
                         />
                     </>
                 ) }

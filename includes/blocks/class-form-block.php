@@ -128,7 +128,6 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 
 			$recaptcha_html = $turnstile_html = $honeypot_html = '';
 
-			$recaptcha_settings = array();
 			if ( isset( $attributes['recaptcha']['defaultSettings'] ) && $attributes['recaptcha']['defaultSettings'] ) {
 				$recaptcha_settings = get_option( 'gutena_forms__recaptcha', false );
 			} else {
@@ -154,11 +153,15 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				}
 			}
 
-			$effective_turnstile = isset( $attributes['cloudflareTurnstile'] ) ? self::get_effective_turnstile( $attributes['cloudflareTurnstile'] ) : null;
-			if ( ! empty( $effective_turnstile ) && ! empty( $effective_turnstile['site_key'] ) ) {
-				$turnstile_html = '<div class="cf-turnstile" data-sitekey="' . esc_attr( $effective_turnstile['site_key'] ) . '"></div>';
+			if ( isset( $attributes['cloudflareTurnstile']['defaultSettings'] ) && $attributes['cloudflareTurnstile']['defaultSettings'] ) {
+				$turnstile_settings = get_option( 'gutena_forms__cloudflare', array() );
+			} else {
+				$turnstile_settings = $attributes['cloudflareTurnstile'];
 			}
 
+			if ( isset( $turnstile_settings['enable'] ) && $turnstile_settings['enable'] ) {
+				$turnstile_html .= '<div class="cf-turnstile" data-sitekey="' . esc_attr( $turnstile_settings['site_key'] ) . '"></div><input type="hidden" name="turnstile_enable" value="1" />';
+			}
 
 			if ( ! empty( $attributes['honeypot'] ) && ! empty( $attributes['honeypot']['enable'] ) ) {
 				$time_check_value = ! empty( $attributes['honeypot']['timeCheckValue'] )
