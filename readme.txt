@@ -2,7 +2,7 @@
 Contributors:      wpexpertsio
 Tags:              contact form, custom form, forms, form builder, WordPress form plugin
 Tested up to:      6.9
-Stable tag:        1.7.0
+Stable tag:        1.7.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -362,6 +362,9 @@ Please report security bugs found in the source code of the undefined plugin thr
 
 
 == Changelog ==
+= 1.7.1 - Mar 25, 2026 =
+* Fix - Form Submission Shows Blank Screen After Removing Field
+
 = 1.7.0 - Mar 25, 2026 =
 * New - honeypot field in individual form settings
 * Improved - entries and forms table UI
