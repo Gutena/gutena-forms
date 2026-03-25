@@ -256,7 +256,6 @@ export default function Edit( props ) {
 
 			//set recaptcha and formID if not set initially as per data available
 			if ( ! gfIsEmpty( recaptcha ) && gfIsEmpty( recaptcha.secret_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha ) ) {
-				console.log( gutenaFormsBlock )
 				setAttributes( {
 					recaptcha: {
 						enable: gutenaFormsBlock.grecaptcha.enable,
