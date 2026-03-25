@@ -6,13 +6,13 @@ Stable tag:        1.6.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
-WordPress form builder to create lightweight contact forms, survey forms, feedback forms, booking forms, etc., right inside the Gutenberg editor.
+WordPress form builder to create lightweight contact forms, survey forms, feedback forms, booking forms, etc., right inside the WordPress block editor.
 
 == Description ==
 
 = WordPress Contact Form Builder Plugin =
 
-[👑Checkout Premium Version](https://gutenaforms.com/pricing/?utm_source=wp_org&utm_medium=website&utm_campaign=free_plugin) | [💻 Live Demo](https://app.instawp.io/launch?s=demo-gutena-forms&d=v2) | [Support](https://objectsws.atlassian.net/servicedesk/customer/portal/239)
+[👑Checkout Premium Version](https://gutenaforms.com/pricing/?utm_source=wp_org&utm_medium=website&utm_campaign=free_plugin) |  [💻 Live Demo](https://app.instawp.io/launch?s=demo-gutena-forms&d=v2) |  [Support](https://objectsws.atlassian.net/servicedesk/customer/portal/239)
 
 [Gutena Forms](https://gutenaforms.com/) is the easiest WordPress form builder plugin for creating responsive, lightweight forms in the WordPress block editor (Gutenberg). It works as a Gutenberg native form plugin that lets you build contact forms, survey forms, feedback forms, booking forms, and any custom form with a dedicated Gutenberg block.
 
@@ -26,9 +26,9 @@ Try the [Live Demo](https://app.instawp.io/launch?t=gutena-forms-demo&d=v2) or [
 https://www.youtube.com/watch?v=u9sB-RSBQIE
 
 
-### ⚡ Complete Features List (Free \+ Pro)
+###⚡Complete Features List (Free \+ Pro)
 
-### Free Version Includes:
+#### Free Version Includes:
 
 * Easy form creation inside the WordPress block editor
 
@@ -44,7 +44,7 @@ https://www.youtube.com/watch?v=u9sB-RSBQIE
 
   * **Range**: Let users select values with a range slider field.
 
-  * **TextArea**: Gather long responses with a multi-line text area.
+  * **Text Area**: Gather long responses with a multi-line text area.
 
   * **Email**: Validate and capture user email addresses.
 
@@ -84,8 +84,7 @@ https://www.youtube.com/watch?v=u9sB-RSBQIE
 
 * Custom Error Messages
 
-
-### ✨Pro Version Unlocks (everything in Free, plus):✨
+####✨Pro Version Unlocks (everything in Free, plus):
 
 Gutena Forms Pro gives you everything you need to manage advanced form workflows:
 
@@ -130,7 +129,7 @@ Gutena Forms Pro gives you everything you need to manage advanced form workflows
 Gutena Forms Pro is ideal for users who need a complete WordPress form builder Pro solution.
 
 
-### ⚡ Why Choose Gutena Forms to Build WordPress Forms
+###⚡Why Choose Gutena Forms to Build WordPress Forms
 
 Over 20,000 WordPress site owners use Gutena Forms to build stunning contact forms. Here are some of the top reasons why they love the plugin.
 
@@ -215,7 +214,7 @@ Gutena Forms includes powerful admin email notifications that instantly alert yo
 Organize, filter, and control your form submissions with precision. You can categorize entries with tags, assign custom statuses for better workflow management, and set user permissions to keep your form data secure and accessible only to authorized team members.
 
 
-### ⚡ Real World Use Cases of Gutena Forms
+###⚡Real World Use Cases of Gutena Forms
 
 Use Gutena Forms for any form-building need, including:
 
@@ -238,7 +237,7 @@ Use Gutena Forms for any form-building need, including:
 Gutena Forms works perfectly as a WordPress contact form plugin, WordPress booking form plugin, WordPress enquiry form plugin, and more.
 
 
-### ⚡ Other Blocks From Gutena (Fully Compatible)
+###⚡Other Blocks From Gutena (Fully Compatible)
 
 If you enjoy using Gutena Forms, explore our collection of Gutenberg block plugins designed to enhance your WordPress editing experience:
 
@@ -255,7 +254,7 @@ If you enjoy using Gutena Forms, explore our collection of Gutenberg block plugi
 * [**Gutena Recent Post Tag**](https://wordpress.org/plugins/post-featured-tag-block-by-gutena/): Highlight new or featured posts with an automated tag based on publish date.
 
 
-### ⚡ Check Out What Else We’ve Built for You
+### ⚡Check Out What Else We’ve Built for You
 
 * [**Post SMTP**](https://postmansmtp.com) – Reliable WordPress email delivery plugin with detailed email logs and multiple SMTP integrations.
 
@@ -278,6 +277,19 @@ If you enjoy using Gutena Forms, explore our collection of Gutenberg block plugi
 * [**New User Approve**](https://newuserapprove.com) – Control user registrations by manually approving or denying new signups.
 
 * [**WP Experts WooCommerce Store**](https://wpexperts.io/store) – Explore premium WooCommerce plugins and solutions by WPExperts.
+
+
+### Our Brand Guidelines
+
+Gutena Forms is the official product name. Please use the following format when mentioning Gutena Forms anywhere:
+
+- Gutena Forms [correct]
+- GutenaForms [incorrect]
+- gutena forms [incorrect]
+- Gutena forms [incorrect]
+- gutena-forms [incorrect]
+- Gutena Form [incorrect]
+- GUTENA FORMS [incorrect]
 
 
 == Frequently Asked Questions ==
@@ -330,6 +342,10 @@ No, Gutena Forms is a lightweight WordPress form plugin that does not use jQuery
 
 Gutena Forms gives you full control over padding, colors, spacing, typography, field widths, and overall form layout inside Gutenberg.
 
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the undefined plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/5b168d8d-e789-4f27-bdd4-fafaef54c1b9). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 
 == Screenshots ==
 
@@ -342,9 +358,15 @@ Gutena Forms gives you full control over padding, colors, spacing, typography, f
 7. Set up admin email notifications
 8. See all your contact forms in one place
 9. View contact form entries and submission database
+10. Use existing forms on multiple pages
 
 
 == Changelog ==
+= 1.7.0 - Mar 25, 2026 =
+* New - honeypot field in individual form settings
+* Improved - entries and forms table UI
+* Improved - form settings UI
+
 = 1.6.1 - Feb 17, 2026 =
 * FIX - Patched Security vulnerability reported by WordFence team.
 
