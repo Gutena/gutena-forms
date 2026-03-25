@@ -1,7 +1,7 @@
 import { Button } from '@wordpress/components';
 import Checklist from '../icons/checklist';
 import { __ } from '@wordpress/i18n';
-import Crown from '../icons/crown';
+import { BlackCrown as Crown } from '../icons/crown';
 import Close from '../icons/close';
 import { useState, useEffect } from '@wordpress/element';
 
@@ -26,7 +26,8 @@ const GutenaFormsProPopup = ( { isPopup = false, show = false, hideHandler } ) =
 		<div className={ `gutena-forms__pro-popup-wrapper ${ isVisible ? 'visible' : 'invisible' }` }>
 			<div className={ `gutena-forms__pro-popup` }>
 				<div className={ 'gutena-forms__popup-header' }>
-					<img src={ `${gutenaFormsAdmin.pluginURL}assets/img/logo.svg` } alt={ 'gutena-forms logo' } />
+					<img style={ { width: '200px' }}
+						src={ `${gutenaFormsAdmin.pluginURL}assets/img/logo.svg` } alt={ 'gutena-forms logo' } />
 
 					<h1>Upgrade to Gutena Pro</h1>
 
@@ -56,7 +57,7 @@ const GutenaFormsProPopup = ( { isPopup = false, show = false, hideHandler } ) =
 						}
 					</div>
 
-					<div style={ { display: 'flex', justifyContent: 'center' } }>
+					<div style={ { display: 'flex', justifyContent: 'center', marginTop: '20px', height: '45px' } }>
 						<Button className={ 'gutena-forms__pro-upgrade-button' } variant="primary" href="https://gutenaforms.com/pricing/?utm_source=plugin&utm_medium=pro_banner" target="_blank" rel="noopener noreferrer">
 							<Crown />
 							{ __( 'Get Pro Now - $49/Year', 'gutena-forms' ) }

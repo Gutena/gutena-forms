@@ -465,10 +465,14 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				padding: 20px;
 
 				h1 {
-					margin: 12px 0;
-					font-size: 18px;
+					text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+					font-size: 24px;
 					font-weight: 700;
-					color: #ECF5F5;
+					line-height: normal;
+					background: linear-gradient(89deg, #E8FBF8 9.25%, #C8F6EE 90.75%);
+					background-clip: text;
+					-webkit-background-clip: text;
+					-webkit-text-fill-color: transparent;
 				}
 			}
 
@@ -495,19 +499,20 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				}
 
 				.gutena-forms__pro-upgrade-button {
-					width: 200px;
-					margin-top: 20px;
-					padding: 10px 0;
+					width: 240px;
+					padding: 11px 0 0 0;
+					height: 50px;
 					text-align: center;
 					display: block;
-					color: #FFF;
-					font-size: 13px;
-					font-weight: 600;
+					color: #000;
+					font-size: 15px;
+					font-weight: 700;
 					border-radius: 4px;
-					background: #D08E15;
+					background: #FFBA3D;
+					border: 1px solid #FFD78E;
 
 					svg {
-						margin: 0 4px -2px 0;
+						margin: 0 6px -5px 0;
 					}
 				}
 			}

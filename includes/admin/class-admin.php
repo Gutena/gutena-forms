@@ -356,11 +356,11 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 					'adminURL'                => esc_url( admin_url() ),
 					'hasPro'                  => is_gutena_forms_pro( false ),
 					'featureList'             => array(
-						__( 'Advance Filter for Entries', 'gutena-forms' ),
-						__( 'Status Management', 'gutena-forms' ),
 						__( 'Entry Notes', 'gutena-forms' ),
 						__( 'Tags Management', 'gutena-forms' ),
+						__( 'Advance Filter', 'gutena-forms' ),
 						__( 'Manage User Access', 'gutena-forms' ),
+						__( 'Status Management', 'gutena-forms' ),
 						__( 'Premium Support', 'gutena-forms' ),
 					),
 					'gutenaFormsIntroduction' => array(

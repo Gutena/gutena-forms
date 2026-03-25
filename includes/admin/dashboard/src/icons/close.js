@@ -3,10 +3,10 @@ import { Icon } from '@wordpress/components';
 const Close = () => (
 	<Icon
 		icon={ () => (
-			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-				<path d="M8.00016 14.6668C11.6668 14.6668 14.6668 11.6668 14.6668 8.00016C14.6668 4.3335 11.6668 1.3335 8.00016 1.3335C4.3335 1.3335 1.3335 4.3335 1.3335 8.00016C1.3335 11.6668 4.3335 14.6668 8.00016 14.6668Z" stroke="white" strokeLinecap="round" strokeLinejoin="round"/>
-				<path d="M6.11328 9.88661L9.88661 6.11328" stroke="white" strokeLinecap="round" strokeLinejoin="round"/>
-				<path d="M9.88661 9.88661L6.11328 6.11328" stroke="white" strokeLinecap="round" strokeLinejoin="round"/>
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+				<path d="M10.0003 18.3327C14.5837 18.3327 18.3337 14.5827 18.3337 9.99935C18.3337 5.41601 14.5837 1.66602 10.0003 1.66602C5.41699 1.66602 1.66699 5.41601 1.66699 9.99935C1.66699 14.5827 5.41699 18.3327 10.0003 18.3327Z" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+				<path d="M7.6416 12.3592L12.3583 7.64258" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+				<path d="M12.3583 12.3592L7.6416 7.64258" stroke="white" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
 			</svg>
 		) }
 	/>
