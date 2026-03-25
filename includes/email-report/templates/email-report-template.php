@@ -265,7 +265,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 														<table role="presentation" cellspacing="0" cellpadding="0" border="0">
 															<tr>
 																<td style="padding-top: 8px;">
-																	<a target="_blank" href="https://gutenaforms.com/forms/pricing/?utm_source=weekly_report&utm_medium=email" style="display: inline-block; width: 110px; height: 25px; background: linear-gradient(90deg, #F6B642 0%, #FFD382 100%); background-color: #F6B642; color: #21222F; border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: 700; text-align: center; line-height: 25px; box-sizing: border-box; vertical-align: middle;"><?php echo esc_html__( 'Get Pro Now', 'gutena-forms' ); ?></a>
+																	<a target="_blank" href="https://gutenaforms.com/pricing/?utm_source=weekly_report&utm_medium=email" style="display: inline-block; width: 110px; height: 25px; background: linear-gradient(90deg, #F6B642 0%, #FFD382 100%); background-color: #F6B642; color: #21222F; border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: 700; text-align: center; line-height: 25px; box-sizing: border-box; vertical-align: middle;"><?php echo esc_html__( 'Get Pro Now', 'gutena-forms' ); ?></a>
 																</td>
 															</tr>
 														</table>
