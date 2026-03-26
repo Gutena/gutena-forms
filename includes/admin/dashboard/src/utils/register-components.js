@@ -19,6 +19,14 @@ import Notes from '../icons/notes';
 import Edit from '../icons/edit';
 import { FilledStar, Star } from "../icons/star";
 import {gutenaFormsStrContains} from "./functions";
+import { SelectControl } from '@wordpress/components';
+import Activecampaign from '../icons/activecampaign';
+import Brevo from '../icons/brevo';
+import Mailchimp from '../icons/mailchimp';
+import { NavLink } from 'react-router';
+import GutenaFormsDescWrapper from '../components/gutena-forms-desc-wrapper';
+import GutenaFormsToggleField from '../components/fields/gutena-forms-toggle-field';
+import Settings from '../icons/settings';
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -36,6 +44,13 @@ addFilter(
 		components['Edit'] 				      = Edit;
 		components['Star'] 				  	  = Star;
 		components['FilledStar'] 			  = FilledStar;
+		components['Activecampaign'] 		  = Activecampaign;
+		components['Brevo'] 				  = Brevo;
+		components['Mailchimp'] 			  = Mailchimp;
+		components['NavLink'] 			      = NavLink;
+		components['GutenaFormsDescWrapper']  = GutenaFormsDescWrapper;
+		components['GutenaFormsToggleField']  = GutenaFormsToggleField;
+		components['Settings']  			  = Settings;
 
 		return components;
 	}

@@ -46,6 +46,7 @@ const GutenaFormsLeftMenuNavigation = () => {
 												icon={ IconComponent }
 												title={ menu.title }
 												items={ menu.menus }
+												slug={ menu.slug }
 											/>
 										</div>
 									);
