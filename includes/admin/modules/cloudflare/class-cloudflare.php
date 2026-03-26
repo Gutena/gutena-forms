@@ -51,6 +51,7 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 
 		public function get_settings() {
 			return array(
+				'id'          => 'cloudflare',
 				'title'	 	  => __( 'Cloudflare Turnstile', 'gutena-forms' ),
 				'description' => sprintf(
 					__( 'Enter your Turnstile API keys below to enable the Cloudflare Turnstile CAPTCHA option. See %1$s to obtain your API keys.', 'gutena-forms' ),
@@ -61,7 +62,6 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 						'id'      => 'enable',
 						'type'    => 'toggle',
 						'name'    => __( 'Enable Cloudflare', 'gutena-forms' ),
-						'desc'    => __( 'Enable cloudflare for preventing bots.', 'gutena-forms' ),
 						'default' => false,
 						'value'   => isset( $this->settings['enable'] ) ? $this->settings['enable'] : false,
 					),

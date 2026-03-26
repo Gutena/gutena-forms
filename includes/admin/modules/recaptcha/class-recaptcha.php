@@ -51,6 +51,7 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 		 */
 		public function get_settings() {
 			return array(
+				'id'          => 'recaptcha',
 				'title'	 	  => __( 'Google reCAPTCHA Settings', 'gutena-forms' ),
 				'description' => sprintf(
 					__( 'Enter the API keys for each reCAPTCHA type you use. Each type needs its own set of keys, which you can get from. %1$s', 'gutena-forms' ),
@@ -61,7 +62,6 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 						'id'      => 'enable',
 						'type'    => 'toggle',
 						'name'    => __( 'Enable Google reCAPTCHA Security', 'gutena-forms' ),
-						'desc'    => __( 'Enable Google reCAPTCHA to protect your forms from automated spam submissions.', 'gutena-forms' ),
 						'default' => false,
 						'value'   => $this->settings['enable'],
 					),

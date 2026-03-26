@@ -53,7 +53,10 @@ const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 			/>
 			<Route
 				path={ 'settings/settings/integration/:settings_id' }
-				element={ <GutenaFormsSettingsLayout showProPopupHandler={ showProPopupHandler } /> }
+				element={ <GutenaFormsSettingsLayout
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
 			/>
 		</Routes>
 	);

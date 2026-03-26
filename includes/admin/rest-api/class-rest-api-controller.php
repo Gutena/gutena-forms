@@ -263,7 +263,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 				),
 				array(
 					'title' => __( 'Integrations', 'gutena-forms' ),
-					'icon'  => 'Shield',
+					'icon'  => 'Integration',
 					'menus' => array(),
 					'slug'  => 'integrations',
 				),

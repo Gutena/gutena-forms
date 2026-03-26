@@ -15,6 +15,8 @@ import Activecampaign from '../icons/activecampaign';
 import Brevo from '../icons/brevo';
 import Mailchimp from '../icons/mailchimp';
 import {Button} from "@wordpress/components";
+import Recaptcha from "../icons/recaptcha";
+import Cloudflare from "../icons/cloudflare";
 
 const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = false, onClick, goBack } ) => {
 	const { settings_id } = useParams();
@@ -167,6 +169,8 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		'active-campaign': <Activecampaign />,
 		'brevo': <Brevo />,
 		'mailchimp': <Mailchimp />,
+		'recaptcha': <Recaptcha />,
+		'cloudflare': <Cloudflare />,
 	};
 
 	return (
