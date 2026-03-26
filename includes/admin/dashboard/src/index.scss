@@ -1250,6 +1250,50 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		border: 1px solid #E2E2E2 !important;
 	}
 
+	.gutena-forms__radio-group-control {
+		.gutena-forms__field-label {
+			color: #000;
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		.gutena-forms__radio-group-options {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			height: 30px;
+			width: 250px;
+			padding: 5px;
+			border-radius: 4px;
+			border: 1px solid #E2E2E2;
+		}
+
+		.gutena-forms__radio-option-input {
+			display: none;
+
+			&:checked + .gutena-forms__radio-option-label {
+				border-radius: 4px;
+				background: #0DA88C;
+				color: #ffffff;
+			}
+		}
+
+		.gutena-forms__radio-option {
+			display: inline-block;
+			background: #ffffff;
+
+			.gutena-forms__radio-option-label {
+				cursor: pointer;
+				display: block;
+				height: 30px;
+				line-height: 30px;
+				padding: 0 20px;
+			}
+		}
+
+
+	}
+
 
 	.gutena-forms__integrations {
 
@@ -1261,6 +1305,9 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			padding: 10px;
 			margin-right: 10px;
 			margin-bottom: 10px;
+			height: 150px;
+			position: relative;
+			vertical-align: top;
 
 			h3 {
 				color: #000;
@@ -1294,6 +1341,10 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
+				position: absolute;
+				bottom: 10px;
+				left: 10px;
+				width: calc( 100% - 20px );
 
 				button {
 					padding: 0;
