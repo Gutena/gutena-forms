@@ -167,7 +167,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		}
 
 		.gutena-forms__main-content-container {
-			width: calc( 100% - 210px );
+			width: calc( 100% - 210px - 20px );
 
 			.gutena-forms__container {
 				padding: 35px 70px;
@@ -352,7 +352,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		}
 
 		.gutena-forms__left-menu-navigation {
-			width: 200px;
+			width: 220px;
 			background: #ffffff;
 			border-right: 0.5px solid #E2E2E2;
 			min-height: calc( 100vh - 45px - 32px - 66px );
