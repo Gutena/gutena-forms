@@ -50,7 +50,7 @@ if ( ! class_exists( 'Gutena_Forms_Field_Label_Block' ) ) :
 		public function render( $attributes, $content, $block ) {
 			ob_start();
 
-			echo '<label for="' . esc_attr( $attributes['htmlFor'] ) . '">' . esc_attr( $attributes['content'] ) . '</label>';
+			echo '<label for="' . esc_attr( $attributes['htmlFor'] ) . '">' . wp_kses_post( $attributes['content'] ) . '</label>';
 
 			return ob_get_clean();
 		}
