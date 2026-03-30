@@ -237,7 +237,17 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 								'title' => __( 'Weekly Summary', 'gutena-forms' ),
 								'slug'  => 'weekly-summary',
 							),
-						)
+					),
+				),
+				array(
+					'title' => __( 'AI Tools', 'gutena-forms' ),
+					'icon'  => 'Robot',
+					'menus' => array(
+						array(
+							'title' => __( 'AI', 'gutena-forms' ),
+							'slug'  => 'ai-settings',
+						),
+					),
 				),
 				/**
 				 * Disabling this due to some reasons, will enable it in future
