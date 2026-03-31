@@ -1,4 +1,5 @@
 import './index.scss';
+import 'react-loading-skeleton/dist/skeleton.css';
 import domReady from '@wordpress/dom-ready';
 import { createRoot, StrictMode, useState } from '@wordpress/element';
 import { HashRouter } from 'react-router';
@@ -22,7 +23,7 @@ const GutenaFormsApp = () => {
 					<GutenaFormsProPopup
 						isPopup={ true }
 						show={ showProPopup }
-						hideHandler={ e => setShowProPopup( false ) }
+						hideHandler={ () => setShowProPopup( false ) }
 					/>
 				)
 			}

@@ -6,6 +6,7 @@ import { gutenaFormsFetchStatus } from '../api';
 import {AddNew} from '../icons/plus';
 import GutenaFormsSubmitButton from '../components/fields/gutena-forms-submit-button';
 import GutenaFormsListBox from '../components/gutena-forms-list-box';
+import GutenaFormsSettingsTemplateSkeleton from '../skeletons/gutena-forms-settings-template-skeleton';
 
 const GutenaFormsManageStatus = () => {
 	const [ status, setStatus ] = useState([] );
@@ -14,13 +15,21 @@ const GutenaFormsManageStatus = () => {
 
 	useEffect( () => {
 		setLoading( true );
+		setIsGutenaPro( true );
 
 		gutenaFormsFetchStatus()
 			.then( ( statuses ) => {
+				if ( statuses && Array.isArray( statuses ) ) {
+					setStatus( statuses );
+				} else if ( statuses && typeof statuses === 'object' ) {
+					const normalizedStatus = Object.keys( statuses ).map( ( key ) => statuses[ key ] );
+					setStatus( normalizedStatus );
+				}
 				// If the request is successful, the user has Gutena Pro.
-				// @todo we need to improve this check based on actual response.
+				setIsGutenaPro( true );
+				setLoading( false );
 			} )
-			.catch( error => {
+			.catch( () => {
 				setStatus( [
 					{
 						title: __( 'Unread', 'gutena-forms' ),
@@ -55,6 +64,10 @@ const GutenaFormsManageStatus = () => {
 
 	return (
 		<div>
+			{ loading && (
+				<GutenaFormsSettingsTemplateSkeleton />
+			) }
+
 			{ ! loading && (
 				<div>
 					{ ! isGutenaPro && (

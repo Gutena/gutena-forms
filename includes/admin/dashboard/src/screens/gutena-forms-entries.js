@@ -11,6 +11,7 @@ import { Bin } from '../icons/bin';
 import { __ } from '@wordpress/i18n';
 import {applyFilters, doAction} from "@wordpress/hooks";
 import { activateLeftMenu } from '../utils/functions';
+import GutenaFormsEntriesSkeleton from '../skeletons/gutena-forms-entries-skeleton';
 
 const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
@@ -180,6 +181,12 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
 	return (
 		<div>
+			{ loading && ( ! id || 'entries' === slug ) && (
+				<div>
+					<GutenaFormsEntriesSkeleton />
+				</div>
+			) }
+
 			{ ! loading && (
 				<div>
 					{ id && 'entry' === slug && (

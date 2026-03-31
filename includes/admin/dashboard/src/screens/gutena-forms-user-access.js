@@ -4,6 +4,7 @@ import Profile from '../icons/profile';
 import { gutenaFormsFetchUsers } from '../api';
 import GutenaFormsListBox from '../components/gutena-forms-list-box';
 import GutenaFormsSubmitButton from '../components/fields/gutena-forms-submit-button';
+import GutenaFormsSettingsTemplateSkeleton from '../skeletons/gutena-forms-settings-template-skeleton';
 const GutenaFormsUserAccess = () => {
 
 	const [ users, setUsers ] = useState( [] );
@@ -12,13 +13,18 @@ const GutenaFormsUserAccess = () => {
 
 	useEffect( () => {
 		setLoading( true );
+		setIsGutenaPro( true );
 
 		gutenaFormsFetchUsers()
 			.then( ( users ) => {
+				if ( users && Array.isArray( users ) ) {
+					setUsers( users );
+				}
 				// If the request is successful, the user has Gutena Pro.
-				// @todo we need to improve this check based on actual response.
+				setIsGutenaPro( true );
+				setLoading( false );
 			} )
-			.catch( error => {
+			.catch( () => {
 				setUsers( [
 					{
 						name: 'John Doe',
@@ -44,6 +50,10 @@ const GutenaFormsUserAccess = () => {
 
 	return (
 		<div>
+			{ loading && (
+				<GutenaFormsSettingsTemplateSkeleton />
+			) }
+
 			{ ! loading && (
 				<div>
 					{ ! isGutenaPro && (

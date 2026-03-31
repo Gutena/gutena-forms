@@ -12,6 +12,7 @@ import { useEffect, useState } from '@wordpress/element';
 import {gutenaFormsFetchAllForms, gutenaFormsDeleteForm, deleteMultipleForms} from '../api';
 import { toast } from 'react-toastify';
 import { activateLeftMenu } from '../utils/functions';
+import GutenaFormsFormsSkeleton from '../skeletons/gutena-forms-forms-skeleton';
 
 const GutenaFormsForms = ( { setActiveMenu } ) => {
 	const [ forms, setForms ] = useState( false );
@@ -155,10 +156,12 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 			</div>
 
 			<div>
-				{ ! loading && ( ! forms || forms.length === 0 ) ? (
+				{ loading ? (
+					<GutenaFormsFormsSkeleton />
+				) : ( ! forms || forms.length === 0 ) ? (
 					<EmptyState />
 				) : (
-					! loading && forms && forms.length > 0 && (
+					forms && forms.length > 0 && (
 						<GutenaFormsDataTable
 							headers={ [
 								{
