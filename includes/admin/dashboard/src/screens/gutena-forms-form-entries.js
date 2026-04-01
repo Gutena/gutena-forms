@@ -9,7 +9,6 @@ import Eye from '../icons/eye';
 import { Button } from '@wordpress/components';
 import { Bin } from '../icons/bin';
 import { doAction, applyFilters } from '@wordpress/hooks';
-import GutenaFormsEntriesSkeleton from '../skeletons/gutena-forms-entries-skeleton';
 
 const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 
@@ -116,10 +115,6 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 
 	return (
 		<div>
-			{ loading && (
-				<GutenaFormsEntriesSkeleton />
-			) }
-
 			{ ! loading && tableData && tableHeaders && (
 				<>
 					<GutenaFormsDatatable

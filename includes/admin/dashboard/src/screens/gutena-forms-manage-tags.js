@@ -6,7 +6,6 @@ import { FadedBin } from '../icons/bin';
 import Tag from '../icons/tag';
 import { AddNew } from '../icons/plus';
 import GutenaFormsListBox from '../components/gutena-forms-list-box';
-import GutenaFormsSettingsTemplateSkeleton from '../skeletons/gutena-forms-settings-template-skeleton';
 
 const GutenaFormsManageTags = () => {
 
@@ -18,15 +17,10 @@ const GutenaFormsManageTags = () => {
 		setIsGutenaPro( true );
 		gutenaFormsFetchTags()
 			.then( ( tags ) => {
-				if ( tags && typeof tags === 'object' ) {
-					const normalizedTags = Object.keys( tags ).map( ( key ) => tags[ key ] );
-					setTags( normalizedTags );
-				}
 				// If the request is successful, the user has Gutena Pro.
-				setIsGutenaPro( true );
-				setLoading( false );
+				// @todo we need to improve this check based on actual response.
 			} )
-			.catch( () => {
+			.catch( error => {
 				setTags( [
 					{ title: __( 'WordPress', 'gutena-forms' ) },
 					{ title: __( 'Contact Form', 'gutena-forms' ) },
@@ -39,10 +33,6 @@ const GutenaFormsManageTags = () => {
 
 	return (
 		<div>
-			{ loading && (
-				<GutenaFormsSettingsTemplateSkeleton />
-			) }
-
 			{ ! loading && (
 				<div>
 					{ ! isGutenaPro && (
