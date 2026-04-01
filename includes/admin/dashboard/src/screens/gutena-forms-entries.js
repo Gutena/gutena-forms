@@ -131,7 +131,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 	const FormFilter = () => (
 		<div>
 			<SelectControl
-				style={ { width: '100px' } }
+				style={ { width: '100px', height: '40px' } }
 				options={ formsFilter }
 				onChange={ value => setSelectedFormFilter( value ) }
 				value={ selectedFormFilter }
@@ -179,7 +179,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 	];
 
 	return (
-		<div>
+		<div className={ 'gutena-forms__entries' }>
 			{ ! loading && (
 				<div>
 					{ id && 'entry' === slug && (

@@ -139,7 +139,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 	};
 
 	return (
-		<div>
+		<div className={ 'gutena-forms__forms-screen' }>
 			<div className={ 'gutena-forms__mb-30' }>
 				<h2 className={ 'gutena-forms__page-title' }>
 					{ __( 'Gutena Forms', 'gutena-forms' ) }

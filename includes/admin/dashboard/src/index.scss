@@ -9,6 +9,8 @@ $gfp_orange_color: #E35D3F;
 $gfp_white_color: #fff;
 $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
+@import "./satoshi.css";
+
 
 
 #wpcontent {
@@ -21,13 +23,24 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 .gutena-froms#gutena-forms__root {
 
+  * {
+	  font-family: "Satoshi"
+  }
+
 	svg {
 		fill: transparent;
 	}
 
+	.gutena-forms__forms-screen,
+	.gutena-forms__entries {
+		.gutena-forms__page-title {
+			font-size: 24px;
+		}
+	}
+
 	.gutena-forms__page-title {
 		color: #2C3338;
-		font-size: 24px;
+		font-size: 16px;
 		font-weight: 700;
 		margin-top: 0;
 		padding: 0 50px 0 0;
@@ -44,7 +57,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 	.gutena-forms__header-container {
 		background: #FFFFFF;
 		border-bottom: 0.5px solid #E2E2E2;
-		height: 45px;
+		height: 42px;
 		display: flex;
 		padding: 0 20px;
 		align-items: center;
@@ -79,7 +92,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 							display: block;
 							padding: 0 20px;
 							text-decoration: none;
-							font-size: 14px;
+							font-size: 12px;
 							font-weight: 500;
 							color: #6E7376;
 							height: 100%;
@@ -253,9 +266,10 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 						border-radius: 4px;
 						background: #0DA88C;
 						color: #FFF;
-						font-size: 14px;
+						font-size: 12px;
 						font-weight: 700;
 						height: auto;
+						padding: 6px 10px;
 					}
 				}
 			}
@@ -326,13 +340,13 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		}
 
 		.gutena-forms__left-menu-navigation {
-			width: 200px;
+			width: 197px;
 			background: #ffffff;
 			border-right: 0.5px solid #E2E2E2;
 			min-height: calc( 100vh - 45px - 32px - 66px );
 
 			.gutena-forms__container {
-				padding: 10px;
+				padding: 10px 0;
 			}
 
 			.gutena-forms__accordion-header {
@@ -352,8 +366,8 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 				.gutena-forms__accordion-title {
 					color: #424D55;
-					font-size: 14px;
-					font-weight: 500;
+					font-size: 12px;
+					font-weight: 700;
 				}
 
 				.gutena-forms__accordion-arrow {
@@ -384,7 +398,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				a {
 					line-height: 30px;
 					color: #6E7376;
-					font-size: 14px;
+					font-size: 12px;
 					font-weight: 500;
 					text-decoration: none;
 					display: inline-block;
@@ -396,9 +410,8 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 					&.active {
 						border-radius: 4px;
-						background: #F0FFFC;
+						background: #EBFFFB;
 						color: #424D55;
-						border: 1px solid #46BEA8;
 					}
 				}
 			}
@@ -1019,6 +1032,11 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			font-weight: 500;
 			position: relative;
 
+			.heading {
+				font-size: 14px;
+				font-weight: 700;
+			}
+
 			.gutena-forms__entry-data {
 				margin-top: 15px;
 
@@ -1030,6 +1048,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 					padding: 5px 20px;
 					border-radius: 4px;
 					border: 1px solid #F6F8FA;
+					font-size: 12px;
 
 					.value {
 						text-align: left;
@@ -1210,9 +1229,6 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		border: 1px solid #E2E2E2 !important;
 	}
 }
-
-// Import Satoshi font (add this if not already loaded globally)
-@import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@400;700;900&display=swap');
 
 // Main container
 .gf-introduction-page {
