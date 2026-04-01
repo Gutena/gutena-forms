@@ -12,6 +12,7 @@ import { useEffect, useState } from '@wordpress/element';
 import {gutenaFormsFetchAllForms, gutenaFormsDeleteForm, deleteMultipleForms} from '../api';
 import { toast } from 'react-toastify';
 import { activateLeftMenu } from '../utils/functions';
+import FormsLoading from "../skeletons/forms-loading";
 
 const GutenaFormsForms = ( { setActiveMenu } ) => {
 	const [ forms, setForms ] = useState( false );
@@ -140,109 +141,115 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 
 	return (
 		<div>
-			<div className={ 'gutena-forms__mb-30' }>
-				<h2 className={ 'gutena-forms__page-title' }>
-					{ __( 'Gutena Forms', 'gutena-forms' ) }
-					<Button
-						href={ 'post-new.php?post_type=gutena_forms' }
-						className="gutena-forms-add-new-form-button"
-						variant="primary"
-					>
-						<Plus />
-						{ __( 'Add New Form', 'gutena-forms' ) }
-					</Button>
-				</h2>
-			</div>
+			{ loading ? (
+				<FormsLoading />
+			) : (
+				<>
+					<div className={ 'gutena-forms__mb-30' }>
+						<h2 className={ 'gutena-forms__page-title' }>
+							{ __( 'Gutena Forms', 'gutena-forms' ) }
+							<Button
+								href={ 'post-new.php?post_type=gutena_forms' }
+								className="gutena-forms-add-new-form-button"
+								variant="primary"
+							>
+								<Plus />
+								{ __( 'Add New Form', 'gutena-forms' ) }
+							</Button>
+						</h2>
+					</div>
 
-			<div>
-				{ ! loading && ( ! forms || forms.length === 0 ) ? (
-					<EmptyState />
-				) : (
-					! loading && forms && forms.length > 0 && (
-						<GutenaFormsDataTable
-							headers={ [
-								{
-									key: 'checkbox',
-									value: 'id',
-									width: '25px',
-								},
-								{
-									key: 'title',
-									value: __( 'Form Title', 'gutena-forms' )
-								},
-								{
-									key: 'entries',
-									value: __( 'Entries', 'gutena-forms' ),
-									width: '100px',
-								},
-								{
-									key: 'author',
-									value: __( 'Author', 'gutena-forms' ),
-									width: '150px',
-								},
-								{
-									key: 'datetime',
-									value: __( 'Date & Time', 'gutena-forms' ),
-									width: '150px',
-								},
-								{
-									key: 'status',
-									value: __( 'Status', 'gutena-forms' ),
-									width: '100px',
-								},
-								{
-									key: 'actions',
-									value: __( 'Action', 'gutena-forms' ),
-									width: '110px',
-								}
-							] }
-							data={ forms }
-
-							tableChildren={ {
-								body: {
-									actions: ( { row } ) => {
-										return (
-											<div className={ 'gutena-forms-datatable__action' }>
-												<Button
-													href={ `post.php?post=${ row.id }&action=edit`}
-												>
-													<Edit />
-												</Button>
-												<Button
-													href={ row.permalink }
-												>
-													<Eye />
-												</Button>
-												<Button
-													onClick={ () => handleDeleteForm( row.id ) }
-												>
-													<Bin />
-												</Button>
-											</div>
-										);
-									},
-									entries: ( { row } ) => {
-										if ( row.entries && row.entries > 0 ) {
-											return (
-												<div className={ 'gutena-forms-datatable__entries' }>
-													<Link
-														to={ `/settings/entries/${ row.id }` }
-														onClick={ () => setActiveMenu( 'entries' ) }
-													>{ row.entries }</Link>
-												</div>
-											);
+					<div>
+						{ ! loading && ( ! forms || forms.length === 0 ) ? (
+							<EmptyState />
+						) : (
+							! loading && forms && forms.length > 0 && (
+								<GutenaFormsDataTable
+									headers={ [
+										{
+											key: 'checkbox',
+											value: 'id',
+											width: '25px',
+										},
+										{
+											key: 'title',
+											value: __( 'Form Title', 'gutena-forms' )
+										},
+										{
+											key: 'entries',
+											value: __( 'Entries', 'gutena-forms' ),
+											width: '100px',
+										},
+										{
+											key: 'author',
+											value: __( 'Author', 'gutena-forms' ),
+											width: '150px',
+										},
+										{
+											key: 'datetime',
+											value: __( 'Date & Time', 'gutena-forms' ),
+											width: '150px',
+										},
+										{
+											key: 'status',
+											value: __( 'Status', 'gutena-forms' ),
+											width: '100px',
+										},
+										{
+											key: 'actions',
+											value: __( 'Action', 'gutena-forms' ),
+											width: '110px',
 										}
+									] }
+									data={ forms }
 
-										return row.entries;
-									},
-								}
-							} }
-							handleBulkAction={ handleBulkActions }
-						>
-						</GutenaFormsDataTable>
-					)
-				) }
-			</div>
+									tableChildren={ {
+										body: {
+											actions: ( { row } ) => {
+												return (
+													<div className={ 'gutena-forms-datatable__action' }>
+														<Button
+															href={ `post.php?post=${ row.id }&action=edit`}
+														>
+															<Edit />
+														</Button>
+														<Button
+															href={ row.permalink }
+														>
+															<Eye />
+														</Button>
+														<Button
+															onClick={ () => handleDeleteForm( row.id ) }
+														>
+															<Bin />
+														</Button>
+													</div>
+												);
+											},
+											entries: ( { row } ) => {
+												if ( row.entries && row.entries > 0 ) {
+													return (
+														<div className={ 'gutena-forms-datatable__entries' }>
+															<Link
+																to={ `/settings/entries/${ row.id }` }
+																onClick={ () => setActiveMenu( 'entries' ) }
+															>{ row.entries }</Link>
+														</div>
+													);
+												}
+
+												return row.entries;
+											},
+										}
+									} }
+									handleBulkAction={ handleBulkActions }
+								>
+								</GutenaFormsDataTable>
+							)
+						) }
+					</div>
+				</>
+			) }
 		</div>
 	);
 };

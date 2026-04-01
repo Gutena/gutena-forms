@@ -11,6 +11,7 @@ import { Bin } from '../icons/bin';
 import { __ } from '@wordpress/i18n';
 import {applyFilters, doAction} from "@wordpress/hooks";
 import { activateLeftMenu } from '../utils/functions';
+import EntriesLoading from "../skeletons/entries-loading";
 
 const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
@@ -180,7 +181,9 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
 	return (
 		<div>
-			{ ! loading && (
+			{ loading ? (
+				<EntriesLoading />
+			) : (
 				<div>
 					{ id && 'entry' === slug && (
 						<div>
