@@ -2,8 +2,8 @@ import Skeleton from "react-loading-skeleton";
 
 const FormsLoading = () => {
 
-    const thStyles = { height: '40px', background: '#f9f9f9', padding: '0, 15px' };
-    const tdStyles = { height: '40px', background: '#fff' };
+    const thStyles = { height: '40px', background: '#f9f9f9', padding: '0 15px' };
+    const tdStyles = { height: '40px', background: '#fff', padding: '0 15px' };
 
     return (
         <div>
@@ -23,7 +23,7 @@ const FormsLoading = () => {
             </div>
 
             <div
-                style={ { borderRadius: '10px', border: '1px solid #e2e2e2', background: '#fff', padding: '20px' } }
+                style={ { borderRadius: '10px', background: '#fff', padding: '20px' } }
             >
 
                 <div
@@ -42,7 +42,7 @@ const FormsLoading = () => {
                 </div>
 
                 <table
-                    style={ { border: '0.5px solid #d4d4e4', borderRadius: '4px', background: '#f9f9f9', width: '100%' } }
+                    style={ { borderRadius: '4px', background: '#f9f9f9', width: '100%' } }
                     cellSpacing={ 0 }
                     cellPadding={ 0 }
                 >
@@ -78,7 +78,6 @@ const FormsLoading = () => {
 
                     <tbody>
                     { Array.from( { length: 4 } ).map( () => {
-
                         return (
                             <tr>
                                 <td
@@ -86,26 +85,19 @@ const FormsLoading = () => {
                                 >
                                     <Skeleton width={ 12 } height={ 12 } />
                                 </td>
-                                <td
-                                    style={ tdStyles }
-                                >
-                                    <Skeleton width={ 90 } height={ 15 } />
-                                </td>
-                                <td
-                                    style={ tdStyles }
-                                >
-                                    <Skeleton width={ 55 } height={ 15 } />
-                                </td>
-                                <td
-                                    style={ tdStyles }
-                                >
-                                    <Skeleton width={ 85 } height={ 15 } />
-                                </td>
-                                <td
-                                    style={ tdStyles }
-                                >
-                                    <Skeleton width={ 60 } height={ 15 } />
-                                </td>
+
+								{
+									Array.from( { length: 4 } ).map( () => {
+										return (
+											<td
+												style={ tdStyles }
+											>
+												<Skeleton width={ Math.floor( Math.random() * 100 ) } height={ 15 } />
+											</td>
+										);
+									} )
+								}
+
                             </tr>
                         );
                     } ) }

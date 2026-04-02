@@ -19,6 +19,7 @@ import Notes from '../icons/notes';
 import Edit from '../icons/edit';
 import { FilledStar, Star } from "../icons/star";
 import {gutenaFormsStrContains} from "./functions";
+import SettingsLoading from "../skeletons/settings-loading";
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -58,3 +59,12 @@ addFilter( 'gutenaFormsPro.core.functions', 'gutena-forms-free-fetch-functions',
 
 	return functions;
 } );
+
+addFilter(
+	'gutenaFormsPro.skeletons', 'gutenaForms.free.skeleton.merge', ( skeletons ) => {
+
+		skeletons['SettingsLoading'] = SettingsLoading;
+
+		return skeletons;
+	}
+);

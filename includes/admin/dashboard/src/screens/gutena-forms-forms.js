@@ -141,7 +141,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 
 	return (
 		<div>
-			{ loading ? (
+			{ ! loading ? (
 				<FormsLoading />
 			) : (
 				<>
