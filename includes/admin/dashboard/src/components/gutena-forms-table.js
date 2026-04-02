@@ -40,7 +40,6 @@ const GutenaFormsTable = ( { children, headers, data } ) => {
 							key={ index }
 						>
 							{ headers.map( ( header, index ) => {
-
 								let Element = children && children.body && children.body[ header.key ];
 
 								return (
@@ -48,7 +47,10 @@ const GutenaFormsTable = ( { children, headers, data } ) => {
 										key={ index }
 										style={ { width: header.width ? header.width : 'auto' } }
 									>
-										{ Element ? Element( { row, index, header } ) : row[ header.key ] }
+										{
+											Element ? Element( { row, index, header } ) : (
+												row[ header.key ] ? row[ header.key ] : <span style={{ textDecoration: "underline", color: '#ef5555' }}>Field not found</span>
+											) }
 									</td>
 								);
 							} ) }

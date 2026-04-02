@@ -68,7 +68,11 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 
 					for ( const header of tableHeaders ) {
 						if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions', 'status' ] ) ) {
-							newTableData[ i ][ header.key ] = entryData[ header.key ].value;
+							if ( entryData[ header.key ] && entryData[ header.key ].value ) {
+								newTableData[ i ][ header.key ] = entryData[ header.key ].value;
+							} else {
+								newTableData[ i ][ header.key ] = false;
+							}
 						}
 					}
 					i++;
