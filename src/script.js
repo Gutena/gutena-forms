@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		return parents;
 	};
 
-	//enqueue recaptcha if not enqueued 
+	//enqueue recaptcha if not enqueued
 	const check_and_load_grecaptcha = () => {
 		if ( 'undefined' !== typeof gutenaFormsBlock && ! isEmpty( gutenaFormsBlock.grecaptcha_type ) && ! isEmpty( gutenaFormsBlock.grecaptcha_site_key ) ) {
 			//gutena form block
@@ -70,8 +70,10 @@ document.addEventListener("DOMContentLoaded", function(){
 									grecaptcha_url += '?render='+gutenaFormsBlock.grecaptcha_site_key
 								}
 								grecaptcha_script_html.src = grecaptcha_url;
+
+								const parent = gutena_forms_script_html.parentNode || document.head || document.body;
 								//insert before form script
-								document.head.insertBefore( grecaptcha_script_html, gutena_forms_script_html );
+								parent.insertBefore( grecaptcha_script_html, gutena_forms_script_html );
 								//console.log("recaptcha loaded");
 							}
 						}
@@ -84,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	/**
 	 * Check and load Cloudflare Turnstile
 	 * Fallback for Cloudflare Turnstile
-	 * 
+	 *
 	 * @since 1.3.0
 	 */
 	const check_and_load_cloudflare_turnstile = () => {
@@ -184,10 +186,10 @@ document.addEventListener("DOMContentLoaded", function(){
 							} else {
 								grecaptcha.ready(function() {
 									grecaptcha.execute( gutenaFormsBlock.grecaptcha_site_key, {action: 'submit'}).then( function( token ) {
-										/* for v3 - append g-recaptcha-response input 
+										/* for v3 - append g-recaptcha-response input
 										 for v2 - already present */
 										form_data.append('g-recaptcha-response', token);
-	
+
 										// Add your logic to submit to your backend server here.
 										save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
 									});
@@ -205,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	};
 
-	const save_gutena_forms = ( gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml ) => { 
+	const save_gutena_forms = ( gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml ) => {
 		//console.log( "gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml");
 		fetch( gutenaFormsBlock.ajax_url, {
 			method: 'POST',
@@ -315,21 +317,21 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	//Form field validation
 	const field_validation = ( form_field ) => {
-		
+
 		if ( isEmpty( form_field ) ) {
 			console.log( 'No input fields found' );
 			return false;
 		}
-		
+
 		let input_value = '';
 		let is_required = hasClass( form_field, 'required-field' );
-		
-		//get field group 
+
+		//get field group
 		let field_group = getParents(
 			form_field,
 			'.wp-block-gutena-field-group'
 		);
-		
+
 		//return false if field group not exists
 		if ( isEmpty( field_group ) ) {
 			console.log( 'field_group not defined' );
@@ -337,12 +339,12 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 
 		field_group = field_group[0];
-		
+
 		let isCheckboxOrRadio =  hasClass( form_field, 'checkbox-field' ) || hasClass( form_field, 'radio-field' ) || hasClass( form_field, 'optin-field' );
 
 		if ( isCheckboxOrRadio ) {
 			let	checkboxRadioHtml =	form_field.querySelectorAll('input');
-			
+
 			if ( isEmpty( checkboxRadioHtml ) ) {
 				console.log( 'checkboxRadioHtml not defined' );
 				return false;
@@ -462,14 +464,14 @@ document.addEventListener("DOMContentLoaded", function(){
 			for ( let i = 0; i < rangeField.length; i++ ) {
 				//show initially
 				show_range_value( rangeField[ i ].parentNode, rangeField[ i ].value );
-				
+
 				//show on change
 				rangeField[ i ].addEventListener( 'input', function () {
 					show_range_value( this.parentNode, this.value );
 				} );
 			}
 		}
-	}	
+	}
 
 	ready();
 });
