@@ -4,6 +4,7 @@ import Shield from '../icons/shield';
 import Integration from '../icons/integration';
 import { useState, useEffect } from '@wordpress/element';
 import { gutenaFormsFetchSettingsMenu } from '../api';
+import Robot from "../icons/robot";
 
 const GutenaFormsLeftMenuNavigation = () => {
 
@@ -38,6 +39,10 @@ const GutenaFormsLeftMenuNavigation = () => {
 
 											case 'Integration':
 												IconComponent = <Integration />;
+												break;
+
+											case 'Robot':
+												IconComponent = <Robot />
 												break;
 
 											case 'Gear':

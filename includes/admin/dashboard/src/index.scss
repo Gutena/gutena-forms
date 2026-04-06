@@ -1368,6 +1368,36 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			}
 		}
 	}
+
+
+	.gutena-forms__mcp-wrapper {
+		ol {
+			li {
+				font-size: 12px;
+				font-weight: 400;
+				color: #000;
+
+				a {
+					text-decoration: none;
+					color: #0DA88C;
+				}
+			}
+		}
+	}
+
+	.gutena-froms__mcp-configuration {
+		h6 {
+
+		}
+
+		pre {
+			background: #F3F4F6;
+			color: #4B5563;
+			border-radius: 5px;
+			padding-left: 10px;
+			tab-size: 2;
+		}
+	}
 }
 
 // Import Satoshi font (add this if not already loaded globally)

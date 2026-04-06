@@ -267,6 +267,12 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'menus' => array(),
 					'slug'  => 'integrations',
 				),
+				array(
+					'title' => __( 'MCP', 'gutena-forms' ),
+					'icon'  => 'Robot',
+					'menus' => array(),
+					'slug'  => 'mcp',
+				),
 			);
 
 			if ( ! empty( $menus ) ) {

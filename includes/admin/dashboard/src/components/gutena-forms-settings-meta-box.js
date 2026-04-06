@@ -9,12 +9,11 @@ import GutenaFormsRadioGroup from './fields/gutena-forms-radio-group';
 import { gutenaFormsUpdateSettings } from "../api";
 import { toast } from 'react-toastify';
 import { __ } from '@wordpress/i18n';
-import { SettingsTemplates } from '../utils/templates';
+import { SettingsTemplates, FieldTemplates } from '../utils/templates';
 import GutenaFormsProBadge from './gutena-forms-pro-badge';
 import Activecampaign from '../icons/activecampaign';
 import Brevo from '../icons/brevo';
 import Mailchimp from '../icons/mailchimp';
-import {Button} from "@wordpress/components";
 import Recaptcha from "../icons/recaptcha";
 import Cloudflare from "../icons/cloudflare";
 
@@ -32,6 +31,8 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 			items.map( ( item, id ) => {
 				if ( 'template' === item.type ) {
 					setTemplate( item.name );
+				} else if ( 'field-template' === item.type ) {
+					settings[ id ] = item
 				} else {
 					fieldValue[ item.id ] = item.value || item.default;
 					settings[ id ] = {
@@ -141,6 +142,15 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 						options={ field.attrs.options }
 					/>
 				)
+				break;
+
+			case 'field-template':
+				const FieldTemplate = FieldTemplates[ field.name ];
+				fieldElement = (
+					<>
+						{ FieldTemplate && <FieldTemplate { ...field } /> }
+					</>
+				);
 				break;
 
 			default:
