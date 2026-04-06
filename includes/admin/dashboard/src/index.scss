@@ -41,12 +41,12 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 	.gutena-forms__page-title {
 		color: #2C3338;
-		font-size: 16px;
+		font-size: 24px;
 		font-weight: 700;
-		margin-top: 0;
 		padding: 0 50px 0 0;
 		position: relative;
 		display: inline-block;
+		margin: 0 0 10px 0;
 	}
 
 	.gutena-forms__field-container {
@@ -58,7 +58,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 	.gutena-forms__header-container {
 		background: #FFFFFF;
 		border-bottom: 0.5px solid #E2E2E2;
-		height: 42px;
+		height: 50px;
 		display: flex;
 		padding: 0 20px;
 		align-items: center;
@@ -85,7 +85,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 					li {
 						display: inline-block;
-						height: 45px;
+						height: 53px;
 						padding: 0;
 						margin: 0;
 
@@ -97,7 +97,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 							font-weight: 500;
 							color: #6E7376;
 							height: 100%;
-							line-height: 45px;
+							line-height: 53px;
 
 							&:focus,
 							&:hover {
@@ -173,7 +173,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			width: calc( 100% - 210px );
 
 			.gutena-forms__container {
-				padding: 35px 70px;
+				padding: 20px;
 			}
 
 
@@ -413,6 +413,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 						border-radius: 4px;
 						background: #EBFFFB;
 						color: #424D55;
+						font-weight: 700;
 					}
 				}
 			}
@@ -1046,10 +1047,19 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					padding: 5px 20px;
-					border-radius: 4px;
+					padding: 0 20px;
 					border: 1px solid #F6F8FA;
-					font-size: 12px;
+					border-bottom: none;
+					font-size: 14px;
+
+					&:first-child {
+						border-radius: 4px 4px 0 0;
+					}
+
+					&:last-child {
+						border-radius: 0 0 4px 4px;
+						border-bottom: 1px solid #F6F8FA;
+					}
 
 					.value {
 						text-align: left;
@@ -1060,7 +1070,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 					.label {
 						width: 20%;
 						text-align: left;
-						font-weight: 700;
+						font-weight: 600;
 					}
 				}
 			}

@@ -145,7 +145,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 				<FormsLoading />
 			) : (
 				<>
-					<div className={ 'gutena-forms__mb-30' }>
+					<div className={ '' }>
 						<h2 className={ 'gutena-forms__page-title' }>
 							{ __( 'Gutena Forms', 'gutena-forms' ) }
 							<Button
