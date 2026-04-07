@@ -46,7 +46,21 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) {
 					'category'            => 'gutena-forms',
 					'execute_callback'    => array( $this, 'get_all_forms' ),
 					'permission_callback' => array( $this, 'permission_callback' ),
-					'output_schema'       => array(),
+					'output_schema'       => array(
+						'type'  => 'array',
+						'items' => array(
+							'type' => 'object',
+							'properties' => array(
+								'id'        => array( 'type' => 'integer' ),
+								'datetime'  => array( 'type' => 'string' ),
+								'title'     => array( 'type' => 'string' ),
+								'status'    => array( 'type' => 'string' ),
+								'entries'   => array( 'type' => 'string' ),
+								'author'    => array( 'type' => 'string' ),
+								'permalink' => array( 'type' => 'string' ),
+							),
+						),
+					),
 				)
 			);
 			wp_register_ability(
@@ -57,7 +71,22 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) {
 					'category'            => 'gutena-forms',
 					'execute_callback'    => array( $this, 'get_all_entries' ),
 					'permission_callback' => array( $this, 'permission_callback' ),
-					'output_schema'       => array(),
+					'output_schema'       => array(
+						'type'  => 'array',
+						'items' => array(
+							'type'       => 'object',
+							'properties' => array(
+								'entry_id'    => array( 'type' => 'integer' ),
+								'form_id'     => array( 'type' => 'integer' ),
+								'form_name'   => array( 'type' => 'string' ),
+								'datetime'    => array( 'type' => 'string' ),
+								'value'       => array( 'type' => 'array' ),
+								'first_value' => array( 'type' => 'string' ),
+								'status'      => array( 'type' => 'string' ),
+								'starred'     => array( 'type' => 'boolean' ),
+							),
+						),
+					),
 				)
 			);
 			wp_register_ability(
@@ -68,7 +97,32 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) {
 					'category'            => 'gutena-forms',
 					'execute_callback'    => array( $this, 'get_form_entries' ),
 					'permission_callback' => array( $this, 'permission_callback' ),
-					'output_schema'       => array(),
+					'output_schema'       => array(
+						'type'  => 'array',
+						'items' => array(
+							'type'       => 'object',
+							'properties' => array(
+								'entry_id'    => array( 'type' => 'integer' ),
+								'form_id'     => array( 'type' => 'integer' ),
+								'form_name'   => array( 'type' => 'string' ),
+								'datetime'    => array( 'type' => 'string' ),
+								'value'       => array( 'type' => 'array' ),
+								'first_value' => array( 'type' => 'string' ),
+								'status'      => array( 'type' => 'string' ),
+								'starred'     => array( 'type' => 'boolean' ),
+							),
+						),
+					),
+					'input_schema'       => array(
+						'type'       => 'object',
+						'properties' => array(
+							'form_id' => array(
+								'type'        => 'integer',
+								'description' => __( 'Form id', 'gutena-forms' ),
+							),
+						),
+						'required'   => array( 'form_id' ),
+					),
 				)
 			);
 		}
@@ -78,32 +132,18 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) {
 		}
 
 		public function get_all_forms() {
-		
+			return Gutena_Forms_Forms_Model::get_instance()->get_all();
 		}
 		
 		public function get_all_entries() {
-			$forms = get_posts(
-				array(
-					'post_type'      => 'gutena_forms',
-					'post_status'    => 'publish',
-					'posts_per_page' => -1,
-				)
-			);
-			
-			return array_map(
-				function ( $form ) {
-					
-					return array(
-						'id' => $form->ID,
-						'name' => $form->post_title,
-					);
-				},
-				$forms
-			);
+			return Gutena_Forms_Entries_Model::get_instance()->get_all();
 		}
 		
-		public function get_form_entries() {
-		
+		public function get_form_entries( $input ) {
+			$form_id  = $input['form_id'];
+			$block_id = Gutena_Forms_Forms_Model::get_instance()->get_block_id( $form_id );
+
+			return Gutena_Forms_Entries_Model::get_instance()->get_all( $block_id );
 		}
 		
 		public static function get_instance() {

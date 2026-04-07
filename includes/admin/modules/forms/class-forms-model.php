@@ -154,5 +154,9 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 				$forms
 			);
 		}
+
+		public function get_block_id( $form_id ) {
+			return get_post_meta( $form_id, 'gutena_form_id', true );
+		}
 	}
 endif;
