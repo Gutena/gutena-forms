@@ -4,6 +4,12 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_MCP' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	class Gutena_Forms_MCP extends Gutena_Forms_Forms_Settings {
+		public $settings;
+		
+		public function __construct() {
+			$this->settings = get_option( 'gutena_forms_mcp_settings', array() );
+		}
+	
 		public static function register_module() {
 			add_filter(
 				'gutena_forms__settings',
@@ -14,6 +20,9 @@ if ( ! class_exists( 'Gutena_Forms_MCP' ) && class_exists( 'Gutena_Forms_Forms_S
 					return $settings;
 				}
 			);
+			
+			include_once plugin_dir_path( __FILE__ )  . 'abilities/class-abilities.php';
+			include_once plugin_dir_path( __FILE__ )  . 'mcp-server/class-mcp-server.php';
 		}
 		
 		public function get_settings() {
@@ -40,12 +49,14 @@ if ( ! class_exists( 'Gutena_Forms_MCP' ) && class_exists( 'Gutena_Forms_Forms_S
 						'name'  => __( 'Enable Abilities', 'gutena-forms' ),
 						'desc'  => __( 'When enabled, your forms and entries are registered with the WordPress Abilities API, allowing AI clients to read the data only. When disabled, AI clients have no access to your forms or entries.', 'gutena-forms' ),
 						'id'    => 'abilities_enabled',
+						'value' => $this->settings['abilities_enabled'],
 					),
 					array(
 						'type'  => 'toggle',
 						'name'  => __( 'Enable MCP Server', 'gutena-forms' ),
 						'desc'  => __( 'Enable the Gutena Form MCP (Model Context Protocol) server. Requires the WordPress Abilities API and MCP adapter.', 'gutena-forms' ),
 						'id'    => 'mcp_enabled',
+						'value' => $this->settings['mcp_enabled'],
 					),
 					array(
 						'name'     => 'mcp-configuration',
@@ -66,7 +77,9 @@ if ( ! class_exists( 'Gutena_Forms_MCP' ) && class_exists( 'Gutena_Forms_Forms_S
 		}
 		
 		public function save_settings( $settings ) {
-			// TODO: Implement save_settings() method.
+			update_option( 'gutena_forms_mcp_settings', $settings );
+			
+			return true;
 		}
 	}
 

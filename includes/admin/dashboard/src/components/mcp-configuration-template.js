@@ -1,4 +1,6 @@
 import { __ } from '@wordpress/i18n';
+import Copy from "../icons/copy";
+import { toast } from "react-toastify";
 
 const MCPConfigurationTemplate = ( props ) => {
     const { apiURL, username } = props;
@@ -9,6 +11,23 @@ const MCPConfigurationTemplate = ( props ) => {
         __( 'Replace "your-application-password" with the password from Step 1.', 'gutena-forms' ),
         __( 'Add to .mcp.json (Claude Code), claude_desktop_config.json, or your client\'s MCP settings.', 'gutena-forms' ),
     ];
+
+    const selectAndCopyCodeToClipboard = () => {
+        const codeElement = document.getElementById( 'gutena-forms__mcp-configuration-code' );
+        const range = document.createRange();
+        range.selectNodeContents( codeElement );
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange( range );
+
+        try {
+            const successful = document.execCommand( 'copy' );
+            if ( successful ) {
+                toast.success( __( 'Configuration code copied to clipboard!', 'gutena-forms' ) );
+            }
+        } catch {
+        }
+    };
 
     return (
         <div className={ 'gutena-froms__mcp-configuration' }>
@@ -24,8 +43,14 @@ const MCPConfigurationTemplate = ( props ) => {
             </ol>
 
             <pre>
-                { `
-{
+                <div
+                    className={ 'gutena-forms__copy-icon' }
+                    onClick={ selectAndCopyCodeToClipboard }
+                >
+                    <Copy />
+                </div>
+                <div id={ 'gutena-forms__mcp-configuration-code' }>
+                    { `{
 \t"mcpServers": {
 \t\t"gutenaForms": {
 \t\t\t"command": "npx",
@@ -40,8 +65,8 @@ const MCPConfigurationTemplate = ( props ) => {
 \t\t\t}
 \t\t}
 \t}
-}
-                ` }
+}` }
+                </div>
             </pre>
         </div>
     );

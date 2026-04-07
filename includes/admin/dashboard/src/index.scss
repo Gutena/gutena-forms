@@ -1387,15 +1387,40 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 	.gutena-froms__mcp-configuration {
 		h6 {
+			color: #000;
+			font-size: 14px;
+			font-weight: 700;
+		}
 
+		ol {
+			li {
+				color: #000;
+				font-size: 12px;
+				font-weight: 400;
+			}
 		}
 
 		pre {
 			background: #F3F4F6;
 			color: #4B5563;
 			border-radius: 5px;
-			padding-left: 10px;
+			padding: 10px;
 			tab-size: 2;
+			position: relative;
+		}
+
+		.gutena-forms__copy-icon {
+			position: absolute;
+			top: 15px;
+			right: 15px;
+			width: 30px;
+			height: 30px;
+			background: #fff;
+			border-radius: 5px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
 		}
 	}
 }
