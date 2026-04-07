@@ -45,6 +45,7 @@ if ( ! class_exists( 'Gutena_Forms_MCP_Server' ) ) {
 						'gutena-forms/get-all-forms',
 						'gutena-forms/get-all-entires',
 						'gutena-forms/get-form-entries',
+						'gutena-forms/get-entry-details',
 					),
 					'resources' => array(),
 					'prompts'   => array(),

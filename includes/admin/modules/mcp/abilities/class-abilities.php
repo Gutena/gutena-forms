@@ -139,7 +139,7 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) {
 							'type'       => 'object',
 							'properties' => array(
 								'label' => array( 'type' => 'string' ),
-								'value' => array( 'type' => 'object' ),
+								'value' => array( 'type' => 'string' ),
 							),
 						),
 					),
@@ -188,6 +188,43 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) {
 					'label' => $value['label'],
 					'value' => $value['value'],
 				);
+			}
+			
+			$details = Gutena_Forms_Entries_Model::get_instance()->get_details( $entry_id );
+			
+			foreach ( $details as $k => $v ) {
+				
+				if ( 'user_id' === $k ) {
+					$user = get_user( $v );
+					$entry_data[] = array(
+						'label' => __( 'User', 'gutena-forms' ),
+						'value' => $user ? $user->user_login : 'Unknown User',
+					);
+				} elseif ( 'added_time' === $k ) {
+					$entry_data[] = array(
+						'label' => __( 'Submitted On', 'gutena-forms' ),
+						'value' => $v,
+					);
+				} elseif ( 'entry_status' === $k ) {
+					$entry_data[] = array(
+						'label' => __( 'Status', 'gutena-forms' ),
+						'value' => $v,
+					);
+				} elseif ( 'form_id' === $k ) {
+					$entry_data[] = array(
+						'label' => __( 'Form Name', 'gutena-forms' ),
+						'value' => Gutena_Forms_Forms_Model::get_instance()->get_name_by_id( $v ),
+					);
+					$entry_data[] = array(
+						'label' => __( 'Form Id', 'gutena-forms' ),
+						'value' => $v,
+					);
+				} else {
+					$entry_data[] = array(
+						'label' => $k,
+						'value' => $v,
+					);
+				}
 			}
 			
 			return $entry_data;
