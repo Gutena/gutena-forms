@@ -125,6 +125,36 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) {
 					),
 				)
 			);
+			wp_register_ability(
+				'gutena-forms/get-entry-details',
+				array(
+					'label'               => __( 'Get Entry Details', 'gutena-forms' ),
+					'description'         => __( 'Retrieve entry data by entry id.', 'gutena-forms' ),
+					'category'            => 'gutena-forms',
+					'execute_callback'    => array( $this, 'get_entry_details' ),
+					'permission_callback' => array( $this, 'permission_callback' ),
+					'output_schema'       => array(
+						'type'  => 'array',
+						'items' => array(
+							'type'       => 'object',
+							'properties' => array(
+								'label' => array( 'type' => 'string' ),
+								'value' => array( 'type' => 'object' ),
+							),
+						),
+					),
+					'input_schema'       => array(
+						'type'       => 'object',
+						'properties' => array(
+							'entry_id' => array(
+								'type'        => 'integer',
+								'description' => __( 'Entry Id', 'gutena-forms' ),
+							),
+						),
+						'required'   => array( 'entry_id' ),
+					),
+				)
+			);
 		}
 
 		public function permission_callback() {
@@ -144,6 +174,23 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) {
 			$block_id = Gutena_Forms_Forms_Model::get_instance()->get_block_id( $form_id );
 
 			return Gutena_Forms_Entries_Model::get_instance()->get_all( $block_id );
+		}
+
+		public function get_entry_details( $input ) {
+			$entry_id = $input['entry_id'];
+			
+			$data = Gutena_Forms_Entries_Model::get_instance()->get_data( $entry_id );
+			$data = maybe_unserialize( $data );
+			$entry_data = array();
+
+			foreach ( $data as $value ) {
+				$entry_data[] = array(
+					'label' => $value['label'],
+					'value' => $value['value'],
+				);
+			}
+			
+			return $entry_data;
 		}
 		
 		public static function get_instance() {
