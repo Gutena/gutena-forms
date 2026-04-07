@@ -165,6 +165,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 						) : (
 							! loading && forms && forms.length > 0 && (
 								<GutenaFormsDataTable
+									name={ 'forms' }
 									headers={ [
 										{
 											key: 'checkbox',

@@ -16,7 +16,7 @@ const DEFAULT_BULK_ACTION_OPTIONS = [
 	{ label: __( 'Delete', 'gutena-forms' ), value: 'delete' },
 ];
 
-const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren, customFilters, bulkActionOptions } ) => {
+const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren, customFilters, bulkActionOptions, name } ) => {
 	const [ numberOfRows, setNumberOfRows ] = useState( 10 );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
 	const [ searchTerm, setSearchTerm ] = useState( '' );
@@ -279,6 +279,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 			<GutenaFormsTable
 				headers={ headers }
 				data={ tableData }
+				name={ name }
 			>
 				{ {
 					header: {

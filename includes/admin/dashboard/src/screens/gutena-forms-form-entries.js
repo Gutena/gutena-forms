@@ -127,6 +127,7 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 					{ ! loading && tableData && tableHeaders && (
 						<>
 							<GutenaFormsDatatable
+								name={ 'form-entries' }
 								data={ tableData }
 								headers={ tableHeaders }
 								handleBulkAction={ handleBulkAction }

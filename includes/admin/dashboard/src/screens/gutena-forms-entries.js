@@ -207,6 +207,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 							<h2 className={ 'gutena-forms__page-title' }>All Forms Entries</h2>
 
 							<GutenaFormsDatatable
+								name={ 'entries' }
 								bulkActionOptions={ bulkActionOptions }
 								headers={ [
 									{
