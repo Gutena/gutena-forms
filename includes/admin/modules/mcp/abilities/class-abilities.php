@@ -64,7 +64,7 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) {
 				)
 			);
 			wp_register_ability(
-				'gutena-forms/get-all-entires',
+				'gutena-forms/get-all-entries',
 				array(
 					'label'               => __( 'Get All Entries', 'gutena-forms' ),
 					'description'         => __( 'Retrieve all entries.', 'gutena-forms' ),

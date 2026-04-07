@@ -43,7 +43,7 @@ if ( ! class_exists( 'Gutena_Forms_MCP_Server' ) ) {
 				array(
 					'tools'     => array(
 						'gutena-forms/get-all-forms',
-						'gutena-forms/get-all-entires',
+						'gutena-forms/get-all-entries',
 						'gutena-forms/get-form-entries',
 						'gutena-forms/get-entry-details',
 					),
