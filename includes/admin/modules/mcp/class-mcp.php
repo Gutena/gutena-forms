@@ -57,12 +57,18 @@ if ( ! class_exists( 'Gutena_Forms_MCP' ) && class_exists( 'Gutena_Forms_Forms_S
 						'desc'  => __( 'Enable the Gutena Form MCP (Model Context Protocol) server. Requires the WordPress Abilities API and MCP adapter.', 'gutena-forms' ),
 						'id'    => 'mcp_enabled',
 						'value' => $this->settings['mcp_enabled'],
+						'attrs' => array(
+							'depends_on' => array( 'abilities_enabled' ),
+						),
 					),
 					array(
 						'name'     => 'mcp-configuration',
 						'type'     => 'field-template',
 						'username' => $current_user->user_login,
 						'apiURL'   => rest_url( 'gutena-forms/v1/mcp' ),
+						'attrs'    => array(
+							'visible_when' => array( 'abilities_enabled', 'mcp_enabled' ),
+						),
 					),
 					
 					array(
@@ -77,8 +83,17 @@ if ( ! class_exists( 'Gutena_Forms_MCP' ) && class_exists( 'Gutena_Forms_Forms_S
 		}
 		
 		public function save_settings( $settings ) {
+			if ( ! is_array( $settings ) ) {
+				return false;
+			}
+
+			// Abilities off implies MCP server must be off (matches runtime gate in class-mcp-server.php).
+			if ( empty( $settings['abilities_enabled'] ) ) {
+				$settings['mcp_enabled'] = false;
+			}
+
 			update_option( 'gutena_forms_mcp_settings', $settings );
-			
+
 			return true;
 		}
 	}

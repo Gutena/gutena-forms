@@ -17,6 +17,20 @@ import Mailchimp from '../icons/mailchimp';
 import Recaptcha from "../icons/recaptcha";
 import Cloudflare from "../icons/cloudflare";
 
+/**
+ * All listed keys must be strictly true (used for MCP depends_on / visible_when).
+ *
+ * @param {string[]|undefined} keys
+ * @param {Record<string, unknown>} values
+ * @return {boolean}
+ */
+const gutenaFormsSettingsDepsSatisfied = ( keys, values ) => {
+	if ( ! keys || ! keys.length ) {
+		return true;
+	}
+	return keys.every( ( k ) => values[ k ] === true );
+};
+
 const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = false, onClick, goBack } ) => {
 	const { settings_id } = useParams();
 	const [ settings, setSettings ] = useState( false );
@@ -27,35 +41,46 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	useEffect(
 		() => {
 			setLoading( true );
-			const settings = {};
-			items.map( ( item, id ) => {
+			const nextSettings = {};
+			const nextFieldValue = {};
+			items.forEach( ( item, idx ) => {
 				if ( 'template' === item.type ) {
 					setTemplate( item.name );
 				} else if ( 'field-template' === item.type ) {
-					settings[ id ] = item
+					nextSettings[ idx ] = item;
 				} else {
-					fieldValue[ item.id ] = item.value || item.default;
-					settings[ id ] = {
+					const initial =
+						item.value !== undefined && item.value !== null
+							? item.value
+							: item.default;
+					nextFieldValue[ item.id ] = initial;
+					nextSettings[ idx ] = {
 						id: item.id,
 						type: item.type,
 						label: item.name,
 						desc: item.desc,
-						value: fieldValue[ item.id ],
+						value: initial,
 						attrs: item.attrs || {},
-					}
+					};
 				}
 			} );
 
-			setSettings( settings );
-			setFieldValue( fieldValue );
+			setSettings( nextSettings );
+			setFieldValue( nextFieldValue );
 			setLoading( false );
 		},
-		[] );
+		[]
+	);
 
-	const handleFieldChange = ( id, newValue ) => {
-		fieldValue[ id ] = newValue;
-		setFieldValue( fieldValue );
-	}
+	const handleFieldChange = ( fieldId, newValue ) => {
+		setFieldValue( ( prev ) => {
+			const next = { ...prev, [ fieldId ]: newValue };
+			if ( settings_id === 'mcp' && fieldId === 'abilities_enabled' && ! newValue ) {
+				next.mcp_enabled = false;
+			}
+			return next;
+		} );
+	};
 
 	const handleSubmit = () => {
 		gutenaFormsUpdateSettings( settings_id, fieldValue )
@@ -69,6 +94,10 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	const GutenaFormsRenderSettingsField = ( { field } ) => {
 		let fieldElement;
 
+		const toggleDisabled =
+			field.attrs?.depends_on?.length &&
+			! gutenaFormsSettingsDepsSatisfied( field.attrs.depends_on, fieldValue );
+
 		switch ( field.type ) {
 			case 'toggle':
 				fieldElement = (
@@ -78,6 +107,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 						desc={ field.desc }
 						checked={ field.value }
 						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						disabled={ !! toggleDisabled }
 					/>
 				);
 				break;
@@ -144,7 +174,14 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				)
 				break;
 
-			case 'field-template':
+			case 'field-template': {
+				if (
+					field.attrs?.visible_when?.length &&
+					! gutenaFormsSettingsDepsSatisfied( field.attrs.visible_when, fieldValue )
+				) {
+					fieldElement = null;
+					break;
+				}
 				const FieldTemplate = FieldTemplates[ field.name ];
 				fieldElement = (
 					<>
@@ -152,6 +189,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 					</>
 				);
 				break;
+			}
 
 			default:
 				console.log( 'Field not found', field )
@@ -213,9 +251,20 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 
 			<div className={ 'gutena-forms__settings-meta-box' }>
 				{ ! template && ! loading && settings && Object.keys( settings ).map( ( key, index ) => {
+					const rawField = settings[ key ];
+					const field =
+						rawField.id !== undefined
+							? {
+									...rawField,
+									value:
+										fieldValue[ rawField.id ] !== undefined
+											? fieldValue[ rawField.id ]
+											: rawField.value,
+							  }
+							: rawField;
 					return (
 						<div key={ index }>
-							<GutenaFormsRenderSettingsField field={ settings[ key ] } />
+							<GutenaFormsRenderSettingsField field={ field } />
 						</div>
 					);
 				} ) }
