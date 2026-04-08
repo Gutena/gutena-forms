@@ -1,0 +1,191 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.editor-styles-wrapper .wp-block-gutena-forms, .wp-block-gutena-forms {
+	.heading-input-label-gutena {
+		color: var(--wp--gutena-forms--label-color);
+		font-size: var(--wp--gutena-forms--label-font-size, 13px);
+		line-height: var(--wp--gutena-forms--label-line-height);
+		font-weight: var(--wp--gutena-forms--label-font-weight);
+	}
+	//BlockVariationPicker ul
+	> .block-editor-block-variation-picker {
+		padding: 1.5rem;
+
+		.block-editor-block-variation-picker__variations {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(16rem,1fr));
+		}
+
+		//BlockVariationPicker li
+		.block-editor-block-variation-picker__variations > li {
+			margin: 0;
+			width: auto;
+			display: flex;
+			flex-direction: column;
+		}
+
+		//BlockVariationPicker height
+		.block-editor-block-variation-picker__variation.components-button.has-icon {
+			height: 10rem;
+			padding: 0;
+		}
+
+		.block-editor-block-variation-picker__variation.components-button.has-icon > svg {
+			width: 250px !important;
+			height: 150px !important;
+		}
+
+	}
+
+	.form-message-icon .components-resizable-box__container:not(.has-show-handle) img {
+		display: inherit;
+	}
+}
+
+/*Inspector control components*/
+.gutena-forms-panel .components-border-radius-control {
+	width:100%;
+}
+
+.block-editor__container .gf-no-underline{
+	text-decoration-line: none !important;
+}
+
+.gutena-forms-horizontal-radio.components-radio-control .components-flex {
+	flex-direction: row;
+	gap: 1.25rem;
+	justify-content: flex-start;
+}
+
+.gf-text-muted {
+    font-size: 12px;
+    font-style: normal;
+    color: rgb(117, 117, 117);
+}
+
+.block-editor-block-inspector {
+	.gf-child-mb-0 > .components-base-control{
+		margin-bottom: 0;
+	}
+
+	.gf-mb-24 {
+		margin-bottom: 24px !important;
+	}
+
+	.gf-mt-1 {
+		margin-top: 1rem;
+	}
+
+	.gf-required-field .components-base-control__help{
+		color: red;
+	}
+
+	.gf-select-field-type-input{
+		position: relative;
+		.gf-select-field-type-control{
+			position: relative;
+			.components-select-control__input{
+				option{
+					display: none !important;
+				}
+			}
+			.gf-select-overlay{
+				cursor: pointer;
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 50%;
+				z-index: 999;
+			}
+		}
+
+		ul.gf-select-field-types {
+			list-style-type: none;
+			position: absolute;
+			top: 30px;
+			z-index: 9;
+			border: 1px solid #8c8f94;
+			border-top: none;
+			background: #ffffff;
+			box-sizing: border-box;
+			color: rgb(30, 30, 30);
+			width: 100%;
+			max-width: none;
+			max-height: 325px;
+			cursor: pointer;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			font-size: 13px;
+			margin: 0;
+			padding: 8px 26px 10px 8px;
+			overflow-x: hidden;
+			overflow-y: auto;
+			box-shadow: none !important;
+
+			.gf-title-link-wrapper{
+				position: relative;
+				padding-bottom: 10px;
+				.gf-title-icon{
+					display: flex;
+					gap: 6px;
+					.gf-title {
+						font-weight: 600;
+						font-size: 15px;
+					}
+				}
+
+				.gf-link{
+					position: absolute;
+					top: 0;
+					right: 0;
+					a{
+						color: #E35D3F;
+						font-weight: 600;
+					}
+				}
+			}
+
+			.gf-seprator{
+				border-bottom: 1px solid rgba(44, 51, 56, 0.1);
+				margin: 20px -28px 20px -8px;
+			}
+
+			li{
+				cursor: pointer;
+				&:hover{
+					background-color: #f6f7f7;
+				}
+				&.gf-select-pro-options, &.gf-seprator, li{
+					cursor: auto;
+					&:hover{
+						background-color: #ffffff;
+					}
+				}
+			}
+		}
+	}
+
+}
+
+.block-editor-block-variation-picker__skip svg,
+.block-editor-block-variation-picker__variations svg,
+.wp-block-group-placeholder__variations svg
+{
+	&.gutena-forms__variation-icons {
+		fill: transparent !important;
+		width: auto !important;
+	}
+}
+
+.wp-block-gutena-forms {
+	.block-editor-block-variation-picker__skip {
+		button {
+			font-size: 14px !important;
+		}
+	}
+}
