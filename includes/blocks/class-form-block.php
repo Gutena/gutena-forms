@@ -30,7 +30,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		 */
 		public function register_block() {
 			register_block_type(
-				GUTENA_FORMS_DIR_PATH . 'build',
+				GUTENA_FORMS_DIR_PATH . 'build/blocks/form',
 				array(
 					'render_callback' => array( $this, 'render_block' ),
 				)

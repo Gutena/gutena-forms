@@ -237,12 +237,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			Gutena_Forms_Field_Label_Block::get_instance()->register_block();
 
 			// Form Confirmation Message Block
-			register_block_type( __DIR__ . '/build/form-confirm-msg' );
+			register_block_type( __DIR__ . '/build/blocks/form-confirm-msg' );
 
 			// Form Error Message Block
-			register_block_type( __DIR__ . '/build/form-error-msg' );
+			register_block_type( __DIR__ . '/build/blocks/form-error-msg' );
 
-			register_block_type( __DIR__ . '/build/field-group' );
+			register_block_type( __DIR__ . '/build/blocks/field-group' );
 
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
