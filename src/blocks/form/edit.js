@@ -226,10 +226,14 @@ export default function Edit( props ) {
 		const blocks = getBlock( clientId );
 		if ( ! gfIsEmpty( blocks ) ) {
 			let textFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'text' );
+			let standaloneTextFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/text-field' );
+			if ( ! gfIsEmpty( standaloneTextFields ) ) {
+				textFields = [ ...textFields, ...standaloneTextFields ];
+			}
 			if ( 0 < textFields.length  ) {
 				for (let i = 0; i < textFields.length; i++) {
 					let fieldAttr = textFields[i].attributes;
-					if ( 'text' === fieldAttr.fieldType && ! gfIsEmpty( fieldAttr.nameAttr ) ) {
+					if ( ! gfIsEmpty( fieldAttr.nameAttr ) && ( 'text' === fieldAttr.fieldType || gfIsEmpty( fieldAttr.fieldType ) ) ) {
 						textOptions.push({ label: fieldAttr.fieldName, value: fieldAttr.nameAttr });
 					}
 				}
@@ -590,6 +594,7 @@ export default function Edit( props ) {
 		'core/image',
 		'core/paragraph',
 		'gutena/field-group',
+		'gutena/text-field',
 		'core/buttons',
 	];
 

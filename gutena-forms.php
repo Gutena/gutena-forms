@@ -243,6 +243,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			register_block_type( __DIR__ . '/build/blocks/form-error-msg' );
 
 			register_block_type( __DIR__ . '/build/blocks/field-group' );
+			register_block_type( __DIR__ . '/build/blocks/text-field' );
 
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
@@ -629,7 +630,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					$form_schema[ $formID ]['form_attrs'] = $block['attrs'];
 				}
 
-				if ( ! empty( $block['blockName'] ) && 'gutena/form-field' === $block['blockName'] && ! empty( $block['attrs']['nameAttr'] ) ) {
+				if ( ! empty( $block['blockName'] ) && in_array( $block['blockName'], array( 'gutena/form-field', 'gutena/text-field' ), true ) && ! empty( $block['attrs']['nameAttr'] ) ) {
 					$form_schema[ $formID ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
 				}
 
