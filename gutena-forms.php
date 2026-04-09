@@ -231,10 +231,10 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 			Gutena_Forms_Form_Block::get_instance()->register_block();
-			Gutena_Forms_Field_Block::get_instance()->register_block();
-			Gutena_Forms_Form_Field_Block::get_instance()->register_block();
+//			Gutena_Forms_Field_Block::get_instance()->register_block();
+//			Gutena_Forms_Form_Field_Block::get_instance()->register_block();
 			Gutena_Forms_Existing_Forms_Block::get_instance()->register_block();
-			Gutena_Forms_Field_Label_Block::get_instance()->register_block();
+//			Gutena_Forms_Field_Label_Block::get_instance()->register_block();
 
 			// Form Confirmation Message Block
 			register_block_type( __DIR__ . '/build/blocks/form-confirm-msg' );
@@ -244,6 +244,14 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			register_block_type( __DIR__ . '/build/blocks/field-group' );
 			register_block_type( __DIR__ . '/build/blocks/text-field' );
+			register_block_type( __DIR__ . '/build/blocks/optin-field' );
+			register_block_type( __DIR__ . '/build/blocks/dropdown-field' );
+			register_block_type( __DIR__ . '/build/blocks/email-field' );
+			register_block_type( __DIR__ . '/build/blocks/number-field' );
+			register_block_type( __DIR__ . '/build/blocks/textarea-field' );
+			register_block_type( __DIR__ . '/build/blocks/range-field' );
+			register_block_type( __DIR__ . '/build/blocks/radio-field' );
+			register_block_type( __DIR__ . '/build/blocks/checkbox-field' );
 
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
@@ -630,7 +638,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					$form_schema[ $formID ]['form_attrs'] = $block['attrs'];
 				}
 
-				if ( ! empty( $block['blockName'] ) && in_array( $block['blockName'], array( 'gutena/form-field', 'gutena/text-field' ), true ) && ! empty( $block['attrs']['nameAttr'] ) ) {
+				if ( ! empty( $block['blockName'] ) && in_array( $block['blockName'], array( 'gutena/form-field', 'gutena/text-field', 'gutena/optin-field', 'gutena/dropdown-field', 'gutena/email-field', 'gutena/number-field', 'gutena/textarea-field', 'gutena/range-field', 'gutena/radio-field', 'gutena/checkbox-field' ), true ) && ! empty( $block['attrs']['nameAttr'] ) ) {
 					$form_schema[ $formID ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
 				}
 

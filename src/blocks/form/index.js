@@ -163,7 +163,7 @@ domReady( () => {
     //check wp
     if ( typeof wp !== 'undefined' && typeof wp.data !== 'undefined' ){
 		/** https://github.com/WordPress/gutenberg/issues/14139 **/
-		wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( [ 'gutena/form-field', 'gutena/field-group', 'gutena/existing-forms', 'gutena/text-field-group' ] );
+		wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( [ 'gutena/form-field', 'gutena/field-group', 'gutena/existing-forms', 'gutena/text-field-group', 'gutena/optin-field-group', 'gutena/dropdown-field-group', 'gutena/email-field-group', 'gutena/number-field-group', 'gutena/textarea-field-group', 'gutena/range-field-group', 'gutena/radio-field-group', 'gutena/checkbox-field-group' ] );
     }
 });
 

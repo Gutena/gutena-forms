@@ -1,0 +1,73 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/dropdown-field",
+  "version": "1.0.0",
+  "title": "Dropdown Field",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena",
+  "icon": "menu",
+  "description": "Standalone dropdown field for Gutena Forms.",
+  "keywords": [
+    "dropdown",
+    "select",
+    "gutena forms"
+  ],
+  "attributes": {
+    "nameAttr": {
+      "type": "string",
+      "default": ""
+    },
+    "fieldName": {
+      "type": "string",
+      "default": "Dropdown"
+    },
+    "fieldType": {
+      "type": "string",
+      "default": "select"
+    },
+    "isRequired": {
+      "type": "boolean",
+      "default": false
+    },
+    "selectOptions": {
+      "type": "array",
+      "default": [
+        "Big",
+        "Medium",
+        "Small"
+      ]
+    },
+    "autocomplete": {
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "errorRequiredMsg": {
+      "type": "string",
+      "default": "Field is required"
+    },
+    "errorInvalidInputMsg": {
+      "type": "string",
+      "default": "Input is not valid"
+    }
+  },
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "textdomain": "gutena-forms",
+  "editorScript": "file:./index.js"
+}

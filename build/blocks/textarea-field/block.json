@@ -1,0 +1,77 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/textarea-field",
+  "version": "1.0.0",
+  "title": "Textarea Field",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena",
+  "icon": "editor-paragraph",
+  "description": "Standalone textarea field for Gutena Forms.",
+  "keywords": [
+    "textarea",
+    "message",
+    "gutena forms"
+  ],
+  "attributes": {
+    "nameAttr": {
+      "type": "string",
+      "default": ""
+    },
+    "fieldName": {
+      "type": "string",
+      "default": "Message"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": ""
+    },
+    "isRequired": {
+      "type": "boolean",
+      "default": false
+    },
+    "defaultValue": {
+      "type": "string",
+      "default": ""
+    },
+    "textAreaRows": {
+      "type": "number",
+      "default": 5
+    },
+    "maxlength": {
+      "type": "number",
+      "default": 0
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "errorRequiredMsg": {
+      "type": "string",
+      "default": "Field is required"
+    },
+    "errorInvalidInputMsg": {
+      "type": "string",
+      "default": "Input is not valid"
+    },
+    "fieldType": {
+      "type": "string",
+      "default": "textarea"
+    }
+  },
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "textdomain": "gutena-forms",
+  "editorScript": "file:./index.js"
+}

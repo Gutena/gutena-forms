@@ -207,10 +207,18 @@ export default function Edit( props ) {
 		const blocks = getBlock( clientId );
 		if ( ! gfIsEmpty( blocks ) ) {
 			let emailFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/form-field', 'fieldType', 'email' );
+			let standaloneEmailFields = getInnerBlocksbyNameAttr( blocks.innerBlocks, 'gutena/email-field' );
+			if ( ! gfIsEmpty( standaloneEmailFields ) ) {
+				emailFields = [ ...emailFields, ...standaloneEmailFields ];
+			}
 			if ( 0 < emailFields.length  ) {
 				for (let i = 0; i < emailFields.length; i++) {
 					let emailAttr = emailFields[i].attributes;
-					if ( 'email' === emailAttr.fieldType && ! gfIsEmpty( emailAttr.nameAttr ) ) {
+					const isStandaloneEmail = 'gutena/email-field' === emailFields[i].name;
+					if (
+						! gfIsEmpty( emailAttr.nameAttr ) &&
+						( isStandaloneEmail || 'email' === emailAttr.fieldType )
+					) {
 						emailOptions.push({ label: emailAttr.fieldName, value: emailAttr.nameAttr });
 					}
 				}
@@ -595,6 +603,14 @@ export default function Edit( props ) {
 		'core/paragraph',
 		'gutena/field-group',
 		'gutena/text-field',
+		'gutena/optin-field',
+		'gutena/dropdown-field',
+		'gutena/email-field',
+		'gutena/number-field',
+		'gutena/textarea-field',
+		'gutena/range-field',
+		'gutena/radio-field',
+		'gutena/checkbox-field',
 		'core/buttons',
 	];
 
