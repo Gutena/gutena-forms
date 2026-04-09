@@ -11,6 +11,7 @@ import { Bin } from '../icons/bin';
 import { __ } from '@wordpress/i18n';
 import {applyFilters, doAction} from "@wordpress/hooks";
 import { activateLeftMenu } from '../utils/functions';
+import EntriesLoading from "../skeletons/entries-loading";
 
 const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
@@ -131,7 +132,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 	const FormFilter = () => (
 		<div>
 			<SelectControl
-				style={ { width: '100px' } }
+				style={ { width: '100px', height: '40px' } }
 				options={ formsFilter }
 				onChange={ value => setSelectedFormFilter( value ) }
 				value={ selectedFormFilter }
@@ -180,7 +181,9 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
 	return (
 		<div>
-			{ ! loading && (
+			{ loading ? (
+				<EntriesLoading />
+			) : (
 				<div>
 					{ id && 'entry' === slug && (
 						<div>
@@ -204,6 +207,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 							<h2 className={ 'gutena-forms__page-title' }>All Forms Entries</h2>
 
 							<GutenaFormsDatatable
+								name={ 'entries' }
 								bulkActionOptions={ bulkActionOptions }
 								headers={ [
 									{

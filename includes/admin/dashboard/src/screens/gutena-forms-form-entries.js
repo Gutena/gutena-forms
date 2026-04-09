@@ -9,6 +9,7 @@ import Eye from '../icons/eye';
 import { Button } from '@wordpress/components';
 import { Bin } from '../icons/bin';
 import { doAction, applyFilters } from '@wordpress/hooks';
+import EntriesLoading from "../skeletons/entries-loading";
 
 const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 
@@ -67,7 +68,11 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 
 					for ( const header of tableHeaders ) {
 						if ( ! gutenaFormsInArray( header.key, [ 'checkbox', 'entry_id', 'datetime', 'actions', 'status' ] ) ) {
-							newTableData[ i ][ header.key ] = entryData[ header.key ].value;
+							if ( entryData[ header.key ] && entryData[ header.key ].value ) {
+								newTableData[ i ][ header.key ] = entryData[ header.key ].value;
+							} else {
+								newTableData[ i ][ header.key ] = false;
+							}
 						}
 					}
 					i++;
@@ -115,62 +120,69 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 
 	return (
 		<div>
-			{ ! loading && tableData && tableHeaders && (
+			{ loading ? (
+				<EntriesLoading />
+			) : (
 				<>
-					<GutenaFormsDatatable
-						data={ tableData }
-						headers={ tableHeaders }
-						handleBulkAction={ handleBulkAction }
-						bulkActionOptions={ bulkActionOptions }
-						tableChildren={ {
-							body: {
-								status: ( { row, header, index } ) => {
-									return applyFilters( 'gutenaForms.entries.status', null, { row, header, index, form_id: id }, statuses, showProPopupHandler );
-								},
+					{ ! loading && tableData && tableHeaders && (
+						<>
+							<GutenaFormsDatatable
+								name={ 'form-entries' }
+								data={ tableData }
+								headers={ tableHeaders }
+								handleBulkAction={ handleBulkAction }
+								bulkActionOptions={ bulkActionOptions }
+								tableChildren={ {
+									body: {
+										status: ( { row, header, index } ) => {
+											return applyFilters( 'gutenaForms.entries.status', null, { row, header, index, form_id: id }, statuses, showProPopupHandler );
+										},
 
-								actions: ( { row, header, index } ) => {
+										actions: ( { row, header, index } ) => {
 
-									return (
-										<div className={ 'gutena-forms-datatable__action' }>
+											return (
+												<div className={ 'gutena-forms-datatable__action' }>
 
-											<>
-												{ applyFilters( 'gutenaForms.entries.actions', null, { row, header, index, form_id: id } ) }
-											</>
+													<>
+														{ applyFilters( 'gutenaForms.entries.actions', null, { row, header, index, form_id: id } ) }
+													</>
 
-											{
-												capabilities && capabilities.map( cap => {
-													if ( 'view' === cap ) {
-														return (
-															<>
-																<Link
-																	to={ `/settings/entry/${ row.entry_id }` }
-																>
-																	<Eye />
-																</Link>
-															</>
-														);
+													{
+														capabilities && capabilities.map( cap => {
+															if ( 'view' === cap ) {
+																return (
+																	<>
+																		<Link
+																			to={ `/settings/entry/${ row.entry_id }` }
+																		>
+																			<Eye />
+																		</Link>
+																	</>
+																);
+															}
+
+															if ( 'delete' === cap ) {
+																return (
+																	<>
+																		<Button
+																			onClick={ () => handleDeleteEntry( row ) }
+																		>
+																			<Bin />
+																		</Button>
+																	</>
+																);
+															}
+														} )
 													}
 
-													if ( 'delete' === cap ) {
-														return (
-															<>
-																<Button
-																	onClick={ () => handleDeleteEntry( row ) }
-																>
-																	<Bin />
-																</Button>
-															</>
-														);
-													}
-												} )
-											}
-
-										</div>
-									);
-								}
-							}
-						} }
-					/>
+												</div>
+											);
+										}
+									}
+								} }
+							/>
+						</>
+					) }
 				</>
 			) }
 		</div>

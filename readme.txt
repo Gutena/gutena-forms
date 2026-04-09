@@ -6,7 +6,7 @@ Stable tag:        1.8.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
-WordPress form builder to create lightweight contact forms, survey forms, feedback forms, booking forms, etc., right inside the WordPress block editor.
+WordPress form builder to create lightweight contact forms, survey forms, feedback forms, booking forms, etc., right inside the block editor.
 
 == Description ==
 
@@ -362,10 +362,15 @@ Please report security bugs found in the source code of the undefined plugin thr
 
 
 == Changelog ==
+
+= 1.7.1 - Apr 9, 2026 =
+* Improvement - Minor UI enhancements.
+* FIX - Resolved CAPTCHA rendering issue.
+
 = 1.7.0 - Mar 25, 2026 =
-* New - honeypot field in individual form settings
-* Improved - entries and forms table UI
-* Improved - form settings UI
+* New - Added honeypot anti-spam protection for individual forms.
+* Improvement - Enhanced Entries and Forms table UI.
+* Improvement - Enhanced Form Settings UI.
 
 = 1.6.1 - Feb 17, 2026 =
 * FIX - Patched Security vulnerability reported by WordFence team.

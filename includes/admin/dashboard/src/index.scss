@@ -9,6 +9,9 @@ $gfp_orange_color: #E35D3F;
 $gfp_white_color: #fff;
 $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
+@import "./satoshi.css";
+@import "react-loading-skeleton/dist/skeleton.css";
+
 
 
 #wpcontent {
@@ -30,20 +33,37 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			outline: none;
 			box-shadow: none;
 		}
+  * {
+	  font-family: "Satoshi"
+  }
+
+	.gutena-forms__table {
+		overflow-x: scroll;
+	}
+
+	.gutena-forms__table table {
+		min-width: 1200px !important;
 	}
 
 	svg {
 		fill: transparent;
 	}
 
+	.gutena-forms__forms-screen,
+	.gutena-forms__entries {
+		.gutena-forms__page-title {
+			font-size: 24px;
+		}
+	}
+
 	.gutena-forms__page-title {
 		color: #2C3338;
 		font-size: 24px;
 		font-weight: 700;
-		margin-top: 0;
 		padding: 0 50px 0 0;
 		position: relative;
 		display: inline-block;
+		margin: 0 0 10px 0;
 	}
 
 	.gutena-forms__field-container {
@@ -55,7 +75,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 	.gutena-forms__header-container {
 		background: #FFFFFF;
 		border-bottom: 0.5px solid #E2E2E2;
-		height: 45px;
+		height: 50px;
 		display: flex;
 		padding: 0 20px;
 		align-items: center;
@@ -82,7 +102,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 					li {
 						display: inline-block;
-						height: 45px;
+						height: 53px;
 						padding: 0;
 						margin: 0;
 
@@ -90,11 +110,11 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 							display: block;
 							padding: 0 20px;
 							text-decoration: none;
-							font-size: 14px;
+							font-size: 12px;
 							font-weight: 500;
 							color: #6E7376;
 							height: 100%;
-							line-height: 45px;
+							line-height: 53px;
 
 							&:focus,
 							&:hover {
@@ -170,7 +190,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			width: calc( 100% - 210px - 20px );
 
 			.gutena-forms__container {
-				padding: 35px 70px;
+				padding: 20px;
 			}
 
 
@@ -292,9 +312,10 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 						border-radius: 4px;
 						background: #0DA88C;
 						color: #FFF;
-						font-size: 14px;
+						font-size: 12px;
 						font-weight: 700;
 						height: auto;
+						padding: 6px 10px;
 					}
 				}
 			}
@@ -365,13 +386,13 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		}
 
 		.gutena-forms__left-menu-navigation {
-			width: 220px;
+			width: 197px;
 			background: #ffffff;
 			border-right: 0.5px solid #E2E2E2;
 			min-height: calc( 100vh - 45px - 32px - 66px );
 
 			.gutena-forms__container {
-				padding: 10px;
+				padding: 10px 0;
 			}
 
 			.gutena-forms__accordion-header {
@@ -425,7 +446,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				a {
 					line-height: 30px;
 					color: #6E7376;
-					font-size: 14px;
+					font-size: 12px;
 					font-weight: 500;
 					text-decoration: none;
 					display: inline-block;
@@ -437,9 +458,9 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 					&.active {
 						border-radius: 4px;
-						background: #F0FFFC;
+						background: #EBFFFB;
 						color: #424D55;
-						border: 1px solid #46BEA8;
+						font-weight: 700;
 					}
 				}
 			}
@@ -572,6 +593,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			margin-left: 20px;
 			display: inline-block;
 			height: auto;
+			padding: 6px 10px;
 
 			svg {
 				margin: 0 10px -4px 0;
@@ -1072,6 +1094,11 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			font-weight: 500;
 			position: relative;
 
+			.heading {
+				font-size: 14px;
+				font-weight: 700;
+			}
+
 			.gutena-forms__entry-data {
 				margin-top: 15px;
 
@@ -1080,9 +1107,19 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					padding: 5px 20px;
-					border-radius: 4px;
+					padding: 0 20px;
 					border: 1px solid #F6F8FA;
+					border-bottom: none;
+					font-size: 14px;
+
+					&:first-child {
+						border-radius: 4px 4px 0 0;
+					}
+
+					&:last-child {
+						border-radius: 0 0 4px 4px;
+						border-bottom: 1px solid #F6F8FA;
+					}
 
 					.value {
 						text-align: left;
@@ -1093,7 +1130,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 					.label {
 						width: 20%;
 						text-align: left;
-						font-weight: 700;
+						font-weight: 600;
 					}
 				}
 			}
@@ -1369,9 +1406,6 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 		}
 	}
 }
-
-// Import Satoshi font (add this if not already loaded globally)
-@import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@400;700;900&display=swap');
 
 // Main container
 .gf-introduction-page {

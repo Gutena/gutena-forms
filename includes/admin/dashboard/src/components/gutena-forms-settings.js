@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 import { useState, useEffect } from '@wordpress/element';
 import { gutenaFormsFetchSettings } from '../api';
 import GutenaFormsSettingsMetaBox from './gutena-forms-settings-meta-box';
+import SettingsLoading from "../skeletons/settings-loading";
 
 const GutenaFormsSettings = ( { showProPopupHandler } ) => {
 	const { settings_id } = useParams();
@@ -19,16 +20,20 @@ const GutenaFormsSettings = ( { showProPopupHandler } ) => {
 
 	return (
 		<div>
-			{ ! loading && settings && (
-				<GutenaFormsSettingsMetaBox
-					id={ settings.id }
-					title={ settings.title }
-					description={ settings.description }
-					items={ settings.fields }
-					isPro={ settings['is-pro'] }
-					onClick={ e => showProPopupHandler() }
-					goBack={ settings.back }
-				/>
+			{ loading ? (
+				<SettingsLoading />
+			) : (
+				<>
+					{ settings && (
+						<GutenaFormsSettingsMetaBox
+							title={ settings.title }
+							description={ settings.description }
+							items={ settings.fields }
+							isPro={ settings['is-pro'] }
+							onClick={ () => showProPopupHandler() }
+						/>
+					) }
+				</>
 			) }
 		</div>
 	);
