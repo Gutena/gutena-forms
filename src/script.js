@@ -42,51 +42,13 @@ document.addEventListener("DOMContentLoaded", function () {
 		return parents;
 	};
 
-	//enqueue recaptcha if not enqueued
-	const check_and_load_grecaptcha = () => {
-		if ( 'undefined' !== typeof gutenaFormsBlock && ! isEmpty( gutenaFormsBlock.grecaptcha_type ) && ! isEmpty( gutenaFormsBlock.grecaptcha_site_key ) ) {
-			//gutena form block
-			let gutena_form_0 = document.querySelector(
-				'.wp-block-gutena-forms'
-			);
-			if ( ! isEmpty( gutena_form_0 ) ) {
-				//check if recaptcha is enabled
-				let grecaptcha_enable  = gutena_form_0.querySelector(
-					'input[name="recaptcha_enable"]'
-				);
-				if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
-					//check if grecaptcha is defined or not
-					if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
-						//check if grecaptcha script is loading or not
-						let grecaptcha_script_html = document.getElementById('google-recaptcha-js');
-						if ( isEmpty( grecaptcha_script_html ) ) {
-							//form script
-							let gutena_forms_script_html = document.getElementById('gutena-forms-script-js');
-							if ( ! isEmpty( gutena_forms_script_html ) ) {
-								grecaptcha_script_html = document.createElement('script');
-								grecaptcha_script_html.id = 'google-recaptcha-js';
-								grecaptcha_url = 'https://www.google.com/recaptcha/api.js';
-								if ( 'v3' === gutenaFormsBlock.grecaptcha_type ) {
-									grecaptcha_url += '?render='+gutenaFormsBlock.grecaptcha_site_key
-								}
-								grecaptcha_script_html.src = grecaptcha_url;
-
-								const parent = gutena_forms_script_html.parentNode || document.head || document.body;
-								//insert before form script
-								parent.insertBefore( grecaptcha_script_html, gutena_forms_script_html );
-								//console.log("recaptcha loaded");
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+	//enqueue recaptcha if not enqueued 
+	const check_and_load_grecaptcha = () => {}
 
 	/**
 	 * Check and load Cloudflare Turnstile
 	 * Fallback for Cloudflare Turnstile
-	 *
+	 * 
 	 * @since 1.3.0
 	 */
 	const check_and_load_cloudflare_turnstile = () => {}
@@ -171,41 +133,13 @@ document.addEventListener("DOMContentLoaded", function () {
 					gutena_forms.classList.remove('display-error-message');
 					gutena_forms.classList.remove('display-success-message');
 
-
-					//Google recaptcha
-					if ( ! isEmpty( gutenaFormsBlock.grecaptcha_type ) && 'v3' === gutenaFormsBlock.grecaptcha_type && ! isEmpty( gutenaFormsBlock.grecaptcha_site_key ) ) {
-						let grecaptcha_enable  = gutena_forms.querySelector(
-							'input[name="recaptcha_enable"]'
-						);
-						if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
-							if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
-								console.log("grecaptcha not defined");
-								save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
-							} else {
-								grecaptcha.ready(function() {
-									grecaptcha.execute( gutenaFormsBlock.grecaptcha_site_key, {action: 'submit'}).then( function( token ) {
-										/* for v3 - append g-recaptcha-response input
-										 for v2 - already present */
-										form_data.append('g-recaptcha-response', token);
-
-										// Add your logic to submit to your backend server here.
-										save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
-									});
-								});
-							}
-						} else {
-							save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
-						}
-					} else {
-						//recaptcha not enabled or configured
-						save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
-					}
-				} );
+					save_gutena_forms(gutena_forms, form_data, submitButton[i], submitBtnLink, submitBtnLinkHtml);
+				});
 			}
 		}
 	};
 
-	const save_gutena_forms = ( gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml ) => {
+	const save_gutena_forms = (gutena_forms, form_data, submitButton, submitBtnLink, submitBtnLinkHtml) => {
 		//console.log( "gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml");
 		fetch(gutenaFormsBlock.ajax_url, {
 			method: 'POST',

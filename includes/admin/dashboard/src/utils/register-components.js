@@ -27,7 +27,6 @@ import { NavLink } from 'react-router';
 import GutenaFormsDescWrapper from '../components/gutena-forms-desc-wrapper';
 import GutenaFormsToggleField from '../components/fields/gutena-forms-toggle-field';
 import Settings from '../icons/settings';
-import SettingsLoading from "../skeletons/settings-loading";
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -74,12 +73,3 @@ addFilter( 'gutenaFormsPro.core.functions', 'gutena-forms-free-fetch-functions',
 
 	return functions;
 } );
-
-addFilter(
-	'gutenaFormsPro.skeletons', 'gutenaForms.free.skeleton.merge', ( skeletons ) => {
-
-		skeletons['SettingsLoading'] = SettingsLoading;
-
-		return skeletons;
-	}
-);
