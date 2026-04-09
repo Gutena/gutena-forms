@@ -1,0 +1,56 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "gutena/country-field",
+	"version": "1.0.0",
+	"title": "Country",
+	"parent": [ "gutena/forms" ],
+	"category": "gutena-pro",
+	"icon": "admin-site",
+	"description": "Collect location details with structured country and state selection.",
+	"keywords": [ "country", "location", "gutena forms" ],
+	"attributes": {
+		"nameAttr": { "type": "string", "default": "" },
+		"fieldName": { "type": "string", "default": "Country" },
+		"fieldType": { "type": "string", "default": "select" },
+		"isRequired": { "type": "boolean", "default": false },
+		"selectOptions": {
+			"type": "array",
+			"default": [
+				"Select country",
+				"United States",
+				"United Kingdom",
+				"Canada",
+				"Australia",
+				"Germany",
+				"France",
+				"India",
+				"Japan",
+				"Brazil",
+				"Mexico",
+				"Italy",
+				"Spain",
+				"Netherlands",
+				"Sweden",
+				"Norway",
+				"Denmark",
+				"Finland",
+				"Ireland",
+				"New Zealand",
+				"South Africa",
+				"Other"
+			]
+		},
+		"autocomplete": { "type": "boolean", "default": false },
+		"description": { "type": "string", "default": "" },
+		"errorRequiredMsg": { "type": "string", "default": "Field is required" },
+		"errorInvalidInputMsg": { "type": "string", "default": "Input is not valid" }
+	},
+	"supports": {
+		"align": [ "wide", "full" ],
+		"html": false,
+		"spacing": { "margin": true, "padding": true }
+	},
+	"textdomain": "gutena-forms-pro",
+	"editorScript": "file:./index.js"
+}

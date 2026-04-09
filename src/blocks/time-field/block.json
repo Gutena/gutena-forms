@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "gutena/time-field",
+	"version": "1.0.0",
+	"title": "Time",
+	"parent": [ "gutena/forms" ],
+	"category": "gutena-pro",
+	"icon": "clock",
+	"description": "Let users choose a specific time with a dedicated time picker field.",
+	"keywords": [ "time", "gutena forms" ],
+	"attributes": {
+		"nameAttr": { "type": "string", "default": "" },
+		"fieldName": { "type": "string", "default": "Time" },
+		"fieldType": { "type": "string", "default": "time" },
+		"isRequired": { "type": "boolean", "default": false },
+		"defaultValue": { "type": "string", "default": "" },
+		"minAttr": { "type": "string", "default": "" },
+		"maxAttr": { "type": "string", "default": "" },
+		"stepAttr": { "type": "string", "default": "" },
+		"autocomplete": { "type": "boolean", "default": false },
+		"description": { "type": "string", "default": "" },
+		"errorRequiredMsg": { "type": "string", "default": "Field is required" },
+		"errorInvalidInputMsg": { "type": "string", "default": "Input is not valid" }
+	},
+	"supports": {
+		"align": [ "wide", "full" ],
+		"html": false,
+		"spacing": { "margin": true, "padding": true }
+	},
+	"textdomain": "gutena-forms-pro",
+	"editorScript": "file:./index.js"
+}

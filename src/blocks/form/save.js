@@ -11,7 +11,7 @@ export default function save( props ) {
 	} );
 
 	return (
-		<form method="post" { ...blockProps }>
+		<form method="post" encType="multipart/form-data" { ...blockProps }>
 			<input type="hidden" name="formid" value={ formID } />
 			<InnerBlocks.Content />
 		</form>

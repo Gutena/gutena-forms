@@ -6,17 +6,20 @@ import {
 	PanelBody,
 	TextControl,
 	ToggleControl,
-	RangeControl,
 	FormTokenField,
 } from '@wordpress/components';
 import { gfIsEmpty, gfSanitizeName } from '../../shared/utils/helper';
 
 const isFieldNameAttrReserved = ( nameAttrCheck, clientIdCheck ) => {
-	const blocksClientIds = select( 'core/block-editor' ).getClientIdsWithDescendants();
+	const blocksClientIds =
+		select( 'core/block-editor' ).getClientIdsWithDescendants();
 	return gfIsEmpty( blocksClientIds )
 		? false
 		: blocksClientIds.some( ( blockClientId ) => {
-				const attrs = select( 'core/block-editor' ).getBlockAttributes( blockClientId );
+				const attrs =
+					select( 'core/block-editor' ).getBlockAttributes(
+						blockClientId
+					);
 				return (
 					clientIdCheck !== blockClientId &&
 					! gfIsEmpty( attrs?.nameAttr ) &&
@@ -25,18 +28,13 @@ const isFieldNameAttrReserved = ( nameAttrCheck, clientIdCheck ) => {
 		  } );
 };
 
-function getFieldClasses( { isRequired, optionsInline, optionsColumns, autocomplete } ) {
-	const parts = [ 'gutena-forms-field', 'radio-field' ];
+function getFieldClasses( { isRequired, autocomplete } ) {
+	const parts = [ 'gutena-forms-field', 'select-field', 'country-field' ];
 	if ( isRequired ) {
 		parts.push( 'required-field' );
 	}
 	if ( autocomplete ) {
 		parts.push( 'autocomplete' );
-	}
-	if ( optionsInline ) {
-		parts.push( 'inline-options' );
-	} else if ( optionsColumns && optionsColumns > 0 ) {
-		parts.push( `has-${ optionsColumns }-col` );
 	}
 	return parts.join( ' ' );
 }
@@ -47,16 +45,19 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		fieldName,
 		isRequired,
 		selectOptions,
-		optionsInline,
-		optionsColumns,
 		autocomplete,
 		description,
 	} = attributes;
 
-	const [ selected, setSelected ] = useState( '' );
+	const [ selectedOption, setSelectedOption ] = useState(
+		selectOptions?.[ 0 ] || ''
+	);
 
 	useEffect( () => {
-		if ( ! gfIsEmpty( nameAttr ) && ! isFieldNameAttrReserved( nameAttr, clientId ) ) {
+		if (
+			! gfIsEmpty( nameAttr ) &&
+			! isFieldNameAttrReserved( nameAttr, clientId )
+		) {
 			return;
 		}
 
@@ -69,25 +70,41 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		}
 	}, [] );
 
+	useEffect( () => {
+		if (
+			gfIsEmpty( selectedOption ) ||
+			! selectOptions.includes( selectedOption )
+		) {
+			setSelectedOption( selectOptions?.[ 0 ] || '' );
+		}
+	}, [ selectOptions ] );
+
 	const fieldClasses = useMemo(
-		() => getFieldClasses( { isRequired, optionsInline, optionsColumns, autocomplete } ),
-		[ isRequired, optionsInline, optionsColumns, autocomplete ]
+		() => getFieldClasses( { isRequired, autocomplete } ),
+		[ isRequired, autocomplete ]
 	);
 
 	const blockProps = useBlockProps( {
-		className: 'wp-block-gutena-field-group wp-block-gutena-radio-field field-group-type-radio standalone-radio-field',
+		className:
+			'wp-block-gutena-field-group wp-block-gutena-country-field field-group-type-select standalone-country-field',
 	} );
 
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Field settings', 'gutena-forms' ) } initialOpen={ true }>
+				<PanelBody
+					title={ __( 'Field settings', 'gutena-forms' ) }
+					initialOpen={ true }
+				>
 					<TextControl
 						label={ __( 'Label', 'gutena-forms' ) + ' *' }
 						value={ fieldName ?? '' }
 						onChange={ ( nextLabel ) => {
 							const updates = { fieldName: nextLabel };
-							if ( gfIsEmpty( nameAttr ) || 0 === nameAttr.indexOf( 'f_' ) ) {
+							if (
+								gfIsEmpty( nameAttr ) ||
+								0 === nameAttr.indexOf( 'f_' )
+							) {
 								updates.nameAttr = gfSanitizeName( nextLabel );
 							}
 							setAttributes( updates );
@@ -96,76 +113,79 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<TextControl
 						label={ __( 'Name attribute', 'gutena-forms' ) + ' *' }
 						value={ nameAttr ?? '' }
-						onChange={ ( nextNameAttr ) => setAttributes( { nameAttr: gfSanitizeName( nextNameAttr ) } ) }
-						help={ __( 'Used as input name in form submission.', 'gutena-forms' ) }
+						onChange={ ( nextNameAttr ) =>
+							setAttributes( {
+								nameAttr: gfSanitizeName( nextNameAttr ),
+							} )
+						}
+						help={ __(
+							'Used as input name in form submission.',
+							'gutena-forms'
+						) }
 					/>
 					<FormTokenField
 						label={ __( 'Options', 'gutena-forms' ) }
 						value={ selectOptions }
 						suggestions={ selectOptions }
-						onChange={ ( nextOptions ) => setAttributes( { selectOptions: nextOptions } ) }
+						onChange={ ( nextOptions ) =>
+							setAttributes( { selectOptions: nextOptions } )
+						}
 					/>
-					<ToggleControl
-						label={ __( 'Show inline', 'gutena-forms' ) }
-						checked={ !! optionsInline }
-						onChange={ ( v ) => setAttributes( { optionsInline: v } ) }
-					/>
-					{ ! optionsInline && (
-						<RangeControl
-							label={ __( 'Columns', 'gutena-forms' ) }
-							value={ optionsColumns ?? 1 }
-							onChange={ ( v ) => setAttributes( { optionsColumns: v } ) }
-							min={ 1 }
-							max={ 6 }
-							step={ 1 }
-						/>
-					) }
 					<ToggleControl
 						label={ __( 'Required', 'gutena-forms' ) }
 						checked={ !! isRequired }
-						onChange={ ( nextRequired ) => setAttributes( { isRequired: nextRequired } ) }
+						onChange={ ( nextRequired ) =>
+							setAttributes( { isRequired: nextRequired } )
+						}
 					/>
 					<ToggleControl
 						label={ __( 'Autocomplete', 'gutena-forms' ) }
 						checked={ !! autocomplete }
-						onChange={ ( nextAutocomplete ) => setAttributes( { autocomplete: nextAutocomplete } ) }
+						onChange={ ( nextAutocomplete ) =>
+							setAttributes( { autocomplete: nextAutocomplete } )
+						}
 					/>
 					<TextControl
 						label={ __( 'Help text', 'gutena-forms' ) }
 						value={ description ?? '' }
-						onChange={ ( nextDescription ) => setAttributes( { description: nextDescription } ) }
+						onChange={ ( nextDescription ) =>
+							setAttributes( { description: nextDescription } )
+						}
 					/>
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				<span className="heading-input-label-gutena">
+				<label
+					htmlFor={ nameAttr }
+					className="heading-input-label-gutena"
+				>
 					{ fieldName }
 					{ isRequired ? ' *' : '' }
-				</span>
-				<div className={ fieldClasses }>
+				</label>
+				<select
+					id={ nameAttr }
+					name={ nameAttr }
+					className={ fieldClasses }
+					value={ selectedOption }
+					onChange={ ( e ) => setSelectedOption( e.target.value ) }
+				>
 					{ Array.isArray( selectOptions ) &&
 						selectOptions.map( ( item, index ) => {
 							if ( gfIsEmpty( item ) ) {
 								return null;
 							}
-							const optId = `${ nameAttr }_${ index }`;
 							return (
-								<label key={ index } className="radio-container" htmlFor={ optId }>
+								<option key={ index } value={ item }>
 									{ item }
-									<input
-										id={ optId }
-										type="radio"
-										name={ nameAttr }
-										value={ item }
-										checked={ selected === item }
-										onChange={ () => setSelected( item ) }
-									/>
-									<span className="checkmark" />
-								</label>
+								</option>
 							);
 						} ) }
-				</div>
-				{ ! gfIsEmpty( description ) && <p className="gutena-forms-radio-field-description">{ description }</p> }
+				</select>
+				{ ! gfIsEmpty( description ) && (
+					<p className="gutena-forms-country-field-description">
+						{ description }
+					</p>
+				) }
 				<p className="gutena-forms-field-error-msg" />
 			</div>
 		</>

@@ -9,7 +9,6 @@ import metadata from './block.json';
 import { gutenaFormsIcon } from './icon';
 import { Icon } from '@wordpress/components';
 
-
 registerBlockType( metadata, {
 	icon: gutenaFormsIcon,
 	variations,
@@ -160,12 +159,43 @@ registerBlockVariation( 'core/paragraph', {
 
 //hide field block
 domReady( () => {
-    //check wp
-    if ( typeof wp !== 'undefined' && typeof wp.data !== 'undefined' ){
+	//check wp
+	if ( typeof wp !== 'undefined' && typeof wp.data !== 'undefined' ) {
 		/** https://github.com/WordPress/gutenberg/issues/14139 **/
-		wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( [ 'gutena/form-field', 'gutena/field-group', 'gutena/existing-forms', 'gutena/text-field-group', 'gutena/optin-field-group', 'gutena/dropdown-field-group', 'gutena/email-field-group', 'gutena/number-field-group', 'gutena/textarea-field-group', 'gutena/range-field-group', 'gutena/radio-field-group', 'gutena/checkbox-field-group' ] );
-    }
-});
+		const hiddenFieldTypes = [
+			'gutena/form-field',
+			'gutena/field-group',
+			'gutena/existing-forms',
+			'gutena/text-field-group',
+			'gutena/optin-field-group',
+			'gutena/dropdown-field-group',
+			'gutena/email-field-group',
+			'gutena/number-field-group',
+			'gutena/textarea-field-group',
+			'gutena/range-field-group',
+			'gutena/radio-field-group',
+			'gutena/checkbox-field-group',
+		];
+		if (
+			typeof gutenaFormsBlock !== 'undefined' &&
+			gutenaFormsBlock.is_pro
+		) {
+			hiddenFieldTypes.push(
+				'gutena/phone-field-group',
+				'gutena/url-field-group',
+				'gutena/hidden-field-group',
+				'gutena/password-field-group',
+				'gutena/date-field-group',
+				'gutena/time-field-group',
+				'gutena/country-field-group',
+				'gutena/state-field-group',
+				'gutena/file-upload-field-group',
+				'gutena/rating-field-group'
+			);
+		}
+		wp.data.dispatch( 'core/edit-post' ).hideBlockTypes( hiddenFieldTypes );
+	}
+} );
 
 if ( ! gutenaFormsBlock.is_pro ) {
 	setInterval( function () {
@@ -183,42 +213,44 @@ if ( ! gutenaFormsBlock.is_pro ) {
 			'editor-block-list-item-gutena-rating-field-group',
 		];
 
-		elements.forEach( element => {
-			let el = document.getElementsByClassName(element);
-			if (el.length && el[0]) {
-				el[0].parentNode.setAttribute('draggable', 'false');
-				el[0].setAttribute('aria-disabled', 'true');
-				el[0].style.pointerEvents = 'none';
-				el[0].style.userSelect = 'none';
-				el[0].style.opacity = '0.5';
-				el[0].setAttribute('disabled', 'true');
+		elements.forEach( ( element ) => {
+			let el = document.getElementsByClassName( element );
+			if ( el.length && el[ 0 ] ) {
+				el[ 0 ].parentNode.setAttribute( 'draggable', 'false' );
+				el[ 0 ].setAttribute( 'aria-disabled', 'true' );
+				el[ 0 ].style.pointerEvents = 'none';
+				el[ 0 ].style.userSelect = 'none';
+				el[ 0 ].style.opacity = '0.5';
+				el[ 0 ].setAttribute( 'disabled', 'true' );
 
-				if ( el[1] ) {
-					el[1].parentNode.setAttribute('draggable', 'false');
-					el[1].setAttribute('aria-disabled', 'true');
-					el[1].style.pointerEvents = 'none';
-					el[1].style.userSelect = 'none';
-					el[1].style.opacity = '0.5';
-					el[1].setAttribute('disabled', 'true');
+				if ( el[ 1 ] ) {
+					el[ 1 ].parentNode.setAttribute( 'draggable', 'false' );
+					el[ 1 ].setAttribute( 'aria-disabled', 'true' );
+					el[ 1 ].style.pointerEvents = 'none';
+					el[ 1 ].style.userSelect = 'none';
+					el[ 1 ].style.opacity = '0.5';
+					el[ 1 ].setAttribute( 'disabled', 'true' );
 				}
 			}
 		} );
 
 		const strContains = ( str, substr ) => {
 			return str.indexOf( substr ) !== -1;
-		}
-		elements = document.getElementsByClassName( 'block-editor-inserter__panel-title' );
+		};
+		elements = document.getElementsByClassName(
+			'block-editor-inserter__panel-title'
+		);
 
 		if ( elements.length ) {
 			for ( var i = 0; i < elements.length; i++ ) {
-				var el = elements[i];
+				var el = elements[ i ];
 				if ( strContains( el.innerText, 'GUTENA FORMS PRO' ) ) {
 					el.parentNode.style.display = 'block';
 					el.innerHTML = `${ 'Gutena Forms Premium Fields' }
 						<br />
 						<a target="_blank" href="https://gutenaforms.com/pricing/?utm_source=editor&utm_medium=website&utm_campaign=free_plugin" style="background-color: #2ab399;color: #fff;padding: 10px;font-size: 12px;border: none;border-radius: 4px;cursor: pointer;transition: background-color .3s;margin-top: 16px;max-width: 280px;width: 100%;font-weight: 600;display: block;text-decoration: none;text-align: center;">
 							Upgrade to Unlock these fields
-						</a>`
+						</a>`;
 				}
 			}
 		}

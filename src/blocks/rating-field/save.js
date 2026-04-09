@@ -1,8 +1,13 @@
 import { useBlockProps } from '@wordpress/block-editor';
 import { gfIsEmpty } from '../../shared/utils/helper';
 
-function getFieldClasses( { isRequired, optionsInline, optionsColumns, autocomplete } ) {
-	const parts = [ 'gutena-forms-field', 'radio-field' ];
+function getFieldClasses( {
+	isRequired,
+	optionsInline,
+	optionsColumns,
+	autocomplete,
+} ) {
+	const parts = [ 'gutena-forms-field', 'radio-field', 'rating-field' ];
 	if ( isRequired ) {
 		parts.push( 'required-field' );
 	}
@@ -30,10 +35,16 @@ export default function Save( { attributes } ) {
 	} = attributes;
 
 	const blockProps = useBlockProps.save( {
-		className: 'wp-block-gutena-field-group wp-block-gutena-radio-field field-group-type-radio standalone-radio-field',
+		className:
+			'wp-block-gutena-field-group wp-block-gutena-rating-field field-group-type-radio standalone-rating-field',
 	} );
 
-	const fieldClasses = getFieldClasses( { isRequired, optionsInline, optionsColumns, autocomplete } );
+	const fieldClasses = getFieldClasses( {
+		isRequired,
+		optionsInline,
+		optionsColumns,
+		autocomplete,
+	} );
 
 	return (
 		<div { ...blockProps }>
@@ -49,7 +60,11 @@ export default function Save( { attributes } ) {
 						}
 						const optId = `${ nameAttr }_${ index }`;
 						return (
-							<label key={ index } className="radio-container" htmlFor={ optId }>
+							<label
+								key={ index }
+								className="radio-container"
+								htmlFor={ optId }
+							>
 								{ item }
 								<input
 									id={ optId }
@@ -62,7 +77,11 @@ export default function Save( { attributes } ) {
 						);
 					} ) }
 			</div>
-			{ ! gfIsEmpty( description ) && <p className="gutena-forms-radio-field-description">{ description }</p> }
+			{ ! gfIsEmpty( description ) && (
+				<p className="gutena-forms-rating-field-description">
+					{ description }
+				</p>
+			) }
 			<p className="gutena-forms-field-error-msg" />
 		</div>
 	);

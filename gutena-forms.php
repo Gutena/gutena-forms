@@ -253,6 +253,24 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			register_block_type( __DIR__ . '/build/blocks/radio-field' );
 			register_block_type( __DIR__ . '/build/blocks/checkbox-field' );
 
+			if ( is_gutena_forms_pro() ) {
+				$gutena_forms_pro_standalone_blocks = array(
+					'url-field',
+					'phone-field',
+					'password-field',
+					'hidden-field',
+					'date-field',
+					'time-field',
+					'country-field',
+					'state-field',
+					'file-upload-field',
+					'rating-field',
+				);
+				foreach ( $gutena_forms_pro_standalone_blocks as $gutena_forms_pro_block_slug ) {
+					register_block_type( __DIR__ . '/build/blocks/' . $gutena_forms_pro_block_slug );
+				}
+			}
+
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
 
@@ -638,7 +656,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					$form_schema[ $formID ]['form_attrs'] = $block['attrs'];
 				}
 
-				if ( ! empty( $block['blockName'] ) && in_array( $block['blockName'], array( 'gutena/form-field', 'gutena/text-field', 'gutena/optin-field', 'gutena/dropdown-field', 'gutena/email-field', 'gutena/number-field', 'gutena/textarea-field', 'gutena/range-field', 'gutena/radio-field', 'gutena/checkbox-field' ), true ) && ! empty( $block['attrs']['nameAttr'] ) ) {
+				if ( ! empty( $block['blockName'] ) && in_array( $block['blockName'], array( 'gutena/form-field', 'gutena/text-field', 'gutena/optin-field', 'gutena/dropdown-field', 'gutena/email-field', 'gutena/number-field', 'gutena/textarea-field', 'gutena/range-field', 'gutena/radio-field', 'gutena/checkbox-field', 'gutena/url-field', 'gutena/phone-field', 'gutena/password-field', 'gutena/hidden-field', 'gutena/date-field', 'gutena/time-field', 'gutena/country-field', 'gutena/state-field', 'gutena/file-upload-field', 'gutena/rating-field' ), true ) && ! empty( $block['attrs']['nameAttr'] ) ) {
 					$form_schema[ $formID ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
 				}
 
