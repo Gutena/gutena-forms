@@ -8,7 +8,7 @@
     "gutena/forms"
   ],
   "category": "gutena",
-  "icon": "marker",
+  "icon": "forms",
   "description": "Standalone radio button group for Gutena Forms.",
   "keywords": [
     "radio",
@@ -41,6 +41,10 @@
       "default": 1
     },
     "optionsInline": {
+      "type": "boolean",
+      "default": false
+    },
+    "autocomplete": {
       "type": "boolean",
       "default": false
     },
