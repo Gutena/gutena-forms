@@ -53,7 +53,7 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 						'id'      => 'required_msg',
 						'type'    => 'text',
 						'name'    => __( 'Required Field', 'gutena-forms' ),
-						'value'   => $this->settings['required_msg'],
+						'value'   => isset( $this->settings['required_msg'] ) ? $this->settings['required_msg'] : '',
 						'attrs'   => array(
 							'placeholder' => __(  'Please in the field', 'gutena-forms' ),
 						),
@@ -62,7 +62,7 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 						'id'      => 'required_msg_select',
 						'type'    => 'text',
 						'name'    => __( 'Required Select Field', 'gutena-forms' ),
-						'value'   => $this->settings['required_msg_select'],
+						'value'   => isset( $this->settings['required_msg_select'] ) ? $this->settings['required_msg_select'] : '',
 						'attrs'   => array(
 							'placeholder' => __(  'Please select an option', 'gutena-forms' ),
 						),
@@ -71,7 +71,7 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 						'id'      => 'required_msg_check',
 						'type'    => 'text',
 						'name'    => __( 'Required Checkbox/Radio Field', 'gutena-forms' ),
-						'value'   => $this->settings['required_msg_check'],
+						'value'   => isset( $this->settings['required_msg_check'] ) ? $this->settings['required_msg_check'] : '',
 						'attrs'   => array(
 							'placeholder' => __(  'Please check an option', 'gutena-forms' ),
 						),
@@ -80,7 +80,7 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 						'id'      => 'required_msg_optin',
 						'type'    => 'text',
 						'name'    => __( 'Required Opt-in Field', 'gutena-forms' ),
-						'value'   => $this->settings['required_msg_optin'],
+						'value'   => isset( $this->settings['required_msg_optin'] ) ? $this->settings['required_msg_optin'] : '',
 						'attrs'   => array(
 							'placeholder' => __( 'Please check this checkbox', 'gutena-forms' ),
 						),
@@ -89,7 +89,7 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 						'id'      => 'invalid_email_msg',
 						'type'    => 'text',
 						'name'    => __( 'Invalid Email', 'gutena-forms' ),
-						'value'   => $this->settings['invalid_email_msg'],
+						'value'   => isset( $this->settings['invalid_email_msg'] ) ? $this->settings['invalid_email_msg'] : '',
 						'attrs'   => array(
 							'placeholder' => __( 'Please enter a valid email address', 'gutena-forms' ),
 						),
@@ -98,7 +98,7 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 						'id'      => 'min_value_msg',
 						'type'    => 'text',
 						'name'    => __( 'Minimum Value', 'gutena-forms' ),
-						'value'   => $this->settings['min_value_msg'],
+						'value'   => isset( $this->settings['min_value_msg'] ) ? $this->settings['min_value_msg'] : '',
 						'attrs'   => array(
 							'placeholder' => __( 'Please enter value greater than or equal to (value)', 'gutena-forms' ),
 						),
@@ -107,7 +107,7 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 						'id'      => 'max_value_msg',
 						'type'    => 'text',
 						'name'    => __( 'Maximum Value', 'gutena-forms' ),
-						'value'   => $this->settings['max_value_msg'],
+						'value'   => isset( $this->settings['max_value_msg'] ) ? $this->settings['max_value_msg'] : '',
 						'attrs'   => array(
 							'placeholder' => __( 'Please enter a value less than or equal to (value)', 'gutena-forms' ),
 						),
@@ -138,11 +138,15 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 		 */
 		public function save_messages_to_default_option( $attributes, $block, $post ) {
 			$all_form_ids = get_option( 'gutena_form_ids', array() );
-			$current_form_id = $attributes['formID'];
+			$current_form_id = isset( $attributes['formID'] ) ? $attributes['formID'] : '';
+			$messages        = isset( $attributes['messages'] ) && is_array( $attributes['messages'] ) ? $attributes['messages'] : array();
+
+			if ( empty( $current_form_id ) || empty( $messages ) ) {
+				return;
+			}
 
 			// Only sync if this is the Primary Form (only one form exists)
 			if ( empty( $all_form_ids ) || ( count( $all_form_ids ) === 1 && in_array( $current_form_id, $all_form_ids ) ) ) {
-				$messages = $attributes['messages'];
 				foreach ( $messages as $mk => $mv ) {
 					$this->settings[ $mk ] = $mv;
 				}

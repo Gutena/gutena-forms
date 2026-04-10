@@ -56,14 +56,14 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 						'type'    => 'toggle',
 						'name'    => __( 'Enable Honeypot Security', 'gutena-forms' ),
 						'default' => false,
-						'value'   => $this->settings['enable'],
+						'value'   => isset( $this->settings['enable'] ) ? $this->settings['enable'] : false,
 					),
 					array(
 						'id'      => 'timeCheckValue',
 						'type'    => 'number',
 						'name'    => __( 'Time Limit (In Seconds)', 'gutena-forms' ),
 						'default' => 6,
-						'value'   => $this->settings['timeCheckValue'],
+						'value'   => isset( $this->settings['timeCheckValue'] ) ? $this->settings['timeCheckValue'] : 6,
 						'attrs'   => array(
 							'min'  => 1,
 							'step' => 1,
@@ -129,12 +129,17 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 		 */
 		public function save_honeypot( $attributes, $blocks, $post ) {
 			$default_values = get_option( 'gutena_forms__honeypot', array() );
+			$honeypot       = isset( $attributes['honeypot'] ) && is_array( $attributes['honeypot'] ) ? $attributes['honeypot'] : array();
 
 			if ( ! empty( $default_values ) || ! empty( $this->settings ) ) {
 				return;
 			}
 
-			foreach ( $attributes['honeypot'] as $k => $v ) {
+			if ( empty( $honeypot ) ) {
+				return;
+			}
+
+			foreach ( $honeypot as $k => $v ) {
 				$this->settings[ $k ] = $v;
 			}
 

@@ -254,10 +254,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 						}
 
-						if ( isset( $attributes['cloudflareTurnstile']['defaultSettings'] ) && $attributes['cloudflareTurnstile']['defaultSettings'] ) {
+						$cloudflare_attr = ( isset( $attributes['cloudflareTurnstile'] ) && is_array( $attributes['cloudflareTurnstile'] ) ) ? $attributes['cloudflareTurnstile'] : array();
+						if ( isset( $cloudflare_attr['defaultSettings'] ) && $cloudflare_attr['defaultSettings'] ) {
 							$cloudflare_settings = get_option( 'gutena_forms__cloudflare', array() );
 						} else {
-							$cloudflare_settings = $attributes['cloudflareTurnstile'];
+							$cloudflare_settings = $cloudflare_attr;
 						}
 
 						if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
