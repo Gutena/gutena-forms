@@ -287,6 +287,14 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @since 1.6.0
 		 */
 		private function validate_captcha() {
+
+			$use_global = isset( $this->schema['form_attrs']['recaptcha']['defaultSettings'] ) && ! empty( $this->schema['form_attrs']['recaptcha']['defaultSettings'] ) && 1 === absint( $this->schema['form_attrs']['recaptcha']['defaultSettings'] );
+			$this->schema['form_attrs']['recaptcha'] = $use_global ? get_option( 'gutena_forms_grecaptcha', array() ) : $this->schema['form_attrs']['recaptcha'];
+			$use_global = isset( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] ) && ! empty( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] ) && 1 === absint( $this->schema['form_attrs']['cloudflareTurnstile']['defaultSettings'] );
+			$this->schema['form_attrs']['cloudflareTurnstile'] = $use_global ? get_option( 'gutena_forms__cloudflare', array() ) : $this->schema['form_attrs']['cloudflareTurnstile'];
+			$use_global = isset( $this->schema['form_attrs']['honeypot']['defaultSettings'] ) && ! empty( $this->schema['form_attrs']['honeypot']['defaultSettings'] ) && 1 === absint( $this->schema['form_attrs']['honeypot']['defaultSettings'] );
+			$this->schema['form_attrs']['honeypot'] = $use_global ? get_option( 'gutena_forms__honeypot', array() ) : $this->schema['form_attrs']['honeypot'];
+
 			if ( ! empty( $this->schema['form_attrs']['recaptcha'] ) && ! empty( $this->schema['form_attrs']['recaptcha']['enable'] ) && ! $this->recaptcha_verify() ) {
 				wp_send_json(
 					array(
@@ -350,7 +358,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @return bool
 		 */
 		private function recaptcha_verify(){
-			//check if reCAPTCHA not embedded in the form
 			if ( empty( $_POST['recaptcha_enable'] ) && empty( $_POST['g-recaptcha-response'] ) ) {
 				return true;
 			}
@@ -361,10 +368,9 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				$_POST['recaptcha_error'] = 'Recaptcha input missing';
 				return false;
 			} else {
-				//get reCAPTCHA settings
-				$recaptcha_settings= get_option( 'gutena_forms_grecaptcha', false );
-
-				if ( empty( $recaptcha_settings ) ) {
+				// Use form's own settings when overridden, otherwise global.
+				$recaptcha_settings = $this->schema['form_attrs']['recaptcha'];
+				if ( empty( $recaptcha_settings ) || empty( $recaptcha_settings['secret_key'] ) ) {
 					return false;
 				}
 				//verify reCAPTCHA
@@ -410,41 +416,34 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 
 		/**
 		 * Verify Cloudflare Turnstile
+		 * Uses form schema + global defaults (gutena_forms__cloudflare) when defaultSettings is true.
 		 *
 		 * @since 1.3.0
 		 * @return boolean
 		 */
 		private function cloudflare_turnstile_verify() {
-			if ( isset( $_POST['cf-turnstile-response'] ) && ! empty( $_POST['cf-turnstile-response'] ) ) {
-				$token 				  = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
-				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
+			if ( empty( $_POST['cf-turnstile-response'] ) ) {
+				return false;
+			}
+			$token = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
+			$schema_turnstile =  $this->schema['form_attrs']['cloudflareTurnstile'];
 
-				if ( empty( $cloudflare_turnstile ) ) {
-					return false;
-				}
+			$response = wp_remote_post(
+				'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+				array(
+					'body' => array(
+						'secret'   => $schema_turnstile['secret_key'],
+						'response' => $token,
+					),
+				)
+			);
 
-				$response = wp_remote_post(
-					'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-					array(
-						'body' => array(
-							'secret' => $cloudflare_turnstile['secret_key'],
-							'response' => $token,
-						),
-					)
-				);
-
-				if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
-					return false;
-				}
-
-				$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
-
-				if ( ! empty( $api_response ) && $api_response['success'] ) {
-					return true;
-				}
+			if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
+				return false;
 			}
 
-			return false;
+			$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
+			return ! empty( $api_response ) && ! empty( $api_response['success'] );
 		}
 
 		/**

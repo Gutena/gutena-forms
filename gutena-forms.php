@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.7.1
+ * Version:           1.8.0
  * Author:            Gutena Forms
  * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
@@ -42,7 +42,7 @@ if ( ! defined( 'GUTENA_FORMS_PLUGIN_URL' ) ) {
  * Plugin version.
  */
 if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-	define( 'GUTENA_FORMS_VERSION', '1.7.1' );
+	define( 'GUTENA_FORMS_VERSION', '1.8.0' );
 }
 
 /**
@@ -173,6 +173,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-existing-forms-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-handle-save-form.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-form-submit-handler.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/rest-api/class-rest-api.php';
 		}
@@ -187,6 +188,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
+			add_action( 'template_redirect', array( $this, 'enqueue_recaptcha_scripts' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
 			add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
 			add_action( 'added_post_meta', array( $this, 'save_gutena_forms_pattern' ), 10, 4 );
@@ -194,7 +196,82 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( Gutena_Forms_Submit_Form_Handler::get_instance(), 'handle_submit' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
 			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
+
 			$this->load_dashboard();
+		}
+
+		public function enqueue_recaptcha_scripts() {
+			global $post;
+
+			if ( ! empty( $post->post_content ) && function_exists( 'has_block' ) && has_block( 'gutena/forms', $post->post_content ) ) {
+				$blocks = parse_blocks( $post->post_content );
+				$i = 0;
+
+				foreach ( $blocks as $block ) {
+					if ( ! empty( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
+						$attributes = $block['attrs'];
+
+						if ( isset( $attributes['recaptcha']['defaultSettings'] ) && $attributes['recaptcha']['defaultSettings'] ) {
+							$recaptcha_settings = get_option( 'gutena_forms__recaptcha', array() );
+						} else {
+							if ( isset( $attributes['recaptcha']['enable'] ) && $attributes['recaptcha']['enable'] ) {
+								$recaptcha_settings = $attributes['recaptcha'];
+							}
+						}
+
+						if ( isset( $recaptcha_settings['enable'] ) && $recaptcha_settings['enable'] ) {
+
+							if ( 'v2' === $recaptcha_settings['type'] ) {
+								wp_enqueue_script(
+									'gutena-forms-recaptcha-v2-scripts',
+									'https://www.google.com/recaptcha/api.js',
+									array(),
+									null,
+									false
+								);
+							} elseif ( 'v3' === $recaptcha_settings['type'] ) {
+								if ( isset( $recaptcha_settings['defaultSettings'] ) && $recaptcha_settings['defaultSettings'] ) {
+									wp_enqueue_script(
+										'gutena-forms-recaptcha-v3-scripts',
+										'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_settings['site_key'] ),
+										array(),
+										null,
+										false
+									);
+								} else {
+
+									wp_enqueue_script(
+										'gutena-forms-recaptcha-v3-' . esc_attr( $i ) . '-scripts',
+										'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_settings['site_key'] ),
+										array(),
+										null,
+										false
+									);
+
+									$i++;
+								}
+							}
+
+						}
+
+						if ( isset( $attributes['cloudflareTurnstile']['defaultSettings'] ) && $attributes['cloudflareTurnstile']['defaultSettings'] ) {
+							$cloudflare_settings = get_option( 'gutena_forms__cloudflare', array() );
+						} else {
+							$cloudflare_settings = $attributes['cloudflareTurnstile'];
+						}
+
+						if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
+							wp_enqueue_script(
+								'gutena-forms-cloudflare-turnstile-scripts',
+								'https://challenges.cloudflare.com/turnstile/v0/api.js',
+								array(),
+								null,
+								false
+							);
+						}
+					}
+				}
+			}
 		}
 
 		public function plugin_action_links( $prev_links ) {
@@ -245,13 +322,13 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			register_block_type( __DIR__ . '/build/field-group' );
 
 			//google recaptcha
-			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
+			$grecaptcha = get_option( 'gutena_forms__recaptcha', array() );
 
 			//Form messages
-			$gutena_forms_messages = get_option( 'gutena_forms_messages', array() );
+			$gutena_forms_messages = get_option( 'gutena_forms__form_validation_messages', array() );
 
-			// cloudflare turnstile
-			$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', array() );
+			// cloudflare turnstile: global default settings (option gutena_forms__cloudflare)
+			$cloudflare_turnstile_defaults = get_option( 'gutena_forms__cloudflare', array() );
 
 			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array(): $gutena_forms_messages;
 			$gf_message = array(
@@ -302,17 +379,16 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				'gutena-forms-script',
 				'gutenaFormsBlock',
 				array_merge( array(
-					'submit_action'             => 'gutena_forms_submit',
-					'ajax_url'                  => admin_url( 'admin-ajax.php' ),
-					'nonce'                     => wp_create_nonce( 'gutena_Forms' ),
-					'grecaptcha_type'	        => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
-					'grecaptcha_site_key'       => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
-					'grecaptcha_secret_key'     => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
-					'pricing_link' 		        => 'https://gutenaforms.com/pricing/',
-					'cloudflare_turnstile'      => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile,
-					'is_pro' 			        => is_gutena_forms_pro(),
-					'is_gutena_forms_post_type' => $gutena_forms_post_type,
-					'forms_available'			=> $forms_available,
+					'submit_action'                 => 'gutena_forms_submit',
+					'ajax_url'                      => admin_url( 'admin-ajax.php' ),
+					'nonce'                         => wp_create_nonce( 'gutena_Forms' ),
+					'grecaptcha'                   => ! empty( $grecaptcha ) ? $grecaptcha : array(),
+					'pricing_link' 		            => 'https://gutenaforms.com/pricing/',
+					'cloudflare_turnstile_defaults' => is_array( $cloudflare_turnstile_defaults ) ? $cloudflare_turnstile_defaults : array(),
+					'is_pro' 			            => is_gutena_forms_pro(),
+					'is_gutena_forms_post_type'     => $gutena_forms_post_type,
+					'forms_available'			    => $forms_available,
+					'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
 				), $gf_message )
 			);
 		}
@@ -506,28 +582,21 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 							$this->sanitize_array( $formSchema_filtered, true )
 						);
 
-						//Save Google reCAPTCHA details
-						if ( ! empty( $formSchema['form_attrs']['recaptcha'] ) && ! empty( $formSchema['form_attrs']['recaptcha']['site_key'] ) && ! empty( $formSchema['form_attrs']['recaptcha']['secret_key'] ) ) {
-							update_option(
-								'gutena_forms_grecaptcha',
-								$this->sanitize_array( $formSchema['form_attrs']['recaptcha'] )
-							);
-						}
+						// Global reCAPTCHA is set only from global settings UI, not from form block save.
+						// Cloudflare Turnstile: verification uses form schema + gutena_forms__cloudflare (global defaults).
 
-						// cloudflare turnstile
-						if ( ! empty( $formSchema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['site_key'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['secret_key'] ) ) {
-							update_option(
-								'gutena_forms_cloudflare_turnstile',
-								$this->sanitize_array( $formSchema['form_attrs']['cloudflareTurnstile'] )
-							);
-						}
-
-						//Save common form messages
+						//Save common form messages (Primary Form Sync Logic)
 						if ( ! empty( $formSchema['form_attrs']['messages'] ) && is_array( $formSchema['form_attrs']['messages'] ) ) {
-							update_option(
-								'gutena_forms_messages',
-								$formSchema['form_attrs']['messages']
-							);
+							$all_form_ids = get_option( 'gutena_form_ids', array() );
+							$current_form_id = $formSchema['form_attrs']['formID'];
+
+							// If no forms exist yet, or only this form exists, it is the Primary Form
+							if ( empty( $all_form_ids ) || ( count( $all_form_ids ) === 1 && in_array( $current_form_id, $all_form_ids ) ) ) {
+								update_option(
+									'gutena_forms__form_validation_messages',
+									$formSchema['form_attrs']['messages']
+								);
+							}
 						}
 					}
 				}
@@ -614,7 +683,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 		// Get Form schema from block parsing
 		private function get_form_schema( $blocks, $formID = 0 ) {
 			if ( empty( $blocks ) || ! is_array( $blocks ) ) {
-				return;
+				return [];
 			}
 
 			$form_schema = array();

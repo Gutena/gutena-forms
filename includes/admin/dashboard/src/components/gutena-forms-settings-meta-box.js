@@ -1,16 +1,24 @@
 import { useEffect, useState } from '@wordpress/element';
-import { useParams } from 'react-router';
+import {NavLink, useParams} from 'react-router';
 import GutenaFormsNumberField from './fields/gutena-forms-number-field';
 import GutenaFormsToggleField from './fields/gutena-forms-toggle-field';
 import GutenaFormsEmailField from './fields/gutena-forms-email-field';
 import GutenaFormsSubmitButton from './fields/gutena-forms-submit-button';
+import GutenaFormsTextField from './fields/gutena-forms-text-field';
+import GutenaFormsRadioGroup from './fields/gutena-forms-radio-group';
 import { gutenaFormsUpdateSettings } from "../api";
 import { toast } from 'react-toastify';
 import { __ } from '@wordpress/i18n';
 import { SettingsTemplates } from '../utils/templates';
 import GutenaFormsProBadge from './gutena-forms-pro-badge';
+import Activecampaign from '../icons/activecampaign';
+import Brevo from '../icons/brevo';
+import Mailchimp from '../icons/mailchimp';
+import {Button} from "@wordpress/components";
+import Recaptcha from "../icons/recaptcha";
+import Cloudflare from "../icons/cloudflare";
 
-const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false, onClick } ) => {
+const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = false, onClick, goBack } ) => {
 	const { settings_id } = useParams();
 	const [ settings, setSettings ] = useState( false );
 	const [ fieldValue, setFieldValue ] = useState( {} );
@@ -108,6 +116,33 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 					/>
 				);
 				break;
+
+			case 'text':
+				fieldElement = (
+					<GutenaFormsTextField
+						id={ field.id }
+						label={ field.label }
+						desc={ field.desc }
+						value={ field.value }
+						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						placeholder={ field.attrs.placeholder }
+					/>
+				);
+				break;
+
+			case 'radio-group':
+				fieldElement = (
+					<GutenaFormsRadioGroup
+						id={ field.id }
+						label={ field.label }
+						desc={ field.desc }
+						value={ field.value }
+						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						options={ field.attrs.options }
+					/>
+				)
+				break;
+
 			default:
 				console.log( 'Field not found', field )
 				fieldElement = null;
@@ -130,20 +165,41 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 		onClick();
 	}
 
+	const IconMap = {
+		'active-campaign': <Activecampaign />,
+		'brevo': <Brevo />,
+		'mailchimp': <Mailchimp />,
+		'recaptcha': <Recaptcha />,
+		'cloudflare': <Cloudflare />,
+	};
+
 	return (
-		<div
-			onClick={ showProPopup }
-			className={ 'gutena-forms__meta-box-container' }
-		>
-			<h2 className={ 'gutena-forms__page-title' }>
-				{ title }
-				{
-					isPro && (
-						<GutenaFormsProBadge />
-					)
-				}
+		<div className={ 'gutena-forms__meta-box-container' } onClick={ showProPopup }>
+			<h2>
+				<div>
+					{ IconMap[ id ] && IconMap[ id ] } { title }
+					{
+						isPro && (
+							<GutenaFormsProBadge />
+						)
+					}
+				</div>
+				<div>
+					{ goBack && (
+						<div className={ 'gutena-forms__submit-button secondary' }>
+							<NavLink
+								to={ goBack }
+							>
+								{ __( 'Go Back', 'gutena-forms' ) }
+							</NavLink>
+						</div>
+					) }
+				</div>
 			</h2>
-			<p>{ description }</p>
+			<p
+				className={ 'gutena-forms__settings-meta-box-desc' }
+				dangerouslySetInnerHTML={ { __html: description } }
+			/>
 
 			<div className={ 'gutena-forms__settings-meta-box' }>
 				{ ! template && ! loading && settings && Object.keys( settings ).map( ( key, index ) => {
