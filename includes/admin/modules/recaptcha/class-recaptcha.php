@@ -53,10 +53,7 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 			return array(
 				'id'          => 'recaptcha',
 				'title'	 	  => __( 'Google reCAPTCHA Settings', 'gutena-forms' ),
-				'description' => sprintf(
-					__( 'Enter the API keys for each reCAPTCHA type you use. Each type needs its own set of keys, which you can get from. %1$s', 'gutena-forms' ),
-					'<a href="https://www.google.com/recaptcha/admin" target="_blank">' . __( 'Generate API keys', 'gutena-forms' ) . '</a>'
-				),
+				'description' => __( 'Protect your forms using Google reCAPTCHA to prevent automated spam.', 'gutena-forms' ),
 				'fields' => array(
 					array(
 						'id'      => 'enable',

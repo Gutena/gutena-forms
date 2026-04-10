@@ -53,10 +53,7 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 			return array(
 				'id'          => 'cloudflare',
 				'title'	 	  => __( 'Cloudflare Turnstile', 'gutena-forms' ),
-				'description' => sprintf(
-					__( 'Enter your Turnstile API keys below to enable the Cloudflare Turnstile CAPTCHA option. See %1$s to obtain your API keys.', 'gutena-forms' ),
-					'<a href="https://developers.cloudflare.com/turnstile/" target="_blank">' . __( 'instructions', 'gutena-forms' ) . '</a>'
-				),
+				'description' => __( 'Secure your forms with Cloudflare Turnstile to block bots without affecting user experience.', 'gutena-forms' ),
 				'fields' => array(
 					array(
 						'id'      => 'enable',
