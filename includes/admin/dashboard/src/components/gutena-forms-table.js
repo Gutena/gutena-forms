@@ -1,83 +1,86 @@
 
 
-const GutenaFormsTable = ( { children, headers, data } ) => {
+const GutenaFormsTable = ({ children, headers, data }) => {
 
 	return (
-		<table
-			className={ 'gutena-forms__table-wrapper' }
-			cellPadding={ 0 }
-			cellSpacing={ 0 }
-		>
-			<thead>
-			{
-				children && children.customHeader ? children.header( headers ) : (
-					<tr>
-						{ headers.map( ( header, index ) => {
+		<div className="responsive_table">
+			<table
+				className={'gutena-forms__table-wrapper'}
+				cellPadding={0}
+				cellSpacing={0}
+			>
+				<thead>
+					{
+						children && children.customHeader ? children.header(headers) : (
+							<tr>
+								{headers.map((header, index) => {
 
-							let Element = children && children.header && children.header[ header.key ];
-							return (
-								<th
-									key={ index }
-									style={ { width: header.width ? header.width : 'auto' } }
-								>
-									{
-										Element ? Element( { header, index } ) : header.value
-									}
-								</th>
-							);
-						} ) }
-					</tr>
-				)
-			}
-			</thead>
+									let Element = children && children.header && children.header[header.key];
+									return (
+										<th
+											key={index}
+											style={{ width: header.width ? header.width : 'auto' }}
+										>
+											{
+												Element ? Element({ header, index }) : header.value
+											}
+										</th>
+									);
+								})}
+							</tr>
+						)
+					}
+				</thead>
 
-			<tbody>
-			{
-				data && data.map( ( row, index ) => {
-
-					return (
-						<tr
-							key={ index }
-						>
-							{ headers.map( ( header, index ) => {
-
-								let Element = children && children.body && children.body[ header.key ];
-
-								return (
-									<td
-										key={ index }
-										style={ { width: header.width ? header.width : 'auto' } }
-									>
-										{ Element ? Element( { row, index, header } ) : row[ header.key ] }
-									</td>
-								);
-							} ) }
-						</tr>
-					);
-				} )
-			}
-			</tbody>
-
-			<tfoot>
-			{
-				children && children.footer ? children.footer( headers ) : (
-					<tr>
-						{ headers.map( ( header, index ) => {
+				<tbody>
+					{
+						data && data.map((row, index) => {
 
 							return (
-								<th
-									key={ index }
-									style={ { width: header.width ? header.width : 'auto' } }
+								<tr
+									key={index}
 								>
-									{ header.value }
-								</th>
+									{headers.map((header, index) => {
+
+										let Element = children && children.body && children.body[header.key];
+
+										return (
+											<td
+												key={index}
+												style={{ width: header.width ? header.width : 'auto' }}
+											>
+												{Element ? Element({ row, index, header }) : row[header.key]}
+											</td>
+										);
+									})}
+								</tr>
 							);
-						} ) }
-					</tr>
-				)
-			}
-			</tfoot>
-		</table>
+						})
+					}
+				</tbody>
+
+				<tfoot>
+					{
+						children && children.footer ? children.footer(headers) : (
+							<tr>
+								{headers.map((header, index) => {
+
+									return (
+										<th
+											key={index}
+											style={{ width: header.width ? header.width : 'auto' }}
+										>
+											{header.value}
+										</th>
+									);
+								})}
+							</tr>
+						)
+					}
+				</tfoot>
+			</table>
+		</div>
+
 	);
 };
 
