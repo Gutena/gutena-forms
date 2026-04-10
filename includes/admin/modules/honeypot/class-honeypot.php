@@ -61,7 +61,7 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 					array(
 						'id'      => 'timeCheckValue',
 						'type'    => 'number',
-						'name'    => __( 'Time Limit (in seconds)', 'gutena-forms' ),
+						'name'    => __( 'Time Limit (In Seconds)', 'gutena-forms' ),
 						'default' => 6,
 						'value'   => $this->settings['timeCheckValue'],
 						'attrs'   => array(
