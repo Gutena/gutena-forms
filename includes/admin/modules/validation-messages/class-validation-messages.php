@@ -53,50 +53,64 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 						'id'      => 'required_msg',
 						'type'    => 'text',
 						'name'    => __( 'Required Field', 'gutena-forms' ),
-						'default' => __( 'This field is required.', 'gutena-forms' ),
 						'value'   => $this->settings['required_msg'],
+						'attrs'   => array(
+							'placeholder' => __(  'Please in the field', 'gutena-forms' ),
+						),
 					),
 					array(
 						'id'      => 'required_msg_select',
 						'type'    => 'text',
 						'name'    => __( 'Required Select Field', 'gutena-forms' ),
-						'default' => __( 'Please select an option.', 'gutena-forms' ),
 						'value'   => $this->settings['required_msg_select'],
+						'attrs'   => array(
+							'placeholder' => __(  'Please select an option', 'gutena-forms' ),
+						),
 					),
 					array(
 						'id'      => 'required_msg_check',
 						'type'    => 'text',
 						'name'    => __( 'Required Checkbox/Radio Field', 'gutena-forms' ),
-						'default' => __( 'Please check this field.', 'gutena-forms' ),
 						'value'   => $this->settings['required_msg_check'],
+						'attrs'   => array(
+							'placeholder' => __(  'Please check an option', 'gutena-forms' ),
+						),
 					),
 					array(
 						'id'      => 'required_msg_optin',
 						'type'    => 'text',
 						'name'    => __( 'Required Opt-in Field', 'gutena-forms' ),
-						'default' => __( 'Please check this box to opt in.', 'gutena-forms' ),
 						'value'   => $this->settings['required_msg_optin'],
+						'attrs'   => array(
+							'placeholder' => __( 'Please check this checkbox', 'gutena-forms' ),
+						),
 					),
 					array(
 						'id'      => 'invalid_email_msg',
 						'type'    => 'text',
 						'name'    => __( 'Invalid Email', 'gutena-forms' ),
-						'default' => __( 'Please enter a valid email address.', 'gutena-forms' ),
 						'value'   => $this->settings['invalid_email_msg'],
+						'attrs'   => array(
+							'placeholder' => __( 'Please enter a valid email address', 'gutena-forms' ),
+						),
 					),
 					array(
 						'id'      => 'min_value_msg',
 						'type'    => 'text',
 						'name'    => __( 'Minimum Value', 'gutena-forms' ),
-						'default' => __( 'Please enter a value greater than or equal to {min}.', 'gutena-forms' ),
 						'value'   => $this->settings['min_value_msg'],
+						'attrs'   => array(
+							'placeholder' => __( 'Please enter value greater than or equal to (value)', 'gutena-forms' ),
+						),
 					),
 					array(
 						'id'      => 'max_value_msg',
 						'type'    => 'text',
 						'name'    => __( 'Maximum Value', 'gutena-forms' ),
-						'default' => __( 'Please enter a value less than or equal to {max}.', 'gutena-forms' ),
 						'value'   => $this->settings['max_value_msg'],
+						'attrs'   => array(
+							'placeholder' => __( 'Please enter a value less than or equal to (value)', 'gutena-forms' ),
+						),
 					),
 					array(
 						'id'   => 'submit_button',
