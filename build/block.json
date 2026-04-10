@@ -166,7 +166,7 @@
       "type": "object",
       "default": {
         "enable": false,
-        "type": "v3",
+        "type": "v2",
         "site_key": "",
         "secret_key": "",
         "thresholdScore": "0.50",

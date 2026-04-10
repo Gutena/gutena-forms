@@ -19,7 +19,7 @@ const HoneypotSettings = ( { honeypot, setAttributes } ) => {
             <VStack>
                 <p>Honeypot field settings</p>
                 <ToggleControl
-                    label={ 'enable' }
+                    label={ __( 'Enable', 'gutena-forms' ) }
                     checked={ honeypot?.enable }
                     onChange={ ( honeypot_status ) => handleValueChange( 'enable', honeypot_status ) }
                 />
