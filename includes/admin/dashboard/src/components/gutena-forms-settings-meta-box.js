@@ -14,7 +14,6 @@ import GutenaFormsProBadge from './gutena-forms-pro-badge';
 import Activecampaign from '../icons/activecampaign';
 import Brevo from '../icons/brevo';
 import Mailchimp from '../icons/mailchimp';
-import {Button} from "@wordpress/components";
 import Recaptcha from "../icons/recaptcha";
 import Cloudflare from "../icons/cloudflare";
 
@@ -175,7 +174,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 
 	return (
 		<div className={ 'gutena-forms__meta-box-container' } onClick={ showProPopup }>
-			<h2>
+			<h2 className={ 'gutena-forms__page-title' }>
 				<div>
 					{ IconMap[ id ] && IconMap[ id ] } { title }
 					{
