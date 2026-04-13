@@ -1,0 +1,1731 @@
+@import "./satoshi.css";
+@import "react-loading-skeleton/dist/skeleton.css";
+#wpcontent {
+    padding-left: 0 !important;
+}
+
+#wpwrap {
+    background: #FAFAFA !important;
+}
+
+.gutena-froms#gutena-forms__root * {
+    font-family: "Satoshi";
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table {
+    overflow-x: scroll;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table table {
+    min-width: 1200px !important;
+}
+.gutena-froms#gutena-forms__root svg {
+    fill: transparent;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__forms-screen .gutena-forms__page-title,
+.gutena-froms#gutena-forms__root .gutena-forms__entries .gutena-forms__page-title {
+    font-size: 24px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__page-title {
+    color: #2C3338;
+    font-size: 24px;
+    font-weight: 700;
+    padding: 0 50px 0 0;
+    position: relative;
+    display: inline-block;
+    margin: 0 0 10px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__field-container .components-base-control__field {
+    width: 330px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container {
+    background: #FFFFFF;
+    border-bottom: 0.5px solid #E2E2E2;
+    height: 50px;
+    display: flex;
+    padding: 0 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms_icon-menu-container {
+    display: flex;
+    align-items: center;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms_icon-menu-container .gutena-forms_icon-menu {
+    margin-right: 15px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms_icon-menu-container .gutena-forms_icon-menu a {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms_icon-menu-container .gutena-forms__header-menu ul {
+    padding: 0;
+    margin: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms_icon-menu-container .gutena-forms__header-menu ul li {
+    display: inline-block;
+    height: 53px;
+    padding: 0;
+    margin: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms_icon-menu-container .gutena-forms__header-menu ul li a {
+    display: block;
+    padding: 0 20px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6E7376;
+    height: 100%;
+    line-height: 53px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms_icon-menu-container .gutena-forms__header-menu ul li a:focus, .gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms_icon-menu-container .gutena-forms__header-menu ul li a:hover {
+    box-shadow: none;
+    outline: none;
+    border: none;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms_icon-menu-container .gutena-forms__header-menu ul li a.active {
+    height: calc(100% - 2px);
+    color: #424D55;
+    font-weight: 700;
+    border-bottom: 2px solid #0DA88C;
+    box-shadow: none;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms__upgrade-button {
+    border: 0.603px solid #1AE8C2;
+    background: linear-gradient(90deg, #1AE8C2 -51.51%, #0E826D 100%), linear-gradient(270deg, #E2A446 0%, #FED38E 100%);
+    padding: 3px 9px;
+    border-radius: 3px;
+    height: auto;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__header-container .gutena-forms__upgrade-button svg {
+    margin-right: 6px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__mb-30 {
+    margin-bottom: 30px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__primary-button {
+    padding: 6px 10px;
+    height: auto;
+    border-radius: 4px;
+    background: #0DA88C;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 700;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__primary-button svg {
+    margin-right: 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__forms-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__forms-header .gutena-forms__primary-button {
+    margin-left: 20px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container {
+    width: calc(100% - 210px);
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__container {
+    padding: 20px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container h1 {
+    color: #000;
+    font-size: 16px;
+    font-weight: 700;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container p {
+    color: #000;
+    font-size: 12px;
+    font-weight: 400;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__meta-box-container {
+    width: 760px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box {
+    border-radius: 10px;
+    border: 1px solid #e2e2e2;
+    background: #ffffff;
+    padding: 20px;
+    position: relative;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__settings-meta-box--overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 1;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__toggle-control .gutena-forms__toggle-control-input .components-toggle-control__label {
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__toggle-control .gutena-forms__toggle-control-input .components-toggle-control__help {
+    color: #424D55;
+    font-size: 12px;
+    font-weight: 400;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__toggle-control .gutena-forms__toggle-control-input .is-checked .components-form-toggle__track {
+    background: #0DA88C;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__number-control {
+    margin-top: 20px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__number-control .components-input-control__label {
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: none;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__email-control {
+    margin-top: 20px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__email-control .components-base-control__label {
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: none;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__email-control .gutena-forms__field-description {
+    color: #424D55;
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 4px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__submit-button {
+    margin-top: 30px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box .gutena-forms__submit-button button {
+    border-radius: 4px;
+    background: #0DA88C;
+    color: #FFF;
+    font-size: 12px;
+    font-weight: 700;
+    height: auto;
+    padding: 6px 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__pro-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__pro-wrapper .gutena-forms__pro-description {
+    color: #424D55;
+    font-size: 12px;
+    font-weight: 400;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__pro-wrapper .gutena-forms__pro-single-list-wrapper {
+    display: flex;
+    width: 450px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 4px;
+    border-color: #cccccc;
+    border-style: solid;
+    border-top-width: 0.5px;
+    border-right-width: 0.5px;
+    border-bottom-width: 0.5px;
+    border-left-width: 2px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__pro-wrapper .gutena-forms__pro-single-list-wrapper.gutena-forms__add-new-tag-btn {
+    justify-content: center;
+    cursor: pointer;
+    border-left-width: 1px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__pro-wrapper .gutena-forms__pro-single-list-wrapper.gutena-forms__add-new-tag-btn svg {
+    margin-right: 8px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__pro-wrapper .gutena-forms__pro-single-list-wrapper .gutena-forms__pro-single-list {
+    display: flex;
+    align-items: center;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__pro-wrapper .gutena-forms__pro-single-list-wrapper .gutena-forms__pro-single-list .gutena-forms__pro-single-list-title {
+    color: #424D55;
+    font-size: 12px;
+    font-weight: 500;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__pro-wrapper .gutena-forms__pro-single-list-wrapper .gutena-forms__pro-single-list .gutena-forms__pro-single-list-icon svg {
+    margin: 0 15px -4px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__pro-wrapper .gutena-forms__pro-single-list-wrapper .gutena-forms__user-profile span {
+    display: inline-block;
+    margin-left: 5px;
+    color: #0DA88C;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation {
+    width: 197px;
+    background: #ffffff;
+    border-right: 0.5px solid #E2E2E2;
+    min-height: calc(100vh - 45px - 32px - 66px);
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__container {
+    padding: 10px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-header {
+    cursor: pointer;
+    user-select: none;
+    border-radius: 4px;
+    background: #F0FFFC;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 35px;
+    padding: 0 20px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-header svg {
+    margin-top: 5px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-header .gutena-forms__accordion-title {
+    color: #424D55;
+    font-size: 12px;
+    font-weight: 700;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-header .gutena-forms__accordion-arrow.closed {
+    transform: rotate(-180deg);
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-items {
+    padding: 0 20px 0 28px;
+    margin-top: 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-items.closed {
+    display: none;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-item {
+    border-left: 1px solid #e2e2e2;
+    padding-left: 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-item:last-child a {
+    margin-bottom: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-item a {
+    line-height: 30px;
+    color: #6E7376;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 14px;
+    box-shadow: none;
+    padding: 0 6px;
+    border: 1px solid transparent;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__left-menu-navigation .gutena-forms__accordion-item a.active {
+    border-radius: 4px;
+    background: #EBFFFB;
+    color: #424D55;
+    font-weight: 700;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-badge {
+    display: inline-block;
+    margin-left: 5px;
+    padding: 0 6px;
+    border-radius: 15px;
+    border: 0.5px solid #1AE8C2;
+    background: linear-gradient(90deg, #1AE8C2 -88.15%, #0E826D 100%), linear-gradient(260deg, #0D2149 1.97%, #208AAE 100%);
+    color: #FFF;
+    font-size: 10px;
+    font-weight: 800;
+    position: absolute;
+    top: 2px;
+    right: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-badge svg {
+    margin-right: 5px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 123456789;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper.visible {
+    display: flex;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper.invisible {
+    display: none;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup {
+    width: 400px;
+    background: #ffffff;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup .gutena-froms__popup-close-button-container {
+    position: absolute;
+    top: 10px;
+    right: 5px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup .gutena-forms__popup-header {
+    background: linear-gradient(265deg, #0DA88C -39.82%, #015D61 87.8%);
+    text-align: center;
+    padding: 20px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup .gutena-forms__popup-header h1 {
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: normal;
+    background: linear-gradient(89deg, #E8FBF8 9.25%, #C8F6EE 90.75%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup .gutena-forms__popup-actions {
+    padding: 30px 25px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup .gutena-forms__popup-actions .gutena-forms__popup-content {
+    display: grid;
+    grid-template-columns: auto auto;
+    margin: 6px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup .gutena-forms__popup-actions .gutena-forms__popup-content .gutena-forms__feature {
+    color: #04463A;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup .gutena-forms__popup-actions .gutena-forms__popup-content .gutena-forms__feature svg {
+    margin-right: 5px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup .gutena-forms__popup-actions .gutena-forms__pro-upgrade-button {
+    width: 240px;
+    padding: 11px 0 0 0;
+    height: 50px;
+    text-align: center;
+    display: block;
+    color: #000;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 4px;
+    background: #FFBA3D;
+    border: 1px solid #FFD78E;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__pro-popup-wrapper .gutena-forms__pro-popup .gutena-forms__popup-actions .gutena-forms__pro-upgrade-button svg {
+    margin: 0 6px -5px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__page-layout-wrapper {
+    padding: 40px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__page-layout-wrapper .gutena-forms-add-new-form-button {
+    border-radius: 4px;
+    background: #0DA88C;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 700;
+    margin-left: 20px;
+    display: inline-block;
+    height: auto;
+    padding: 6px 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__page-layout-wrapper .gutena-forms-add-new-form-button svg {
+    margin: 0 10px -4px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper {
+    overflow: hidden;
+    border-radius: 4px;
+    border: 0.5px solid #d4d4e4;
+    background: #ffffff;
+    width: 100%;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper thead,
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper tfoot {
+    height: 45px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper thead tr th,
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper tfoot tr th {
+    border: none;
+    background: #F9F9F9;
+    text-align: left;
+    color: #414A51;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 20px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper thead tr th {
+    border-bottom: 0.5px solid #d4d4e4;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper tfoot tr th {
+    border-top: 0.5px solid #d4d4e4;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper tbody tr td {
+    border: none;
+    border-bottom: 0.5px solid #E2E2E2;
+    padding: 12px 20px;
+    color: #6E7376;
+    font-size: 12px;
+    font-weight: 500;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper tbody tr td .gutena-forms__entry-status-control {
+    margin-top: 6px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper tbody tr td .components-base-control__field {
+    margin: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper tbody tr td button, .gutena-froms#gutena-forms__root .gutena-forms__table-wrapper tbody tr td a {
+    height: auto;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__table-wrapper tbody tr:last-child td {
+    border-bottom: none;
+}
+.gutena-froms#gutena-forms__root .display-inline-block {
+    display: inline-block;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container {
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #E2E2E2;
+    background: #FFF;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header .gutena-forms__search-box {
+    border-radius: 2px;
+    border: 1px solid #e2e2e2;
+    padding: 0 10px;
+    min-width: 180px;
+    margin-right: 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header .gutena-forms__search-box input {
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    width: 190px;
+    height: 30px;
+    color: #6E7376;
+    font-size: 12px;
+    font-weight: 400;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header .gutena-forms__search-box input[readonly] {
+    background-color: transparent;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header .gutena-forms__search-box input::placeholder {
+    color: #6E7376;
+    font-size: 12px;
+    font-weight: 400;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header .gutena-forms__search-box input:focus {
+    box-shadow: none;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header .gutena-forms__search-box.date-search {
+    position: relative;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header .gutena-forms__search-box.date-search svg {
+    margin: 0 0 -2px 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header .gutena-forms__search-box.text-search svg {
+    margin-right: 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__datatable-header .display-inline-block:last-child .gutena-forms__search-box {
+    margin-right: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__table-footer .number-of-items-wrapper {
+    padding-top: 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__table-footer .number-of-items-wrapper .gutena-forms__select-wrapper {
+    margin-left: 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__table-footer .gutena-forms__pagination .gutena-forms__pagination-button {
+    border-radius: 4px;
+    border: 0.5px solid #ccd5d9;
+    margin-right: 4px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__table-footer .gutena-forms__pagination .gutena-forms__pagination-button:last-child {
+    margin-right: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__table-footer .gutena-forms__pagination .gutena-forms__pagination-button.current {
+    border-radius: 4px;
+    background: #EDFFFC;
+    border: none;
+    color: #0DA88C;
+    font-size: 12px;
+    font-weight: 500;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__table-footer .gutena-forms__pagination .gutena-forms__pagination-button:disabled {
+    border: none;
+    cursor: not-allowed;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__data-table-container .gutena-forms__table-footer .gutena-forms__pagination .gutena-forms__pagination-button:disabled.current {
+    cursor: default;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__calendar-wrapper {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    z-index: 9999;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.gutena-froms#gutena-forms__root .gutena-forms__bulk-action-container .components-input-base {
+    position: static;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__bulk-action-container select {
+    height: auto;
+    padding: 0 30px 0 10px;
+    border-radius: 2px;
+    border: 1px solid #E2E2E2;
+    box-shadow: none !important;
+    outline: none !important;
+    color: #6E7376;
+    font-size: 12px;
+    font-weight: 400;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__bulk-action-container .display-inline-block:last-child {
+    margin-left: 15px;
+}
+.gutena-froms#gutena-forms__root .secondary-button {
+    border-radius: 2px;
+    border: 1px solid #0DA88C;
+    background: linear-gradient(0deg, #FFF 0%, #FFF 100%), #E0ECFF;
+    color: #0DA88C;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: none;
+    padding: 6px 10px;
+    height: auto;
+}
+.gutena-froms#gutena-forms__root .gutena-forms-datatable__action button,
+.gutena-froms#gutena-forms__root .gutena-forms-datatable__action a {
+    padding: 0;
+    margin-right: 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms-datatable__entries a {
+    color: #0DA88C;
+    font-size: 12px;
+    font-weight: 500;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+    padding: 60px 40px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-content {
+    max-width: 900px;
+    width: 100%;
+    text-align: center;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-welcome {
+    margin-bottom: 40px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-welcome h2 {
+    color: #2C3338;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-welcome p {
+    color: #2C3338;
+    text-align: center;
+    line-height: 1.6;
+    margin: 8px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-welcome p:first-of-type {
+    font-size: 16px;
+    font-weight: 700;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-welcome p:last-of-type {
+    font-size: 14px;
+    font-weight: 500;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-video-section {
+    background: #F0FFFC;
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 40px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-video-section svg {
+    width: 100%;
+    max-width: 496px;
+    height: auto;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-actions {
+    margin-bottom: 30px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-actions .gutena-forms-create-first-form-button {
+    border-radius: 8px;
+    background: #0DA88C;
+    padding: 14px 28px;
+    height: auto;
+    font-size: 16px;
+    font-weight: 700;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(13, 168, 140, 0.3);
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-actions .gutena-forms-create-first-form-button svg {
+    margin-right: 8px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-help {
+    color: #2C3338;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__empty-state .gutena-forms__empty-state-help a {
+    color: #0DA88C;
+    text-decoration: none;
+    font-weight: 500;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper.zoom-in {
+    opacity: 1;
+    pointer-events: all;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper.zoom-in .gutena-forms__youtube-modal-content {
+    animation: gutenaFormsZoomIn 0.3s ease-out forwards;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper.zoom-out {
+    opacity: 0;
+    pointer-events: none;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper.zoom-out .gutena-forms__youtube-modal-content {
+    animation: gutenaFormsZoomOut 0.3s ease-in forwards;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper .gutena-forms__youtube-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    transform: scale(0.3);
+    opacity: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper .gutena-forms__youtube-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    padding: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper .gutena-forms__youtube-modal-close:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper .gutena-forms__youtube-modal-close svg {
+    width: 20px;
+    height: 20px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper .gutena-forms__youtube-modal-iframe-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__youtube-modal-wrapper .gutena-forms__youtube-modal-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .desc,
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .description {
+    color: #6E7376;
+    font-size: 10px;
+    font-weight: 400;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen h2.heading {
+    color: #2C3338;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-forms__entry-screen-container {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box {
+    border-radius: 10px;
+    border: 1px solid #E2E2E2;
+    background: #FFF;
+    padding: 15px;
+    margin-bottom: 14px;
+    color: #6E7376;
+    font-size: 12px;
+    font-weight: 500;
+    position: relative;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box .heading {
+    font-size: 14px;
+    font-weight: 700;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box .gutena-forms__entry-data {
+    margin-top: 15px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box .gutena-forms__entry-data .gutena-forms__entry-data-row {
+    min-height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    border: 1px solid #F6F8FA;
+    border-bottom: none;
+    font-size: 14px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box .gutena-forms__entry-data .gutena-forms__entry-data-row:first-child {
+    border-radius: 4px 4px 0 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box .gutena-forms__entry-data .gutena-forms__entry-data-row:last-child {
+    border-radius: 0 0 4px 4px;
+    border-bottom: 1px solid #F6F8FA;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box .gutena-forms__entry-data .gutena-forms__entry-data-row .value {
+    text-align: left;
+    width: 80%;
+    word-break: break-word;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box .gutena-forms__entry-data .gutena-forms__entry-data-row .label {
+    width: 20%;
+    text-align: left;
+    font-weight: 600;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box:last-child {
+    margin-bottom: 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box.dummy-content .notes-button {
+    position: absolute;
+    color: #0DA88C;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 2px;
+    border: 1px solid #0DA88C;
+    background: linear-gradient(0deg, #FFF 0%, #FFF 100%), #E0ECFF;
+    padding: 6px 10px;
+    top: 10px;
+    right: 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box.dummy-content .notes-container {
+    border-radius: 4px;
+    background: #FAFAFA;
+    color: #6E7376;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 65px;
+    margin-top: 20px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box.dummy-content .notes-content p {
+    color: #6E7376;
+    font-size: 12px;
+    font-weight: 500;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-froms__entry-meta-box.dummy-content .notes-content p svg {
+    margin: 0 10px -5px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-forms__col-70 {
+    width: calc(70% - 7px);
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-forms__col-30 {
+    width: calc(30% - 7px);
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-forms__list-unstyled li {
+    display: inline-block;
+    margin-left: 15px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__entry-screen .gutena-forms__list-unstyled li a {
+    color: #0DA88C;
+    font-size: 10px;
+    font-weight: 400;
+}
+@keyframes gutenaFormsZoomIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+@keyframes gutenaFormsZoomOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+}
+.gutena-froms#gutena-forms__root .gutena-forms-pro__tags-container.notes {
+    width: auto;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__submit-button button,
+.gutena-froms#gutena-forms__root .gutena-forms__submit-button a {
+    height: auto;
+    border-radius: 4px;
+    background: #0DA88C;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 700;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__submit-button.secondary button,
+.gutena-froms#gutena-forms__root .gutena-forms__submit-button.secondary a {
+    border-radius: 2px;
+    border: 1px solid #0DA88C;
+    background: linear-gradient(0deg, #FFF 0%, #FFF 100%), #E0ECFF;
+    color: #0DA88C;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: none;
+    padding: 6px 10px;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__submit-button.secondary a {
+    text-decoration: none;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__submit-button.secondary a svg {
+    margin: 0 5px -1px 0;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__dummy-select {
+    display: flex;
+    width: 100px;
+    padding: 6px 10px;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 2px;
+    border: 1px solid #E2E2E2;
+    cursor: default;
+    position: relative;
+}
+.gutena-froms#gutena-forms__root .gutena-forms__dummy-select svg {
+    margin: 0 0 -4px 0;
+}
+.gutena-froms#gutena-forms__root .components-select-control__input {
+    color: #6E7376;
+}
+.gutena-froms#gutena-forms__root .components-input-control__backdrop {
+    border-radius: 2px !important;
+    border: 1px solid #E2E2E2 !important;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__mcp-configuration h6 {
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__mcp-configuration ol li {
+    color: #000;
+    font-size: 12px;
+    font-weight: 400;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__mcp-configuration pre {
+    background: #F3F4F6;
+    color: #4B5563;
+    border-radius: 5px;
+    padding: 10px;
+    tab-size: 2;
+    position: relative;
+}
+.gutena-froms#gutena-forms__root .gutena-froms__mcp-configuration .gutena-forms__copy-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.gf-introduction-page {
+    max-width: 800px;
+    margin: 86px auto 0;
+    height: auto;
+    background-color: #ffffff;
+    font-family: "Satoshi", sans-serif;
+}
+.gf-introduction-page .gf-header-section {
+    text-align: center;
+    padding: 2rem 55px;
+    position: relative;
+}
+.gf-introduction-page .gf-header-section .gf-logo-wrapper {
+    width: 80px;
+    height: 80px;
+    margin: -72px auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 1px solid #E5E7EB;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+.gf-introduction-page .gf-header-section .gf-logo-wrapper .gf-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+.gf-introduction-page .gf-header-section .gf-top-heading {
+    color: #000;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 1rem;
+}
+.gf-introduction-page .gf-header-section .gf-top-description {
+    color: #767676;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+.gf-introduction-page .gf-video-section {
+    background: linear-gradient(260deg, #0DA88C -15.5%, #015D61 45.3%);
+    padding: 3rem 55px;
+}
+.gf-introduction-page .gf-video-section .gf-video-content {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.gf-introduction-page .gf-video-section .gf-video-left {
+    flex: 1;
+    min-width: 300px;
+}
+.gf-introduction-page .gf-video-section .gf-video-right {
+    flex: 1;
+    min-width: 300px;
+    text-align: center;
+}
+.gf-introduction-page .gf-video-section .gf-video-heading {
+    color: #FFF;
+    font-family: "Satoshi", sans-serif;
+    font-size: 34.398px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 38px;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+.gf-introduction-page .gf-video-section .gf-video-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+.gf-introduction-page .gf-video-section .gf-video-button:hover {
+    opacity: 0.9;
+}
+.gf-introduction-page .gf-video-section .gf-video-button .gf-play-icon {
+    width: 83px;
+    height: 83px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gf-introduction-page .gf-video-section .gf-video-button .gf-watch-text {
+    color: #FED07C;
+    font-family: "Satoshi", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+.gf-introduction-page .gf-video-section .gf-form-illustration {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+.gf-introduction-page .gf-tagline-section {
+    padding: 2rem 55px;
+    text-align: center;
+}
+.gf-introduction-page .gf-tagline-section .gf-tagline {
+    color: #767676;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 0;
+}
+.gf-introduction-page .gf-cta-section {
+    padding: 1rem 55px;
+    text-align: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.gf-introduction-page .gf-cta-section .gf-create-form-link {
+    display: inline-flex;
+    padding: 16px 54px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: #F6B642;
+    color: #FFF;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+.gf-introduction-page .gf-cta-section .gf-create-form-link:hover {
+    background: #e5a532;
+}
+.gf-introduction-page .gf-cta-section .gf-read-guide-link {
+    display: flex;
+    width: 272px;
+    padding: 16px 54px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: #EBEBEB;
+    color: #000;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+.gf-introduction-page .gf-cta-section .gf-read-guide-link:hover {
+    background: #d4d4d4;
+}
+.gf-introduction-page .gf-features-section {
+    padding: 3rem 55px;
+    text-align: center;
+}
+.gf-introduction-page .gf-features-section .gf-features-heading {
+    color: #000;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 1rem;
+}
+.gf-introduction-page .gf-features-section .gf-features-description {
+    color: #767676;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 2rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.gf-introduction-page .gf-features-section .gf-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+.gf-introduction-page .gf-features-section .gf-feature-item {
+    background: #ffffff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.gf-introduction-page .gf-features-section .gf-feature-item .gf-feature-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.gf-introduction-page .gf-features-section .gf-feature-item .gf-feature-icon {
+    width: 32px;
+    height: 32px;
+    display: block;
+}
+.gf-introduction-page .gf-features-section .gf-feature-item .gf-feature-content {
+    flex: 1;
+    text-align: left;
+}
+.gf-introduction-page .gf-features-section .gf-feature-item .gf-feature-title {
+    color: #000;
+    font-family: "Satoshi", sans-serif;
+    font-size: 13.681px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin: 0 0 0.5rem 0;
+}
+.gf-introduction-page .gf-features-section .gf-feature-item .gf-feature-description {
+    color: #767676;
+    font-family: "Satoshi", sans-serif;
+    font-size: 11.971px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 0;
+}
+.gf-introduction-page .gf-features-section .gf-see-all-features {
+    display: flex;
+    width: 212px;
+    padding: 16px 54px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: #EBEBEB;
+    color: #767676;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-decoration: none;
+    margin: 0 auto;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.gf-introduction-page .gf-features-section .gf-see-all-features:hover {
+    background: #d4d4d4;
+    color: #000;
+}
+.gf-introduction-page .gf-upgrade-pro-section {
+    background: linear-gradient(98deg, #D5FFF8 64.58%, #0DA88C 167.69%);
+    padding: 2rem 55px;
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-left {
+    flex: 1;
+    min-width: 300px;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-left .gf-upgrade-heading {
+    color: #067971;
+    font-family: "Satoshi", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+    margin-bottom: 1rem;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-left .gf-upgrade-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-left .gf-upgrade-list .gf-upgrade-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #067971;
+    font-family: "Satoshi", sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-left .gf-upgrade-list .gf-upgrade-item .gf-checkmark-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-right {
+    width: 200px;
+    padding: 2rem;
+    text-align: center;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-right .gf-pro-label {
+    color: #015D61;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #067971;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-right .gf-pro-price {
+    color: #015D61;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 35.556px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin: 0.5rem 0;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-right .gf-pro-period {
+    color: #015D61;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 1.5rem;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-right .gf-upgrade-button {
+    display: flex;
+    width: 173px;
+    height: 44px;
+    padding: 6px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: #F6B642;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-family: "Satoshi", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 0 auto;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+.gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-right .gf-upgrade-button:hover {
+    background: #e5a532;
+}
+.gf-introduction-page .gf-testimonials-section {
+    padding: 3rem 55px;
+    text-align: center;
+}
+.gf-introduction-page .gf-testimonials-section .gf-testimonials-heading {
+    color: #000;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 2rem;
+}
+.gf-introduction-page .gf-testimonials-section .gf-testimonials-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+.gf-introduction-page .gf-testimonials-section .gf-testimonial-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    text-align: left;
+}
+.gf-introduction-page .gf-testimonials-section .gf-testimonial-item .gf-testimonial-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.gf-introduction-page .gf-testimonials-section .gf-testimonial-item .gf-testimonial-content {
+    flex: 1;
+}
+.gf-introduction-page .gf-testimonials-section .gf-testimonial-item .gf-testimonial-text {
+    color: #767676;
+    font-family: "Satoshi", sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 0.5rem;
+}
+.gf-introduction-page .gf-testimonials-section .gf-testimonial-item .gf-testimonial-name {
+    color: #767676;
+    font-family: "Satoshi", sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin: 0;
+}
+.gf-introduction-page .gf-footer-cta-section {
+    padding: 2rem 55px;
+    text-align: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.gf-introduction-page .gf-footer-cta-section.gf-pro-active {
+    justify-content: center;
+}
+.gf-introduction-page .gf-footer-cta-section.gf-pro-active .gf-create-form-button {
+    margin: 0 auto;
+}
+.gf-introduction-page .gf-footer-cta-section .gf-create-form-button {
+    color: #FFF;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    background: #0DA88C;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+.gf-introduction-page .gf-footer-cta-section .gf-create-form-button:hover {
+    background: #0b9579;
+}
+.gf-introduction-page .gf-footer-cta-section .gf-upgrade-pro-link {
+    color: #0DA88C;
+    text-align: center;
+    font-family: "Satoshi", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-skip-ink: auto;
+    text-decoration-thickness: 1.68px;
+    text-underline-offset: 6.4px;
+    text-underline-position: from-font;
+    transition: color 0.3s;
+}
+.gf-introduction-page .gf-footer-cta-section .gf-upgrade-pro-link:hover {
+    color: #0b9579;
+}
+
+@media (max-width: 768px) {
+    .gf-introduction-page .gf-video-section .gf-video-heading {
+        font-size: 24px;
+        line-height: 28px;
+    }
+    .gf-introduction-page .gf-upgrade-pro-section {
+        flex-direction: column;
+    }
+    .gf-introduction-page .gf-upgrade-pro-section .gf-upgrade-right {
+        width: 100%;
+        max-width: 300px;
+    }
+    .gf-introduction-page .gf-features-section .gf-features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@keyframes gf-zoom-in {
+    from {
+        opacity: 0;
+        transform: scale3d(0.3, 0.3, 0.3);
+    }
+    50% {
+        opacity: 1;
+    }
+    to {
+        opacity: 1;
+        transform: scale3d(1, 1, 1);
+    }
+}
+@keyframes gf-zoom-out {
+    from {
+        opacity: 1;
+        transform: scale3d(1, 1, 1);
+    }
+    50% {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        transform: scale3d(0.3, 0.3, 0.3);
+    }
+}
+@keyframes gf-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes gf-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+.gf-video-modal {
+    display: flex;
+    position: fixed;
+    z-index: 999999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: center;
+    animation: gf-fade-in 0.3s ease-out;
+}
+.gf-video-modal.gf-modal-closing {
+    animation: gf-fade-out 0.3s ease-out;
+}
+.gf-video-modal .gf-video-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    background: #000;
+    border-radius: 8px;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.gf-video-modal .gf-video-modal-content.gf-zoom-in {
+    animation: gf-zoom-in 0.3s ease-out;
+}
+.gf-video-modal .gf-video-modal-content.gf-zoom-out {
+    animation: gf-zoom-out 0.3s ease-out;
+}
+.gf-video-modal .gf-video-modal-content .gf-video-modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: #fff;
+    font-size: 40px;
+    font-weight: 300;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 0.3s;
+}
+.gf-video-modal .gf-video-modal-content .gf-video-modal-close:hover {
+    opacity: 0.7;
+}
+.gf-video-modal .gf-video-modal-content .gf-video-embed {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.gf-video-modal .gf-video-modal-content .gf-video-embed iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+#gfp-page-doc {
+    background: #EEF8F6;
+    padding: 2rem 0;
+}
+#gfp-page-doc .gutena-forms-knowledge-base {
+    margin: auto;
+    max-width: 900px;
+    background: #fff;
+    padding: 2.5rem 2.875rem;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-docs {
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(33, 34, 47, 0.1);
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-docs .gutena-topics .gutena-topic {
+    margin-bottom: 1rem;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-docs .gutena-topics .gutena-topic::marker {
+    color: #2C3338;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-docs .gutena-topics .gutena-topic a {
+    color: #2C3338;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.6;
+    text-decoration-line: none;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-support {
+    margin-bottom: 35px;
+    padding-bottom: 35px;
+    border-bottom: 1px solid rgba(33, 34, 47, 0.1);
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-support .gutena-buttons {
+    display: flex;
+    gap: 21px;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-support .gutena-buttons a:visited {
+    color: #fff;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-support .gutena-details {
+    max-width: 321px;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-support .gutena-details .gutena-title {
+    margin-bottom: 1rem;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-support .gutena-details .gutena-description {
+    padding-bottom: 2rem;
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.8;
+    color: #50575E;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-changelog {
+    white-space: pre;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-changelog .gutena-details .gutena-title {
+    margin-bottom: 30px;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-changelog .gutena-details .gutena-description {
+    font-size: 15px;
+    color: #50575E;
+    line-height: 1.6;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-changelog .gutena-details .gutena-description .version {
+    display: block;
+    color: #2C3338;
+    font-weight: 600;
+    font-size: 18px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(33, 34, 47, 0.1);
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gutena-changelog .gutena-details .gutena-description .version:first-of-type {
+    padding: 0;
+    border: 0;
+}
+#gfp-page-doc .gutena-forms-knowledge-base .gf-btn-group .components-button {
+    padding: 10px 10px;
+}
+
+@media (max-width: 768px) {
+    .gf-video-modal .gf-video-modal-content {
+        width: 95%;
+        max-width: 100%;
+    }
+    .gf-video-modal .gf-video-modal-content .gf-video-modal-close {
+        top: -35px;
+        font-size: 35px;
+        width: 35px;
+        height: 35px;
+    }
+}

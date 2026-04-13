@@ -77,7 +77,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 				array(
 					'permission_callback' => array( self::class, 'permission_callback' ),
 					'methods'             => 'GET',
-					'callback'			  => array( $this, 'get_menus' ),
+					'callback'            => array( $this, 'get_menus' ),
 				)
 			);
 
@@ -87,7 +87,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 				array(
 					'permission_callback' => array( self::class, 'permission_callback' ),
 					'methods'             => 'GET',
-					'callback'			  => array( $this, 'get_left_navigation_menus' ),
+					'callback'            => array( $this, 'get_left_navigation_menus' ),
 				)
 			);
 
@@ -234,26 +234,17 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							'slug'  => 'user-access',
 						),
 						array(
-								'title' => __( 'Weekly Summary', 'gutena-forms' ),
-								'slug'  => 'weekly-summary',
-							),
-						)
+							'title' => __( 'Weekly Summary', 'gutena-forms' ),
+							'slug'  => 'weekly-summary',
+						),
+					),
 				),
-				/**
-				 * Disabling this due to some reasons, will enable it in future
-				 *
-				 * @todo Enable this in future after adding necessary functionalities
-				 * array(
-				 * 'title' => __( 'Spam Protection', 'gutena-forms' ),
-				 * 'icon'  => 'Shield',
-				 * 'menus' => array(
-				 * array(
-				 * 'title' => __( 'Honeypot', 'gutena-forms' ),
-				 * 'slug'  => 'honeypot',
-				 * ),
-				 * ),
-				* )
-				*/
+				array(
+					'title' => __( 'MCP', 'gutena-forms' ),
+					'icon'  => 'Robot',
+					'menus' => array(),
+					'slug'  => 'mcp',
+				),
 			);
 
 			if ( is_array( $menus ) && ! empty( $menus ) ) {
@@ -323,7 +314,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 		 * @return WP_REST_Response
 		 */
 		public function save_settings( $request ) {
-			$settings_id  = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
+			$settings_id   = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
 			$settings_data = $request->get_param( 'settings_data' );
 
 			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
