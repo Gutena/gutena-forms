@@ -14,21 +14,20 @@
  * @package           gutena-forms
  */
 
-
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Plugin dir path
  */
 if ( ! defined( 'GUTENA_FORMS_FILE' ) ) {
-	define( 'GUTENA_FORMS_FILE',  __FILE__ );
+	define( 'GUTENA_FORMS_FILE', __FILE__ );
 }
 
 /**
  * Plugin dir path
  */
 if ( ! defined( 'GUTENA_FORMS_DIR_PATH' ) ) {
-	define( 'GUTENA_FORMS_DIR_PATH',  plugin_dir_path( __FILE__ ) );
+	define( 'GUTENA_FORMS_DIR_PATH', plugin_dir_path( __FILE__ ) );
 }
 
 /**
@@ -57,16 +56,17 @@ if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) {
 	 * Get form schema option value. Checks non-prefixed first, then prefixed; if both exist, returns prefixed.
 	 *
 	 * @param string $form_id Form ID (option key).
-	 * @param mixed  $default Default if neither option exists.
+	 * @param mixed  $default_value Default if neither option exists.
+	 *
 	 * @return mixed Form schema array or $default.
 	 */
-	function gutena_forms_get_form_schema_option( $form_id, $default = false ) {
+	function gutena_forms_get_form_schema_option( $form_id, $default_value = false ) {
 		$form_id = sanitize_key( $form_id );
 		if ( '' === $form_id ) {
-			return $default;
+			return $default_value;
 		}
-		$non_prefixed = get_option( $form_id, null );
-		$prefixed     = get_option( GUTENA_FORMS_SCHEMA_OPTION_PREFIX . $form_id, null );
+		$non_prefixed     = get_option( $form_id, null );
+		$prefixed         = get_option( GUTENA_FORMS_SCHEMA_OPTION_PREFIX . $form_id, null );
 		$has_non_prefixed = ( null !== $non_prefixed );
 		$has_prefixed     = ( null !== $prefixed );
 		if ( $has_non_prefixed && $has_prefixed ) {
@@ -78,7 +78,7 @@ if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) {
 		if ( $has_non_prefixed ) {
 			return $non_prefixed;
 		}
-		return $default;
+		return $default_value;
 	}
 }
 
@@ -97,14 +97,14 @@ if ( ! function_exists( 'gutena_forms__fs' ) ) :
 			require_once plugin_dir_path( __FILE__ ) . 'vendor/freemius/start.php';
 			$gutena_forms__fs = fs_dynamic_init(
 				array(
-					'id'                  => '20975',
-					'slug'                => 'gutena-forms',
-					'type'                => 'plugin',
-					'public_key'          => 'pk_d66286e6558c1d5d6a4ccf3304cfb',
-					'is_premium'          => false,
-					'has_addons'          => true,
-					'has_paid_plans'      => false,
-					'menu'                => array(
+					'id'             => '20975',
+					'slug'           => 'gutena-forms',
+					'type'           => 'plugin',
+					'public_key'     => 'pk_d66286e6558c1d5d6a4ccf3304cfb',
+					'is_premium'     => false,
+					'has_addons'     => true,
+					'has_paid_plans' => false,
+					'menu'           => array(
 						'slug'       => 'gutena-forms',
 						'contact'    => false,
 						'support'    => false,
@@ -122,29 +122,49 @@ if ( ! function_exists( 'gutena_forms__fs' ) ) :
 	do_action( 'gutena_forms__fs_loaded' );
 endif;
 
+if ( ! function_exists( 'is_gutena_forms_pro' ) ) :
+	/**
+	 * Gutena Forms has pro
+	 *
+	 * @since 1.0.0
+	 * @return bool
+	 */
+	function is_gutena_forms_pro() {
+		if ( did_action( 'plugins_loaded' ) ) {
+			if ( defined( 'GUTENA_FORMS__PRO_LOADED' ) && GUTENA_FORMS__PRO_LOADED ) {
+				return class_exists( 'Gutena_Forms_Pro' );
+			}
+		}
+
+		return class_exists( 'Gutena_Forms_Pro' );
+	}
+endif;
+
 /**
  * Abort if the class is already exists.
  */
-if ( ! class_exists( 'Gutena_Forms' ) ) {
-
-	if ( ! function_exists( 'is_gutena_forms_pro' ) ) {
-		function is_gutena_forms_pro( $valid = true ) {
-			if ( did_action( 'plugins_loaded' ) ) {
-				if ( defined( 'GUTENA_FORMS__PRO_LOADED' ) && GUTENA_FORMS__PRO_LOADED ) {
-					return class_exists( 'Gutena_Forms_Pro' );
-				}
-			}
-
-			return class_exists( 'Gutena_Forms_Pro' );
-		}
-	}
-
+if ( ! class_exists( 'Gutena_Forms' ) ) :
+	/**
+	 * Gutena Forms plugin main class
+	 *
+	 * @since 1.0.0
+	 */
 	class Gutena_Forms {
 
-		// The instance of this class
+		/**
+		 * The instance of the class
+		 *
+		 * @since 1.0.0
+		 * @var Gutena_Forms $instance The instance of the class.
+		 */
 		private static $instance = null;
 
-		// Returns the instance of this class.
+		/**
+		 * Getting the instance of the class
+		 *
+		 * @since 1.0.0
+		 * @return Gutena_Forms
+		 */
 		public static function get_instance() {
 			if ( null === self::$instance ) {
 				self::$instance = new self();
@@ -152,6 +172,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			return self::$instance;
 		}
 
+		/**
+		 * Constructor
+		 *
+		 * @since 1.0.0
+		 */
 		public function __construct() {
 			$this->includes();
 			$this->run();
@@ -199,6 +224,14 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			$this->load_dashboard();
 		}
 
+		/**
+		 * Registring custom action links.
+		 *
+		 * @since 1.5.0
+		 * @param array $prev_links Plugin action links contains (activate, deactivate).
+		 *
+		 * @return array
+		 */
 		public function plugin_action_links( $prev_links ) {
 
 			if ( isset( $prev_links['addons'] ) ) {
@@ -211,21 +244,29 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					__( 'Get Gutena Forms Pro' )
 				);
 
-				// required link in first place
+				// required link in first place.
 				array_unshift( $prev_links, $new_link );
 			}
 
 			return $prev_links;
 		}
 
-		//load form dashboard
+		/**
+		 * Loading dashbaord
+		 *
+		 * @since 1.0.0
+		 */
 		private function load_dashboard() {
 			if ( ! class_exists( 'Gutena_Forms_Admin' ) && file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-admin.php' ) ) {
 				require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/class-admin.php';
 			}
 		}
 
-		// Register blocks and scripts
+		/**
+		 * Registering blocks and scripts
+		 *
+		 * @since 1.0.0
+		 */
 		public function register_blocks_and_scripts() {
 			if ( ! function_exists( 'register_block_type' ) ) {
 				// Block editor is not available.
@@ -238,50 +279,50 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			Gutena_Forms_Existing_Forms_Block::get_instance()->register_block();
 			Gutena_Forms_Field_Label_Block::get_instance()->register_block();
 
-			// Form Confirmation Message Block
+			// Form Confirmation Message Block.
 			register_block_type( __DIR__ . '/build/form-confirm-msg' );
 
-			// Form Error Message Block
+			// Form Error Message Block.
 			register_block_type( __DIR__ . '/build/form-error-msg' );
 
 			register_block_type( __DIR__ . '/build/field-group' );
 
-			//google recaptcha
+			// google recaptcha.
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
 
-			//Form messages
+			// Form messages.
 			$gutena_forms_messages = get_option( 'gutena_forms_messages', array() );
 
-			// cloudflare turnstile
+			// cloudflare turnstile.
 			$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', array() );
 
-			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array(): $gutena_forms_messages;
-			$gf_message = array(
+			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array() : $gutena_forms_messages;
+			$gf_message            = array(
 				'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
 				'required_msg_optin'  => __( 'Please check this checkbox', 'gutena-forms' ),
 				'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
-				'required_msg_check' => __( 'Please check an option', 'gutena-forms' ),
+				'required_msg_check'  => __( 'Please check an option', 'gutena-forms' ),
 				'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
-				'min_value_msg'=>  __( 'Input value should be greater than', 'gutena-forms' ),
-				'max_value_msg'=>  __( 'Input value should be less than', 'gutena-forms' ),
+				'min_value_msg'       => __( 'Input value should be greater than', 'gutena-forms' ),
+				'max_value_msg'       => __( 'Input value should be less than', 'gutena-forms' ),
 			);
-			//get saved messages by admin
-			foreach ( $gf_message as $msg_key => $msg_value) {
+			// get saved messages by admin.
+			foreach ( $gf_message as $msg_key => $msg_value ) {
 				if ( ! empty( $gutena_forms_messages[ $msg_key ] ) ) {
 					$gf_message[ $msg_key ] = $gutena_forms_messages[ $msg_key ];
 				}
 			}
 
 			$gutena_forms_post_type = false;
-			$forms_available 		= false;
+			$forms_available        = false;
 
 			if ( is_admin() ) {
-				if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) {
+				if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					$gutena_forms_post_type = true;
 				}
 
-				if ( isset( $_GET['post'] ) ) {
-					$post_type = get_post_type( sanitize_text_field( wp_unslash( $_GET['post'] ) ) );
+				if ( isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					$post_type = get_post_type( sanitize_text_field( wp_unslash( $_GET['post'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					if ( 'gutena_forms' === $post_type ) {
 						$gutena_forms_post_type = true;
 					}
@@ -303,22 +344,33 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			wp_localize_script(
 				'gutena-forms-script',
 				'gutenaFormsBlock',
-				array_merge( array(
-					'submit_action'             => 'gutena_forms_submit',
-					'ajax_url'                  => admin_url( 'admin-ajax.php' ),
-					'nonce'                     => wp_create_nonce( 'gutena_Forms' ),
-					'grecaptcha_type'	        => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
-					'grecaptcha_site_key'       => empty( $grecaptcha['site_key'] ) ? '': $grecaptcha['site_key'],
-					'grecaptcha_secret_key'     => ( function_exists( 'is_admin' ) && is_admin() && !empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
-					'pricing_link' 		        => 'https://gutenaforms.com/pricing/',
-					'cloudflare_turnstile'      => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile,
-					'is_pro' 			        => is_gutena_forms_pro(),
-					'is_gutena_forms_post_type' => $gutena_forms_post_type,
-					'forms_available'			=> $forms_available,
-				), $gf_message )
+				array_merge(
+					array(
+						'submit_action'             => 'gutena_forms_submit',
+						'ajax_url'                  => admin_url( 'admin-ajax.php' ),
+						'nonce'                     => wp_create_nonce( 'gutena_Forms' ),
+						'grecaptcha_type'           => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
+						'grecaptcha_site_key'       => empty( $grecaptcha['site_key'] ) ? '' : $grecaptcha['site_key'],
+						'grecaptcha_secret_key'     => ( function_exists( 'is_admin' ) && is_admin() && ! empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
+						'pricing_link'              => 'https://gutenaforms.com/pricing/',
+						'cloudflare_turnstile'      => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile,
+						'is_pro'                    => is_gutena_forms_pro(),
+						'is_gutena_forms_post_type' => $gutena_forms_post_type,
+						'forms_available'           => $forms_available,
+					),
+					$gf_message
+				)
 			);
 		}
 
+		/**
+		 * Registering fields
+		 *
+		 * @since 1.5.0
+		 * @param array $blocks Array of fields.
+		 *
+		 * @return array
+		 */
 		public function register_fields( $blocks ) {
 			$fields = array(
 				'text-field-group'     => array(
@@ -384,15 +436,25 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			return $blocks;
 		}
 
+		/**
+		 * Admin CSS for responsive table in dashboard
+		 *
+		 * @since 1.8.0
+		 */
 		public function admin_css_responsive() {
 			wp_enqueue_style( 'admin_responsive', plugin_dir_url( __FILE__ ) . 'assets/css/admin-responsive.css', array(), GUTENA_FORMS_VERSION, 'all' );
 			wp_enqueue_script( 'admin_responsive', plugin_dir_url( __FILE__ ) . 'assets/js/custom.js', array( 'jquery' ), GUTENA_FORMS_VERSION, true );
 		}
 
+		/**
+		 * Registering block styles
+		 *
+		 * @since 1.0.0
+		 */
 		public function register_blocks_styles() {
 			if ( function_exists( 'register_block_style' ) ) {
 
-				//Range Slider single
+				// Range Slider single.
 				register_block_style(
 					'gutena/form-field',
 					array(
@@ -441,19 +503,26 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 		}
 
-		// Register Gutena category if not exists
+		/**
+		 * Registering block category
+		 *
+		 * @param array                   $block_categories Array of registered categories.
+		 * @param WP_Block_Editor_Context $editor_context Editor context.
+		 *
+		 * @return array
+		 */
 		public function register_category( $block_categories, $editor_context ) {
 			$fields = wp_list_pluck( $block_categories, 'slug' );
 
 			if ( ! empty( $editor_context->post ) && ! in_array( 'gutena', $fields, true ) ) {
 				$block_categories[] = array(
-					'slug' => 'gutena',
+					'slug'  => 'gutena',
 					'title' => __( 'Gutena Forms General Fields', 'gutena-forms' ),
 				);
 
 				if ( ! is_gutena_forms_pro() ) {
 					$block_categories[] = array(
-						'slug' => 'gutena-pro',
+						'slug'  => 'gutena-pro',
 						'title' => __( 'Gutena Forms Pro', 'gutena-forms' ),
 					);
 				}
@@ -462,21 +531,27 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			return $block_categories;
 		}
 
-		// save form schema
+		/**
+		 * Saving gutena forms schema
+		 *
+		 * @param int|string $post_id Post id.
+		 * @param WP_Post    $post Post object.
+		 * @param boolean    $update Is update.
+		 */
 		public function save_gutena_forms_schema( $post_id, $post, $update ) {
-			//post should not be a rivision or trash
-			if ( empty( $post_id ) || empty( $post ) || ! function_exists( 'parse_blocks' ) || ! function_exists( 'wp_is_post_revision' ) || wp_is_post_revision( $post_id ) || ! function_exists( 'get_post_status' ) || 'trash' === get_post_status( $post_id ) || 'auto-draft' === get_post_status( $post_id) || ! has_block( 'gutena/forms', $post ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ) {
+			// post should not be a rivision or trash.
+			if ( empty( $post_id ) || empty( $post ) || ! function_exists( 'parse_blocks' ) || ! function_exists( 'wp_is_post_revision' ) || wp_is_post_revision( $post_id ) || ! function_exists( 'get_post_status' ) || 'trash' === get_post_status( $post_id ) || 'auto-draft' === get_post_status( $post_id ) || ! has_block( 'gutena/forms', $post ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ) {
 				return;
 			}
 
-			//block pattern
-			if ( $update && 'wp_block' == $post->post_type ) {
+			// block pattern.
+			if ( $update && 'wp_block' === $post->post_type ) {
 
 				$wp_pattern_sync_status = get_post_meta( $post->ID, 'wp_pattern_sync_status', true );
-				if ( ! empty( $wp_pattern_sync_status ) && 'unsynced' == $wp_pattern_sync_status ) {
-					// unhook this function so it doesn't loop infinitely
+				if ( ! empty( $wp_pattern_sync_status ) && 'unsynced' === $wp_pattern_sync_status ) {
+					// unhook this function so it doesn't loop infinitely.
 					remove_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10 );
-					//correct and save unsynced pattern
+					// correct and save unsynced pattern.
 					$this->correct_gutena_forms_pattern( $post );
 					// re-hook this function.
 					add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
@@ -484,7 +559,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				}
 			}
 
-			 // developer.wordpress.org/reference/functions/parse_blocks/
+			// developer.wordpress.org/reference/functions/parse_blocks/.
 			$form_schema = $this->get_form_schema( parse_blocks( $post->post_content ) );
 			if ( empty( $form_schema ) || ! is_array( $form_schema ) ) {
 				return;
@@ -492,55 +567,55 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 			$gutena_form_ids = get_option( 'gutena_form_ids', array() );
 
-			// Save gutena form schema in wp option
+			// Save gutena form schema in wp option.
 			if ( ! empty( $form_schema['form_schema'] ) && is_array( $form_schema['form_schema'] ) ) {
 				$gutena_forms_blocks = explode( '<!-- wp:gutena/forms', $post->post_content );
-				foreach ( $form_schema['form_schema'] as  $formSchema ) {
-					if ( ! empty( $formSchema['form_attrs']['formID'] ) ) {
-						//get block markup
-						foreach ($gutena_forms_blocks as $gf_block) {
-							if ( false !== stripos( $gf_block, $formSchema['form_attrs']['formID'] ) ) {
-								$gf_block = explode( 'wp:gutena/forms -->', $gf_block );
-								$formSchema['block_markup'] = '<!-- wp:gutena/forms' . $gf_block[0] . 'wp:gutena/forms -->';
+				foreach ( $form_schema['form_schema'] as  $form_schema ) {
+					if ( ! empty( $form_schema['form_attrs']['formID'] ) ) {
+						// get block markup.
+						foreach ( $gutena_forms_blocks as $gf_block ) {
+							if ( false !== stripos( $gf_block, $form_schema['form_attrs']['formID'] ) ) {
+								$gf_block                    = explode( 'wp:gutena/forms -->', $gf_block );
+								$form_schema['block_markup'] = '<!-- wp:gutena/forms' . $gf_block[0] . 'wp:gutena/forms -->';
 								break;
 							}
 						}
-						//filter for formSchema
-						$formSchema_filtered = apply_filters( 'gutena_forms_save_form_schema', $formSchema, $formSchema['form_attrs']['formID'], $gutena_form_ids );
-						//Save form schema (prefixed option name prevents arbitrary option overwrite)
+						// filter for formSchema.
+						$form_schema_filtered = apply_filters( 'gutena_forms_save_form_schema', $form_schema, $form_schema['form_attrs']['formID'], $gutena_form_ids );
+						// Save form schema (prefixed option name prevents arbitrary option overwrite).
 						update_option(
-							GUTENA_FORMS_SCHEMA_OPTION_PREFIX . sanitize_key( $formSchema['form_attrs']['formID'] ),
-							$this->sanitize_array( $formSchema_filtered, true )
+							GUTENA_FORMS_SCHEMA_OPTION_PREFIX . sanitize_key( $form_schema['form_attrs']['formID'] ),
+							$this->sanitize_array( $form_schema_filtered, true )
 						);
 
-						//Save Google reCAPTCHA details
-						if ( ! empty( $formSchema['form_attrs']['recaptcha'] ) && ! empty( $formSchema['form_attrs']['recaptcha']['site_key'] ) && ! empty( $formSchema['form_attrs']['recaptcha']['secret_key'] ) ) {
+						// Save Google reCAPTCHA details.
+						if ( ! empty( $form_schema['form_attrs']['recaptcha'] ) && ! empty( $form_schema['form_attrs']['recaptcha']['site_key'] ) && ! empty( $form_schema['form_attrs']['recaptcha']['secret_key'] ) ) {
 							update_option(
 								'gutena_forms_grecaptcha',
-								$this->sanitize_array( $formSchema['form_attrs']['recaptcha'] )
+								$this->sanitize_array( $form_schema['form_attrs']['recaptcha'] )
 							);
 						}
 
-						// cloudflare turnstile
-						if ( ! empty( $formSchema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['site_key'] ) && ! empty( $formSchema['form_attrs']['cloudflareTurnstile']['secret_key'] ) ) {
+						// cloudflare turnstile.
+						if ( ! empty( $form_schema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $form_schema['form_attrs']['cloudflareTurnstile']['site_key'] ) && ! empty( $form_schema['form_attrs']['cloudflareTurnstile']['secret_key'] ) ) {
 							update_option(
 								'gutena_forms_cloudflare_turnstile',
-								$this->sanitize_array( $formSchema['form_attrs']['cloudflareTurnstile'] )
+								$this->sanitize_array( $form_schema['form_attrs']['cloudflareTurnstile'] )
 							);
 						}
 
-						//Save common form messages
-						if ( ! empty( $formSchema['form_attrs']['messages'] ) && is_array( $formSchema['form_attrs']['messages'] ) ) {
+						// Save common form messages.
+						if ( ! empty( $form_schema['form_attrs']['messages'] ) && is_array( $form_schema['form_attrs']['messages'] ) ) {
 							update_option(
 								'gutena_forms_messages',
-								$formSchema['form_attrs']['messages']
+								$form_schema['form_attrs']['messages']
 							);
 						}
 					}
 				}
 			}
 
-			// Save gutena form ids in array gutena_form_ids
+			// Save gutena form ids in array gutena_form_ids.
 			if ( ! empty( $form_schema['form_ids'] ) ) {
 
 				if ( ! empty( $gutena_form_ids ) && is_array( $gutena_form_ids ) ) {
@@ -548,7 +623,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 				} else {
 					$gutena_form_ids = $form_schema['form_ids'];
 				}
-				//unique ids only
+				// unique ids only.
 				$gutena_form_ids = array_unique( $gutena_form_ids );
 
 				update_option(
@@ -556,72 +631,76 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					$this->sanitize_array( $gutena_form_ids )
 				);
 			}
-
 		}
 
 		/**
 		 * Correct unsynced form pattern
 		 * remove form id from unsynched pattern so that it can be reuse
 		 *
-		 * @param  integer $meta_id    ID of the meta data field
-		 * @param  integer $post_id    Post ID
-		 * @param  string $meta_key    Name of meta field
-		 * @param  string $meta_value  Value of meta field
+		 * @param  integer $meta_id    ID of the meta data field.
+		 * @param  integer $post_id    Post ID.
+		 * @param  string  $meta_key    Name of meta field.
+		 * @param  string  $meta_value  Value of meta field.
 		 */
 		public function save_gutena_forms_pattern( $meta_id, $post_id, $meta_key, $meta_value ) {
-			//return if post meta is not for unsynced pattern
-			if ( empty( $post_id ) || empty( $meta_key ) || empty( $meta_value ) || 'wp_pattern_sync_status' != $meta_key || 'unsynced' != $meta_value ) {
+			// return if post meta is not for unsynced pattern.
+			if ( empty( $post_id ) || empty( $meta_key ) || empty( $meta_value ) || 'wp_pattern_sync_status' !== $meta_key || 'unsynced' !== $meta_value ) {
 				return;
 			}
 
 			$post = get_post( $post_id );
 			$this->correct_gutena_forms_pattern( $post );
-
 		}
 
 		/**
 		 * Correct and save unsynced pattern
 		 *
-		 * @param object $post
-		 * @param boolean $check_meta should check meta key or not
-		 *
+		 * @param object $post Post object.
 		 */
 		private function correct_gutena_forms_pattern( $post ) {
 			static $func_call = 0;
-			//patterns are store under 'wp_block' post type
-			//return if post is empty or not a pattern post_type
-			if ( $func_call > 0 || empty( $post ) || empty( $post->ID ) ||  'wp_block' != $post->post_type || empty( $post->post_content ) || false === stripos( $post->post_content,"{\"formID\"" )  ) {
+			// patterns are store under 'wp_block' post type.
+			// return if post is empty or not a pattern post_type.
+			if ( $func_call > 0 || empty( $post ) || empty( $post->ID ) || 'wp_block' !== $post->post_type || empty( $post->post_content ) || false === stripos( $post->post_content, '{"formID"' ) ) {
 				return;
 			}
 
-			//get form id
-			$first_extract = "\",\"formName\":";
+			// get form id.
+			$first_extract = '","formName":';
 			if ( false === stripos( $post->post_content, $first_extract ) ) {
-				$first_extract = "\",\"formClasses\":";
+				$first_extract = '","formClasses":';
 			}
 
 			$post_content = explode( $first_extract, $post->post_content );
-			$post_content = explode( "{\"formID\":\"gutena_forms_ID_", $post_content[0] );
+			$post_content = explode( '{"formID":"gutena_forms_ID_', $post_content[0] );
 			$post_content = end( $post_content );
-			$formID = wp_unslash( $post_content );
-			$formID = "gutena_forms_ID_". $formID;
-			//remove form id
-			$post_content = str_ireplace( $formID, "" , $post->post_content );
-			//count function call
-			$func_call++;
-			//Update pattern
-			wp_update_post( array(
-				'ID'           => $post->ID,
-				'post_content' => $post_content,
-			) );
-
+			$form_id      = wp_unslash( $post_content );
+			$form_id      = 'gutena_forms_ID_' . $form_id;
+			// remove form id.
+			$post_content = str_ireplace( $form_id, '', $post->post_content );
+			// count function call.
+			++$func_call;
+			// Update pattern.
+			wp_update_post(
+				array(
+					'ID'           => $post->ID,
+					'post_content' => $post_content,
+				)
+			);
 		}
 
 
-		// Get Form schema from block parsing
-		private function get_form_schema( $blocks, $formID = 0 ) {
+		/**
+		 * Getting form schema.
+		 *
+		 * @param array $blocks Array of blocks.
+		 * @param int   $form_id form id.
+		 *
+		 * @return array|false
+		 */
+		private function get_form_schema( $blocks, $form_id = 0 ) {
 			if ( empty( $blocks ) || ! is_array( $blocks ) ) {
-				return;
+				return false;
 			}
 
 			$form_schema = array();
@@ -631,17 +710,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			foreach ( $blocks as $block ) {
 
 				if ( ! empty( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] && ! empty( $block['attrs']['formID'] ) ) {
-					$formID                               = $block['attrs']['formID'];
-					$form_ids[]                           = $formID;
-					$form_schema[ $formID ]['form_attrs'] = $block['attrs'];
+					$form_id                               = $block['attrs']['formID'];
+					$form_ids[]                            = $form_id;
+					$form_schema[ $form_id ]['form_attrs'] = $block['attrs'];
 				}
 
 				if ( ! empty( $block['blockName'] ) && 'gutena/form-field' === $block['blockName'] && ! empty( $block['attrs']['nameAttr'] ) ) {
-					$form_schema[ $formID ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
+					$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
 				}
 
 				if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-					$innerblocks = $this->get_form_schema( $block['innerBlocks'], $formID );
+					$innerblocks = $this->get_form_schema( $block['innerBlocks'], $form_id );
 					$form_schema = array_merge_recursive( $form_schema, $innerblocks['form_schema'] );
 					$form_ids    = array_merge( $form_ids, $innerblocks['form_ids'] );
 				}
@@ -653,43 +732,50 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			);
 		}
 
-		// sanitize_array
-		public function sanitize_array( $array, $textarea_sanitize = false ) {
-			if ( ! empty( $array ) && is_array( $array ) ) {
-				foreach ( (array) $array as $key => $value ) {
+		/**
+		 * Sanitize data nad array.
+		 *
+		 * @param array $array_to_sanitize Array to sanitize.
+		 * @param bool  $textarea_sanitize Is textarea.
+		 *
+		 * @return array
+		 */
+		public function sanitize_array( $array_to_sanitize, $textarea_sanitize = false ) {
+			if ( ! empty( $array_to_sanitize ) && is_array( $array_to_sanitize ) ) {
+				foreach ( (array) $array_to_sanitize as $key => $value ) {
 					if ( is_array( $value ) ) {
-						$array[ $key ] = $this->sanitize_array( $value );
-					} else if ( 'block_markup' === $key && function_exists( 'wp_kses' ) ) {
+						$array_to_sanitize[ $key ] = $this->sanitize_array( $value );
+					} elseif ( 'block_markup' === $key && function_exists( 'wp_kses' ) ) {
 
-						$array[ $key ] = wp_kses(
+						$array_to_sanitize[ $key ] = wp_kses(
 							$value,
 							array_merge(
 								wp_kses_allowed_html( 'post' ),
 								array(
-									'form' => array(
-										'method'=> 1,
-										'class'	=> 1,
-										'style'	=> 1,
+									'form'  => array(
+										'method' => 1,
+										'class'  => 1,
+										'style'  => 1,
 									),
 									'input' => array(
-										'type'=> 1,
-										'name'	=> 1,
-										'class'	=> 1,
-										'value'	=> 1,
+										'type'  => 1,
+										'name'  => 1,
+										'class' => 1,
+										'value' => 1,
 									),
 								)
 							)
 						);
-						//$array[ $key ] = wp_kses_post( $value );
+						// $array[ $key ] = wp_kses_post( $value ); maybe use this if above is too much.
 					} else {
-						$array[ $key ] = true === $textarea_sanitize ? sanitize_textarea_field( $value )  : sanitize_text_field( $value );
+						$array_to_sanitize[ $key ] = true === $textarea_sanitize ? sanitize_textarea_field( $value ) : sanitize_text_field( $value );
 					}
 				}
 			}
-			return $array;
+			return $array_to_sanitize;
 		}
 	}
 
 	Gutena_Forms::get_instance();
 
-}
+endif;
