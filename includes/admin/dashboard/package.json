@@ -23,6 +23,7 @@
 	},
 	"dependencies": {
 		"react-date-range": "^2.0.1",
+		"react-loading-skeleton": "^3.5.0",
 		"react-router": "^7.11.0",
 		"react-toastify": "^11.0.5"
 	}

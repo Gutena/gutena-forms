@@ -1,5 +1,5 @@
 $gfp_body_color: #50575E;
-$gfp_border_color: #E5E7EB;
+$gfp_border_color:#E5E7EB;
 $gfp_heading_color: #2C3338;
 $gfp_primary_color: #0EA489;
 $gfp_secondary_color: #EEF8F6;
@@ -7,7 +7,10 @@ $gfp_wp_primary_color: #2271b1;
 $gfp_red_color: #E83737;
 $gfp_orange_color: #E35D3F;
 $gfp_white_color: #fff;
-$gfp_input_border: 1px solid rgba(0, 0, 0, .1);
+$gfp_input_border: 1px solid rgba(0,0,0,.1);
+
+@import "./satoshi.css";
+@import "react-loading-skeleton/dist/skeleton.css";
 
 
 
@@ -21,69 +24,37 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 
 .gutena-froms#gutena-forms__root {
 
-	a {
-		outline: none;
-		box-shadow: none;
+  * {
+	  font-family: "Satoshi"
+  }
 
-		&:active,
-		&:focus {
-			outline: none;
-			box-shadow: none;
-		}
+	.gutena-forms__table {
+		overflow-x: scroll;
+	}
+
+	.gutena-forms__table table {
+		min-width: 1200px !important;
 	}
 
 	svg {
 		fill: transparent;
 	}
 
+	.gutena-forms__forms-screen,
+	.gutena-forms__entries {
+		.gutena-forms__page-title {
+			font-size: 24px;
+		}
+	}
+
 	.gutena-forms__page-title {
 		color: #2C3338;
 		font-size: 24px;
 		font-weight: 700;
-		margin-top: 0;
 		padding: 0 50px 0 0;
 		position: relative;
 		display: inline-block;
-	}
-
-	.gutena-forms__header-menu {
-		ul {
-			padding: 0;
-			margin: 0;
-
-			li {
-				display: inline-block;
-				height: 45px;
-				padding: 0;
-				margin: 0;
-
-				a {
-					display: block;
-					padding: 0 20px;
-					text-decoration: none;
-					font-size: 14px;
-					font-weight: 500;
-					color: #6E7376;
-					height: 100%;
-					line-height: 45px;
-
-					&:focus,
-					&:hover {
-						box-shadow: none;
-						outline: none;
-						border: none;
-					}
-
-					&.active {
-						height: calc(100% - 2px);
-						color: #424D55;
-						font-weight: 700;
-						border-bottom: 2px solid #0DA88C;
-						box-shadow: none;
-					}
-				}
-			}
-		}
+		margin: 0 0 10px 0;
 	}
 
 	.gutena-forms__field-container {
@@ -93,45 +64,68 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 	}
 
 	.gutena-forms__header-container {
-		align-items: center;
-		background: #fff;
-		border-bottom: .5px solid #e2e2e2;
+		background: #FFFFFF;
+		border-bottom: 0.5px solid #E2E2E2;
+		height: 50px;
 		display: flex;
-		justify-content: space-between;
 		padding: 0 20px;
-		position: relative;
+		align-items: center;
+		justify-content: space-between;
 
-		.mobile_toggle {
-			width: 30px;
-			height: 30px;
-			display: none;
-
-			svg {
-				fill: #0f856f !important;
-				width: 30px;
-				height: 30px;
-			}
-		}
-
-		.nav-menu-container {
-			align-items: center;
+		.gutena-forms_icon-menu-container {
 			display: flex;
-			width: calc(100% - 100px);
-			justify-content: space-between;
-		}
+			align-items: center;
 
-		.gutena-forms_logo {
-			width: 100px;
+			.gutena-forms_icon-menu {
+				margin-right: 15px;
 
-			a {
-				outline: none;
-				border: none;
-				box-shadow: none;
+				a {
+					outline: none;
+					border: none;
+					box-shadow: none;
+				}
+			}
+
+			.gutena-forms__header-menu {
+				ul {
+					padding: 0;
+					margin: 0;
+
+					li {
+						display: inline-block;
+						height: 53px;
+						padding: 0;
+						margin: 0;
+
+						a {
+							display: block;
+							padding: 0 20px;
+							text-decoration: none;
+							font-size: 12px;
+							font-weight: 500;
+							color: #6E7376;
+							height: 100%;
+							line-height: 53px;
+
+							&:focus,
+							&:hover {
+								box-shadow: none;
+								outline: none;
+								border: none;
+							}
+
+							&.active {
+								height: calc( 100% - 2px );
+								color: #424D55;
+								font-weight: 700;
+								border-bottom: 2px solid #0DA88C;
+								box-shadow: none;
+							}
+						}
+					}
+				}
 			}
 		}
-
-
-
 
 		.gutena-forms__upgrade-button {
 			border: 0.603px solid #1AE8C2;
@@ -184,10 +178,10 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 		}
 
 		.gutena-forms__main-content-container {
-			width: calc(100% - 210px - 20px);
+			width: calc( 100% - 210px );
 
 			.gutena-forms__container {
-				padding: 35px 70px;
+				padding: 20px;
 			}
 
 
@@ -204,34 +198,7 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			}
 
 			.gutena-forms__meta-box-container {
-				max-width: 760px;
-				width: 100%;
-
-				h2 {
-
-
-					svg {
-						margin-bottom: -7px;
-					}
-				}
-
-				.gutena-forms__settings-meta-box-desc {
-					a {
-						color: #0DA88C;
-						font-size: 12px;
-						font-weight: 500;
-						text-decoration-line: underline;
-						text-decoration-style: solid;
-						text-decoration-skip-ink: auto;
-						text-decoration-thickness: auto;
-						text-underline-offset: auto;
-						text-underline-position: from-font;
-					}
-				}
-
-				.gutena-forms__field-container {
-					margin-bottom: 20px;
-				}
+				width: 760px;
 			}
 
 			.gutena-forms__settings-meta-box {
@@ -275,7 +242,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 
 				.gutena-forms__number-control {
 					margin-top: 20px;
-
 					.components-input-control__label {
 						color: #000;
 						font-size: 14px;
@@ -284,8 +250,8 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 					}
 				}
 
-				.gutena-forms__email-control,
-				.gutena-forms__text-control {
+				.gutena-forms__email-control {
+					margin-top: 20px;
 
 					.components-base-control__label {
 						color: #000;
@@ -309,9 +275,10 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 						border-radius: 4px;
 						background: #0DA88C;
 						color: #FFF;
-						font-size: 14px;
+						font-size: 12px;
 						font-weight: 700;
 						height: auto;
+						padding: 6px 10px;
 					}
 				}
 			}
@@ -329,9 +296,7 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 
 				.gutena-forms__pro-single-list-wrapper {
 					display: flex;
-					max-width: 100%;
-					width: 100%;
-					box-sizing: border-box;
+					width: 450px;
 					justify-content: space-between;
 					align-items: center;
 					padding: 10px 20px;
@@ -384,13 +349,13 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 		}
 
 		.gutena-forms__left-menu-navigation {
-			width: 220px;
+			width: 197px;
 			background: #ffffff;
 			border-right: 0.5px solid #E2E2E2;
-			min-height: calc(100vh - 45px - 32px - 66px);
+			min-height: calc( 100vh - 45px - 32px - 66px );
 
 			.gutena-forms__container {
-				padding: 10px;
+				padding: 10px 0;
 			}
 
 			.gutena-forms__accordion-header {
@@ -408,12 +373,10 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 					margin-top: 5px;
 				}
 
-				.gutena-forms__accordion-title,
-				.gutena-forms__accordion-title a {
+				.gutena-forms__accordion-title {
 					color: #424D55;
-					font-size: 14px;
-					font-weight: 500;
-					text-decoration: none;
+					font-size: 12px;
+					font-weight: 700;
 				}
 
 				.gutena-forms__accordion-arrow {
@@ -431,7 +394,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 					display: none;
 				}
 			}
-
 			.gutena-forms__accordion-item {
 				border-left: 1px solid #e2e2e2;
 				padding-left: 10px;
@@ -445,7 +407,7 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 				a {
 					line-height: 30px;
 					color: #6E7376;
-					font-size: 14px;
+					font-size: 12px;
 					font-weight: 500;
 					text-decoration: none;
 					display: inline-block;
@@ -457,9 +419,9 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 
 					&.active {
 						border-radius: 4px;
-						background: #F0FFFC;
+						background: #EBFFFB;
 						color: #424D55;
-						border: 1px solid #46BEA8;
+						font-weight: 700;
 					}
 				}
 			}
@@ -592,6 +554,7 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			margin-left: 20px;
 			display: inline-block;
 			height: auto;
+			padding: 6px 10px;
 
 			svg {
 				margin: 0 10px -4px 0;
@@ -656,13 +619,11 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 					.gutena-forms__entry-status-control {
 						margin-top: 6px;
 					}
-
 					.components-base-control__field {
 						margin: 0;
 					}
 
-					button,
-					a {
+					button, a {
 						height: auto;
 					}
 				}
@@ -685,14 +646,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 		border-radius: 10px;
 		border: 1px solid #E2E2E2;
 		background: #FFF;
-
-		.responsive_table {
-			overflow-x: scroll;
-
-			table {
-				min-width: 1024px;
-			}
-		}
 
 		.gutena-forms__datatable-header {
 			display: flex;
@@ -766,7 +719,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 
 			.number-of-items-wrapper {
 				padding-top: 10px;
-
 				.gutena-forms__select-wrapper {
 					margin-left: 10px;
 				}
@@ -810,7 +762,7 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 		top: 30px;
 		right: 0;
 		z-index: 9999;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
 
 	.gutena-forms__bulk-action-container {
@@ -853,7 +805,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 	}
 
 	.gutena-forms-datatable__action {
-
 		button,
 		a {
 			padding: 0;
@@ -866,18 +817,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			color: #0DA88C;
 			font-size: 12px;
 			font-weight: 500;
-		}
-	}
-
-	.gutena-forms__meta-box-wrapper {
-		h2 {
-			width: 780px;
-			display: flex;
-			justify-content: space-between;
-
-			svg {
-				margin-bottom: -7px;
-			}
 		}
 	}
 
@@ -1104,6 +1043,11 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			font-weight: 500;
 			position: relative;
 
+			.heading {
+				font-size: 14px;
+				font-weight: 700;
+			}
+
 			.gutena-forms__entry-data {
 				margin-top: 15px;
 
@@ -1112,9 +1056,19 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					padding: 5px 20px;
-					border-radius: 4px;
+					padding: 0 20px;
 					border: 1px solid #F6F8FA;
+					border-bottom: none;
+					font-size: 14px;
+
+					&:first-child {
+						border-radius: 4px 4px 0 0;
+					}
+
+					&:last-child {
+						border-radius: 0 0 4px 4px;
+						border-bottom: 1px solid #F6F8FA;
+					}
 
 					.value {
 						text-align: left;
@@ -1125,7 +1079,7 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 					.label {
 						width: 20%;
 						text-align: left;
-						font-weight: 700;
+						font-weight: 600;
 					}
 				}
 			}
@@ -1177,11 +1131,11 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 		}
 
 		.gutena-forms__col-70 {
-			width: calc(70% - 7px);
+			width: calc( 70% - 7px );
 		}
 
 		.gutena-forms__col-30 {
-			width: calc(30% - 7px);
+			width: calc( 30% - 7px );
 		}
 
 		.gutena-forms__list-unstyled {
@@ -1204,12 +1158,10 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			transform: scale(0.3);
 			opacity: 0;
 		}
-
 		50% {
 			transform: scale(1.05);
 			opacity: 0.8;
 		}
-
 		100% {
 			transform: scale(1);
 			opacity: 1;
@@ -1222,12 +1174,10 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			transform: scale(1);
 			opacity: 1;
 		}
-
 		50% {
 			transform: scale(1.05);
 			opacity: 0.5;
 		}
-
 		100% {
 			transform: scale(0.3);
 			opacity: 0;
@@ -1241,7 +1191,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 	}
 
 	.gutena-forms__submit-button {
-
 		button,
 		a {
 			height: auto;
@@ -1253,7 +1202,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 		}
 
 		&.secondary {
-
 			button,
 			a {
 				border-radius: 2px;
@@ -1339,56 +1287,7 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			cursor: pointer;
 		}
 	}
-
-	.gutena-forms__radio-group-control {
-		.gutena-forms__field-label {
-			color: #000;
-			font-size: 14px;
-			font-weight: 700;
-			display: block;
-			margin-bottom: 8px;
-		}
-
-		.gutena-forms__radio-group-options {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			height: 30px;
-			width: 250px;
-			padding: 5px;
-			border-radius: 4px;
-			border: 1px solid #E2E2E2;
-		}
-
-		.gutena-forms__radio-option-input {
-			display: none;
-
-			&:checked+.gutena-forms__radio-option-label {
-				border-radius: 4px;
-				background: #0DA88C;
-				color: #ffffff;
-			}
-		}
-
-		.gutena-forms__radio-option {
-			display: inline-block;
-			background: #ffffff;
-
-			.gutena-forms__radio-option-label {
-				cursor: pointer;
-				display: block;
-				height: 30px;
-				line-height: 30px;
-				padding: 0 20px;
-			}
-		}
-
-
-	}
 }
-
-// Import Satoshi font (add this if not already loaded globally)
-@import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@400;700;900&display=swap');
 
 // Main container
 .gf-introduction-page {
@@ -1721,6 +1620,9 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 		justify-content: space-between;
 
 		.gf-upgrade-left {
+			flex: 1;
+			min-width: 300px;
+
 			.gf-upgrade-heading {
 				color: #067971;
 				font-family: 'Satoshi', sans-serif;
@@ -1954,12 +1856,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 // Responsive adjustments
 @media (max-width: 768px) {
 	.gf-introduction-page {
-		.gf-video-content {
-			flex-direction: column;
-			justify-content: center;
-			text-align: center;
-		}
-
 		.gf-video-section {
 			.gf-video-heading {
 				font-size: 24px;
@@ -1968,15 +1864,11 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 		}
 
 		.gf-upgrade-pro-section {
-			align-items: center;
+			flex-direction: column;
 
-			.gf-upgrade-right {}
-		}
-
-		#gutena-forms-pricing {
-
-			.gf-upgrade-list {
-				grid-template-columns: repeat(1, 1fr);
+			.gf-upgrade-right {
+				width: 100%;
+				max-width: 300px;
 			}
 		}
 
@@ -1989,23 +1881,15 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 	}
 }
 
-@media (max-width: 580px) {
-	.gf-introduction-page .gf-upgrade-pro-section {
-		justify-content: center;
-	}
-}
-
 // Custom Zoom Animations
 @keyframes gf-zoom-in {
 	from {
 		opacity: 0;
 		transform: scale3d(0.3, 0.3, 0.3);
 	}
-
 	50% {
 		opacity: 1;
 	}
-
 	to {
 		opacity: 1;
 		transform: scale3d(1, 1, 1);
@@ -2017,11 +1901,9 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 		opacity: 1;
 		transform: scale3d(1, 1, 1);
 	}
-
 	50% {
 		opacity: 1;
 	}
-
 	to {
 		opacity: 0;
 		transform: scale3d(0.3, 0.3, 0.3);
@@ -2032,7 +1914,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 	from {
 		opacity: 0;
 	}
-
 	to {
 		opacity: 1;
 	}
@@ -2042,7 +1923,6 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 	from {
 		opacity: 1;
 	}
-
 	to {
 		opacity: 0;
 	}
@@ -2128,10 +2008,9 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 	}
 }
 
-#gfp-page-doc {
+#gfp-page-doc{
 	background: $gfp_secondary_color;
 	padding: 2rem 0;
-
 	.gutena-forms-knowledge-base {
 		margin: auto;
 		max-width: 900px;
@@ -2152,14 +2031,12 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			.gutena-topics {
 				.gutena-topic {
 					margin-bottom: 1rem;
-
 					&::marker {
 						color: $gfp_heading_color;
 						font-weight: 600;
 						font-size: 1rem;
 						line-height: 1.6;
 					}
-
 					a {
 						color: $gfp_heading_color;
 						font-weight: 600;
@@ -2187,11 +2064,9 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 
 			.gutena-details {
 				max-width: 321px;
-
 				.gutena-title {
 					margin-bottom: 1rem;
 				}
-
 				.gutena-description {
 					padding-bottom: 2rem;
 					margin: 0;
@@ -2210,14 +2085,14 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 					margin-bottom: 30px;
 				}
 
-				.gutena-description {
+				.gutena-description
+				{
 					font-size: 15px;
 					color: $gfp_body_color;
 					line-height: 1.6;
-
 					.version {
 						display: block;
-						color: $gfp_heading_color;
+						color:$gfp_heading_color;
 						font-weight: 600;
 						font-size: 18px;
 						padding-top: 25px;
@@ -2233,93 +2108,11 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			}
 		}
 
-		.gf-btn-group .components-button {
+		.gf-btn-group .components-button{
 			padding: 10px 10px;
 		}
 	}
 }
-
-
-@media only screen and (max-width: 1200px) {
-	#wpbody #gutena-forms__root {
-		.gutena-forms__header-container .nav-menu-container {
-			flex-direction: row-reverse;
-			justify-content: end;
-		}
-
-		.gutena-forms__header-container .mobile_toggle {
-			display: block;
-		}
-
-		.gutena-forms__header-container.show-nav ul {
-			display: flex;
-		}
-
-		.gutena-forms__header-container ul {
-			display: none;
-			position: absolute;
-			right: 16px;
-			width: 400px;
-			background: #fff;
-			top: 40px;
-			flex-direction: column;
-			border: 1px solid #ccc;
-			max-width: 400px;
-			z-index: 99;
-			width: 90%;
-		}
-
-		.gutena-forms__header-container ul li {}
-
-		.gutena-forms__header-container .mobile_toggle svg {
-			fill: #0f856f !important;
-			width: 30px;
-			height: 30px;
-		}
-	}
-
-
-}
-
-@media (max-width: 992px) {
-	.gutena-froms#gutena-forms__root .gutena-forms__data-table-container {
-		.gutena-forms__datatable-header {
-			gap: 25px;
-
-			.display-inline-block:last-child {
-				margin: 0;
-			}
-
-			.gutena-forms__bulk-action-container {
-				width: 50%;
-				display: flex;
-				flex-direction: column;
-				gap: 10px;
-			}
-
-			.filter_fields {
-				width: 50%;
-				display: flex;
-				flex-direction: column;
-				gap: 10px;
-			}
-		}
-	}
-
-	.gutena-froms#gutena-forms__root .gutena-forms__dummy-select {
-		width: 100%;
-		box-sizing: border-box;
-	}
-
-	.gutena-froms#gutena-forms__root .display-inline-block {
-		margin: 0;
-	}
-
-	.gutena-froms#gutena-forms__root .gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__container {
-		padding: 30px;
-	}
-}
-
 
 // Responsive adjustments for video modal
 @media (max-width: 768px) {
@@ -2336,28 +2129,4 @@ $gfp_input_border: 1px solid rgba(0, 0, 0, .1);
 			}
 		}
 	}
-
-	.gutena-forms__datatable-header {
-		flex-direction: column !important;
-
-		.gutena-forms__bulk-action-container {
-			width: 100% !important;
-		}
-
-		.filter_fields {
-			width: 100% !important;
-		}
-	}
-}
-
-@media (max-width: 575px) {
-	h2.gutena-forms__page-title {
-		display: flex !important;
-		flex-direction: column;
-		gap: 20px;
-		align-items: center;
-	}
-
-
-
 }
