@@ -194,6 +194,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( Gutena_Forms_Submit_Form_Handler::get_instance(), 'handle_submit' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
 			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_css_responsive' ) );
+
 			$this->load_dashboard();
 		}
 
@@ -380,6 +382,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 			return $blocks;
+		}
+
+		public function admin_css_responsive() {
+			wp_enqueue_style( 'admin_responsive', plugin_dir_url( __FILE__ ) . 'assets/css/admin-responsive.css', array(), GUTENA_FORMS_VERSION, 'all' );
+			wp_enqueue_script( 'admin_responsive', plugin_dir_url( __FILE__ ) . 'assets/js/custom.js', array( 'jquery' ), GUTENA_FORMS_VERSION, true );
 		}
 
 		public function register_blocks_styles() {

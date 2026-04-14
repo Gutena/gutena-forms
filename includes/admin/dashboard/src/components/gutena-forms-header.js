@@ -5,6 +5,7 @@ import { NavLink } from 'react-router';
 import Crown from '../icons/crown';
 import { gutenaFormsFetchMenus } from '../api';
 import { gutenaFormsStrContains } from '../utils/functions';
+import Burger from "../icons/burger";
 
 const GutenaFormsHeader = ( { activeMenu, setActiveMenu } ) => {
 
@@ -36,6 +37,9 @@ const GutenaFormsHeader = ( { activeMenu, setActiveMenu } ) => {
 
 				{ ! loading && menus && (
 					<nav className={ 'gutena-forms__header-menu' }>
+						<div className={ 'mobile_toggle' }>
+							<Burger />
+						</div>
 						<ul>
 							{ menus.map( ( menu, index ) => {
 								if ( menu.external ) {

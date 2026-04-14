@@ -1,4 +1,4 @@
-import './index.css';
+import './index.scss';
 import domReady from '@wordpress/dom-ready';
 import { createRoot, StrictMode, useState } from '@wordpress/element';
 import { HashRouter } from 'react-router';
