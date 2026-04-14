@@ -6,7 +6,6 @@ import { FadedBin } from '../icons/bin';
 import Tag from '../icons/tag';
 import { AddNew } from '../icons/plus';
 import GutenaFormsListBox from '../components/gutena-forms-list-box';
-import SettingsLoading from "../skeletons/settings-loading";
 
 const GutenaFormsManageTags = () => {
 
@@ -17,11 +16,11 @@ const GutenaFormsManageTags = () => {
 	useEffect( () => {
 		setIsGutenaPro( true );
 		gutenaFormsFetchTags()
-			.then( (  ) => {
+			.then( ( tags ) => {
 				// If the request is successful, the user has Gutena Pro.
 				// @todo we need to improve this check based on actual response.
 			} )
-			.catch( () => {
+			.catch( error => {
 				setTags( [
 					{ title: __( 'WordPress', 'gutena-forms' ) },
 					{ title: __( 'Contact Form', 'gutena-forms' ) },
@@ -34,9 +33,7 @@ const GutenaFormsManageTags = () => {
 
 	return (
 		<div>
-			{ loading ? (
-				<SettingsLoading hasTitle={ false } />
-			) : (
+			{ ! loading && (
 				<div>
 					{ ! isGutenaPro && (
 						<div className={ 'gutena-forms__pro-wrapper' }>

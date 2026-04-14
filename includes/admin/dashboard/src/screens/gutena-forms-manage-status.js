@@ -6,7 +6,6 @@ import { gutenaFormsFetchStatus } from '../api';
 import {AddNew} from '../icons/plus';
 import GutenaFormsSubmitButton from '../components/fields/gutena-forms-submit-button';
 import GutenaFormsListBox from '../components/gutena-forms-list-box';
-import SettingsLoading from "../skeletons/settings-loading";
 
 const GutenaFormsManageStatus = () => {
 	const [ status, setStatus ] = useState([] );
@@ -17,11 +16,11 @@ const GutenaFormsManageStatus = () => {
 		setLoading( true );
 
 		gutenaFormsFetchStatus()
-			.then( (  ) => {
+			.then( ( statuses ) => {
 				// If the request is successful, the user has Gutena Pro.
 				// @todo we need to improve this check based on actual response.
 			} )
-			.catch( () => {
+			.catch( error => {
 				setStatus( [
 					{
 						title: __( 'Unread', 'gutena-forms' ),
@@ -56,9 +55,7 @@ const GutenaFormsManageStatus = () => {
 
 	return (
 		<div>
-			{ loading ? (
-				<SettingsLoading hasTitle={ false } />
-			) : (
+			{ ! loading && (
 				<div>
 					{ ! isGutenaPro && (
 						<div className={ 'gutena-forms__pro-wrapper' }>

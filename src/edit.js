@@ -1,7 +1,7 @@
 import {__, sprintf} from '@wordpress/i18n';
 import { get } from 'lodash';
 import { useEffect } from '@wordpress/element';
-import { gfIsEmpty, getInnerBlocksbyNameAttr, slugToName } from './helper';
+import { gfIsEmpty, getInnerBlocksbyNameAttr } from './helper';
 import {
 	InspectorControls,
 	__experimentalBlockVariationPicker,
@@ -14,24 +14,19 @@ import {
 	__experimentalFontFamilyControl as FontFamilyControl,
 	useSettings,
 } from '@wordpress/block-editor';
-import { store as editorStore } from '@wordpress/editor';
 import { store as coreStore } from '@wordpress/core-data';
-import { useDispatch, useSelect, dispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	PanelBody,
 	PanelRow,
 	TextControl,
 	ToggleControl,
 	RangeControl,
-	RadioControl,
 	SelectControl,
 	__experimentalUseCustomUnits as useCustomUnits,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
-	__experimentalUnitControl as UnitControl,
-	__experimentalVStack as VStack,
 	__experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue,
-	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 import {
 	createBlocksFromInnerBlocksTemplate,
@@ -40,6 +35,10 @@ import {
 import RangeControlUnit from './components/RangeControlUnit';
 import './editor.scss';
 import variations from './variations';
+import CloudflareSettings from "./settings/cloudflare-settings";
+import GoogleRecaptchaSettings from "./settings/google-recaptcha-settings";
+import HoneypotSettings from "./settings/honeypot-settings";
+import ValidationMessagesSettings from "./settings/validation-messages-settings";
 /** Hook that retrieves the given setting for the block instance in use.
  * https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#usesetting
  */
@@ -114,17 +113,9 @@ const Placeholder = ( { clientId, name, setAttributes } ) => {
 	);
 };
 
-const MAX_SPACE_VALUES = {
-	px: 100,
-	em: 20,
-	rem: 20,
-	vh: 1,
-	vw: 1,
-};
-
 export default function Edit( props ) {
 	//props
-	const { className, attributes, setAttributes, isSelected, clientId } =
+	const { attributes, setAttributes, clientId } =
 		props;
 
 	//Attributes
@@ -154,7 +145,6 @@ export default function Edit( props ) {
 		replyToLastName,
 		adminEmailSubject,
 		emailNotifyAdmin,
-		emailNotifyUser,
 		messages={},
 		formStyle,
 		style,
@@ -164,7 +154,6 @@ export default function Edit( props ) {
 	} = attributes;
 
 	const {
-		getClientIdsOfDescendants,
 		getBlock
 	} = useSelect( blockEditorStore );
 
@@ -189,7 +178,7 @@ export default function Edit( props ) {
 			}
 		}
 
-		if ( gfIsEmpty( fontFamilies ) || 0 == fontFamilies.length ) {
+		if ( gfIsEmpty( fontFamilies ) || 0 === fontFamilies.length ) {
 			return [];
 		}
 
@@ -266,19 +255,47 @@ export default function Edit( props ) {
 				d.getSeconds() );
 
 			//set recaptcha and formID if not set initially as per data available
-			if ( ! gfIsEmpty( recaptcha ) && gfIsEmpty( recaptcha.secret_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_type ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_site_key ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha_secret_key ) ) {
+			if ( ! gfIsEmpty( recaptcha ) && gfIsEmpty( recaptcha.secret_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.grecaptcha ) ) {
 				setAttributes( {
 					recaptcha: {
-						...recaptcha,
-						type: gutenaFormsBlock.grecaptcha_type,
-						site_key: gutenaFormsBlock.grecaptcha_site_key,
-						secret_key: gutenaFormsBlock.grecaptcha_secret_key,
+						enable: gutenaFormsBlock.grecaptcha.enable,
+						type: gutenaFormsBlock.grecaptcha.type,
+						site_key: gutenaFormsBlock.grecaptcha.site_key,
+						secret_key: gutenaFormsBlock.grecaptcha.secret_key,
+						defaultSettings: true,
 					},
-					formID: GutenaFormsID
 				} );
-			} else {
-				setAttributes( { formID: GutenaFormsID } );
+
 			}
+
+			if ( ! gfIsEmpty( cloudflareTurnstile ) && gfIsEmpty( cloudflareTurnstile.site_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock?.cloudflare_turnstile_defaults ) ) {
+				const cloudflare_turnstile_defaults = gutenaFormsBlock.cloudflare_turnstile_defaults;
+				if ( ! gfIsEmpty( cloudflare_turnstile_defaults.site_key ) && ! gfIsEmpty( cloudflare_turnstile_defaults.secret_key ) ) {
+					setAttributes( {
+						cloudflareTurnstile: {
+							enable: cloudflare_turnstile_defaults.enable,
+							site_key: cloudflare_turnstile_defaults.site_key,
+							secret_key: cloudflare_turnstile_defaults.secret_key,
+							defaultSettings: true,
+						},
+					} );
+				}
+			}
+
+			if ( ! gfIsEmpty( honeypot ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.honeypot ) ) {
+				const honeypot_defaults = gutenaFormsBlock.honeypot;
+				if ( ! gfIsEmpty( honeypot_defaults.timeCheckValue ) ) {
+					setAttributes( {
+						honeypot: {
+							enable: honeypot_defaults.enable,
+							timeCheckValue: honeypot_defaults.timeCheckValue,
+							defaultSettings: true,
+						},
+					} );
+				}
+			}
+
+			setAttributes( { formID: GutenaFormsID } );
 		}
 		//set replyToEmailID
 		if ( shouldRunFormID && gfIsEmpty( replyToEmail ) && gfIsEmpty( replyToName ) ) {
@@ -320,7 +337,7 @@ export default function Edit( props ) {
 
 	//Get Author Email
 	const currentUser = useSelect( ( select ) => {
-		return '' == adminEmails
+		return '' === adminEmails
 			? select( coreStore ).getUsers( { who: 'authors' } )
 			: [];
 	}, [] );
@@ -330,7 +347,7 @@ export default function Edit( props ) {
 		let shouldRunAuthorEmail = true;
 		if ( shouldRunAuthorEmail ) {
 			if (
-				'' == adminEmails &&
+				'' === adminEmails &&
 				'undefined' !== typeof currentUser &&
 				null !== currentUser &&
 				'undefined' !== typeof currentUser[ 0 ].email &&
@@ -351,28 +368,6 @@ export default function Edit( props ) {
 		gfIsEmpty( variations ) || gfIsEmpty( variations[ 0 ].innerBlocks )
 			? [ [ 'gutena/field-group' ] ]
 			: variations[ 0 ].innerBlocks;
-
-	//Spacing units
-	const units = useCustomUnits( {
-		availableUnits: [ 'px', 'em', 'rem', 'vh', 'vw' ],
-		defaultValues: { px: 0, em: 0, rem: 0, vh: 0, vw: 0 },
-	} );
-
-	const getQtyOrunit = ( rawUnit, quantityOrUnit = 'unit' ) => {
-		const [ quantityToReturn, unitToReturn ] =
-			parseQuantityAndUnitFromRawValue( rawUnit );
-		let unit =
-			'undefined' === typeof unitToReturn || null === unitToReturn
-				? 'px'
-				: unitToReturn;
-		let Qty =
-			'undefined' === typeof quantityToReturn ||
-			null === quantityToReturn ||
-			'' == quantityToReturn
-				? 0
-				: quantityToReturn;
-		return 'unit' === quantityOrUnit ? unit : quantityToReturn;
-	};
 
 	//Form Styles : local css variable for forms inner blocks styles
 	useEffect( () => {
@@ -642,162 +637,27 @@ export default function Edit( props ) {
 					</span>
 					</p>
 				</PanelBody>
-				<PanelBody title="Google reCAPTCHA" initialOpen={ false }>
-				<VStack >
-					<p
-						dangerouslySetInnerHTML={ {
-							__html: sprintf(
-								__( 'Enable %1$s v2 or v3 to protect your forms from spam and bot submissions.', 'gutena-forms' ),
-								`<a href="https://gutenaforms.com/how-to-generate-google-recaptcha-site-key-and-secret-key" target="_blank">${ __( 'reCAPTCHA', 'gutena-forms' ) }</a>`
-							)
-						} }
-					/>
 
-					<ToggleControl
-						label={ __( 'Enable', 'gutena-forms' ) }
-						checked={ recaptcha?.enable }
-						onChange={ ( recaptcha_status ) =>
-							setAttributes( { recaptcha:{
-								...recaptcha,
-								enable:recaptcha_status
-							} } )
-						}
-					/>
-					{ ( ! gfIsEmpty( recaptcha?.enable ) && recaptcha?.enable ) &&
-					<>
-						<RadioControl
-							className="gutena-forms-horizontal-radio"
-							label={ __( 'reCAPTCHA Type', 'gutena-forms' ) }
-							selected={ recaptcha?.type }
-							options={ [
-								{ label: 'v2', value: 'v2' },
-								{ label: 'v3', value: 'v3' },
-							] }
-							onChange={ ( type ) =>
-								setAttributes( { recaptcha:{
-									...recaptcha,
-									type
-								} } )
-							}
-						/>
-
-						<TextControl
-							label={ __( 'Site Key', 'gutena-forms' ) }
-							value={ recaptcha?.site_key }
-							onChange={ ( site_key ) =>
-								setAttributes( { recaptcha:{
-									...recaptcha,
-									site_key
-								} } )
-							}
-						/>
-						<TextControl
-							label={ __( 'Secret key', 'gutena-forms' ) }
-							value={ recaptcha?.secret_key }
-							onChange={ ( secret_key ) =>
-								setAttributes( { recaptcha:{
-									...recaptcha,
-									secret_key
-								} } )
-							}
-						/>
-					</>
-					}
-					</VStack>
-				</PanelBody>
+				{/* Google - Recaptcha start */}
+				<GoogleRecaptchaSettings
+					setAttributes={ setAttributes }
+					recaptcha={ recaptcha }
+				/>
+				{/* Google - Recaptcha end */}
 
 				{/* Cloudflare - Turnstile start */}
-				<PanelBody title="Cloudflare Turnstile" initialOpen={ false }>
-					<VStack>
-						<p
-							dangerouslySetInnerHTML={ {
-								__html: sprintf(
-									__( 'Enable %1$s to protect your forms from spam and bot submissions.', 'gutena-forms' ),
-									`<a href="https://developers.cloudflare.com/turnstile/get-started/">${ __( 'Cloudflare CAPTCHA', 'gutena-forms' ) }</a>`
-								)
-							} }
-						/>
-
-						<ToggleControl
-							label={ 'Enable' }
-							checked={ cloudflareTurnstile?.enable }
-							onChange={ ( turnstile_status ) =>
-								setAttributes( { cloudflareTurnstile:{
-									...cloudflareTurnstile,
-									enable:turnstile_status
-								} } )
-							}
-						/>
-
-						{
-							( ! gfIsEmpty( cloudflareTurnstile?.enable ) && cloudflareTurnstile?.enable ) &&
-							<>
-								<TextControl
-									label={ __( 'Site Key', 'gutena-forms' ) }
-									value={ cloudflareTurnstile?.site_key }
-									onChange={ ( site_key ) =>
-										setAttributes( { cloudflareTurnstile:{
-											...cloudflareTurnstile,
-											site_key
-										} } )
-									}
-								/>
-
-								<TextControl
-									label={ __( 'Secret Key', 'gutena-forms' ) }
-									value={ cloudflareTurnstile?.secret_key }
-									onChange={ ( secret_key ) =>
-										setAttributes( { cloudflareTurnstile:{
-											...cloudflareTurnstile,
-											secret_key
-										} } )
-									}
-								/>
-							</>
-						}
-
-					</VStack>
-				</PanelBody>
+				<CloudflareSettings
+					setAttributes={ setAttributes }
+					cloudflareTurnstile={ cloudflareTurnstile }
+					cloudflareTurnstileDefaults={ ( typeof gutenaFormsBlock !== 'undefined' && gutenaFormsBlock?.cloudflare_turnstile_defaults ) ? gutenaFormsBlock.cloudflare_turnstile_defaults : {} }
+				/>
 				{/* Cloudflare - Turnstile end */}
 
 				{ /* Honeypot start */ }
-				<PanelBody title={ "Honeypot Field" } initialOpen={ false }>
-					<VStack>
-						<p>Honeypot field settings</p>
-						<ToggleControl
-							label={ 'enable' }
-							checked={ honeypot?.enable }
-							onChange={ ( honeypot_status ) => {
-								setAttributes( {
-									honeypot: {
-										...honeypot,
-										enable: honeypot_status
-									}
-								} );
-							} }
-						/>
-
-						{
-							( ! gfIsEmpty( honeypot?.enable ) && honeypot?.enable ) &&
-							<>
-								<NumberControl
-									label={ __( 'Time limit (in seconds)', 'gutena-forms' ) }
-									value={ honeypot?.timeCheckValue }
-									min={ 1 }
-									onChange={ ( timeCheckValue ) => {
-										setAttributes( {
-											honeypot: {
-												...honeypot,
-												timeCheckValue: timeCheckValue
-											}
-										} );
-									} }
-									description={ 'Adds a time-based spam check that detects submissions made too quickly, a common bot behavior. The default threshold is 4 seconds, adjustable as needed. If unsure, leave it off.'}
-								/>
-							</>
-						}
-					</VStack>
-				</PanelBody>
+				<HoneypotSettings
+					setAttributes={ setAttributes }
+					honeypot={ honeypot }
+				/>
 				{ /* Honeypot end */ }
 
 				<PanelColorSettings
@@ -1335,93 +1195,13 @@ export default function Edit( props ) {
 						''
 					) }
 				</PanelBody>
-				<PanelBody title={__( 'Messages', 'gutena-forms' ) } initialOpen={ false }>
-					<TextControl
-						type="text"
-						label={ __( 'Required Field', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg ) ? '' : messages?.required_msg }
-						onChange={ ( required_msg ) =>
-							setAttributes( { messages:{
-								...messages,
-								required_msg
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.required_msg }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Required Select Field', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg_select ) ? '' : messages?.required_msg_select }
-						onChange={ ( required_msg_select ) =>
-							setAttributes( { messages:{
-								...messages,
-								required_msg_select
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.required_msg_select }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Required Checkbox or Radio Field', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg_check ) ? '' : messages?.required_msg_check }
-						onChange={ ( required_msg_check ) =>
-							setAttributes( { messages:{
-								...messages,
-								required_msg_check
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.required_msg_check }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Required Opt-in checkbox', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.required_msg_optin ) ? '' : messages?.required_msg_optin }
-						onChange={ ( required_msg_optin ) =>
-							setAttributes( { messages:{
-								...messages,
-								required_msg_optin
-							} } )
-						}
-						help={ __( 'Privacy policy, Terms', 'gutena-forms' ) }
-						placeholder={ gutenaFormsBlock?.required_msg_optin }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Invalid Email', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.invalid_email_msg ) ? '' : messages?.invalid_email_msg }
-						onChange={ ( invalid_email_msg ) =>
-							setAttributes( { messages:{
-								...messages,
-								invalid_email_msg
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.invalid_email_msg }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Minimum value', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.min_value_msg ) ? '' : messages?.min_value_msg }
-						onChange={ ( min_value_msg ) =>
-							setAttributes( { messages:{
-								...messages,
-								min_value_msg
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.min_value_msg }
-					/>
-					<TextControl
-						type="text"
-						label={ __( 'Maximum value', 'gutena-forms' ) }
-						value={ gfIsEmpty( messages?.max_value_msg ) ? '' : messages?.max_value_msg }
-						onChange={ ( max_value_msg ) =>
-							setAttributes( { messages:{
-								...messages,
-								max_value_msg
-							} } )
-						}
-						placeholder={ gutenaFormsBlock?.max_value_msg }
-					/>
-				</PanelBody>
+
+			{/* Messages - setting start  */}
+				<ValidationMessagesSettings
+					setAttributes={ setAttributes }
+					messages={ messages }
+				/>
+			{/* Messages - setting end  */}
 			</InspectorControls>
 			) }
 			{ hasInnerBlocks ? (

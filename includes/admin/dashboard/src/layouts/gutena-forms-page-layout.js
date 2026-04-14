@@ -1,8 +1,7 @@
 import { useState, useEffect } from '@wordpress/element';
 import { gutenaFormsFetchSettings } from '../api';
 import { useParams } from 'react-router';
-import { PageTemplates } from '../utils/templates';
-import PageLoading from "../skeletons/page-loading";
+import { PageTemplates } from '../utils/templates'
 
 const GutenaFormsPageLayout = ( { showProPopupHandler, setActiveMenu } ) => {
 	const { slug } = useParams();
@@ -30,11 +29,7 @@ const GutenaFormsPageLayout = ( { showProPopupHandler, setActiveMenu } ) => {
 	const TemplateComponent = PageTemplates[ template ];
 	return (
 		<div className={ 'gutena-forms__page-layout-wrapper' }>
-			{ loading ? (
-				<>
-					<PageLoading />
-				</>
-			) : (
+			{ ! loading && (
 				<>
 					{ template && PageTemplates[ template ] && (
 						<TemplateComponent
