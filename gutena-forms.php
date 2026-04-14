@@ -51,7 +51,7 @@ if ( ! defined( 'GUTENA_FORMS_SCHEMA_OPTION_PREFIX' ) ) {
 	define( 'GUTENA_FORMS_SCHEMA_OPTION_PREFIX', 'gutena_forms_schema_' );
 }
 
-if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) {
+if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) :
 	/**
 	 * Get form schema option value. Checks non-prefixed first, then prefixed; if both exist, returns prefixed.
 	 *
@@ -80,7 +80,7 @@ if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) {
 		}
 		return $default_value;
 	}
-}
+endif;
 
 if ( ! function_exists( 'gutena_forms__fs' ) ) :
 	/**
