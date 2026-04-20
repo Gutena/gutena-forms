@@ -154,7 +154,7 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 					)
 				}
 			</h2>
-			<p>{ description }</p>
+			<p dangerouslySetInnerHTML={ { __html: description } } />
 
 			<div className={ 'gutena-forms__settings-meta-box' }>
 				{ ! template && ! loading && settings && Object.keys( settings ).map( ( key, index ) => {

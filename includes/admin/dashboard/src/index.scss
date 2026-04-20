@@ -218,6 +218,16 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 
 			.gutena-forms__meta-box-container {
 				width: 760px;
+
+				p {
+
+					a {
+						color: #0DA88C;
+						font-size: 12px;
+						font-weight: 400;
+						text-decoration: underline;
+					}
+				}
 			}
 
 			.gutena-forms__settings-meta-box {
