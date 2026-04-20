@@ -64,7 +64,7 @@ if ( ! class_exists( 'Gutena_Forms_MCP' ) && class_exists( 'Gutena_Forms_Forms_S
 				'description' => sprintf(
 					// translators: %1$s documentation link.
 					__( 'Configure the AI client permissions and MCP settings. %1$s', 'gutena-forms' ),
-					'<a href="#">' . __( 'View documentation', 'gutena-forms' ) . '</a>'
+					'<a href="https://gutenaforms.com/docs/ai-features/mcp-server">' . __( 'View documentation', 'gutena-forms' ) . '</a>'
 				),
 			);
 
