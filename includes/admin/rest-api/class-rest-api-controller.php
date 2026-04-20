@@ -155,11 +155,9 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 		 * Get menus callback
 		 *
 		 * @since 1.7.0
-		 * @param WP_REST_Request $request The REST request.
-		 *
 		 * @return WP_REST_Response
 		 */
-		public function get_menus( $request ) {
+		public function get_menus() {
 			$menus = array(
 				array(
 					'title' => __( 'Dashboard', 'gutena-forms' ),
@@ -188,6 +186,8 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 				),
 			);
 
+			$menus = apply_filters( 'gutena_forms__top_menu_navigation', $menus );
+
 			if ( is_array( $menus ) && ! empty( $menus ) ) {
 				return rest_ensure_response(
 					array(
@@ -211,11 +211,9 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 		 * Get left navigation menus callback
 		 *
 		 * @since 1.7.0
-		 * @param WP_REST_Request $request The REST request.
-		 *
 		 * @return WP_REST_Response
 		 */
-		public function get_left_navigation_menus( $request ) {
+		public function get_left_navigation_menus() {
 			$menus = array(
 				array(
 					'title' => __( 'General Settings', 'gutena-forms' ),
@@ -246,6 +244,8 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'slug'  => 'mcp',
 				),
 			);
+
+			$menus = apply_filters( 'gutena_forms__left_navigation_menus', $menus );
 
 			if ( is_array( $menus ) && ! empty( $menus ) ) {
 				return rest_ensure_response(
