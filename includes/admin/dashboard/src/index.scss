@@ -388,14 +388,23 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 				height: 35px;
 				padding: 0 20px;
 
-				svg {
-					margin-top: 5px;
+				.gutena-forms__accordion-icon {
+					svg {
+						margin-bottom: -4px;
+					}
+
 				}
 
 				.gutena-forms__accordion-title {
 					color: #424D55;
 					font-size: 12px;
 					font-weight: 700;
+					padding-left: 10px;
+				}
+
+				.gutena-forms__accordion-title,
+				.gutena-forms__accordion-icon {
+					display: inline-block;
 				}
 
 				.gutena-forms__accordion-arrow {
@@ -1273,6 +1282,7 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			color: #000;
 			font-size: 14px;
 			font-weight: 700;
+			margin: 20px 0 10px 0;
 		}
 
 		ol {
@@ -1304,6 +1314,18 @@ $gfp_input_border: 1px solid rgba(0,0,0,.1);
 			justify-content: center;
 			align-items: center;
 			cursor: pointer;
+		}
+	}
+}
+
+.gutena-froms#gutena-forms__root {
+	.gutena-forms__mcp-wrapper {
+		p {
+			margin-top: 0;
+		}
+
+		.gutena-forms__primary-button {
+			font-size: 12px;
 		}
 	}
 }

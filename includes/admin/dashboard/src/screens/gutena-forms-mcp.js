@@ -7,7 +7,7 @@ const GutenaFormsMcp = () => {
     return (
         <div className={ 'gutena-forms__mcp-wrapper' }>
             <p>
-                { __( 'To connect AI clients to your forms, you need to install the MCP Adapter plugin. Follow the steps below to download and activate it before configuring the settings shown above.', 'gutena-forms' ) }
+                { __( 'To connect AI clients to your forms, you need to install the MCP Adapter plugin. Follow the steps below to download and activate it.', 'gutena-forms' ) }
             </p>
 
             <ol>

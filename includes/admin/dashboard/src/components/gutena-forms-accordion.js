@@ -16,13 +16,15 @@ const GutenaFormsAccordion = ( { icon, title, items, slug } ) => {
 				<NavLink
 					style={ { textDecoration: 'none', boxShadow: 'none' } }
 					to={ `/settings/settings/${ slug }` }
-					className={ 'gutena-forms__accordion-header' }
+					className={ 'gutena-forms__accordion-header gutena-forms__link' }
 				>
-					<div className={ 'gutena-forms__accordion-icon' }>
-						{ icon }
-					</div>
-					<div className={ 'gutena-forms__accordion-title' }>
-						{ title }
+					<div>
+						<div className={ 'gutena-forms__accordion-icon' }>
+							{ icon }
+						</div>
+						<div className={ 'gutena-forms__accordion-title' }>
+							{ title }
+						</div>
 					</div>
 					<div className={ `gutena-forms__accordion-arrow ${ ! isOpen ? 'closed' : '' }` }>
 					</div>
@@ -33,11 +35,13 @@ const GutenaFormsAccordion = ( { icon, title, items, slug } ) => {
 					className={ 'gutena-forms__accordion-header' }
 					onClick={ toggleAccordion }
 				>
-					<div className={ 'gutena-forms__accordion-icon' }>
-						{ icon }
-					</div>
-					<div className={ 'gutena-forms__accordion-title' }>
-						{ title }
+					<div>
+						<div className={ 'gutena-forms__accordion-icon' }>
+							{ icon }
+						</div>
+						<div className={ 'gutena-forms__accordion-title' }>
+							{ title }
+						</div>
 					</div>
 					<div className={ `gutena-forms__accordion-arrow ${ ! isOpen ? 'closed' : '' }` }>
 						<Arrow />
