@@ -84,6 +84,8 @@ https://www.youtube.com/watch?v=u9sB-RSBQIE
 
 * Custom Error Messages
 
+* MCP (Model Context Protocol) Integration — **NEW**
+
 ####✨Pro Version Unlocks (everything in Free, plus):
 
 Gutena Forms Pro gives you everything you need to manage advanced form workflows:
@@ -212,6 +214,11 @@ Gutena Forms includes powerful admin email notifications that instantly alert yo
 ✅ **Reason 10: Tags, Status, and Use Access Management**
 
 Organize, filter, and control your form submissions with precision. You can categorize entries with tags, assign custom statuses for better workflow management, and set user permissions to keep your form data secure and accessible only to authorized team members.
+
+✅ **Reason 11: Connect Any AI Client with Gutena Forms via MCP**
+
+You can securely connect your forms to AI tools like Claude, Cursor, ChatGPT, and other MCP-compatible clients via the Model Context Protocol (MCP) Server. This integration allows your AI assistants to read WordPress form lists, submissions, and entry details. Perfect for automating reports, analyzing submissions, or building AI-powered workflows without leaving WordPress.
+
 
 
 ###⚡Real World Use Cases of Gutena Forms
@@ -342,6 +349,14 @@ No, Gutena Forms is a lightweight WordPress form plugin that does not use jQuery
 
 Gutena Forms gives you full control over padding, colors, spacing, typography, field widths, and overall form layout inside Gutenberg.
 
+= Which AI tools can connect to Gutena Forms via MCP? =
+
+Gutena Forms MCP Server works with any MCP-compatible AI client, including Claude Desktop, Claude Code, Cursor IDE, and other tools that support the Model Context Protocol. Just copy the provided JSON configuration, add your WordPress credentials, and start asking your AI assistant about your form data.
+
+= Is my form data secure when using MCP integration? =
+
+Yes. Gutena Forms MCP provides read-only access to forms and submissions. Authentication uses WordPress Application Passwords (no separate API keys), and access is restricted to administrators with the manage_options permission. Your data never leaves your WordPress site. AI tools query it securely through your MCP endpoint.
+
 = Where do I report security bugs found in this plugin? =
 
 Please report security bugs found in the source code of the undefined plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/5b168d8d-e789-4f27-bdd4-fafaef54c1b9). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
@@ -359,9 +374,13 @@ Please report security bugs found in the source code of the undefined plugin thr
 8. See all your contact forms in one place
 9. View contact form entries and submission database
 10. Use existing forms on multiple pages
+11. Connect AI clients to MCP for secure access to your form and entry data.
 
 
 == Changelog ==
+
+= 1.8.0 - Apr 22, 2026 =
+* New – MCP settings to provide access of forms and submissions data to AI-clients
 
 = 1.7.1 - Apr 9, 2026 =
 * Improvement - Minor UI enhancements.
