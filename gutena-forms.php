@@ -154,6 +154,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 
 		public function __construct() {
 			$this->includes();
+			$this->initialize();
 			$this->run();
 		}
 
@@ -175,6 +176,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-form-submit-handler.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/rest-api/class-rest-api.php';
+		}
+
+		private function initialize() {
+			Gutena_Forms_Form_Block::get_instance();
+			Gutena_Forms_Existing_Forms_Block::get_instance();
+			Gutena_Forms_Field_Block::get_instance();
 		}
 
 		/**
@@ -231,45 +238,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			}
 
 			Gutena_Forms_Form_Block::get_instance()->register_block();
-//			Gutena_Forms_Field_Block::get_instance()->register_block();
-//			Gutena_Forms_Form_Field_Block::get_instance()->register_block();
 			Gutena_Forms_Existing_Forms_Block::get_instance()->register_block();
-//			Gutena_Forms_Field_Label_Block::get_instance()->register_block();
-
-			// Form Confirmation Message Block
+			Gutena_Forms_Field_Block::get_instance()->register_block();
+			
 			register_block_type( __DIR__ . '/build/blocks/form-confirm-msg' );
 
-			// Form Error Message Block
 			register_block_type( __DIR__ . '/build/blocks/form-error-msg' );
-
-			register_block_type( __DIR__ . '/build/blocks/field-group' );
-			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/text-field' );
-			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/optin-field' );
-			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/dropdown-field' );
-			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/email-field' );
-			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/number-field' );
-			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/textarea-field' );
-			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/range-field' );
-			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/radio-field' );
-			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/checkbox-field' );
-
-			if ( is_gutena_forms_pro() ) {
-				$gutena_forms_pro_standalone_blocks = array(
-					'url-field',
-					'phone-field',
-					'password-field',
-					'hidden-field',
-					'date-field',
-					'time-field',
-					'country-field',
-					'state-field',
-					'file-upload-field',
-					'rating-field',
-				);
-				foreach ( $gutena_forms_pro_standalone_blocks as $gutena_forms_pro_block_slug ) {
-					register_block_type( __DIR__ . '/build/blocks/form-field-blocks/' . $gutena_forms_pro_block_slug );
-				}
-			}
 
 			//google recaptcha
 			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
