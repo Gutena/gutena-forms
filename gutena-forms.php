@@ -243,15 +243,15 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			register_block_type( __DIR__ . '/build/blocks/form-error-msg' );
 
 			register_block_type( __DIR__ . '/build/blocks/field-group' );
-			register_block_type( __DIR__ . '/build/blocks/text-field' );
-			register_block_type( __DIR__ . '/build/blocks/optin-field' );
-			register_block_type( __DIR__ . '/build/blocks/dropdown-field' );
-			register_block_type( __DIR__ . '/build/blocks/email-field' );
-			register_block_type( __DIR__ . '/build/blocks/number-field' );
-			register_block_type( __DIR__ . '/build/blocks/textarea-field' );
-			register_block_type( __DIR__ . '/build/blocks/range-field' );
-			register_block_type( __DIR__ . '/build/blocks/radio-field' );
-			register_block_type( __DIR__ . '/build/blocks/checkbox-field' );
+			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/text-field' );
+			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/optin-field' );
+			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/dropdown-field' );
+			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/email-field' );
+			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/number-field' );
+			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/textarea-field' );
+			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/range-field' );
+			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/radio-field' );
+			register_block_type( __DIR__ . '/build/blocks/form-field-blocks/checkbox-field' );
 
 			if ( is_gutena_forms_pro() ) {
 				$gutena_forms_pro_standalone_blocks = array(
@@ -267,7 +267,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'rating-field',
 				);
 				foreach ( $gutena_forms_pro_standalone_blocks as $gutena_forms_pro_block_slug ) {
-					register_block_type( __DIR__ . '/build/blocks/' . $gutena_forms_pro_block_slug );
+					register_block_type( __DIR__ . '/build/blocks/form-field-blocks/' . $gutena_forms_pro_block_slug );
 				}
 			}
 
