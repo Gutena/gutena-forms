@@ -30,7 +30,10 @@ if ( ! class_exists( 'Gutena_Forms_Field_Block' ) ) :
 		 */
 		public function register_block() {
 			$fields    = apply_filters( 'gutena_forms__register_fields', array() );
-			$group_dir = GUTENA_FORMS_DIR_PATH . 'build/form-fields/';
+			$group_dir = GUTENA_FORMS_DIR_PATH . 'build/blocks/form-fields/';
+			if ( ! file_exists( $group_dir ) ) {
+				$group_dir = GUTENA_FORMS_DIR_PATH . 'build/form-fields/';
+			}
 
 			usort(
 				$fields,

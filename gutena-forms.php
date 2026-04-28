@@ -373,23 +373,23 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		 */
 		public function register_fields( $blocks ) {
 			$fields = array(
-				'text-field-group'     => array(
-					'name'  => 'gutena/text-field-group',
+				'text-field'           => array(
+					'name'  => 'gutena/text-field',
 					'type'  => 'text',
 					'title' => 'Text Field',
-					'dir'   => 'text-field-group',
+					'dir'   => 'text-field',
 				),
-				'email-field-group'    => array(
-					'name'  => 'gutena/email-field-group',
+				'email-field'          => array(
+					'name'  => 'gutena/email-field',
 					'type'  => 'email',
 					'title' => 'Email Field',
-					'dir'   => 'email-field-group',
+					'dir'   => 'email-field',
 				),
-				'textarea-field-group' => array(
-					'name'  => 'gutena/textarea-field-group',
+				'textarea-field'       => array(
+					'name'  => 'gutena/textarea-field',
 					'type'  => 'textarea',
 					'title' => 'Textarea Field',
-					'dir'   => 'textarea-field-group',
+					'dir'   => 'textarea-field',
 				),
 				'range-field-group'    => array(
 					'name'  => 'gutena/range-field-group',
@@ -715,8 +715,21 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 					$form_schema[ $form_id ]['form_attrs'] = $block['attrs'];
 				}
 
-				if ( ! empty( $block['blockName'] ) && 'gutena/form-field' === $block['blockName'] && ! empty( $block['attrs']['nameAttr'] ) ) {
-					$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
+				if ( ! empty( $block['blockName'] ) && ! empty( $block['attrs']['nameAttr'] ) ) {
+					$standalone_field_types = array(
+						'gutena/text-field' => 'text',
+						'gutena/email-field' => 'email',
+						'gutena/textarea-field' => 'textarea',
+					);
+
+					if ( 'gutena/form-field' === $block['blockName'] ) {
+						$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
+					} elseif ( isset( $standalone_field_types[ $block['blockName'] ] ) ) {
+						$field_attrs = $block['attrs'];
+						$field_attrs['fieldType'] = $standalone_field_types[ $block['blockName'] ];
+						$field_attrs['fieldName'] = empty( $field_attrs['fieldLabelContent'] ) ? ( empty( $field_attrs['fieldLabel'] ) ? '' : $field_attrs['fieldLabel'] ) : $field_attrs['fieldLabelContent'];
+						$form_schema[ $form_id ]['form_fields'][ $field_attrs['nameAttr'] ] = $field_attrs;
+					}
 				}
 
 				if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {

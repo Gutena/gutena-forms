@@ -1,7 +1,7 @@
 import {__, sprintf} from '@wordpress/i18n';
 import { get } from 'lodash';
 import { useEffect } from '@wordpress/element';
-import { gfIsEmpty, getInnerBlocksbyNameAttr } from './helper';
+import { gfIsEmpty, getInnerBlocksbyNameAttr } from '../../shared/helper';
 import {
 	InspectorControls,
 	__experimentalBlockVariationPicker,
@@ -33,9 +33,9 @@ import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
 } from '@wordpress/blocks';
-import RangeControlUnit from './components/RangeControlUnit';
+import RangeControlUnit from '../../components/RangeControlUnit';
 import './editor.scss';
-import variations from './variations';
+import variations from '../../variations';
 /** Hook that retrieves the given setting for the block instance in use.
  * https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#usesetting
  */

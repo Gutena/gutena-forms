@@ -29,8 +29,13 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		 * @since 1.6.0
 		 */
 		public function register_block() {
+			$block_dir = GUTENA_FORMS_DIR_PATH . 'build/blocks/form';
+			if ( ! file_exists( $block_dir . '/block.json' ) ) {
+				$block_dir = GUTENA_FORMS_DIR_PATH . 'build';
+			}
+
 			register_block_type(
-				GUTENA_FORMS_DIR_PATH . 'build',
+				$block_dir,
 				array(
 					'render_callback' => array( $this, 'render_block' ),
 				)

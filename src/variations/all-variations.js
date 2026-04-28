@@ -3,10 +3,15 @@
  */
 import { Icon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import successIcon from './success-tick.svg';
-import errorIcon from './error.svg';
-import ExistingFormsIcon from './existing-forms/icon';
-import { OneColumnBasicIcon, OneColumnModernIcon, TwoColumnBasicIcon, TwoColumnModernIcon } from './variation-icons';
+import successIcon from '../success-tick.svg';
+import errorIcon from '../error.svg';
+import ExistingFormsIcon from '../existing-forms/icon';
+import {
+	OneColumnBasicIcon,
+	OneColumnModernIcon,
+	TwoColumnBasicIcon,
+	TwoColumnModernIcon,
+} from './icons';
 
 /** @typedef {import('@wordpress/blocks').WPBlockVariation} WPBlockVariation */
 /**
@@ -31,7 +36,7 @@ variations.push( {
 	icon: <OneColumnBasicIcon />,
 	innerBlocks: [
 		[
-			'gutena/text-field-group',
+			'gutena/text-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -41,7 +46,7 @@ variations.push( {
 			},
 		],
 		[
-			'gutena/text-field-group',
+			'gutena/text-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -51,7 +56,7 @@ variations.push( {
 			},
 		],
 		[
-			'gutena/email-field-group',
+			'gutena/email-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -61,7 +66,7 @@ variations.push( {
 			},
 		],
 		[
-			'gutena/text-field-group',
+			'gutena/text-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -71,7 +76,7 @@ variations.push( {
 			},
 		],
 		[
-			'gutena/textarea-field-group',
+			'gutena/textarea-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -241,7 +246,7 @@ variations.push( {
 	icon: <OneColumnModernIcon />,
 	innerBlocks: [
 		[
-			'gutena/text-field-group',
+			'gutena/text-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -251,7 +256,7 @@ variations.push( {
 			},
 		],
 		[
-			'gutena/text-field-group',
+			'gutena/text-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -261,7 +266,7 @@ variations.push( {
 			},
 		],
 		[
-			'gutena/email-field-group',
+			'gutena/email-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -271,7 +276,7 @@ variations.push( {
 			},
 		],
 		[
-			'gutena/text-field-group',
+			'gutena/text-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -281,7 +286,7 @@ variations.push( {
 			},
 		],
 		[
-			'gutena/textarea-field-group',
+			'gutena/textarea-field',
 			{
 				isRequired: true,
 				fieldLabel: __( 'Field label', 'gutena-forms' ),
@@ -462,7 +467,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/text-field-group',
+							'gutena/text-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
@@ -487,7 +492,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/text-field-group',
+							'gutena/text-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
@@ -518,7 +523,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/text-field-group',
+							'gutena/text-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
@@ -543,7 +548,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/email-field-group',
+							'gutena/email-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
@@ -571,7 +576,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/textarea-field-group',
+							'gutena/textarea-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
@@ -785,7 +790,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/text-field-group',
+							'gutena/text-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
@@ -810,7 +815,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/text-field-group',
+							'gutena/text-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
@@ -841,7 +846,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/text-field-group',
+							'gutena/text-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
@@ -866,7 +871,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/email-field-group',
+							'gutena/email-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
@@ -894,7 +899,7 @@ variations.push( {
 					{ verticalAlignment: 'top' },
 					[
 						[
-							'gutena/textarea-field-group',
+							'gutena/textarea-field',
 							{
 								isRequired: true,
 								fieldLabel: __(
