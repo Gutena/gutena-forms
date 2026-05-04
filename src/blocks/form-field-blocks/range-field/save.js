@@ -47,39 +47,43 @@ export default function Save( { attributes } ) {
 				{ fieldName }
 				{ isRequired ? ' *' : '' }
 			</label>
-			<div className="gf-range-container">
-				<input
-					id={ nameAttr }
-					name={ nameAttr }
-					type="range"
-					className={ fieldClass }
-					defaultValue={ rangeValue }
-					min={ min }
-					max={ max }
-					step={ step }
-					required={ isRequired ? 'required' : undefined }
-				/>
-				<p className="gf-range-values">
-					{ ! gfIsEmpty( minMaxStep?.min ) || minMaxStep?.min === 0 || minMaxStep?.min === '0' ? (
-						<span className="gf-prefix-value-wrapper">
+			<div
+				className={ 'wp-block-gutena-form-field gutena-forms-range-field' }
+			>
+				<div className="gf-range-container">
+					<input
+						id={ nameAttr }
+						name={ nameAttr }
+						type="range"
+						className={ fieldClass }
+						defaultValue={ rangeValue }
+						min={ min }
+						max={ max }
+						step={ step }
+						required={ isRequired ? 'required' : undefined }
+					/>
+					<p className="gf-range-values">
+						{ ! gfIsEmpty( minMaxStep?.min ) || minMaxStep?.min === 0 || minMaxStep?.min === '0' ? (
+							<span className="gf-prefix-value-wrapper">
 							<span className="gf-prefix">{ preFix || '' }</span>
 							<span className="gf-value">{ minMaxStep.min }</span>
 							<span className="gf-suffix">{ sufFix || '' }</span>
 						</span>
-					) : null }
-					<span className="gf-prefix-value-wrapper">
+						) : null }
+						<span className="gf-prefix-value-wrapper">
 						<span className="gf-prefix">{ preFix || '' }</span>
 						<span className="gf-value range-input-value"></span>
 						<span className="gf-suffix">{ sufFix || '' }</span>
 					</span>
-					{ ! gfIsEmpty( minMaxStep?.max ) || minMaxStep?.max === 0 || minMaxStep?.max === '0' ? (
-						<span className="gf-prefix-value-wrapper">
+						{ ! gfIsEmpty( minMaxStep?.max ) || minMaxStep?.max === 0 || minMaxStep?.max === '0' ? (
+							<span className="gf-prefix-value-wrapper">
 							<span className="gf-prefix">{ preFix || '' }</span>
 							<span className="gf-value">{ minMaxStep.max }</span>
 							<span className="gf-suffix">{ sufFix || '' }</span>
 						</span>
-					) : null }
-				</p>
+						) : null }
+					</p>
+				</div>
 			</div>
 			{ ! gfIsEmpty( description ) && <p className="gutena-forms-range-field-description">{ description }</p> }
 			<p className="gutena-forms-field-error-msg" />

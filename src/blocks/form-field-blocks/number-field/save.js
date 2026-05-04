@@ -34,18 +34,22 @@ export default function Save( { attributes } ) {
 				{ fieldName }
 				{ isRequired ? ' *' : '' }
 			</label>
-			<input
-				id={ nameAttr }
-				name={ nameAttr }
-				type="number"
-				className={ `gutena-forms-field number-field ${ isRequired ? 'required-field' : '' } ${ autocomplete ? 'autocomplete' : '' }` }
-				placeholder={ placeholder }
-				defaultValue={ defaultValue }
-				min={ min }
-				max={ max }
-				step={ step }
-				required={ isRequired ? 'required' : undefined }
-			/>
+			<div
+				className={ 'wp-block-gutena-form-field' }
+			>
+				<input
+					id={ nameAttr }
+					name={ nameAttr }
+					type="number"
+					className={ `gutena-forms-field number-field ${ isRequired ? 'required-field' : '' } ${ autocomplete ? 'autocomplete' : '' }` }
+					placeholder={ placeholder }
+					defaultValue={ defaultValue }
+					min={ min }
+					max={ max }
+					step={ step }
+					required={ isRequired ? 'required' : undefined }
+				/>
+			</div>
 			{ ! gfIsEmpty( description ) && <p className="gutena-forms-number-field-description">{ description }</p> }
 			<p className="gutena-forms-field-error-msg" />
 		</div>

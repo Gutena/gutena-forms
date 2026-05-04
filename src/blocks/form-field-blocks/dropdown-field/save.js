@@ -34,23 +34,27 @@ export default function Save( { attributes } ) {
 				{ fieldName }
 				{ isRequired ? ' *' : '' }
 			</label>
-			<select
-				id={ nameAttr }
-				name={ nameAttr }
-				className={ fieldClasses }
-				required={ isRequired ? 'required' : undefined }
+			<div
+				className={ 'wp-block-gutena-form-field' }
 			>
-				{ Array.isArray( selectOptions ) && selectOptions.map( ( item, index ) => {
-					if ( gfIsEmpty( item ) ) {
-						return null;
-					}
-					return (
-						<option key={ index } value={ item }>
-							{ item }
-						</option>
-					);
-				} ) }
-			</select>
+				<select
+					id={ nameAttr }
+					name={ nameAttr }
+					className={ fieldClasses }
+					required={ isRequired ? 'required' : undefined }
+				>
+					{ Array.isArray( selectOptions ) && selectOptions.map( ( item, index ) => {
+						if ( gfIsEmpty( item ) ) {
+							return null;
+						}
+						return (
+							<option key={ index } value={ item }>
+								{ item }
+							</option>
+						);
+					} ) }
+				</select>
+			</div>
 			{ ! gfIsEmpty( description ) && <p className="gutena-forms-dropdown-field-description">{ description }</p> }
 			<p className="gutena-forms-field-error-msg" />
 		</div>

@@ -110,16 +110,18 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					{ fieldName }
 					{ isRequired ? ' *' : '' }
 				</label>
-				<input
-					id={ nameAttr }
-					name={ nameAttr }
-					type="text"
-					className={ `gutena-forms-field text-field ${ isRequired ? 'required-field' : '' } ${ autocomplete ? 'autocomplete' : '' }` }
-					placeholder={ placeholder || __( 'Placeholder...', 'gutena-forms' ) }
-					defaultValue={ defaultValue }
-					maxLength={ maxlength && maxlength > 0 ? maxlength : undefined }
-					readOnly
-				/>
+				<div className={ 'wp-block-gutena-form-field' }>
+					<input
+						id={ nameAttr }
+						name={ nameAttr }
+						type="text"
+						className={ `gutena-forms-field text-field ${ isRequired ? 'required-field' : '' } ${ autocomplete ? 'autocomplete' : '' }` }
+						placeholder={ placeholder || __( 'Placeholder...', 'gutena-forms' ) }
+						defaultValue={ defaultValue }
+						maxLength={ maxlength && maxlength > 0 ? maxlength : undefined }
+						readOnly
+					/>
+				</div>
 				{ ! gfIsEmpty( description ) && <p className="gutena-forms-text-field-description">{ description }</p> }
 				<p className="gutena-forms-field-error-msg" />
 			</div>

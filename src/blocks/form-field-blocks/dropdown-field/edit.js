@@ -120,24 +120,28 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					{ fieldName }
 					{ isRequired ? ' *' : '' }
 				</label>
-				<select
-					id={ nameAttr }
-					name={ nameAttr }
-					className={ fieldClasses }
-					value={ selectedOption }
-					onChange={ ( e ) => setSelectedOption( e.target.value ) }
+				<div
+					className={ 'wp-block-gutena-form-field' }
 				>
-					{ Array.isArray( selectOptions ) && selectOptions.map( ( item, index ) => {
-						if ( gfIsEmpty( item ) ) {
-							return null;
-						}
-						return (
-							<option key={ index } value={ item }>
-								{ item }
-							</option>
-						);
-					} ) }
-				</select>
+					<select
+						id={ nameAttr }
+						name={ nameAttr }
+						className={ fieldClasses }
+						value={ selectedOption }
+						onChange={ ( e ) => setSelectedOption( e.target.value ) }
+					>
+						{ Array.isArray( selectOptions ) && selectOptions.map( ( item, index ) => {
+							if ( gfIsEmpty( item ) ) {
+								return null;
+							}
+							return (
+								<option key={ index } value={ item }>
+									{ item }
+								</option>
+							);
+						} ) }
+					</select>
+				</div>
 				{ ! gfIsEmpty( description ) && <p className="gutena-forms-dropdown-field-description">{ description }</p> }
 				<p className="gutena-forms-field-error-msg" />
 			</div>
