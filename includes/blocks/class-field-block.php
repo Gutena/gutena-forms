@@ -73,6 +73,11 @@ if ( ! class_exists( 'Gutena_Forms_Field_Block' ) ) :
 				'attrs' => array(),
 			);
 
+			$fields[] = array(
+				'name'  => 'optin-field',
+				'attrs' => array(),
+			);
+
 			return $fields;
 		}
 

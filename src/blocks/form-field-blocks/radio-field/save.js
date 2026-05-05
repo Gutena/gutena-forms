@@ -50,7 +50,6 @@ export default function Save( { attributes } ) {
 						const optId = `${ nameAttr }_${ index }`;
 						return (
 							<label key={ index } className="radio-container" htmlFor={ optId }>
-								{ item }
 								<input
 									id={ optId }
 									type="radio"
@@ -58,6 +57,9 @@ export default function Save( { attributes } ) {
 									value={ item }
 								/>
 								<span className="checkmark" />
+								<div
+									style={ { marginLeft: '25px' } }
+								>{ item }</div>
 							</label>
 						);
 					} ) }

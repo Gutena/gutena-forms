@@ -146,9 +146,14 @@
 		&.radio-field {
 			/* The container */
 			.radio-container {
+				border: 1px solid #000;
+				border-radius: 8px;
+				margin-bottom: 15px;
+				margin-right: 5px;
+				padding: 10px 10px;
+
 				display: block;
 				position: relative;
-				padding-left: 25px;
 				cursor: pointer;
 				-webkit-user-select: none;
 				-moz-user-select: none;
@@ -192,7 +197,7 @@
 		  /* Create a custom radio button */
 		  .checkmark {
 			position: absolute;
-			left: 0;
+			left: 10px;
 			height: 16px;
 			width: 16px;
 			background-color: #ffffff;
@@ -466,6 +471,24 @@
 		}
 	}
 
+}
+
+/**
+ * Fields new UI
+ */
+
+.wp-block-gutena-forms {
+	.wp-block-gutena-form-field {
+		border-radius: 8px !important;
+
+		&.is-invalid {
+			border-color: #8E0B21 !important;
+		}
+
+		&:focus-within {
+			border-color: #0DA88C !important;
+		}
+	}
 }
 
 @media only screen and (max-width: 600px) {
