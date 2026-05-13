@@ -143,27 +143,33 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					{ isRequired ? ' *' : '' }
 				</span>
 				<div className={ fieldClasses }>
-					{ Array.isArray( selectOptions ) &&
-						selectOptions.map( ( item, index ) => {
-							if ( gfIsEmpty( item ) ) {
-								return null;
-							}
-							const optId = `${ nameAttr }_${ index }`;
-							return (
-								<label key={ index } className="radio-container" htmlFor={ optId }>
-									{ item }
+					{ Array.isArray( selectOptions ) && selectOptions.map( ( option, key ) => {
+						if ( gfIsEmpty( option ) ) {
+							return null;
+						}
+
+						const optId = `${ nameAttr }_${ key }`;
+						return (
+							<label
+								key={ key }
+								className={ 'radio-container' }
+								htmlFor={ optId }
+							>
+								<div>{ option }</div>
+								<div>
 									<input
 										id={ optId }
 										type="radio"
 										name={ nameAttr }
-										value={ item }
-										checked={ selected === item }
-										onChange={ () => setSelected( item ) }
+										value={ option }
+										checked={ selected === option }
+										onChange={ () => setSelected( option ) }
 									/>
 									<span className="checkmark" />
-								</label>
-							);
-						} ) }
+								</div>
+							</label>
+						);
+					} ) }
 				</div>
 				{ ! gfIsEmpty( description ) && <p className="gutena-forms-radio-field-description">{ description }</p> }
 				<p className="gutena-forms-field-error-msg" />

@@ -146,19 +146,28 @@
 		&.radio-field {
 			/* The container */
 			.radio-container {
-				border: 1px solid #000;
+				border: 0.8px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
+				background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
 				border-radius: 8px;
 				margin-bottom: 15px;
 				margin-right: 5px;
 				padding: 10px 10px;
-
-				display: block;
 				position: relative;
 				cursor: pointer;
 				-webkit-user-select: none;
 				-moz-user-select: none;
 				-ms-user-select: none;
 				user-select: none;
+				display: flex;
+				justify-content: space-between;
+				font-size: var(--wp--gutena-forms--placeholder-font-size);
+				line-height: var(--wp--gutena-forms--placeholder-line-height);
+				font-weight: var(--wp--gutena-forms--placeholder-font-weight);
+				color: var(--wp--gutena-forms--label-color);
+
+				&:focus-within {
+					border-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+				}
 
 				/* Hide the browser's default radio button */
 				input {
@@ -197,7 +206,7 @@
 		  /* Create a custom radio button */
 		  .checkmark {
 			position: absolute;
-			left: 10px;
+			right: 10px;
 			height: 16px;
 			width: 16px;
 			background-color: #ffffff;
@@ -259,15 +268,16 @@
 	}
 
 	.wp-block-gutena-form-field  {
+		padding: 5px;
 		.gutena-forms-field{
 			font-size: var(--wp--gutena-forms--placeholder-font-size);
 			line-height: var(--wp--gutena-forms--placeholder-line-height);
 			font-weight: var(--wp--gutena-forms--placeholder-font-weight);
 			width: 100%;
-			padding: 13px calc( 18px + var(--wp--gutena-forms--input-border-radius, 0px )/2 );
 			box-sizing: border-box;
 			-moz-box-sizing: border-box;
 			-webkit-box-sizing: border-box;
+			min-height: 32px;
 
 			&:not(.textarea-field):not(.checkbox-field) {
 				//height: 50px;
@@ -385,7 +395,8 @@
 		.gutena-forms-field-error-msg {
 			margin-top: 0.5rem;
 			font-size: 12px;
-			color:  #FD3E3E;
+			font-weight: 500;
+			color: #8E0B21;
 		}
 
 		&:not(.display-error) {
@@ -476,20 +487,6 @@
 /**
  * Fields new UI
  */
-
-.wp-block-gutena-forms {
-	.wp-block-gutena-form-field {
-		border-radius: 8px !important;
-
-		&.is-invalid {
-			border-color: #8E0B21 !important;
-		}
-
-		&:focus-within {
-			border-color: #0DA88C !important;
-		}
-	}
-}
 
 @media only screen and (max-width: 600px) {
 	.wp-block-gutena-forms {

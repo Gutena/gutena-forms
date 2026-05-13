@@ -63,25 +63,25 @@ export default function Save( { attributes } ) {
 						required={ isRequired ? 'required' : undefined }
 					/>
 					<p className="gf-range-values">
-						{ ! gfIsEmpty( minMaxStep?.min ) || minMaxStep?.min === 0 || minMaxStep?.min === '0' ? (
-							<span className="gf-prefix-value-wrapper">
-							<span className="gf-prefix">{ preFix || '' }</span>
-							<span className="gf-value">{ minMaxStep.min }</span>
-							<span className="gf-suffix">{ sufFix || '' }</span>
+						<span className={ 'gf-prefix-value-wrapper' }>
+							{ ( ! gfIsEmpty( minMaxStep?.step ) || 0 === minMaxStep?.step || '0' === minMaxStep?.step ) && (
+								<>
+									<span>Step: &nbsp;</span>
+									<span className={ 'gf-value' }>{ minMaxStep.step },</span>
+								</>
+							) }
+							&nbsp;
+							{ ( ! gfIsEmpty( minMaxStep?.max ) || 0 === minMaxStep?.max || '0' === minMaxStep?.max ) && (
+								<>
+									<span>Max: &nbsp;</span>
+									<span className={ 'gf-value' }>{ minMaxStep.max }</span>
+								</>
+							) }
 						</span>
-						) : null }
-						<span className="gf-prefix-value-wrapper">
-						<span className="gf-prefix">{ preFix || '' }</span>
-						<span className="gf-value range-input-value"></span>
-						<span className="gf-suffix">{ sufFix || '' }</span>
-					</span>
-						{ ! gfIsEmpty( minMaxStep?.max ) || minMaxStep?.max === 0 || minMaxStep?.max === '0' ? (
-							<span className="gf-prefix-value-wrapper">
-							<span className="gf-prefix">{ preFix || '' }</span>
-							<span className="gf-value">{ minMaxStep.max }</span>
-							<span className="gf-suffix">{ sufFix || '' }</span>
+
+						<span className={ 'gf-prefix-value-wrapper' }>
+							<span className={ 'gf-value range-input-value' }></span>
 						</span>
-						) : null }
 					</p>
 				</div>
 			</div>

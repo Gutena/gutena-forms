@@ -42,27 +42,31 @@ export default function Save( { attributes } ) {
 				{ isRequired ? ' *' : '' }
 			</span>
 			<div className={ fieldClasses }>
-				{ Array.isArray( selectOptions ) &&
-					selectOptions.map( ( item, index ) => {
-						if ( gfIsEmpty( item ) ) {
-							return null;
-						}
-						const optId = `${ nameAttr }_${ index }`;
-						return (
-							<label key={ index } className="radio-container" htmlFor={ optId }>
+				{ Array.isArray( selectOptions ) && selectOptions.map( ( option, key ) => {
+					if ( gfIsEmpty( option ) ) {
+						return null;
+					}
+
+					const optId = `${ nameAttr }_${ key }`;
+					return (
+						<label
+							key={ key }
+							className={ 'radio-container' }
+							htmlFor={ optId }
+						>
+							<div>{ option }</div>
+							<div>
 								<input
 									id={ optId }
 									type="radio"
 									name={ nameAttr }
-									value={ item }
+									value={ option }
 								/>
 								<span className="checkmark" />
-								<div
-									style={ { marginLeft: '25px' } }
-								>{ item }</div>
-							</label>
-						);
-					} ) }
+							</div>
+						</label>
+					);
+				} ) }
 			</div>
 			{ ! gfIsEmpty( description ) && <p className="gutena-forms-radio-field-description">{ description }</p> }
 			<p className="gutena-forms-field-error-msg" />

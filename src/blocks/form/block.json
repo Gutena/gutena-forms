@@ -35,23 +35,23 @@
 		},
 		"inputBgColor": {
 			"type": "string",
-			"default": "transparent"
+			"default": "#ffffff"
 		},
 		"inputBorderWidth": {
 			"type": "string",
-			"default": "1px"
+			"default": "0.8px"
 		},
 		"inputBorderRadius": {
 			"type": "string",
-			"default": "0px"
+			"default": "8px"
 		},
 		"inputBorderColor": {
 			"type": "string",
-			"default": ""
+			"default": "#DADADA"
 		},
 		"inputFocusBorderColor": {
 			"type": "string",
-			"default": ""
+			"default": "#0DA88C"
 		},
 		"inputBottomBorderOnly": {
 			"type": "boolean",
