@@ -51,69 +51,6 @@ if ( ! class_exists( 'Gutena_Dummy_Fields' ) ) :
 		 * @since 1.5.0
 		 */
 		private function __construct() {
-			$this->field_groups = array(
-				'date-field-group'        => array(
-					'name' => 'gutena/date-field-group',
-					'type' => 'date',
-					'title' => 'Date Field Group',
-					'dir'   => '',
-				),
-				'time-field-group'        => array(
-					'name' => 'gutena/time-field-group',
-					'type' => 'time',
-					'title' => 'Time Field Group',
-					'dir'   => '',
-				),
-				'phone-field-group'       => array(
-					'name' => 'gutena/phone-field-group',
-					'type' => 'phone',
-					'title' => 'Phone Field Group',
-					'dir'   => '',
-				),
-				'country-field-group'     => array(
-					'name' => 'gutena/country-field-group',
-					'type' => 'country',
-					'title' => 'Country Field Group',
-					'dir'   => '',
-				),
-				'state-field-group'       => array(
-					'name' => 'gutena/state-field-group',
-					'type' => 'state',
-					'title' => 'State Field Group',
-					'dir'   => '',
-				),
-				'file-upload-field-group' => array(
-					'name' => 'gutena/file-upload-field-group',
-					'type' => 'file-upload',
-					'title' => 'File Upload Field Group',
-					'dir'   => '',
-				),
-				'url-field-group'         => array(
-					'name' => 'gutena/url-field-group',
-					'type' => 'url',
-					'title' => 'URL Field Group',
-					'dir'   => '',
-				),
-				'hidden-field-group'      => array(
-					'name' => 'gutena/hidden-field-group',
-					'type' => 'hidden',
-					'title' => 'Hidden Field Group',
-					'dir'   => '',
-				),
-				'rating-field-group'      => array(
-					'name' => 'gutena/rating-field-group',
-					'type' => 'rating',
-					'title' => 'Rating Field Group',
-					'dir'   => '',
-				),
-				'password-field-group'    => array(
-					'name' => 'gutena/password-field-group',
-					'type' => 'password',
-					'title' => 'Password Field Group',
-					'dir'   => '',
-				),
-			);
-
 			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
 		}
 
@@ -128,13 +65,6 @@ if ( ! class_exists( 'Gutena_Dummy_Fields' ) ) :
 		public function register_fields( $fields ) {
 			if ( is_gutena_forms_pro() ) {
 				return $fields;
-			}
-
-			foreach ( $this->field_groups as $k => $v ) {
-				if ( file_exists( GUTENA_FORMS_DIR_PATH . 'build/blocks/form-fields/pro/' . $k . '/block.json' ) ) {
-					$fields[ $k ] = $v;
-					$fields[ $k ]['dir'] = GUTENA_FORMS_DIR_PATH . 'build/blocks/form-fields/pro/' . $k;
-				}
 			}
 
 			return $fields;

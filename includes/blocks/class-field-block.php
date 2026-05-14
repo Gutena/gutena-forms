@@ -41,10 +41,6 @@ if ( ! class_exists( 'Gutena_Forms_Field_Block' ) ) :
 				'attrs' => array(),
 			);
 			$fields[] = array(
-				'name'  => 'opt-in-field',
-				'attrs' => array(),
-			);
-			$fields[] = array(
 				'name'  => 'dropdown-field',
 				'attrs' => array(),
 			);

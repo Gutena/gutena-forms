@@ -200,7 +200,6 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 			add_action( 'wp_ajax_gutena_forms_submit', array( Gutena_Forms_Submit_Form_Handler::get_instance(), 'handle_submit' ) );
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( Gutena_Forms_Submit_Form_Handler::get_instance(), 'handle_submit' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
-			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
 			$this->load_dashboard();
 		}
 
@@ -316,71 +315,6 @@ if ( ! class_exists( 'Gutena_Forms' ) ) {
 					'forms_available'			=> $forms_available,
 				), $gf_message )
 			);
-		}
-
-		public function register_fields( $blocks ) {
-			$fields = array(
-				'text-field-group'     => array(
-					'name'  => 'gutena/text-field-group',
-					'type'  => 'text',
-					'title' => 'Text Field',
-					'dir'   => 'text-field-group',
-				),
-				'email-field-group'    => array(
-					'name'  => 'gutena/email-field-group',
-					'type'  => 'email',
-					'title' => 'Email Field',
-					'dir'   => 'email-field-group',
-				),
-				'textarea-field-group' => array(
-					'name'  => 'gutena/textarea-field-group',
-					'type'  => 'textarea',
-					'title' => 'Textarea Field',
-					'dir'   => 'textarea-field-group',
-				),
-				'range-field-group'    => array(
-					'name'  => 'gutena/range-field-group',
-					'type'  => 'range',
-					'title' => 'Range Slider Field',
-					'dir'   => 'range-field-group',
-				),
-				'radio-field-group'    => array(
-					'name'  => 'gutena/radio-field-group',
-					'type'  => 'radio',
-					'title' => 'Radio Field',
-					'dir'   => 'radio-field-group',
-				),
-				'checkbox-field-group' => array(
-					'name'  => 'gutena/checkbox-field-group',
-					'type'  => 'checkbox',
-					'title' => 'Checkbox Field',
-					'dir'   => 'checkbox-field-group',
-				),
-				'dropdown-field-group' => array(
-					'name'  => 'gutena/dropdown-field-group',
-					'type'  => 'select',
-					'title' => 'Dropdown Field',
-					'dir'   => 'dropdown-field-group',
-				),
-				'optin-field-group'    => array(
-					'name'  => 'gutena/optin-field-group',
-					'type'  => 'optin',
-					'title' => 'Opt-in Field',
-					'dir'   => 'optin-field-group',
-				),
-				'number-field-group'   => array(
-					'name'  => 'gutena/number-field-group',
-					'type'  => 'number',
-					'title' => 'Number Field',
-					'dir'   => 'number-field-group',
-				),
-			);
-
-			foreach ( $fields as $k => $field ) {
-				$blocks[ $k ] = $field;
-			}
-
-			return $blocks;
 		}
 
 		public function register_blocks_styles() {
