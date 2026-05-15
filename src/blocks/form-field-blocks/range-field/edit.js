@@ -38,7 +38,19 @@ function getRangeValue( defaultValue, minMaxStep ) {
 	if ( ! gfIsEmpty( minMaxStep?.min ) || minMaxStep?.min === 0 || minMaxStep?.min === '0' ) {
 		return String( minMaxStep.min );
 	}
-	return '';
+	// React requires a numeric value for controlled type="range" inputs.
+	return '0';
+}
+
+/** Ensures the slider always receives a valid numeric string. */
+function getSafeRangeInputValue( rangeVal, min ) {
+	if ( ! gfIsEmpty( rangeVal ) || rangeVal === '0' ) {
+		return String( rangeVal );
+	}
+	if ( ! gfIsEmpty( min ) || min === 0 || min === '0' ) {
+		return String( min );
+	}
+	return '0';
 }
 
 export default function Edit( { attributes, setAttributes, clientId } ) {
@@ -82,6 +94,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	const step = numAttr( minMaxStep?.step );
 
 	const fieldClass = `gutena-forms-field range-field ${ isRequired ? 'required-field' : '' }`.trim();
+	const safeRangeVal = getSafeRangeInputValue( rangeVal, min );
 
 	return (
 		<>
@@ -189,7 +202,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							name={ nameAttr }
 							type="range"
 							className={ fieldClass }
-							value={ rangeVal }
+							value={ safeRangeVal }
 							min={ min }
 							max={ max }
 							step={ step }
@@ -204,14 +217,14 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								{ ( ! gfIsEmpty( minMaxStep?.step ) || 0 === minMaxStep?.step || '0' === minMaxStep?.step ) && (
 									<>
 										<span>Step: &nbsp;</span>
-										<span className={ 'gf-value' }>{ minMaxStep.step },</span>
+										<span className={ 'gf-value' }>{ minMaxStep?.step },</span>
 									</>
 								) }
 								&nbsp;
 								{ ( ! gfIsEmpty( minMaxStep?.max ) || 0 === minMaxStep?.max || '0' === minMaxStep?.max ) && (
 									<>
 										<span>Max: &nbsp;</span>
-										<span className={ 'gf-value' }>{ minMaxStep.max }</span>
+										<span className={ 'gf-value' }>{ minMaxStep?.max }</span>
 									</>
 								) }
 							</span>
