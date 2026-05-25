@@ -73,101 +73,99 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 
 			$this->validate_captcha();
 
-			$blog_title  = get_bloginfo( 'name' );
-			$from_name =  empty( $this->schema['form_attrs']['emailFromName'] ) ? $blog_title : $this->schema['form_attrs']['emailFromName'];
-			$from_name = sanitize_text_field( $from_name );
+			$blog_title = get_bloginfo( 'name' );
+			$from_name  = empty( $this->schema['form_attrs']['emailFromName'] ) ? $blog_title : $this->schema['form_attrs']['emailFromName'];
+			$from_name  = sanitize_text_field( $from_name );
 
 			$admin_email = sanitize_email( get_option( 'admin_email' ) );
 
-			// Email To
+			// Email To.
 			$to = empty( $this->schema['form_attrs']['adminEmails'] ) ? $admin_email : $this->schema['form_attrs']['adminEmails'];
 
 			if ( ! is_array( $to ) ) {
 				$to = explode( ',', $to );
 			}
 
-			foreach ( $to as $key => $toEmail ) {
-				$to[ $key ] = sanitize_email( wp_unslash( $toEmail ) );
+			foreach ( $to as $key => $to_email ) {
+				$to[ $key ] = sanitize_email( wp_unslash( $to_email ) );
 			}
 
 			$reply_to = empty( $this->schema['form_attrs']['replyToEmail'] ) ? '' : $this->schema['form_attrs']['replyToEmail'];
 
-			$reply_to = ( empty( $reply_to ) || empty( $_POST[ $reply_to ] ) ) ? '' : sanitize_email( wp_unslash( $_POST[ $reply_to ] ) );
+			$reply_to = ( empty( $reply_to ) || empty( $_POST[ $reply_to ] ) ) ? '' : sanitize_email( wp_unslash( $_POST[ $reply_to ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
-			//First name field
+			// First name field.
 			$reply_to_name = empty( $this->schema['form_attrs']['replyToName'] ) ? '' : $this->schema['form_attrs']['replyToName'];
 
-			//Last name field
+			// Last name field.
 			$reply_to_lname = empty( $this->schema['form_attrs']['replyToLastName'] ) ? '' : $this->schema['form_attrs']['replyToLastName'];
 
+			$reply_to_name = ( empty( $reply_to_name ) || empty( $_POST[ $reply_to_name ] ) ) ? sanitize_key( $reply_to ) : sanitize_text_field( wp_unslash( $_POST[ $reply_to_name ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
-			$reply_to_name = ( empty( $reply_to_name ) || empty( $_POST[ $reply_to_name ] ) ) ? sanitize_key( $reply_to ) : sanitize_text_field( wp_unslash( $_POST[ $reply_to_name ] ) );
+			$reply_to_lname = ( empty( $reply_to_lname ) || empty( $_POST[ $reply_to_lname ] ) ) ? '' : sanitize_text_field( wp_unslash( $_POST[ $reply_to_lname ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
-			$reply_to_lname = ( empty( $reply_to_lname ) || empty( $_POST[ $reply_to_lname ] ) ) ? '' : sanitize_text_field( wp_unslash( $_POST[ $reply_to_lname ] ) );
-
-			//Form submit Data for filter
+			// Form submit Data for filter.
 			$form_submit_data = array(
-				'formName' => empty( $this->schema['form_attrs']['formName'] ) ? '': $this->schema['form_attrs']['formName'],
-				'formID' => $this->schema['form_attrs']['formID'],
+				'formName'      => empty( $this->schema['form_attrs']['formName'] ) ? '' : $this->schema['form_attrs']['formName'],
+				'formID'        => $this->schema['form_attrs']['formID'],
 				'emailFromName' => $from_name,
-				'replyToEmail' => $reply_to,
-				'replyToFname' => $reply_to_name,
-				'replyToLname' => $reply_to_lname
+				'replyToEmail'  => $reply_to,
+				'replyToFname'  => $reply_to_name,
+				'replyToLname'  => $reply_to_lname,
 			);
 
-			$reply_to_name = $reply_to_name .' '.$reply_to_lname;
+			$reply_to_name = $reply_to_name . ' ' . $reply_to_lname;
 
-
-			// Email Subject
+			// Email Subject.
 			$subject = sanitize_text_field( empty( $this->schema['form_attrs']['adminEmailSubject'] ) ? __( 'Form received', 'gutena-forms' ) . '- ' . $blog_title : $this->schema['form_attrs']['adminEmailSubject'] );
 
-			$fieldSchema = $this->schema['form_fields'];
-			$body        = '';
+			$field_schema = $this->schema['form_fields'];
+			$body         = '';
 
-			foreach ( $_POST as $name_attr => $field_value ) {
-				$name_attr   = sanitize_key( wp_unslash( $name_attr ) );
+			foreach ( $_POST as $name_attr => $field_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$name_attr = sanitize_key( wp_unslash( $name_attr ) );
 
-				if ( empty( $fieldSchema[ $name_attr ] ) || ( ! empty( $fieldSchema[ $name_attr ][ 'fieldType' ] ) && 'optin' == $fieldSchema[ $name_attr ][ 'fieldType' ] ) ) {
+				if ( empty( $field_schema[ $name_attr ] ) || ( ! empty( $field_schema[ $name_attr ]['fieldType'] ) && 'optin' === $field_schema[ $name_attr ]['fieldType'] ) ) {
 					continue;
 				}
 
-				$field_value = apply_filters( 'gutena_forms_field_value_for_email', $field_value, $fieldSchema[ $name_attr ], $this->id );
+				$field_value = apply_filters( 'gutena_forms_field_value_for_email', $field_value, $field_schema[ $name_attr ], $this->id );
 
 				if ( is_array( $field_value ) ) {
-					$field_value =	Gutena_Forms::get_instance()->sanitize_array( wp_unslash( $field_value ), true );
-					$field_value = implode(", ", $field_value );
+					$field_value = Gutena_Forms_Helper::sanitize_array( wp_unslash( $field_value ), true );
+					$field_value = implode( ', ', $field_value );
 				} else {
 					$field_value = sanitize_textarea_field( wp_unslash( $field_value ) );
 				}
 
-				//Add prefix in value if set
-				if ( ! empty( $fieldSchema[ $name_attr ][ 'preFix' ] ) ) {
-					$field_value = sanitize_text_field( $fieldSchema[ $name_attr ][ 'preFix' ] ).' '.$field_value;
+				// Add prefix in value if set.
+				if ( ! empty( $field_schema[ $name_attr ]['preFix'] ) ) {
+					$field_value = sanitize_text_field( $field_schema[ $name_attr ]['preFix'] ) . ' ' . $field_value;
 				}
 
-				//Add suffix in value if set
-				if ( ! empty( $fieldSchema[ $name_attr ][ 'sufFix' ] ) ) {
-					$field_value =  $field_value . ' ' . sanitize_text_field( $fieldSchema[ $name_attr ][ 'sufFix' ] );
+				// Add suffix in value if set.
+				if ( ! empty( $field_schema[ $name_attr ]['sufFix'] ) ) {
+					$field_value = $field_value . ' ' . sanitize_text_field( $field_schema[ $name_attr ]['sufFix'] );
 				}
 
-				$field_name = sanitize_text_field( empty( $fieldSchema[ $name_attr ]['fieldName'] ) ? str_ireplace( '_', ' ', $name_attr ) : $fieldSchema[ $name_attr ]['fieldName'] );
+				$field_name = sanitize_text_field( empty( $field_schema[ $name_attr ]['fieldName'] ) ? str_ireplace( '_', ' ', $name_attr ) : $field_schema[ $name_attr ]['fieldName'] );
 
-				//Form submit Data for filter
+				// Form submit Data for filter.
 				$form_submit_data['submit_data'][ $field_name ] = $field_value;
-				$form_submit_data['raw_data'][ $name_attr ] = array(
-					'label' => $field_name,
-					'value'	=> $field_value,
-					'fieldType' =>  empty( $fieldSchema[ $name_attr ][ 'fieldType' ] ) ? 'text': $fieldSchema[ $name_attr ][ 'fieldType' ],
+				$form_submit_data['raw_data'][ $name_attr ]     = array(
+					'label'     => $field_name,
+					'value'     => $field_value,
+					'fieldType' => empty( $field_schema[ $name_attr ]['fieldType'] ) ? 'text' : $field_schema[ $name_attr ]['fieldType'],
 					'raw_value' => apply_filters(
 						'gutena_forms_field_raw_value',
-						wp_unslash( $_POST[ $name_attr ] ),
+						wp_unslash( $_POST[ $name_attr ] ), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.InputNotValidated,WordPress.Security.NonceVerification.Missing
 						array(
-							'field_name' => $field_name,
+							'field_name'  => $field_name,
 							'field_value' => $field_value,
-							'fieldSchema' => $fieldSchema[ $name_attr ],
-							'formID' => $this->id,
+							'fieldSchema' => $field_schema[ $name_attr ],
+							'formID'      => $this->id,
 						)
-					)
+					),
 				);
 
 				$field_email_html = '<p><strong>' . esc_html( $field_name ) . '</strong> <br />' . esc_html( $field_value ) . ' </p>';
@@ -176,22 +174,22 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 					'gutena_forms_field_email_html',
 					$field_email_html,
 					array(
-						'field_name' => $field_name,
+						'field_name'  => $field_name,
 						'field_value' => $field_value,
-						'fieldSchema' => $fieldSchema[ $name_attr ],
-						'formID' => $this->id,
+						'fieldSchema' => $field_schema[ $name_attr ],
+						'formID'      => $this->id,
 					)
 				);
 
 				$body .= $field_email_html;
 
 			}
-			//submitted form raw data
-			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $this->id, $fieldSchema );
+			// submitted form raw data.
+			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $this->id, $field_schema );
 			do_action( 'gutena_forms_submission', $form_submit_data, $this->schema );
 
-			// If admin don't want to get Email notification
-			if ( isset( $this->schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->schema['form_attrs']['emailNotifyAdmin'] || false === $this->schema['form_attrs']['emailNotifyAdmin'] || '0' == $this->schema['form_attrs']['emailNotifyAdmin'] ) ) {
+			// If admin don't want to get Email notification.
+			if ( isset( $this->schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->schema['form_attrs']['emailNotifyAdmin'] || false === $this->schema['form_attrs']['emailNotifyAdmin'] || '0' === $this->schema['form_attrs']['emailNotifyAdmin'] ) ) {
 				wp_send_json(
 					array(
 						'status'  => 'Success',
@@ -201,28 +199,30 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				);
 			}
 
-			//Email headers
+			// Email headers.
 			$headers = array(
 				'Content-Type: text/html; charset=UTF-8',
 				'From: ' . esc_html( $from_name ) . ' <' . $admin_email . '>',
 			);
-			//Add reply to header
+			// Add reply to header.
 			if ( ! empty( $reply_to ) ) {
 				$headers[] = 'Reply-To: ' . esc_html( $reply_to_name ) . ' <' . $reply_to . '>';
 			}
 
-			//Apply filter for admin email notification
-			$body    = apply_filters( 'gutena_forms_submit_admin_notification', $body, $form_submit_data );
+			// Apply filter for admin email notification.
+			$body = apply_filters( 'gutena_forms_submit_admin_notification', $body, $form_submit_data );
 
 			if ( ! is_gutena_forms_pro( false ) ) {
 				/**
-				 * https://stackoverflow.com/questions/17602400/html-email-in-gmail-css-style-attribute-removed
+				 * Fix something
+				 *
+				 * @link https://stackoverflow.com/questions/17602400/html-email-in-gmail-css-style-attribute-removed
 				 */
-				$body .= '<div style="background-color: #fffbeb; width: fit-content; margin-top: 50px; padding: 14px 15px 12px 15px; border-radius: 10px;" > <span style="font-size: 13px; line-height: 1; display: flex;" > <span style="margin-right: 5px;" > </span> <span style="margin-right: 3px;" ><strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong></span> '. __( 'Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="'.esc_url( admin_url( 'admin.php?page=gutena-forms' ) ).'" style="color: #E35D3F; margin-left: 1rem;" target="_blank" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </a></strong></span></div>';
+				$body .= '<div style="background-color: #fffbeb; width: fit-content; margin-top: 50px; padding: 14px 15px 12px 15px; border-radius: 10px;" > <span style="font-size: 13px; line-height: 1; display: flex;" > <span style="margin-right: 5px;" > </span> <span style="margin-right: 3px;" ><strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong></span> ' . __( 'Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms' ) ) . '" style="color: #E35D3F; margin-left: 1rem;" target="_blank" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </a></strong></span></div>';
 			}
 
 			$body    = wpautop( $body, true );
-			$body 	 = $this->email_html_body( $body, $subject );
+			$body    = $this->email_html_body( $body, $subject );
 			$subject = esc_html( $subject );
 			$res     = wp_mail( $to, $subject, $body, $headers );
 
@@ -259,7 +259,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @since 1.6.0
 		 */
 		private function validate_form_id_and_scehma() {
-			if ( empty( $_POST['formid'] ) ) {
+			if ( empty( $_POST['formid'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				wp_send_json(
 					array(
 						'status'  => 'error',
@@ -268,7 +268,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				);
 			}
 
-			$this->id     = sanitize_key( wp_unslash( $_POST['formid'] ) );
+			$this->id     = sanitize_key( wp_unslash( $_POST['formid'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->schema = gutena_forms_get_form_schema_option( $this->id );
 
 			if ( empty( $this->schema ) || empty( $this->schema['form_attrs'] ) || empty( $this->schema['form_fields'] ) ) {
@@ -287,12 +287,21 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @since 1.6.0
 		 */
 		private function validate_captcha() {
+
+			$use_global                                        = $this->should_use_global_settings( isset( $this->schema['form_attrs']['recaptcha'] ) ? $this->schema['form_attrs']['recaptcha'] : array() );
+			$recaptcha_settings                                = $use_global ? get_option( 'gutena_forms__recaptcha', array() ) : $this->schema['form_attrs']['recaptcha'];
+			$this->schema['form_attrs']['recaptcha']           = $this->resolve_recaptcha_settings( $recaptcha_settings );
+			$use_global                                        = $this->should_use_global_settings( isset( $this->schema['form_attrs']['cloudflareTurnstile'] ) ? $this->schema['form_attrs']['cloudflareTurnstile'] : array() );
+			$this->schema['form_attrs']['cloudflareTurnstile'] = $use_global ? get_option( 'gutena_forms__cloudflare', array() ) : $this->schema['form_attrs']['cloudflareTurnstile'];
+			$use_global                                        = $this->should_use_global_settings( isset( $this->schema['form_attrs']['honeypot'] ) ? $this->schema['form_attrs']['honeypot'] : array() );
+			$this->schema['form_attrs']['honeypot']            = $use_global ? get_option( 'gutena_forms__honeypot', array() ) : $this->schema['form_attrs']['honeypot'];
+
 			if ( ! empty( $this->schema['form_attrs']['recaptcha'] ) && ! empty( $this->schema['form_attrs']['recaptcha']['enable'] ) && ! $this->recaptcha_verify() ) {
 				wp_send_json(
 					array(
-						'status'  => 'error',
-						'message' => __( 'Invalid reCAPTCHA', 'gutena-forms' ),
-						'recaptcha_error'	  => isset( $_POST['recaptcha_error'] ) ? sanitize_text_field( $_POST['recaptcha_error'] ) : ''
+						'status'          => 'error',
+						'message'         => __( 'Invalid reCAPTCHA', 'gutena-forms' ),
+						'recaptcha_error' => isset( $_POST['recaptcha_error'] ) ? sanitize_text_field( $_POST['recaptcha_error'] ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 					)
 				);
 			}
@@ -317,6 +326,24 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		}
 
 		/**
+		 * Decide whether a module should use global settings.
+		 * Treats boolean-like string/int values consistently.
+		 *
+		 * @param array $module_settings Module settings array.
+		 * @return bool True if global settings should be used.
+		 */
+		private function should_use_global_settings( $module_settings ) {
+			$result = true;
+			if ( ! is_array( $module_settings ) || ! array_key_exists( 'defaultSettings', $module_settings ) ) {
+				$result = true;
+				return $result;
+			}
+
+			$result = rest_sanitize_boolean( $module_settings['defaultSettings'] );
+			return $result;
+		}
+
+		/**
 		 * Wrap email body in HTML structure
 		 *
 		 * @since 1.6.0
@@ -326,18 +353,18 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @return string
 		 */
 		private function email_html_body( $body, $subject ) {
-			$lang = function_exists( 'get_language_attributes' ) ? get_language_attributes('html') : 'lang="en"';
+			$lang = function_exists( 'get_language_attributes' ) ? get_language_attributes( 'html' ) : 'lang="en"';
 			return '
 			<!DOCTYPE html>
-			<html '. $lang .'>
+			<html ' . $lang . '>
 				<head>
 				<meta http-equiv="X-UA-Compatible" content="IE=edge">
 				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1">
-				<title>'.$subject.'</title>
+				<title>' . $subject . '</title>
 				</head>
 				<body style="margin:0;padding:0;background:#ffffff;">
-				'.$body.'
+				' . $body . '
 				</body>
 			</html>
 			';
@@ -349,102 +376,120 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @since 1.6.0
 		 * @return bool
 		 */
-		private function recaptcha_verify(){
-			//check if reCAPTCHA not embedded in the form
-			if ( empty( $_POST['recaptcha_enable'] ) && empty( $_POST['g-recaptcha-response'] ) ) {
+		private function recaptcha_verify() {
+			if ( empty( $_POST['recaptcha_enable'] ) && empty( $_POST['g-recaptcha-response'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				return true;
 			}
-			//default recaptcha failed is considered as spam
+			// default recaptcha failed is considered as spam.
 			$_POST['recaptcha_error'] = 'spam';
 
-			if ( empty( $_POST['g-recaptcha-response'] ) ) {
+			if ( empty( $_POST['g-recaptcha-response'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				$_POST['recaptcha_error'] = 'Recaptcha input missing';
 				return false;
 			} else {
-				//get reCAPTCHA settings
-				$recaptcha_settings= get_option( 'gutena_forms_grecaptcha', false );
-
-				if ( empty( $recaptcha_settings ) ) {
+				// Use form's own settings when overridden, otherwise global.
+				$recaptcha_settings = $this->resolve_recaptcha_settings( $this->schema['form_attrs']['recaptcha'] );
+				if ( empty( $recaptcha_settings ) || empty( $recaptcha_settings['secret_key'] ) ) {
 					return false;
 				}
-				//verify reCAPTCHA
-				$response = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', array(
-					'body'        => array(
-						'secret' => $recaptcha_settings['secret_key'],
-						'response' => sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) )
+				// verify reCAPTCHA.
+				$response = wp_remote_post(
+					'https://www.google.com/recaptcha/api/siteverify',
+					array(
+						'body' => array(
+							'secret'   => $recaptcha_settings['secret_key'],
+							'response' => sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ), // phpcs:ignore WordPress.Security.NonceVerification.Missing
+						),
 					)
-				));
+				);
 
-				if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
+				if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 					$_POST['recaptcha_error'] = 'No response from api';
-					return false;//fail to verify
+					return false;// fail to verify.
 				}
 
 				$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
 
-				if ( ! empty($api_response) && $api_response['success'] ) {
+				if ( ! empty( $api_response ) && $api_response['success'] ) {
 
 					$threshold_score = apply_filters( 'gutena_forms_recaptcha_threshold_score', ( empty( $recaptcha_settings['thresholdScore'] ) || $recaptcha_settings['thresholdScore'] < 0.5 ) ? 0.5 : $recaptcha_settings['thresholdScore'] );
 
-					// check the hostname of the site where the reCAPTCHA was solved
+					// check the hostname of the site where the reCAPTCHA was solved.
 					if ( ! empty( $api_response['hostname'] ) && function_exists( 'get_site_url' ) ) {
-						$site_url = explode( "?", get_site_url() );
+						$site_url = explode( '?', get_site_url() );
 						if ( 5 < strlen( $site_url[0] ) && false === stripos( $site_url[0], $api_response['hostname'] ) ) {
 							$_POST['recaptcha_error'] = 'different hostname';
-							return false;//fail to verify hostname
+							return false;// fail to verify hostname.
 						}
 					}
 
 					if ( 'v2' === $recaptcha_settings['type'] ) {
-						return true;//for v2
-					} else if ( isset( $api_response['score'] ) && $api_response['score'] > $threshold_score ) {
-						return	apply_filters( 'gutena_forms_recaptcha_verify', true, $response );
+						return true;// for v2.
+					} elseif ( isset( $api_response['score'] ) && $api_response['score'] > $threshold_score ) {
+						return apply_filters( 'gutena_forms_recaptcha_verify', true, $response );
 					} else {
-						return false;//spam
+						return false;// spam.
 					}
-				}else{
+				} else {
 					return false;
 				}
 			}
 		}
 
 		/**
+		 * Resolve reCAPTCHA settings with hierarchical key lookup.
+		 *
+		 * @since 1.6.0
+		 * @param array $settings Raw settings array.
+		 * @return array
+		 */
+		private function resolve_recaptcha_settings( $settings ) {
+			if ( class_exists( 'Gutena_Forms_ReCAPTCHA' ) ) {
+				return Gutena_Forms_ReCAPTCHA::resolve_settings( $settings );
+			}
+
+			$settings = is_array( $settings ) ? $settings : array();
+			$type     = ( ! empty( $settings['type'] ) && in_array( $settings['type'], array( 'v2', 'v3' ), true ) ) ? $settings['type'] : 'v2';
+
+			return array(
+				'enable'         => ! empty( $settings['enable'] ),
+				'type'           => $type,
+				'site_key'       => ! empty( $settings[ $type . '_site_key' ] ) ? $settings[ $type . '_site_key' ] : ( isset( $settings['site_key'] ) ? $settings['site_key'] : '' ),
+				'secret_key'     => ! empty( $settings[ $type . '_secret_key' ] ) ? $settings[ $type . '_secret_key' ] : ( isset( $settings['secret_key'] ) ? $settings['secret_key'] : '' ),
+				'thresholdScore' => isset( $settings['thresholdScore'] ) ? floatval( $settings['thresholdScore'] ) : 0.5,
+			);
+		}
+
+		/**
 		 * Verify Cloudflare Turnstile
+		 * Uses form schema + global defaults (gutena_forms__cloudflare) when defaultSettings is true.
 		 *
 		 * @since 1.3.0
 		 * @return boolean
 		 */
 		private function cloudflare_turnstile_verify() {
-			if ( isset( $_POST['cf-turnstile-response'] ) && ! empty( $_POST['cf-turnstile-response'] ) ) {
-				$token 				  = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) );
-				$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', false );
+			if ( empty( $_POST['cf-turnstile-response'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				return false;
+			}
+			$token            = sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$schema_turnstile = $this->schema['form_attrs']['cloudflareTurnstile'];
 
-				if ( empty( $cloudflare_turnstile ) ) {
-					return false;
-				}
+			$response = wp_remote_post(
+				'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+				array(
+					'body' => array(
+						'secret'   => $schema_turnstile['secret_key'],
+						'response' => $token,
+					),
+				)
+			);
 
-				$response = wp_remote_post(
-					'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-					array(
-						'body' => array(
-							'secret' => $cloudflare_turnstile['secret_key'],
-							'response' => $token,
-						),
-					)
-				);
-
-				if ( 200 != wp_remote_retrieve_response_code( $response ) ) {
-					return false;
-				}
-
-				$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
-
-				if ( ! empty( $api_response ) && $api_response['success'] ) {
-					return true;
-				}
+			if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+				return false;
 			}
 
-			return false;
+			$api_response = json_decode( wp_remote_retrieve_body( $response ), true );
+			return ! empty( $api_response ) && ! empty( $api_response['success'] );
 		}
 
 		/**
@@ -454,15 +499,15 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 * @return bool
 		 */
 		private function honeypot_verify() {
-			$honeypot_field_name   = 'gf_hp_' . sanitize_text_field( wp_unslash( $_POST['formid'] ) );
-			$time_check_field_name = 'gf_time_check_' . sanitize_text_field( wp_unslash( $_POST['formid'] ) );
+			$honeypot_field_name   = 'gf_hp_' . sanitize_text_field( wp_unslash( $_POST['formid'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			$time_check_field_name = 'gf_time_check_' . sanitize_text_field( wp_unslash( $_POST['formid'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 
-			if ( isset( $_POST[ $honeypot_field_name ] ) && ! empty( $_POST[ $honeypot_field_name ] ) ) {
+			if ( isset( $_POST[ $honeypot_field_name ] ) && ! empty( $_POST[ $honeypot_field_name ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				return false;
 			}
 
-			if ( isset( $_POST[ $time_check_field_name ] ) && ! empty( $_POST[ $time_check_field_name ] ) ) {
-				$time_check_value = intval( $_POST[ $time_check_field_name ] );
+			if ( isset( $_POST[ $time_check_field_name ] ) && ! empty( $_POST[ $time_check_field_name ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$time_check_value = intval( $_POST[ $time_check_field_name ] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 				return time() > ( $time_check_value );
 			} else {

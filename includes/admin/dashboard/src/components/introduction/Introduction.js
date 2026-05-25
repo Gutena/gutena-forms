@@ -1,8 +1,10 @@
 import { useState, useEffect } from '@wordpress/element';
 
-const Introduction = () => {
+const Introduction = ( props ) => {
     const welcome  = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.welcome;
     const features = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.features;
+    const fields   = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.fields;
+    const pricing  = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.pricing;
 
     // Check if PRO version is active
     const isProActive = gutenaFormsAdmin?.hasPro === '1';
@@ -170,7 +172,7 @@ const Introduction = () => {
             {/* CTA Section */}
             <div className="gf-cta-section">
                 <a
-                    href="https://gutenaforms.com/docs/"
+                    href="https://gutenaforms.com/#faq"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="gf-read-guide-link"

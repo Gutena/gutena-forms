@@ -1,8 +1,12 @@
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { TextControl } from '@wordpress/components';
 
-const GutenaFormsEmailField = ( { desc, id, label, value, onChange } ) => {
+const GutenaFormsEmailField = ( { desc, id, label, value, onChange, disabled = false } ) => {
 	const [ fieldValue, setFieldValue ] = useState( value || '' );
+
+	useEffect( () => {
+		setFieldValue( value || '' );
+	}, [ value ] );
 
 	const validateEmail = ( email ) => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -25,6 +29,7 @@ const GutenaFormsEmailField = ( { desc, id, label, value, onChange } ) => {
 				label={ label }
 				value={ fieldValue }
 				onChange={ handleChange }
+				disabled={ disabled }
 			/>
 			{ desc && (
 				<p className="gutena-forms__field-description">{ desc }</p>

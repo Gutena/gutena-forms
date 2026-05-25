@@ -283,7 +283,7 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 					'user_id'       => $this->current_user_id(),
 					'block_form_id' => sanitize_key( $form_id ),
 					'form_name'     => $this->get_form_name( $form_schema ),
-					'form_schema'   => $this->sanitize_serialize_data( $form_schema ),
+					'form_schema'   => Gutena_Forms_Admin_Helper::sanitize_serialize_data( $form_schema ),
 				),
 				array(
 					'%d',

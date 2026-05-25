@@ -1,16 +1,23 @@
 import { useEffect, useState } from '@wordpress/element';
-import { useParams } from 'react-router';
+import {NavLink, useParams} from 'react-router';
 import GutenaFormsNumberField from './fields/gutena-forms-number-field';
 import GutenaFormsToggleField from './fields/gutena-forms-toggle-field';
 import GutenaFormsEmailField from './fields/gutena-forms-email-field';
 import GutenaFormsSubmitButton from './fields/gutena-forms-submit-button';
+import GutenaFormsTextField from './fields/gutena-forms-text-field';
+import GutenaFormsRadioGroup from './fields/gutena-forms-radio-group';
 import { gutenaFormsUpdateSettings } from "../api";
 import { toast } from 'react-toastify';
 import { __ } from '@wordpress/i18n';
 import { SettingsTemplates, FieldTemplates } from '../utils/templates';
 import GutenaFormsProBadge from './gutena-forms-pro-badge';
+import Activecampaign from '../icons/activecampaign';
+import Brevo from '../icons/brevo';
+import Mailchimp from '../icons/mailchimp';
+import Recaptcha from "../icons/recaptcha";
+import Cloudflare from "../icons/cloudflare";
 
-const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false, onClick } ) => {
+const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = false, onClick, goBack } ) => {
 	const { settings_id } = useParams();
 	const [ settings, setSettings ] = useState( false );
 	const [ fieldValue, setFieldValue ] = useState( {} );
@@ -20,34 +27,56 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 	useEffect(
 		() => {
 			setLoading( true );
-			const settings = {};
-			items.map( ( item, id ) => {
+			const parsedSettings = [];
+			const initialFieldValue = {};
+			setTemplate( false );
+
+			items.forEach( ( item, id ) => {
 				if ( 'template' === item.type ) {
 					setTemplate( item.name );
 				} else if ( 'field-template' === item.type ) {
-					settings[ id ] = item;
+					parsedSettings.push( { id, ...item } );
 				} else {
-					fieldValue[ item.id ] = item.value || item.default;
-					settings[ id ] = {
+					initialFieldValue[ item.id ] = item.value || item.default;
+					parsedSettings.push( {
 						id: item.id,
 						type: item.type,
 						label: item.name,
 						desc: item.desc,
-						value: fieldValue[ item.id ],
 						attrs: item.attrs || {},
-					}
+					} );
 				}
 			} );
 
-			setSettings( settings );
-			setFieldValue( fieldValue );
+			setSettings( parsedSettings );
+			setFieldValue( initialFieldValue );
 			setLoading( false );
 		},
-		[] );
+		[ items ] );
 
 	const handleFieldChange = ( id, newValue ) => {
-		fieldValue[ id ] = newValue;
-		setFieldValue( fieldValue );
+		setFieldValue( ( prevValue ) => ( {
+			...prevValue,
+			[ id ]: newValue,
+		} ) );
+	}
+
+	const shouldRenderField = ( fieldId ) => {
+		const isRecaptchaSettings = 'recaptcha' === id || 'google-recaptcha' === settings_id;
+		if ( ! isRecaptchaSettings ) {
+			return true;
+		}
+
+		const recaptchaType = fieldValue?.type || 'v2';
+		if ( fieldId.startsWith( 'v2_' ) ) {
+			return 'v2' === recaptchaType;
+		}
+
+		if ( fieldId.startsWith( 'v3_' ) ) {
+			return 'v3' === recaptchaType;
+		}
+
+		return true;
 	}
 
 	const handleSubmit = () => {
@@ -59,8 +88,34 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 			} )
 	};
 
-	const GutenaFormsRenderSettingsField = ( { field } ) => {
+	const getFieldDisabledState = ( field ) => {
+		if ( ! field || 'toggle' === field.type || 'submit' === field.type ) {
+			return false;
+		}
+
+		const dependsOn = field?.attrs?.depends_on;
+		const dependsValue = field?.attrs?.depends_value ?? true;
+
+		if ( dependsOn ) {
+			return fieldValue?.[ dependsOn ] !== dependsValue;
+		}
+
+		const hasDefaultController = (
+			typeof fieldValue?.enable !== 'undefined' ||
+			typeof fieldValue?.enabled !== 'undefined'
+		);
+
+		if ( ! hasDefaultController ) {
+			return false;
+		}
+
+		const isEnabled = fieldValue?.enable ?? fieldValue?.enabled ?? true;
+		return ! isEnabled;
+	}
+
+	const renderSettingsField = ( field ) => {
 		let fieldElement;
+		const isDisabled = getFieldDisabledState( field );
 
 		switch ( field.type ) {
 			case 'toggle':
@@ -69,7 +124,7 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 						id={ field.id }
 						label={ field.label }
 						desc={ field.desc }
-						checked={ field.value }
+						checked={ fieldValue[ field.id ] }
 						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
 					/>
 				);
@@ -81,11 +136,12 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 						id={ field.id }
 						label={ field.label }
 						desc={ field.desc }
-						value={ field.value }
+						value={ fieldValue[ field.id ] }
 						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
 						min={ field.attrs.min }
 						max={ field.attrs.max }
 						step={ field.attrs.step }
+						disabled={ isDisabled }
 					/>
 				);
 				break;
@@ -96,8 +152,9 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 						id={ field.id }
 						label={ field.label }
 						desc={ field.desc }
-						value={ field.value }
+						value={ fieldValue[ field.id ] }
 						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						disabled={ isDisabled }
 					/>
 				);
 				break;
@@ -111,6 +168,34 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 				);
 				break;
 
+			case 'text':
+				fieldElement = (
+					<GutenaFormsTextField
+						id={ field.id }
+						label={ field.label }
+						desc={ field.desc }
+						value={ fieldValue[ field.id ] }
+						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						placeholder={ field.attrs.placeholder }
+						disabled={ isDisabled }
+					/>
+				);
+				break;
+
+			case 'radio-group':
+				fieldElement = (
+					<GutenaFormsRadioGroup
+						id={ field.id }
+						label={ field.label }
+						desc={ field.desc }
+						value={ fieldValue[ field.id ] }
+						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						options={ field.attrs.options }
+						disabled={ isDisabled }
+					/>
+				)
+				break;
+
 			case 'field-template':
 				const FieldTemplate = FieldTemplates[ field.name ];
 				fieldElement = (
@@ -119,6 +204,7 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 					</>
 				);
 				break;
+
 			default:
 				console.log( 'Field not found', field )
 				fieldElement = null;
@@ -130,7 +216,7 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 				{ fieldElement }
 			</div>
 		);
-	}
+	};
 
 	const ScreenTemplate = SettingsTemplates[ template ];
 	const showProPopup = () => {
@@ -141,26 +227,51 @@ const GutenaFormsSettingsMetaBox = ( { title, description, items, isPro = false,
 		onClick();
 	}
 
+	const IconMap = {
+		'active-campaign': <Activecampaign />,
+		'brevo': <Brevo />,
+		'mailchimp': <Mailchimp />,
+		'recaptcha': <Recaptcha />,
+		'cloudflare': <Cloudflare />,
+	};
+
 	return (
-		<div
-			onClick={ showProPopup }
-			className={ 'gutena-forms__meta-box-container' }
-		>
+		<div className={ 'gutena-forms__meta-box-container' } onClick={ showProPopup }>
 			<h2 className={ 'gutena-forms__page-title' }>
-				{ title }
-				{
-					isPro && (
-						<GutenaFormsProBadge />
-					)
-				}
+				<div>
+					{ IconMap[ id ] && IconMap[ id ] } { title }
+					{
+						isPro && (
+							<GutenaFormsProBadge />
+						)
+					}
+				</div>
+				<div>
+					{ goBack && (
+						<div className={ 'gutena-forms__submit-button secondary' }>
+							<NavLink
+								to={ goBack }
+							>
+								{ __( 'Go Back', 'gutena-forms' ) }
+							</NavLink>
+						</div>
+					) }
+				</div>
 			</h2>
-			<p dangerouslySetInnerHTML={ { __html: description } } />
+			<p
+				className={ 'gutena-forms__settings-meta-box-desc' }
+				dangerouslySetInnerHTML={ { __html: description } }
+			/>
 
 			<div className={ 'gutena-forms__settings-meta-box' }>
-				{ ! template && ! loading && settings && Object.keys( settings ).map( ( key, index ) => {
+				{ ! template && ! loading && settings && settings.map( ( field ) => {
+					if ( ! shouldRenderField( field.id ) ) {
+						return null;
+					}
+
 					return (
-						<div key={ index }>
-							<GutenaFormsRenderSettingsField field={ settings[ key ] } />
+						<div key={ field.id }>
+							{ renderSettingsField( field ) }
 						</div>
 					);
 				} ) }

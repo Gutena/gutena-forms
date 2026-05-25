@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "gutena/forms",
 	"version": "1.0.0",
 	"title": "Form",
@@ -140,8 +140,14 @@
 		"messages": {
 			"type": "object",
 			"default": {
-				"requiredField": "",
-				"incorrectEmail": ""
+				"required_msg": "",
+				"required_msg_select": "",
+				"required_msg_check": "",
+				"required_msg_optin": "",
+				"invalid_email_msg": "",
+				"min_value_msg": "",
+				"max_value_msg": "",
+				"defaultSettings": true
 			}
 		},
 		"description": {
@@ -160,25 +166,29 @@
 			"type": "object",
 			"default": {
 				"enable": false,
-				"type": "v3",
+				"type": "v2",
 				"site_key": "",
 				"secret_key": "",
-				"thresholdScore":"0.50"
+				"thresholdScore": "0.50",
+				"defaultSettings": true
 			}
 		},
 		"cloudflareTurnstile": {
 			"type": "object",
 			"default": {
 				"enable": false,
+				"type": "v2",
 				"site_key": "",
-				"secret_key": ""
+				"secret_key": "",
+				"defaultSettings": true
 			}
 		},
 		"honeypot": {
 			"type": "object",
 			"default": {
 				"enable": false,
-				"timeCheckValue": 4
+				"timeCheckValue": 6,
+				"defaultSettings": true
 			}
 		}
 	},

@@ -2,7 +2,7 @@
 Contributors:      wpexpertsio
 Tags:              contact form, custom form, forms, form builder, WordPress form plugin
 Tested up to:      6.9
-Stable tag:        1.8.0
+Stable tag:        1.9.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,8 @@ WordPress form builder to create lightweight contact forms, survey forms, feedba
 
 [👑Checkout Premium Version](https://gutenaforms.com/pricing/?utm_source=wp_org&utm_medium=website&utm_campaign=free_plugin) |  [💻 Live Demo](https://app.instawp.io/launch?s=demo-gutena-forms&d=v2) |  [Support](https://objectsws.atlassian.net/servicedesk/customer/portal/239)
 
-[Gutena Forms](https://gutenaforms.com/) is the easiest WordPress form builder plugin for creating responsive, lightweight forms in the WordPress block editor (Gutenberg). It works as a Gutenberg native form plugin that lets you build contact forms, survey forms, feedback forms, booking forms, and any custom form with a dedicated Gutenberg block.
+[Gutena Forms](https://gutenaforms.com/) is the easiest WordPress form builder for creating responsive, lightweight forms in the WordPress block editor (formerly Gutenberg). It works as a block editor native form plugin that lets you build contact forms, survey forms, feedback forms, booking forms, and any custom form using a dedicated WordPress block.
+
 
 You can create custom WordPress forms visually inside the block editor using the Gutenberg Form Block with complete control over styling, layout, fields, and form behavior. Gutena Forms loads fast, stays fully responsive on every device, and keeps your website’s performance at its peak.
 
@@ -58,15 +59,19 @@ https://www.youtube.com/watch?v=u9sB-RSBQIE
 
 * Responsive WordPress forms
 
+* Form Field Validation
+
 * WordPress form block
 
 * Weekly form report lite
 
 * Pre-built WordPress form templates
 
-* Google reCAPTCHA integration
+* **Google reCAPTCHA integration**
 
-* Cloudflare Turnstile integration
+* **Cloudflare Turnstile integration**
+
+* **Honeypot spam protection**
 
 * Custom confirmation messages
 
@@ -125,6 +130,12 @@ Gutena Forms Pro gives you everything you need to manage advanced form workflows
 * Entry notes
 
 * User access control
+
+* Premium Integrations:
+
+  * **Brevo**
+  * **Mailchimp**
+  * **Active Campaign**
 
 * Priority support
 
@@ -199,23 +210,27 @@ This flexibility makes Gutena Forms ideal for contact forms, surveys, booking, e
 
 Access all your submission data inside the WordPress dashboard with a built-in form entry database. Gutena Forms securely stores every entry and lets you add internal Entry Notes to track follow-ups, customer details, or workflow updates, so you never need to hunt through emails again.
 
-✅ **Reason 7: Google reCAPTCHA and Cloudflare Turnstile Integration**
+✅ **Reason 7: Honeypot, Google reCAPTCHA, and Cloudflare Turnstile Integrations**
 
-Stop spam and fraudulent submissions with built-in support for Cloudflare Turnstile and Google reCAPTCHA v2 and v3. This makes Gutena Forms a reliable WordPress plugin for spam protection.
+Stop spam and fraudulent submissions with built-in support for Honeypot, Cloudflare Turnstile, and Google reCAPTCHA v2 and v3. This makes Gutena Forms a reliable WordPress plugin for spam protection.
 
-✅ **Reason 8: Custom Confirmation Messages**
+✅ **Reason 8: Global Form Settings for Faster Workflow**
 
-Show a custom success message or redirect the user to a specific URL/thank-you page after submission. Also, set helpful confirmation text for every field to improve the user experience and reduce form abandonment.
+Configure spam protection, validation messages, and integrations once and apply them to all forms automatically. Global Settings eliminate repetitive configuration across multiple forms while maintaining full per-form customization when needed. Save hours of setup time and ensure consistency across your entire website.
 
-✅ **Reason 9: Email Notifications**
+✅ **Reason 9: Custom Confirmation and Validation Messages**
+
+Show a custom success message or redirect the user to a specific URL/thank-you page after submission. Also, set helpful confirmation text for every field to improve the user experience and reduce form abandonment. Manage validation messages globally to ensure consistent, branded error feedback across all your forms without repetitive configuration.
+
+✅ **Reason 10: Email Notifications**
 
 Gutena Forms includes powerful admin email notifications that instantly alert you when a new form entry arrives, helping you respond faster and never miss important submissions. You can customize the sender name, email subject, reply-to address, and choose specific form fields for personalized and accurate notification delivery.
 
-✅ **Reason 10: Tags, Status, and Use Access Management**
+✅ **Reason 11: Tags, Status, and Use Access Management**
 
 Organize, filter, and control your form submissions with precision. You can categorize entries with tags, assign custom statuses for better workflow management, and set user permissions to keep your form data secure and accessible only to authorized team members.
 
-✅ **Reason 11: Connect Any AI Client with Gutena Forms via MCP**
+✅ **Reason 12: Connect Any AI Client with Gutena Forms via MCP**
 
 You can securely connect your forms to AI tools like Claude, Cursor, ChatGPT, and other MCP-compatible clients via the Model Context Protocol (MCP) Server. This integration allows your AI assistants to read WordPress form lists, submissions, and entry details. Perfect for automating reports, analyzing submissions, or building AI-powered workflows without leaving WordPress.
 
@@ -357,6 +372,14 @@ Gutena Forms MCP Server works with any MCP-compatible AI client, including Claud
 
 Yes. Gutena Forms MCP provides read-only access to forms and submissions. Authentication uses WordPress Application Passwords (no separate API keys), and access is restricted to administrators with the manage_options permission. Your data never leaves your WordPress site. AI tools query it securely through your MCP endpoint.
 
+= Can I configure spam protection for all forms at once? =
+
+Yes! You can enable and configure spam protection (Honeypot, Google reCAPTCHA, or Cloudflare Turnstile) globally from the Gutena Forms Settings panel. These settings automatically apply to all forms. You can still override them for individual forms inside the block editor if needed.
+
+= Can I customize settings for individual forms if I use Global Settings? =
+
+Absolutely! Global Settings provide defaults for all forms, but you retain full control. Open any form in the block editor and customize spam protection, validation messages, or integrations for that specific form. Global settings handle the routine work; you handle the exceptions.
+
 = Where do I report security bugs found in this plugin? =
 
 Please report security bugs found in the source code of the undefined plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/5b168d8d-e789-4f27-bdd4-fafaef54c1b9). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
@@ -378,6 +401,11 @@ Please report security bugs found in the source code of the undefined plugin thr
 
 
 == Changelog ==
+
+= 1.9.0 – May 22, 2026 =
+* New - Added global and form-specific settings for default validation messages
+* New - Added default/global and form-specific settings for spam protection features
+* Updated - Tested with WordPress version 7.0
 
 = 1.8.0 - Apr 22, 2026 =
 * New – MCP settings to provide access of forms and submissions data to AI-clients

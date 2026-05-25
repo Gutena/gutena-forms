@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.8.0
+ * Version:           1.9.0
  * Author:            Gutena Forms
  * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
@@ -41,7 +41,7 @@ if ( ! defined( 'GUTENA_FORMS_PLUGIN_URL' ) ) {
  * Plugin version.
  */
 if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-	define( 'GUTENA_FORMS_VERSION', '1.8.0' );
+	define( 'GUTENA_FORMS_VERSION', '1.9.0' );
 }
 
 /**
@@ -51,7 +51,7 @@ if ( ! defined( 'GUTENA_FORMS_SCHEMA_OPTION_PREFIX' ) ) {
 	define( 'GUTENA_FORMS_SCHEMA_OPTION_PREFIX', 'gutena_forms_schema_' );
 }
 
-if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) :
+if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) {
 	/**
 	 * Get form schema option value. Checks non-prefixed first, then prefixed; if both exist, returns prefixed.
 	 *
@@ -80,7 +80,7 @@ if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) :
 		}
 		return $default_value;
 	}
-endif;
+}
 
 if ( ! function_exists( 'gutena_forms__fs' ) ) :
 	/**
@@ -124,9 +124,8 @@ endif;
 
 if ( ! function_exists( 'is_gutena_forms_pro' ) ) :
 	/**
-	 * Gutena Forms has pro
+	 * Has gutena forms pro
 	 *
-	 * @since 1.0.0
 	 * @return bool
 	 */
 	function is_gutena_forms_pro() {
@@ -145,24 +144,20 @@ endif;
  */
 if ( ! class_exists( 'Gutena_Forms' ) ) :
 	/**
-	 * Gutena Forms plugin main class
-	 *
-	 * @since 1.0.0
+	 * Gutena Forms main class.
 	 */
 	class Gutena_Forms {
 
 		/**
-		 * The instance of the class
+		 * The instance of this class
 		 *
-		 * @since 1.0.0
-		 * @var Gutena_Forms $instance The instance of the class.
+		 * @var Gutena_Forms $instance The instance of this class.
 		 */
 		private static $instance = null;
 
 		/**
-		 * Getting the instance of the class
+		 * Returns the instance of this class.
 		 *
-		 * @since 1.0.0
 		 * @return Gutena_Forms
 		 */
 		public static function get_instance() {
@@ -173,9 +168,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		}
 
 		/**
-		 * Constructor
-		 *
-		 * @since 1.0.0
+		 * Gutena Forms constructor
 		 */
 		public function __construct() {
 			$this->includes();
@@ -188,6 +181,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		 * @since 1.5.0
 		 */
 		private function includes() {
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-helper.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-cpt.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
@@ -198,6 +192,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-existing-forms-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-handle-save-form.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-form-submit-handler.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/rest-api/class-rest-api.php';
 		}
@@ -212,6 +207,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
+			add_action( 'template_redirect', array( $this, 'enqueue_recaptcha_scripts' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
 			add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
 			add_action( 'added_post_meta', array( $this, 'save_gutena_forms_pattern' ), 10, 4 );
@@ -219,16 +215,136 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( Gutena_Forms_Submit_Form_Handler::get_instance(), 'handle_submit' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
 			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_css_responsive' ) );
 
 			$this->load_dashboard();
 		}
 
 		/**
-		 * Registring custom action links.
+		 * Enqueue scripts
+		 */
+		public function enqueue_recaptcha_scripts() {
+			global $post;
+			$has_direct_form_block    = ! empty( $post->post_content ) && function_exists( 'has_block' ) && has_block( 'gutena/forms', $post->post_content );
+			$has_existing_forms_block = ! empty( $post->post_content ) && function_exists( 'has_block' ) && has_block( 'gutena/existing-forms', $post->post_content );
+
+			/**
+			 * Enqueue external security scripts by scanning a block list.
+			 * This is needed because `gutena/existing-forms` injects forms via do_blocks(),
+			 * so the page content itself may not contain the nested `gutena/forms` blocks.
+			 *
+			 * @param array $blocks Parsed blocks.
+			 * @param int   $i      Counter for unique v3 handles.
+			 * @return int Updated counter.
+			 */
+			$scan_blocks_for_security = function ( $blocks, $i ) use ( &$scan_blocks_for_security ) {
+				if ( empty( $blocks ) || ! is_array( $blocks ) ) {
+					return $i;
+				}
+
+				foreach ( $blocks as $block ) {
+					if ( empty( $block['blockName'] ) ) {
+						continue;
+					}
+
+					// Direct forms block: can enqueue scripts from its attrs.
+					if ( 'gutena/forms' === $block['blockName'] ) {
+						$attributes = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : array();
+
+						if ( ! isset( $attributes['recaptcha']['defaultSettings'] ) || false !== $attributes['recaptcha']['defaultSettings'] ) {
+							$recaptcha_settings = Gutena_Forms_ReCAPTCHA::resolve_settings( get_option( 'gutena_forms__recaptcha', array() ) );
+						} elseif ( isset( $attributes['recaptcha']['enable'] ) && $attributes['recaptcha']['enable'] ) {
+								$recaptcha_settings = Gutena_Forms_ReCAPTCHA::resolve_settings( $attributes['recaptcha'] );
+						}
+
+						if ( isset( $recaptcha_settings['enable'] ) && $recaptcha_settings['enable'] ) {
+
+							if ( 'v2' === $recaptcha_settings['type'] ) {
+								wp_enqueue_script(
+									'gutena-forms-recaptcha-v2-scripts',
+									'https://www.google.com/recaptcha/api.js',
+									array(),
+									null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+									false
+								);
+							} elseif ( 'v3' === $recaptcha_settings['type'] ) {
+								if ( isset( $recaptcha_settings['defaultSettings'] ) && $recaptcha_settings['defaultSettings'] ) {
+									wp_enqueue_script(
+										'gutena-forms-recaptcha-v3-scripts',
+										'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_settings['site_key'] ),
+										array(),
+										null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+										false
+									);
+								} else {
+
+									wp_enqueue_script(
+										'gutena-forms-recaptcha-v3-' . esc_attr( $i ) . '-scripts',
+										'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_settings['site_key'] ),
+										array(),
+										null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+										false
+									);
+
+									++$i;
+								}
+							}
+						}
+
+						$cloudflare_attr = ( isset( $attributes['cloudflareTurnstile'] ) && is_array( $attributes['cloudflareTurnstile'] ) ) ? $attributes['cloudflareTurnstile'] : array();
+						if ( ! isset( $cloudflare_attr['defaultSettings'] ) || false !== $cloudflare_attr['defaultSettings'] ) {
+							$cloudflare_settings = get_option( 'gutena_forms__cloudflare', array() );
+						} else {
+							$cloudflare_settings = $cloudflare_attr;
+						}
+
+						if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
+							wp_enqueue_script(
+								'gutena-forms-cloudflare-turnstile-scripts',
+								'https://challenges.cloudflare.com/turnstile/v0/api.js',
+								array(),
+								null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+								false
+							);
+						}
+
+						// Continue into inner blocks if any.
+						if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+							$i = $scan_blocks_for_security( $block['innerBlocks'], $i );
+						}
+						continue;
+					}
+
+					// Existing forms block: fetch the referenced form post and scan its blocks too.
+					if ( 'gutena/existing-forms' === $block['blockName'] ) {
+						$attrs   = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : array();
+						$post_id = isset( $attrs['formID'] ) ? intval( $attrs['formID'] ) : 0;
+						if ( $post_id > 0 ) {
+							$form_post = get_post( $post_id );
+							if ( $form_post && ! empty( $form_post->post_content ) ) {
+								$i = $scan_blocks_for_security( parse_blocks( $form_post->post_content ), $i );
+							}
+						}
+					}
+
+					// Recurse into inner blocks for any other container blocks.
+					if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+						$i = $scan_blocks_for_security( $block['innerBlocks'], $i );
+					}
+				}
+
+				return $i;
+			};
+
+			// Scan page content for both direct forms + existing forms references.
+			if ( ! empty( $post->post_content ) && function_exists( 'parse_blocks' ) ) {
+				$scan_blocks_for_security( parse_blocks( $post->post_content ), 0 );
+			}
+		}
+
+		/**
+		 * Modify plugin action links
 		 *
-		 * @since 1.5.0
-		 * @param array $prev_links Plugin action links contains (activate, deactivate).
+		 * @param array $prev_links Plugin action links.
 		 *
 		 * @return array
 		 */
@@ -252,9 +368,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		}
 
 		/**
-		 * Loading dashbaord
-		 *
-		 * @since 1.0.0
+		 * Load form dashboard
 		 */
 		private function load_dashboard() {
 			if ( ! class_exists( 'Gutena_Forms_Admin' ) && file_exists( GUTENA_FORMS_DIR_PATH . 'includes/admin/class-admin.php' ) ) {
@@ -263,9 +377,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		}
 
 		/**
-		 * Registering blocks and scripts
-		 *
-		 * @since 1.0.0
+		 * Register blocks and scripts
 		 */
 		public function register_blocks_and_scripts() {
 			if ( ! function_exists( 'register_block_type' ) ) {
@@ -288,13 +400,13 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			register_block_type( __DIR__ . '/build/field-group' );
 
 			// google recaptcha.
-			$grecaptcha = get_option( 'gutena_forms_grecaptcha', array() );
+			$grecaptcha = get_option( 'gutena_forms__recaptcha', array() );
 
 			// Form messages.
-			$gutena_forms_messages = get_option( 'gutena_forms_messages', array() );
+			$gutena_forms_messages = get_option( 'gutena_forms__form_validation_messages', array() );
 
-			// cloudflare turnstile.
-			$cloudflare_turnstile = get_option( 'gutena_forms_cloudflare_turnstile', array() );
+			// cloudflare turnstile: global default settings (option gutena_forms__cloudflare).
+			$cloudflare_turnstile_defaults = get_option( 'gutena_forms__cloudflare', array() );
 
 			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array() : $gutena_forms_messages;
 			$gf_message            = array(
@@ -346,17 +458,21 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 				'gutenaFormsBlock',
 				array_merge(
 					array(
-						'submit_action'             => 'gutena_forms_submit',
-						'ajax_url'                  => admin_url( 'admin-ajax.php' ),
-						'nonce'                     => wp_create_nonce( 'gutena_Forms' ),
-						'grecaptcha_type'           => ( empty( $grecaptcha ) || empty( $grecaptcha['type'] ) ) ? '0' : $grecaptcha['type'],
-						'grecaptcha_site_key'       => empty( $grecaptcha['site_key'] ) ? '' : $grecaptcha['site_key'],
-						'grecaptcha_secret_key'     => ( function_exists( 'is_admin' ) && is_admin() && ! empty( $grecaptcha['secret_key'] ) ) ? $grecaptcha['secret_key'] : '',
-						'pricing_link'              => 'https://gutenaforms.com/pricing/',
-						'cloudflare_turnstile'      => empty( $cloudflare_turnstile ) ? array() : $cloudflare_turnstile,
-						'is_pro'                    => is_gutena_forms_pro(),
-						'is_gutena_forms_post_type' => $gutena_forms_post_type,
-						'forms_available'           => $forms_available,
+						'submit_action'                 => 'gutena_forms_submit',
+						'ajax_url'                      => admin_url( 'admin-ajax.php' ),
+						'nonce'                         => wp_create_nonce( 'gutena_Forms' ),
+						'grecaptcha'                    => ! empty( $grecaptcha )
+							? $grecaptcha
+							: array(
+								'enable' => false,
+								'type'   => 'v2',
+							),
+						'pricing_link'                  => 'https://gutenaforms.com/pricing/',
+						'cloudflare_turnstile_defaults' => is_array( $cloudflare_turnstile_defaults ) ? $cloudflare_turnstile_defaults : array(),
+						'is_pro'                        => is_gutena_forms_pro(),
+						'is_gutena_forms_post_type'     => $gutena_forms_post_type,
+						'forms_available'               => $forms_available,
+						'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
 					),
 					$gf_message
 				)
@@ -364,10 +480,10 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		}
 
 		/**
-		 * Registering fields
+		 * Register fields
 		 *
-		 * @since 1.5.0
-		 * @param array $blocks Array of fields.
+		 * @since 1.2.0
+		 * @param array $blocks Registered fields.
 		 *
 		 * @return array
 		 */
@@ -437,19 +553,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		}
 
 		/**
-		 * Admin CSS for responsive table in dashboard
-		 *
-		 * @since 1.8.0
-		 */
-		public function admin_css_responsive() {
-			wp_enqueue_style( 'admin_responsive', plugin_dir_url( __FILE__ ) . 'assets/css/admin-responsive.css', array(), GUTENA_FORMS_VERSION, 'all' );
-			wp_enqueue_script( 'admin_responsive', plugin_dir_url( __FILE__ ) . 'assets/js/custom.js', array( 'jquery' ), GUTENA_FORMS_VERSION, true );
-		}
-
-		/**
-		 * Registering block styles
-		 *
-		 * @since 1.0.0
+		 * Register block styles
 		 */
 		public function register_blocks_styles() {
 			if ( function_exists( 'register_block_style' ) ) {
@@ -504,10 +608,10 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		}
 
 		/**
-		 * Registering block category
+		 * Register Gutena category if not exists
 		 *
-		 * @param array                   $block_categories Array of registered categories.
-		 * @param WP_Block_Editor_Context $editor_context Editor context.
+		 * @param array                   $block_categories Block categories.
+		 * @param WP_Block_Editor_Context $editor_context Block editor context.
 		 *
 		 * @return array
 		 */
@@ -532,11 +636,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		}
 
 		/**
-		 * Saving gutena forms schema
+		 * Save form schema
 		 *
-		 * @param int|string $post_id Post id.
-		 * @param WP_Post    $post Post object.
-		 * @param boolean    $update Is update.
+		 * @param int     $post_id Post id.
+		 * @param WP_Post $post Post object.
+		 * @param boolean $update is save or update.
 		 */
 		public function save_gutena_forms_schema( $post_id, $post, $update ) {
 			// post should not be a rivision or trash.
@@ -559,7 +663,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 				}
 			}
 
-			// developer.wordpress.org/reference/functions/parse_blocks/.
+			/**
+			 * Function docs link
+			 *
+			 * @link https://developer.wordpress.org/reference/functions/parse_blocks/
+			 */
 			$form_schema = $this->get_form_schema( parse_blocks( $post->post_content ) );
 			if ( empty( $form_schema ) || ! is_array( $form_schema ) ) {
 				return;
@@ -570,46 +678,84 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			// Save gutena form schema in wp option.
 			if ( ! empty( $form_schema['form_schema'] ) && is_array( $form_schema['form_schema'] ) ) {
 				$gutena_forms_blocks = explode( '<!-- wp:gutena/forms', $post->post_content );
-				foreach ( $form_schema['form_schema'] as  $form_schema ) {
-					if ( ! empty( $form_schema['form_attrs']['formID'] ) ) {
+				foreach ( $form_schema['form_schema'] as $single_form_schema ) {
+					if ( ! empty( $single_form_schema['form_attrs']['formID'] ) ) {
 						// get block markup.
 						foreach ( $gutena_forms_blocks as $gf_block ) {
-							if ( false !== stripos( $gf_block, $form_schema['form_attrs']['formID'] ) ) {
-								$gf_block                    = explode( 'wp:gutena/forms -->', $gf_block );
-								$form_schema['block_markup'] = '<!-- wp:gutena/forms' . $gf_block[0] . 'wp:gutena/forms -->';
+							if ( false !== stripos( $gf_block, $single_form_schema['form_attrs']['formID'] ) ) {
+								$gf_block                           = explode( 'wp:gutena/forms -->', $gf_block );
+								$single_form_schema['block_markup'] = '<!-- wp:gutena/forms' . $gf_block[0] . 'wp:gutena/forms -->';
 								break;
 							}
 						}
-						// filter for formSchema.
-						$form_schema_filtered = apply_filters( 'gutena_forms_save_form_schema', $form_schema, $form_schema['form_attrs']['formID'], $gutena_form_ids );
-						// Save form schema (prefixed option name prevents arbitrary option overwrite).
-						update_option(
-							GUTENA_FORMS_SCHEMA_OPTION_PREFIX . sanitize_key( $form_schema['form_attrs']['formID'] ),
-							$this->sanitize_array( $form_schema_filtered, true )
+
+						// Normalize validation messages: when the form uses default messages
+						// (defaultSettings is true or missing), persist a complete messages object
+						// derived from the global option (or built-in fallbacks). This ensures
+						// every form's individual settings are mapped to the current globals,
+						// even when the user has not edited any message field.
+						$global_messages = get_option( 'gutena_forms__form_validation_messages', array() );
+						$base_messages   = array(
+							'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
+							'required_msg_optin'  => __( 'Please check this checkbox', 'gutena-forms' ),
+							'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
+							'required_msg_check'  => __( 'Please check an option', 'gutena-forms' ),
+							'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
+							'min_value_msg'       => __( 'Input value should be greater than', 'gutena-forms' ),
+							'max_value_msg'       => __( 'Input value should be less than', 'gutena-forms' ),
+						);
+						$effective_global = array_merge(
+							$base_messages,
+							is_array( $global_messages ) ? $global_messages : array()
 						);
 
-						// Save Google reCAPTCHA details.
-						if ( ! empty( $form_schema['form_attrs']['recaptcha'] ) && ! empty( $form_schema['form_attrs']['recaptcha']['site_key'] ) && ! empty( $form_schema['form_attrs']['recaptcha']['secret_key'] ) ) {
-							update_option(
-								'gutena_forms_grecaptcha',
-								$this->sanitize_array( $form_schema['form_attrs']['recaptcha'] )
+						$current_messages    = isset( $single_form_schema['form_attrs']['messages'] ) && is_array( $single_form_schema['form_attrs']['messages'] )
+							? $single_form_schema['form_attrs']['messages']
+							: array();
+						$is_default_messages = empty( $current_messages )
+							|| ! isset( $current_messages['defaultSettings'] )
+							|| false !== $current_messages['defaultSettings'];
+
+						if ( $is_default_messages ) {
+							$single_form_schema['form_attrs']['messages'] = array_merge(
+								$effective_global,
+								array( 'defaultSettings' => true )
 							);
 						}
 
-						// cloudflare turnstile.
-						if ( ! empty( $form_schema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $form_schema['form_attrs']['cloudflareTurnstile']['site_key'] ) && ! empty( $form_schema['form_attrs']['cloudflareTurnstile']['secret_key'] ) ) {
-							update_option(
-								'gutena_forms_cloudflare_turnstile',
-								$this->sanitize_array( $form_schema['form_attrs']['cloudflareTurnstile'] )
-							);
-						}
+						// filter for formSchema.
+						$form_schema_filtered = apply_filters( 'gutena_forms_save_form_schema', $single_form_schema, $single_form_schema['form_attrs']['formID'], $gutena_form_ids );
+						// Save form schema (prefixed option name prevents arbitrary option overwrite).
+						update_option(
+							GUTENA_FORMS_SCHEMA_OPTION_PREFIX . sanitize_key( $single_form_schema['form_attrs']['formID'] ),
+							Gutena_Forms_Helper::sanitize_array( $form_schema_filtered, true )
+						);
 
-						// Save common form messages.
-						if ( ! empty( $form_schema['form_attrs']['messages'] ) && is_array( $form_schema['form_attrs']['messages'] ) ) {
-							update_option(
-								'gutena_forms_messages',
-								$form_schema['form_attrs']['messages']
-							);
+						// Global reCAPTCHA is set only from global settings UI, not from form block save.
+						// Cloudflare Turnstile: verification uses form schema + gutena_forms__cloudflare (global defaults).
+
+						// Save common form messages (Primary Form Sync Logic).
+						if ( ! empty( $single_form_schema['form_attrs']['messages'] ) && is_array( $single_form_schema['form_attrs']['messages'] ) ) {
+							$all_form_ids    = get_option( 'gutena_form_ids', array() );
+							$current_form_id = $single_form_schema['form_attrs']['formID'];
+							// Only inherited/default messages may update the global option; local overrides stay on this form only.
+							// If no forms exist yet, or only this form exists, it is the Primary Form.
+							if ( $is_default_messages && ( empty( $all_form_ids ) || ( count( $all_form_ids ) === 1 && in_array( $current_form_id, $all_form_ids, true ) ) ) ) {
+								$messages_for_global = json_decode( wp_json_encode( $single_form_schema['form_attrs']['messages'] ), true );
+								if ( ! is_array( $messages_for_global ) ) {
+									$messages_for_global = is_array( $single_form_schema['form_attrs']['messages'] ) ? $single_form_schema['form_attrs']['messages'] : array();
+								}
+								if ( class_exists( 'Gutena_Forms_Settings_Migrator' ) ) {
+									$messages_for_global = Gutena_Forms_Settings_Migrator::sanitize_settings_for_option( $messages_for_global );
+								} elseif ( is_array( $messages_for_global ) && isset( $messages_for_global['defaultSettings'] ) ) {
+									unset( $messages_for_global['defaultSettings'] );
+								}
+
+								update_option(
+									'gutena_forms__form_validation_messages',
+									$messages_for_global
+								);
+							}
 						}
 					}
 				}
@@ -628,7 +774,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 
 				update_option(
 					'gutena_form_ids',
-					$this->sanitize_array( $gutena_form_ids )
+					Gutena_Forms_Helper::sanitize_array( $gutena_form_ids )
 				);
 			}
 		}
@@ -691,21 +837,20 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 
 
 		/**
-		 * Getting form schema.
+		 * Get Form schema from block parsing
 		 *
-		 * @param array $blocks Array of blocks.
-		 * @param int   $form_id form id.
+		 * @param array  $blocks Array of blocks.
+		 * @param string $form_id Form id.
 		 *
-		 * @return array|false
+		 * @return array
 		 */
 		private function get_form_schema( $blocks, $form_id = 0 ) {
 			if ( empty( $blocks ) || ! is_array( $blocks ) ) {
-				return false;
+				return array();
 			}
 
 			$form_schema = array();
 			$form_ids    = array();
-			$innerblocks = array();
 
 			foreach ( $blocks as $block ) {
 
@@ -731,51 +876,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 				'form_schema' => $form_schema,
 			);
 		}
-
-		/**
-		 * Sanitize data nad array.
-		 *
-		 * @param array $array_to_sanitize Array to sanitize.
-		 * @param bool  $textarea_sanitize Is textarea.
-		 *
-		 * @return array
-		 */
-		public function sanitize_array( $array_to_sanitize, $textarea_sanitize = false ) {
-			if ( ! empty( $array_to_sanitize ) && is_array( $array_to_sanitize ) ) {
-				foreach ( (array) $array_to_sanitize as $key => $value ) {
-					if ( is_array( $value ) ) {
-						$array_to_sanitize[ $key ] = $this->sanitize_array( $value );
-					} elseif ( 'block_markup' === $key && function_exists( 'wp_kses' ) ) {
-
-						$array_to_sanitize[ $key ] = wp_kses(
-							$value,
-							array_merge(
-								wp_kses_allowed_html( 'post' ),
-								array(
-									'form'  => array(
-										'method' => 1,
-										'class'  => 1,
-										'style'  => 1,
-									),
-									'input' => array(
-										'type'  => 1,
-										'name'  => 1,
-										'class' => 1,
-										'value' => 1,
-									),
-								)
-							)
-						);
-						// $array[ $key ] = wp_kses_post( $value ); maybe use this if above is too much.
-					} else {
-						$array_to_sanitize[ $key ] = true === $textarea_sanitize ? sanitize_textarea_field( $value ) : sanitize_text_field( $value );
-					}
-				}
-			}
-			return $array_to_sanitize;
-		}
 	}
 
 	Gutena_Forms::get_instance();
-
 endif;

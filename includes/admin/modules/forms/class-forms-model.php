@@ -52,18 +52,6 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		}
 
 		/**
-		 * Get block id from form ID.
-		 *
-		 * @since 1.8.0
-		 * @param int|string $form_id Form id.
-		 *
-		 * @return string
-		 */
-		public function get_block_id( $form_id ) {
-			return get_post_meta( $form_id, 'gutena_form_id', true );
-		}
-
-		/**
 		 * Get singleton instance.
 		 *
 		 * @since 1.7.0

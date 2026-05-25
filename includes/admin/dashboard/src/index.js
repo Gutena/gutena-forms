@@ -22,7 +22,7 @@ const GutenaFormsApp = () => {
 					<GutenaFormsProPopup
 						isPopup={ true }
 						show={ showProPopup }
-						hideHandler={ () => setShowProPopup( false ) }
+						hideHandler={ e => setShowProPopup( false ) }
 					/>
 				)
 			}

@@ -77,7 +77,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 				array(
 					'permission_callback' => array( self::class, 'permission_callback' ),
 					'methods'             => 'GET',
-					'callback'            => array( $this, 'get_menus' ),
+					'callback'			  => array( $this, 'get_menus' ),
 				)
 			);
 
@@ -87,7 +87,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 				array(
 					'permission_callback' => array( self::class, 'permission_callback' ),
 					'methods'             => 'GET',
-					'callback'            => array( $this, 'get_left_navigation_menus' ),
+					'callback'			  => array( $this, 'get_left_navigation_menus' ),
 				)
 			);
 
@@ -123,9 +123,9 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 			$rest_routes = apply_filters( 'gutena_forms__rest_routs', array(), $server );
 
 			foreach ( $rest_routes as $rest_route ) {
-
+				$namespace = self::$namespace;
 				if ( isset( $rest_route['is-pro'] ) && $rest_route['is-pro'] ) {
-					self::$namespace = 'gutena-forms-pro/v1';
+					$namespace = 'gutena-forms-pro/v1';
 				}
 
 				if ( isset( $rest_route['auth'] ) && $rest_route['auth'] ) {
@@ -144,7 +144,7 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'callback'            => $rest_route['callback'],
 				);
 				register_rest_route(
-					self::$namespace,
+					$namespace,
 					$rest_route['route'],
 					$args
 				);
@@ -155,9 +155,11 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 		 * Get menus callback
 		 *
 		 * @since 1.7.0
+		 * @param WP_REST_Request $request The REST request.
+		 *
 		 * @return WP_REST_Response
 		 */
-		public function get_menus() {
+		public function get_menus( $request ) {
 			$menus = array(
 				array(
 					'title' => __( 'Dashboard', 'gutena-forms' ),
@@ -186,8 +188,6 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 				),
 			);
 
-			$menus = apply_filters( 'gutena_forms__top_menu_navigation', $menus );
-
 			if ( is_array( $menus ) && ! empty( $menus ) ) {
 				return rest_ensure_response(
 					array(
@@ -211,9 +211,11 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 		 * Get left navigation menus callback
 		 *
 		 * @since 1.7.0
+		 * @param WP_REST_Request $request The REST request.
+		 *
 		 * @return WP_REST_Response
 		 */
-		public function get_left_navigation_menus() {
+		public function get_left_navigation_menus( $request ) {
 			$menus = array(
 				array(
 					'title' => __( 'General Settings', 'gutena-forms' ),
@@ -235,6 +237,28 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							'title' => __( 'Weekly Summary', 'gutena-forms' ),
 							'slug'  => 'weekly-summary',
 						),
+						array(
+							'title' => __( 'Validation Messages', 'gutena-forms' ),
+							'slug'  => 'validation-messages',
+						),
+					),
+				),
+				array(
+					'title' => __( 'Spam Protection', 'gutena-forms' ),
+					'icon'  => 'Shield',
+					'menus' => array(
+						array(
+							'title' => __( 'Honeypot', 'gutena-forms' ),
+							'slug'  => 'honeypot',
+						),
+						array(
+							'title' => __( 'Google reCAPTCHA' ),
+							'slug'  => 'google-recaptcha',
+						),
+						array(
+							'title' => __( 'Cloudflare Turnstile' ),
+							'slug'  => 'cloudflare-turnstile',
+						),
 					),
 				),
 				array(
@@ -243,11 +267,15 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'menus' => array(),
 					'slug'  => 'mcp',
 				),
+				array(
+					'title' => __( 'Integrations', 'gutena-forms' ),
+					'icon'  => 'Integration',
+					'menus' => array(),
+					'slug'  => 'integrations',
+				),
 			);
 
-			$menus = apply_filters( 'gutena_forms__left_navigation_menus', $menus );
-
-			if ( is_array( $menus ) && ! empty( $menus ) ) {
+			if ( ! empty( $menus ) ) {
 				return rest_ensure_response(
 					array(
 						'menus'   => $menus,
@@ -278,31 +306,35 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 			$settings_id = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
 
 			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
+			$integration_settings  = apply_filters( 'gutena_forms__integrations', array() );
+			$gutena_forms_settings = array_merge( $gutena_forms_settings, $integration_settings );
 
-			if ( is_array( $gutena_forms_settings ) ) {
-				if ( isset( $gutena_forms_settings[ $settings_id ] ) ) {
-					if ( class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
-						$settings = new $gutena_forms_settings[ $settings_id ]();
-						if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
-							return rest_ensure_response(
-								array(
-									'settings' => $settings->get_settings(),
-									'status'   => 200,
-									'message'  => __( 'Settings fetched successfully.', 'gutena-forms' ),
-								)
-							);
-						}
-					}
+			if ( isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
+				$settings = $gutena_forms_settings[ $settings_id ];
+				$settings = new $settings();
+
+				if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
+					return rest_ensure_response(
+						array(
+							'settings' => $settings->get_settings(),
+							'status'   => 200,
+							'message'  => __( 'Settings fetched successfully.', 'gutena-forms' ),
+						)
+					);
 				}
 			}
 
-			return rest_ensure_response(
+			$response = rest_ensure_response(
 				array(
 					'settings' => array(),
 					'status'   => 404,
 					'message'  => __( 'Settings not found.', 'gutena-forms' ),
 				)
 			);
+
+			$response->set_status( 404 );
+
+			return $response;
 		}
 
 		/**
@@ -314,12 +346,16 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 		 * @return WP_REST_Response
 		 */
 		public function save_settings( $request ) {
-			$settings_id   = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
+			$settings_id  = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
 			$settings_data = $request->get_param( 'settings_data' );
 
 			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
-			if ( is_array( $gutena_forms_settings ) && isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
-				$settings = new $gutena_forms_settings[ $settings_id ]();
+			$integration_settings  = apply_filters( 'gutena_forms__integrations', array() );
+			$gutena_forms_settings = array_merge( $gutena_forms_settings, $integration_settings );
+
+			if ( isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
+				$settings = $gutena_forms_settings[ $settings_id ];
+				$settings = new $settings();
 				if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
 					$save_result = $settings->save_settings( $settings_data );
 					if ( $save_result ) {

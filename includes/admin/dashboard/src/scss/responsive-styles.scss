@@ -1,0 +1,44 @@
+// Responsive adjustments
+@media (max-width: 768px) {
+  .gf-introduction-page {
+    .gf-video-section {
+      .gf-video-heading {
+        font-size: 24px;
+        line-height: 28px;
+      }
+    }
+
+    .gf-upgrade-pro-section {
+      flex-direction: column;
+
+      .gf-upgrade-right {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+
+    .gf-features-section {
+      .gf-features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  }
+}
+
+// Responsive adjustments for video modal
+@media (max-width: 768px) {
+  .gf-video-modal {
+    .gf-video-modal-content {
+      width: 95%;
+      max-width: 100%;
+
+      .gf-video-modal-close {
+        top: -35px;
+        font-size: 35px;
+        width: 35px;
+        height: 35px;
+      }
+    }
+  }
+}
