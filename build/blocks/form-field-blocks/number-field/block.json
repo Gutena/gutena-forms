@@ -1,0 +1,77 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/number-field",
+  "version": "1.0.0",
+  "title": "Number Field",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena",
+  "icon": "calculator",
+  "description": "Standalone number input field for Gutena Forms.",
+  "keywords": [
+    "number",
+    "input",
+    "gutena forms"
+  ],
+  "attributes": {
+    "nameAttr": {
+      "type": "string",
+      "default": ""
+    },
+    "fieldName": {
+      "type": "string",
+      "default": "Number"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": ""
+    },
+    "isRequired": {
+      "type": "boolean",
+      "default": false
+    },
+    "defaultValue": {
+      "type": "string",
+      "default": ""
+    },
+    "minMaxStep": {
+      "type": "object",
+      "default": {}
+    },
+    "autocomplete": {
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "errorRequiredMsg": {
+      "type": "string",
+      "default": "Field is required"
+    },
+    "errorInvalidInputMsg": {
+      "type": "string",
+      "default": "Input is not valid"
+    },
+    "fieldType": {
+      "type": "string",
+      "default": "number"
+    }
+  },
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "textdomain": "gutena-forms",
+  "editorScript": "file:./index.js"
+}

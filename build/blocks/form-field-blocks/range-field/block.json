@@ -1,0 +1,77 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/range-field",
+  "version": "1.0.0",
+  "title": "Range Field",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena",
+  "icon": "slides",
+  "description": "Standalone range slider field for Gutena Forms.",
+  "keywords": [
+    "range",
+    "slider",
+    "gutena forms"
+  ],
+  "attributes": {
+    "nameAttr": {
+      "type": "string",
+      "default": ""
+    },
+    "fieldName": {
+      "type": "string",
+      "default": "Range"
+    },
+    "isRequired": {
+      "type": "boolean",
+      "default": false
+    },
+    "defaultValue": {
+      "type": "string",
+      "default": ""
+    },
+    "minMaxStep": {
+      "type": "object",
+      "default": {}
+    },
+    "preFix": {
+      "type": "string",
+      "default": ""
+    },
+    "sufFix": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "errorRequiredMsg": {
+      "type": "string",
+      "default": "Field is required"
+    },
+    "errorInvalidInputMsg": {
+      "type": "string",
+      "default": "Input is not valid"
+    },
+    "fieldType": {
+      "type": "string",
+      "default": "range"
+    }
+  },
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "textdomain": "gutena-forms",
+  "editorScript": "file:./index.js"
+}

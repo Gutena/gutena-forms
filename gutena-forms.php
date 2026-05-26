@@ -192,8 +192,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-existing-forms-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-fields.php';
+
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-handle-save-form.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-form-submit-handler.php';
+
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/rest-api/class-rest-api.php';
 		}
 
@@ -386,18 +389,19 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			}
 
 			Gutena_Forms_Form_Block::get_instance()->register_block();
-			Gutena_Forms_Field_Block::get_instance()->register_block();
-			Gutena_Forms_Form_Field_Block::get_instance()->register_block();
 			Gutena_Forms_Existing_Forms_Block::get_instance()->register_block();
-			Gutena_Forms_Field_Label_Block::get_instance()->register_block();
+			Gutena_Forms_Fields::get_instance()->register_blocks();
+			
+			
+			Gutena_Forms_Field_Block::get_instance()->register_block( 'backward compatibility' );
+			Gutena_Forms_Form_Field_Block::get_instance()->register_block( 'backward compatibility' );
+			Gutena_Forms_Field_Label_Block::get_instance()->register_block( 'backward compatibility' );
 
 			// Form Confirmation Message Block.
-			register_block_type( __DIR__ . '/build/form-confirm-msg' );
+			register_block_type( __DIR__ . '/build/blocks/form-confirm-msg' );
 
 			// Form Error Message Block.
-			register_block_type( __DIR__ . '/build/form-error-msg' );
-
-			register_block_type( __DIR__ . '/build/field-group' );
+			register_block_type( __DIR__ . '/build/blocks/form-error-msg' );
 
 			// google recaptcha.
 			$grecaptcha = get_option( 'gutena_forms__recaptcha', array() );

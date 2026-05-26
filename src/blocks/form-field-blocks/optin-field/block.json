@@ -1,0 +1,56 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "gutena/optin-field",
+	"version": "1.0.0",
+	"title": "Opt-in Field",
+	"parent": [ "gutena/forms" ],
+	"category": "gutena",
+	"icon": "privacy",
+	"description": "Standalone opt-in checkbox field for Gutena Forms.",
+	"keywords": [ "optin", "consent", "gutena forms" ],
+	"attributes": {
+		"nameAttr": {
+			"type": "string",
+			"default": ""
+		},
+		"fieldName": {
+			"type": "string",
+			"default": "I agree to the terms"
+		},
+		"fieldType": {
+			"type": "string",
+			"default": "optin"
+		},
+		"isRequired": {
+			"type": "boolean",
+			"default": true
+		},
+		"autocomplete": {
+			"type": "boolean",
+			"default": false
+		},
+		"description": {
+			"type": "string",
+			"default": ""
+		},
+		"errorRequiredMsg": {
+			"type": "string",
+			"default": "Field is required"
+		},
+		"errorInvalidInputMsg": {
+			"type": "string",
+			"default": "Input is not valid"
+		}
+	},
+	"supports": {
+		"align": [ "wide", "full" ],
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"textdomain": "gutena-forms",
+	"editorScript": "file:./index.js"
+}
