@@ -4,7 +4,9 @@
 	"name": "gutena/email-field-group",
 	"version": "1.0.1",
 	"title": "Email",
-	"parent": ["gutena/forms"],
+	"parent": [
+		"gutena/forms"
+	],
 	"category": "gutena",
 	"icon": "email",
 	"description": "Collect and validate user email addresses for accurate communication",
@@ -64,14 +66,18 @@
 	},
 	"supports": {
 		"__experimentalSettings": true,
-		"align": ["wide", "full"],
+		"align": [
+			"wide",
+			"full"
+		],
 		"html": false,
 		"spacing": {
 			"margin": true,
 			"padding": true,
 			"blockGap": true
 		},
-		"__experimentalLayout": true
+		"__experimentalLayout": true,
+		"inserter": false
 	},
 	"textdomain": "gutena-forms",
 	"editorScript": "file:./index.js",

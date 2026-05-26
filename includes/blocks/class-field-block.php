@@ -39,11 +39,13 @@ if ( ! class_exists( 'Gutena_Forms_Field_Block' ) ) :
 				}
 			);
 
+			$legacy_args = gutena_forms_legacy_block_registration_args();
+
 			foreach ( $fields as $field => $field_args ) {
 				if ( file_exists( $group_dir . $field_args['dir'] . '/block.json' ) ) {
-					register_block_type( $group_dir . $field_args['dir'] );
+					register_block_type( $group_dir . $field_args['dir'], $legacy_args );
 				} elseif ( file_exists( $field_args['dir'] . '/block.json' ) ) {
-					register_block_type( $field_args['dir'] );
+					register_block_type( $field_args['dir'], $legacy_args );
 				}
 			}
 		}

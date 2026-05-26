@@ -4,7 +4,9 @@
 	"name": "gutena/dropdown-field-group",
 	"version": "1.0.1",
 	"title": "Dropdown",
-	"parent": ["gutena/forms"],
+	"parent": [
+		"gutena/forms"
+	],
 	"category": "gutena",
 	"icon": "menu",
 	"description": "Provide a list of selectable options in a compact dropdown menu.",
@@ -35,7 +37,11 @@
 		},
 		"selectOptions": {
 			"type": "array",
-			"default": ["Big", "Medium", "Small"]
+			"default": [
+				"Big",
+				"Medium",
+				"Small"
+			]
 		},
 		"optionsInline": {
 			"type": "boolean",
@@ -64,14 +70,18 @@
 	},
 	"supports": {
 		"__experimentalSettings": true,
-		"align": ["wide", "full"],
+		"align": [
+			"wide",
+			"full"
+		],
 		"html": false,
 		"spacing": {
 			"margin": true,
 			"padding": true,
 			"blockGap": true
 		},
-		"__experimentalLayout": true
+		"__experimentalLayout": true,
+		"inserter": false
 	},
 	"textdomain": "gutena-forms",
 	"editorScript": "file:./index.js",

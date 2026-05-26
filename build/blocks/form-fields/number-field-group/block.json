@@ -72,7 +72,8 @@
       "padding": true,
       "blockGap": true
     },
-    "__experimentalLayout": true
+    "__experimentalLayout": true,
+    "inserter": false
   },
   "textdomain": "gutena-forms",
   "editorScript": "file:./index.js",

@@ -4,12 +4,17 @@
 	"name": "gutena/rating-field-group",
 	"version": "1.0.1",
 	"title": "Rating",
-	"parent": ["gutena/forms"],
+	"parent": [
+		"gutena/forms"
+	],
 	"category": "gutena-pro",
 	"icon": "star-filled",
 	"description": "Gather user feedback using a star-based rating field.",
 	"textdomain": "gutena-forms-pro",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
-	"style": "file:./style.css"
+	"style": "file:./style.css",
+	"supports": {
+		"inserter": false
+	}
 }

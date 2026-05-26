@@ -429,7 +429,18 @@ export default function Edit( props ) {
 	//Template
 	const TEMPLATE =
 		gfIsEmpty( variations ) || gfIsEmpty( variations[ 0 ].innerBlocks )
-			? [ [ 'gutena/field-group' ] ]
+			? [
+					[
+						'gutena/text-field',
+						{
+							nameAttr: 'f_0',
+							isRequired: true,
+							fieldName: __( 'Name', 'gutena-forms' ),
+							fieldType: 'text',
+							placeholder: __( 'Enter your name', 'gutena-forms' ),
+						},
+					],
+			  ]
 			: variations[ 0 ].innerBlocks;
 
 	//Spacing units
@@ -688,7 +699,6 @@ export default function Edit( props ) {
 		'core/group',
 		'core/image',
 		'core/paragraph',
-		'gutena/field-group',
 		'gutena/text-field',
 		'gutena/optin-field',
 		'gutena/dropdown-field',

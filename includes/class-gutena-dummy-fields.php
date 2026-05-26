@@ -131,9 +131,9 @@ if ( ! class_exists( 'Gutena_Dummy_Fields' ) ) :
 			}
 
 			foreach ( $this->field_groups as $k => $v ) {
-				if ( file_exists( GUTENA_FORMS_DIR_PATH . 'build/form-fields/pro/' . $k . '/block.json' ) ) {
+				if ( file_exists( GUTENA_FORMS_DIR_PATH . 'build/blocks/form-fields/pro/' . $k . '/block.json' ) ) {
 					$fields[ $k ] = $v;
-					$fields[ $k ]['dir'] = GUTENA_FORMS_DIR_PATH . 'build/form-fields/pro/' . $k;
+					$fields[ $k ]['dir'] = GUTENA_FORMS_DIR_PATH . 'build/blocks/form-fields/pro/' . $k;
 				}
 			}
 

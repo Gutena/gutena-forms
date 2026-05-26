@@ -4,71 +4,81 @@
 	"name": "gutena/radio-field-group",
 	"version": "1.0.1",
 	"title": "Radio",
-	"parent": ["gutena/forms"],
+	"parent": [
+		"gutena/forms"
+	],
 	"category": "gutena",
 	"icon": "forms",
 	"description": "Enable users to choose a single option from multiple choices.",
 	"attributes": {
-	"nameAttr": {
-		"type": "string",
+		"nameAttr": {
+			"type": "string",
 			"default": "gf-input-1"
-	},
-	"fieldLabel": {
-		"type": "string",
+		},
+		"fieldLabel": {
+			"type": "string",
 			"default": "Label"
-	},
-	"fieldLabelContent": {
-		"type": "string",
+		},
+		"fieldLabelContent": {
+			"type": "string",
 			"default": ""
-	},
-	"fieldType": {
-		"type": "string",
+		},
+		"fieldType": {
+			"type": "string",
 			"default": "radio"
-	},
-	"isRequired": {
-		"type": "boolean",
+		},
+		"isRequired": {
+			"type": "boolean",
 			"default": false
-	},
-	"displayName": {
-		"type": "string",
+		},
+		"displayName": {
+			"type": "string",
 			"default": "Name"
-	},
-	"selectOptions": {
-		"type": "array",
-			"default": ["Big", "Medium", "Small"]
-	},
-	"optionsInline": {
-		"type": "boolean",
+		},
+		"selectOptions": {
+			"type": "array",
+			"default": [
+				"Big",
+				"Medium",
+				"Small"
+			]
+		},
+		"optionsInline": {
+			"type": "boolean",
 			"default": false
-	},
-	"errorRequiredMsg": {
-		"type": "string",
+		},
+		"errorRequiredMsg": {
+			"type": "string",
 			"default": "Field is required"
-	},
-	"errorInvalidInputMsg": {
-		"type": "string",
+		},
+		"errorInvalidInputMsg": {
+			"type": "string",
 			"default": "Input is not valid"
-	},
-	"description": {
-		"type": "string",
+		},
+		"description": {
+			"type": "string",
 			"default": ""
-	},
-	"settings": {
-		"type": "object",
+		},
+		"settings": {
+			"type": "object",
 			"default": {}
-	}
-},
+		}
+	},
 	"supports": {
-	"__experimentalSettings": true,
-		"align": ["wide", "full"],
+		"__experimentalSettings": true,
+		"align": [
+			"wide",
+			"full"
+		],
 		"html": false,
 		"spacing": {
-		"margin": true,
+			"margin": true,
 			"padding": true,
 			"blockGap": true
+		},
+		"__experimentalLayout": true,
+		"inserter": false
 	},
-	"__experimentalLayout": true
-},
 	"textdomain": "gutena-forms",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",

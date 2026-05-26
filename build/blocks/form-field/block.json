@@ -144,7 +144,8 @@
         ]
       }
     },
-    "html": false
+    "html": false,
+    "inserter": false
   },
   "textdomain": "gutena-forms",
   "editorScript": "file:./index.js",

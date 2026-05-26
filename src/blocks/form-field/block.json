@@ -4,7 +4,9 @@
 	"name": "gutena/form-field",
 	"version": "1.0.1",
 	"title": "Form Field",
-	"parent": [ "gutena/forms" ],
+	"parent": [
+		"gutena/forms"
+	],
 	"category": "gutena",
 	"icon": "feedback",
 	"description": "Form field",
@@ -67,7 +69,11 @@
 		},
 		"selectOptions": {
 			"type": "array",
-			"default": [ "Big", "Medium", "Small" ]
+			"default": [
+				"Big",
+				"Medium",
+				"Small"
+			]
 		},
 		"optionsColumns": {
 			"type": "number",
@@ -102,10 +108,15 @@
 			"default": {}
 		}
 	},
-	"usesContext": [ "gutena-forms/formID" ],
+	"usesContext": [
+		"gutena-forms/formID"
+	],
 	"supports": {
 		"__experimentalSettings": true,
-		"align": [ "wide", "full" ],
+		"align": [
+			"wide",
+			"full"
+		],
 		"color": {
 			"background": true,
 			"text": true
@@ -127,10 +138,14 @@
 			"padding": true,
 			"blockGap": {
 				"__experimentalDefault": "2em",
-				"sides": [ "horizontal", "vertical" ]
+				"sides": [
+					"horizontal",
+					"vertical"
+				]
 			}
 		},
-		"html": false
+		"html": false,
+		"inserter": false
 	},
 	"textdomain": "gutena-forms",
 	"editorScript": "file:./index.js",

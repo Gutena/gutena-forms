@@ -4,12 +4,17 @@
 	"name": "gutena/time-field-group",
 	"version": "1.0.1",
 	"title": "Time",
-	"parent": ["gutena/forms"],
+	"parent": [
+		"gutena/forms"
+	],
 	"category": "gutena-pro",
 	"icon": "clock",
 	"description": "Let users choose a specific time with a dedicated time picker field.",
 	"textdomain": "gutena-forms-pro",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
-	"style": "file:./style.css"
+	"style": "file:./style.css",
+	"supports": {
+		"inserter": false
+	}
 }

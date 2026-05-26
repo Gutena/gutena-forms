@@ -187,6 +187,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-dummy-fields.php';
 
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/legacy-blocks.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-field-block.php';
@@ -397,6 +398,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			Gutena_Forms_Form_Field_Block::get_instance()->register_block( 'backward compatibility' );
 			Gutena_Forms_Field_Label_Block::get_instance()->register_block( 'backward compatibility' );
 
+			register_block_type(
+				GUTENA_FORMS_DIR_PATH . 'build/blocks/field-group',
+				gutena_forms_legacy_block_registration_args()
+			);
+
 			// Form Confirmation Message Block.
 			register_block_type( __DIR__ . '/build/blocks/form-confirm-msg' );
 
@@ -477,6 +483,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 						'is_gutena_forms_post_type'     => $gutena_forms_post_type,
 						'forms_available'               => $forms_available,
 						'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
+						'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
 					),
 					$gf_message
 				)
@@ -866,6 +873,10 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 
 				if ( ! empty( $block['blockName'] ) && 'gutena/form-field' === $block['blockName'] && ! empty( $block['attrs']['nameAttr'] ) ) {
 					$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
+				}
+
+				if ( ! empty( $form_id ) && ! empty( $block['blockName'] ) ) {
+					$form_schema = apply_filters( 'gutena_forms_map_block_field_schema', $form_schema, $block, $form_id );
 				}
 
 				if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
