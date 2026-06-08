@@ -42,38 +42,73 @@ document.addEventListener("DOMContentLoaded", function(){
 		return parents;
 	};
 
+	const resolveRecaptchaSiteKey = ( grecaptcha ) => {
+		if ( isEmpty( grecaptcha ) ) {
+			return '';
+		}
+		const type = ! isEmpty( grecaptcha.type ) ? grecaptcha.type : 'v2';
+		if ( ! isEmpty( grecaptcha[ type + '_site_key' ] ) ) {
+			return grecaptcha[ type + '_site_key' ];
+		}
+		return ! isEmpty( grecaptcha.site_key ) ? grecaptcha.site_key : '';
+	};
+
+	const getFormRecaptchaConfig = ( gutena_forms ) => {
+		let type = gutena_forms.getAttribute( 'data-recaptcha-type' );
+		let siteKey = gutena_forms.getAttribute( 'data-recaptcha-site-key' );
+
+		if ( isEmpty( siteKey ) && 'undefined' !== typeof gutenaFormsBlock && ! isEmpty( gutenaFormsBlock.grecaptcha ) ) {
+			type = gutenaFormsBlock.grecaptcha.type;
+			siteKey = resolveRecaptchaSiteKey( gutenaFormsBlock.grecaptcha );
+		}
+
+		return {
+			type: type,
+			siteKey: siteKey,
+		};
+	};
+
 	//enqueue recaptcha if not enqueued 
 	const check_and_load_grecaptcha = () => {
-		if ( 'undefined' !== typeof gutenaFormsBlock && ! isEmpty( gutenaFormsBlock.grecaptcha_type ) && ! isEmpty( gutenaFormsBlock.grecaptcha_site_key ) ) {
-			//gutena form block
-			let gutena_form_0 = document.querySelector(
-				'.wp-block-gutena-forms'
+		if ( 'undefined' === typeof gutenaFormsBlock || isEmpty( gutenaFormsBlock.grecaptcha ) ) {
+			return;
+		}
+
+		const grecaptchaConfig = gutenaFormsBlock.grecaptcha;
+		const grecaptchaSiteKey = resolveRecaptchaSiteKey( grecaptchaConfig );
+		const grecaptchaType = ! isEmpty( grecaptchaConfig.type ) ? grecaptchaConfig.type : 'v2';
+
+		if ( isEmpty( grecaptchaSiteKey ) ) {
+			return;
+		}
+
+		//gutena form block
+		let gutena_form_0 = document.querySelector(
+			'.wp-block-gutena-forms'
+		);
+		if ( ! isEmpty( gutena_form_0 ) ) {
+			//check if recaptcha is enabled
+			let grecaptcha_enable  = gutena_form_0.querySelector(
+				'input[name="recaptcha_enable"]'
 			);
-			if ( ! isEmpty( gutena_form_0 ) ) {
-				//check if recaptcha is enabled
-				let grecaptcha_enable  = gutena_form_0.querySelector(
-					'input[name="recaptcha_enable"]'
-				);
-				if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
-					//check if grecaptcha is defined or not
-					if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
-						//check if grecaptcha script is loading or not
-						let grecaptcha_script_html = document.getElementById('google-recaptcha-js');
-						if ( isEmpty( grecaptcha_script_html ) ) {
-							//form script
-							let gutena_forms_script_html = document.getElementById('gutena-forms-script-js');
-							if ( ! isEmpty( gutena_forms_script_html ) ) {
-								grecaptcha_script_html = document.createElement('script');
-								grecaptcha_script_html.id = 'google-recaptcha-js';
-								grecaptcha_url = 'https://www.google.com/recaptcha/api.js';
-								if ( 'v3' === gutenaFormsBlock.grecaptcha_type ) {
-									grecaptcha_url += '?render='+gutenaFormsBlock.grecaptcha_site_key
-								}
-								grecaptcha_script_html.src = grecaptcha_url;
-								//insert before form script
-								document.head.insertBefore( grecaptcha_script_html, gutena_forms_script_html );
-								//console.log("recaptcha loaded");
+			if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
+				//check if grecaptcha is defined or not
+				if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
+					//check if grecaptcha script is loading or not
+					let grecaptcha_script_html = document.getElementById('google-recaptcha-js');
+					if ( isEmpty( grecaptcha_script_html ) ) {
+						//form script
+						let gutena_forms_script_html = document.getElementById('gutena-forms-script-js');
+						if ( ! isEmpty( gutena_forms_script_html ) ) {
+							grecaptcha_script_html = document.createElement('script');
+							grecaptcha_script_html.id = 'google-recaptcha-js';
+							let grecaptcha_url = 'https://www.google.com/recaptcha/api.js';
+							if ( 'v3' === grecaptchaType ) {
+								grecaptcha_url += '?render=' + grecaptchaSiteKey;
 							}
+							grecaptcha_script_html.src = grecaptcha_url;
+							//insert before form script
+							document.head.insertBefore( grecaptcha_script_html, gutena_forms_script_html );
 						}
 					}
 				}
@@ -173,7 +208,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 					//Google recaptcha
-					if ( ! isEmpty( gutenaFormsBlock.grecaptcha_type ) && 'v3' === gutenaFormsBlock.grecaptcha_type && ! isEmpty( gutenaFormsBlock.grecaptcha_site_key ) ) {
+					const formRecaptcha = getFormRecaptchaConfig( gutena_forms );
+					if ( ! isEmpty( formRecaptcha.type ) && 'v3' === formRecaptcha.type && ! isEmpty( formRecaptcha.siteKey ) ) {
 						let grecaptcha_enable  = gutena_forms.querySelector(
 							'input[name="recaptcha_enable"]'
 						);
@@ -183,12 +219,8 @@ document.addEventListener("DOMContentLoaded", function(){
 								save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
 							} else {
 								grecaptcha.ready(function() {
-									grecaptcha.execute( gutenaFormsBlock.grecaptcha_site_key, {action: 'submit'}).then( function( token ) {
-										/* for v3 - append g-recaptcha-response input 
-										 for v2 - already present */
+									grecaptcha.execute( formRecaptcha.siteKey, {action: 'submit'}).then( function( token ) {
 										form_data.append('g-recaptcha-response', token);
-	
-										// Add your logic to submit to your backend server here.
 										save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
 									});
 								});
@@ -320,6 +352,31 @@ document.addEventListener("DOMContentLoaded", function(){
 			console.log( 'No input fields found' );
 			return false;
 		}
+
+		//get gutena_forms
+		let gutena_forms = getParents(
+			form_field,
+			'.wp-block-gutena-forms'
+		);
+
+		if ( isEmpty( gutena_forms ) ) {
+			console.log( 'Form not defined' );
+			return false;
+		}
+		gutena_forms = gutena_forms[0];
+
+		//Get custom validation messages for this form
+		let customMessages = gutena_forms.getAttribute('data-validation-messages');
+		if ( ! isEmpty( customMessages ) ) {
+			try {
+				customMessages = JSON.parse( customMessages );
+			} catch ( error ) {
+				console.log( 'Error parsing custom validation messages', error );
+				customMessages = {};
+			}
+		} else {
+			customMessages = {};
+		}
 		
 		let input_value = '';
 		let is_required = hasClass( form_field, 'required-field' );
@@ -380,17 +437,17 @@ document.addEventListener("DOMContentLoaded", function(){
 			//Add class in field_group element to display error contained in child element
 			field_group.classList.add( 'display-error' );
 
-			//error message
-			let error_msg = gutenaFormsBlock.required_msg;
+			//error message hierarchy: Block-specific > Global Settings
+			let error_msg = ! isEmpty( customMessages.required_msg ) ? customMessages.required_msg : gutenaFormsBlock.required_msg;
 
 			if ( hasClass( form_field, 'select-field' ) ) {
-				error_msg = gutenaFormsBlock.required_msg_select;
+				error_msg = ! isEmpty( customMessages.required_msg_select ) ? customMessages.required_msg_select : gutenaFormsBlock.required_msg_select;
 			}
 
 			if ( hasClass( form_field, 'optin-field' ) ) {
-				error_msg = gutenaFormsBlock.required_msg_optin;
+				error_msg = ! isEmpty( customMessages.required_msg_optin ) ? customMessages.required_msg_optin : gutenaFormsBlock.required_msg_optin;
 			} else if ( isCheckboxOrRadio ) {
-				error_msg = gutenaFormsBlock.required_msg_check;
+				error_msg = ! isEmpty( customMessages.required_msg_check ) ? customMessages.required_msg_check : gutenaFormsBlock.required_msg_check;
 			}
 
 			errorHTML.innerHTML = error_msg;
@@ -407,8 +464,8 @@ document.addEventListener("DOMContentLoaded", function(){
 			//Add class in field_group element to display error contained in child element
 			field_group.classList.add( 'display-error' );
 
-			//error message
-			errorHTML.innerHTML = gutenaFormsBlock.invalid_email_msg;
+			//error message hierarchy: Block-specific > Global Settings
+			errorHTML.innerHTML = ! isEmpty( customMessages.invalid_email_msg ) ? customMessages.invalid_email_msg : gutenaFormsBlock.invalid_email_msg;
 
 			return false;
 		}
@@ -422,8 +479,9 @@ document.addEventListener("DOMContentLoaded", function(){
 			if ( ! isEmpty( minValue ) && input_value < minValue ) {
 				//Add class in field_group element to display error contained in child element
 				field_group.classList.add( 'display-error' );
-				//error message
-				errorHTML.innerHTML = gutenaFormsBlock.min_value_msg+' '+minValue;
+				//error message hierarchy: Block-specific > Global Settings
+				let min_msg = ! isEmpty( customMessages.min_value_msg ) ? customMessages.min_value_msg : gutenaFormsBlock.min_value_msg;
+				errorHTML.innerHTML = min_msg + ' ' + minValue;
 				return false;
 			}
 
@@ -431,8 +489,9 @@ document.addEventListener("DOMContentLoaded", function(){
 			if ( ! isEmpty( maxValue ) && input_value > maxValue ) {
 				//Add class in field_group element to display error contained in child element
 				field_group.classList.add( 'display-error' );
-				//error message
-				errorHTML.innerHTML = gutenaFormsBlock.max_value_msg+' '+maxValue;
+				//error message hierarchy: Block-specific > Global Settings
+				let max_msg = ! isEmpty( customMessages.max_value_msg ) ? customMessages.max_value_msg : gutenaFormsBlock.max_value_msg;
+				errorHTML.innerHTML = max_msg + ' ' + maxValue;
 				return false;
 			}
 		}
