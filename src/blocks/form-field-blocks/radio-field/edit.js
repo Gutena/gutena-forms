@@ -107,6 +107,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					/>
 					<ToggleControl
 						label={ __( 'Show inline', 'gutena-forms' ) }
+						className="gf-mt-1"
 						checked={ !! optionsInline }
 						onChange={ ( v ) => setAttributes( { optionsInline: v } ) }
 					/>

@@ -1428,11 +1428,13 @@ export default function Edit( props ) {
 					encType="multipart/form-data"
 					{ ...blockProps }
 				>
-					<input type="hidden" name="formid" value={ formID } />
-					<InnerBlocks
-						template={ TEMPLATE }
-						allowedBlocks={ ALLOWED_BLOCKS }
-					/>
+					<div style={ { padding: '0 15px' } }>
+						<input type="hidden" name="formid" value={ formID } />
+						<InnerBlocks
+							template={ TEMPLATE }
+							allowedBlocks={ ALLOWED_BLOCKS }
+						/>
+					</div>
 				</form>
 			) : (
 				<Placeholder { ...props } />
