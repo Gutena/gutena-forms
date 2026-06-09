@@ -34,7 +34,7 @@ export default function Save( { attributes } ) {
 					rows={ textAreaRows && textAreaRows > 0 ? textAreaRows : 5 }
 					maxLength={ maxlength && maxlength > 0 ? maxlength : undefined }
 					required={ isRequired ? 'required' : undefined }
-					defaultValue={ defaultValue }
+					value={ defaultValue }
 				/>
 			</div>
 			{ ! gfIsEmpty( description ) && <p className="gutena-forms-textarea-field-description">{ description }</p> }

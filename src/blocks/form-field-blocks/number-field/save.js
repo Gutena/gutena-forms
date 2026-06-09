@@ -43,7 +43,7 @@ export default function Save( { attributes } ) {
 					type="number"
 					className={ `gutena-forms-field number-field ${ isRequired ? 'required-field' : '' } ${ autocomplete ? 'autocomplete' : '' }` }
 					placeholder={ placeholder }
-					defaultValue={ defaultValue }
+					value={ defaultValue }
 					min={ min }
 					max={ max }
 					step={ step }

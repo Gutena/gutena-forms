@@ -32,7 +32,7 @@ export default function Save( { attributes } ) {
 					type="text"
 					className={ `gutena-forms-field text-field ${ isRequired ? 'required-field' : '' } ${ autocomplete ? 'autocomplete' : '' }` }
 					placeholder={ placeholder }
-					defaultValue={ defaultValue }
+					value={ defaultValue }
 					maxLength={ maxlength && maxlength > 0 ? maxlength : undefined }
 					required={ isRequired ? 'required' : undefined }
 				/>

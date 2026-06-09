@@ -56,7 +56,7 @@ export default function Save( { attributes } ) {
 						name={ nameAttr }
 						type="range"
 						className={ fieldClass }
-						defaultValue={ rangeValue }
+						value={ rangeValue }
 						min={ min }
 						max={ max }
 						step={ step }
