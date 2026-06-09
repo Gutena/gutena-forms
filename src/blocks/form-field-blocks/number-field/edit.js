@@ -86,7 +86,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						onChange={ ( nextNameAttr ) => setAttributes( { nameAttr: gfSanitizeName( nextNameAttr ) } ) }
 						help={ __( 'Used as input name in form submission.', 'gutena-forms' ) }
 					/>
-					<PanelRow>
+					<PanelRow className="gf-child-mb-0 gf-mb-24">
 						<TextControl
 							label={ __( 'Minimum', 'gutena-forms' ) }
 							value={ minMaxStep?.min }

@@ -118,7 +118,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						help={ __( 'Used as input name in form submission.', 'gutena-forms' ) }
 					/>
 					<h2 className="block-editor-block-card__title gf-mt-1">{ __( 'Value', 'gutena-forms' ) }</h2>
-					<PanelRow>
+					<PanelRow className="gf-child-mb-0 gf-mb-24">
 						<TextControl
 							label={ __( 'Minimum', 'gutena-forms' ) }
 							value={ minMaxStep?.min }
@@ -159,7 +159,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							}
 						/>
 					</PanelRow>
-					<PanelRow>
+					<PanelRow className="gf-child-mb-0 gf-mb-24">
 						<TextControl
 							label={ __( 'Prefix', 'gutena-forms' ) }
 							value={ preFix ?? '' }
