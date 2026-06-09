@@ -238,7 +238,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	};
 
 	const save_gutena_forms = ( gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml ) => { 
-		//console.log( "gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml");
 		fetch( gutenaFormsBlock.ajax_url, {
 			method: 'POST',
 			credentials: 'same-origin', // <-- make sure to include credentials

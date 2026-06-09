@@ -63,6 +63,32 @@ if ( ! class_exists( 'Gutena_Forms_Fields' ) ) :
 			);
 			
 			add_filter( 'gutena_forms__register_form_fields', array( $this, 'register_fields' ) );
+			add_filter( 'gutena_forms_map_block_field_schema', array( $this, 'map_block_field_schema' ), 10, 3 );
+		}
+
+		/**
+		 * Map standalone field blocks into the form schema on save.
+		 *
+		 * @param array  $form_schema Form schema being built.
+		 * @param array  $block       Parsed block.
+		 * @param string $form_id     Current form ID.
+		 * @return array
+		 */
+		public function map_block_field_schema( $form_schema, $block, $form_id ) {
+			if ( empty( $form_id ) || empty( $block['blockName'] ) || empty( $block['attrs']['nameAttr'] ) ) {
+				return $form_schema;
+			}
+
+			$standalone_block_names = array();
+			foreach ( $this->fields as $field ) {
+				$standalone_block_names[] = 'gutena/' . $field['name'] . '-field';
+			}
+
+			if ( in_array( $block['blockName'], $standalone_block_names, true ) ) {
+				$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
+			}
+
+			return $form_schema;
 		}
 		
 		public function register_fields( $fields ) {
