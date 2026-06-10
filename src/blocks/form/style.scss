@@ -256,7 +256,7 @@
 	}
 
 	/* Field background color*/
-	.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-optin-field) {
+	.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-rating-field):not(.gutena-forms-optin-field) {
 		background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
 	}
 
@@ -360,7 +360,7 @@
 		Field block border : start
 	**********************************/
 
-	&:not(.input-box-border-bottom-only) .wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-optin-field) {
+	&:not(.input-box-border-bottom-only) .wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-rating-field):not(.gutena-forms-optin-field) {
 		border-style: solid;
 		border-width: var(--wp--gutena-forms--input-border-width, 1px );
 		border-color: var(--wp--gutena-forms--input-border-color, #D7DBE7);
@@ -374,7 +374,7 @@
 
 	&.input-box-border-bottom-only
 	{
-		.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-optin-field) {
+		.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-rating-field):not(.gutena-forms-optin-field) {
 			border-bottom: var(--wp--gutena-forms--input-border-width, 1px ) solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
 
 			&:focus-within {
@@ -431,7 +431,7 @@
 		}
 
 		&.display-error {
-			.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-optin-field) {
+			.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-rating-field):not(.gutena-forms-optin-field) {
 				border-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
 			}
 		}
