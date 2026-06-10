@@ -536,9 +536,18 @@ document.addEventListener("DOMContentLoaded", function(){
 		if ( ! isEmpty( input_value ) && hasClass( form_field, 'number-field' ) ) {
 			let minValue = form_field.getAttribute('min');
 			let maxValue = form_field.getAttribute('max');
+			const numericValue = Number( input_value );
+			const numericMin = Number( minValue );
+			const numericMax = Number( maxValue );
+			const hasNumericValue = ! Number.isNaN( numericValue );
 
 			//if input value is less than minimum
-			if ( ! isEmpty( minValue ) && input_value < minValue ) {
+			if (
+				! isEmpty( minValue ) &&
+				hasNumericValue &&
+				! Number.isNaN( numericMin ) &&
+				numericValue < numericMin
+			) {
 				//Add class in field_group element to display error contained in child element
 				field_group.classList.add( 'display-error' );
 				//error message hierarchy: Block-specific > Global Settings
@@ -548,7 +557,12 @@ document.addEventListener("DOMContentLoaded", function(){
 			}
 
 			//if input value is greater than maximum
-			if ( ! isEmpty( maxValue ) && input_value > maxValue ) {
+			if (
+				! isEmpty( maxValue ) &&
+				hasNumericValue &&
+				! Number.isNaN( numericMax ) &&
+				numericValue > numericMax
+			) {
 				//Add class in field_group element to display error contained in child element
 				field_group.classList.add( 'display-error' );
 				//error message hierarchy: Block-specific > Global Settings
