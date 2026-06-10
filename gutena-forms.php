@@ -425,6 +425,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 				'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
 				'required_msg_check'  => __( 'Please check an option', 'gutena-forms' ),
 				'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
+				'invalid_url_msg'     => __( 'Please enter a valid URL', 'gutena-forms' ),
 				'min_value_msg'       => __( 'Input value should be greater than', 'gutena-forms' ),
 				'max_value_msg'       => __( 'Input value should be less than', 'gutena-forms' ),
 			);
@@ -712,6 +713,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 							'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
 							'required_msg_check'  => __( 'Please check an option', 'gutena-forms' ),
 							'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
+							'invalid_url_msg'     => __( 'Please enter a valid URL', 'gutena-forms' ),
 							'min_value_msg'       => __( 'Input value should be greater than', 'gutena-forms' ),
 							'max_value_msg'       => __( 'Input value should be less than', 'gutena-forms' ),
 						);

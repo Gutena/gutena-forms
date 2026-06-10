@@ -32,6 +32,45 @@ document.addEventListener("DOMContentLoaded", function(){
 		);
 	};
 
+	/**
+	 * Validates URL / domain input.
+	 * Allows: http(s)://localhost, http(s)://domain.tld, domain.tld
+	 * Rejects: bare words without TLD (e.g. "google"), spaces, invalid hosts.
+	 */
+	const validateUrl = ( value ) => {
+		if ( isEmpty( value ) ) {
+			return true;
+		}
+
+		const trimmed = String( value ).trim();
+		if ( /\s/.test( trimmed ) ) {
+			return false;
+		}
+
+		let hostAndRest = trimmed;
+		const protocolMatch = trimmed.match( /^https?:\/\/(.+)$/i );
+		if ( protocolMatch ) {
+			hostAndRest = protocolMatch[1];
+		} else if ( trimmed.includes( '://' ) ) {
+			return false;
+		}
+
+		const host = hostAndRest.split( /[/?#]/ )[0];
+		const hostWithoutPort = host.split( ':' )[0];
+
+		if ( 'localhost' === hostWithoutPort.toLowerCase() ) {
+			return true;
+		}
+
+		if ( ! hostWithoutPort.includes( '.' ) ) {
+			return false;
+		}
+
+		return /^([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/.test(
+			hostWithoutPort
+		);
+	};
+
 	//Get parent HTML elemnet
 	const getParents = ( el, query ) => {
 		let parents = [];
@@ -346,7 +385,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	//Form field validation
 	const field_validation = ( form_field ) => {
-		
 		if ( isEmpty( form_field ) ) {
 			console.log( 'No input fields found' );
 			return false;
@@ -465,6 +503,26 @@ document.addEventListener("DOMContentLoaded", function(){
 
 			//error message hierarchy: Block-specific > Global Settings
 			errorHTML.innerHTML = ! isEmpty( customMessages.invalid_email_msg ) ? customMessages.invalid_email_msg : gutenaFormsBlock.invalid_email_msg;
+
+			return false;
+		}
+
+		//URL Validation
+		if (
+			! isEmpty( input_value ) &&
+			hasClass( form_field, 'url-field' ) &&
+			! validateUrl( input_value )
+		) {
+			field_group.classList.add( 'display-error' );
+
+			const invalidUrlMsg =
+				! isEmpty( customMessages.invalid_url_msg )
+					? customMessages.invalid_url_msg
+					: ( ! isEmpty( gutenaFormsBlock.invalid_url_msg )
+						? gutenaFormsBlock.invalid_url_msg
+						: 'Please enter a valid URL' );
+
+			errorHTML.innerHTML = invalidUrlMsg;
 
 			return false;
 		}
