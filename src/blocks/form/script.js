@@ -448,6 +448,11 @@ document.addEventListener("DOMContentLoaded", function(){
 					break;
 				}
 			}
+		} else if ( hasClass( form_field, 'rating-field' ) ) {
+			const hiddenInput = 'INPUT' === form_field.tagName && 'hidden' === form_field.type
+				? form_field
+				: form_field.querySelector( 'input[type="hidden"]' );
+			input_value = ! isEmpty( hiddenInput ) ? hiddenInput.value : form_field.value;
 		} else {
 			input_value = form_field.value;
 		}
