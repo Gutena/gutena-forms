@@ -279,6 +279,11 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 					)
 				);
 			}
+
+			$this->schema['form_fields'] = Gutena_Forms_Helper::resolve_form_fields_schema(
+				$this->id,
+				$this->schema['form_fields']
+			);
 		}
 
 		/**

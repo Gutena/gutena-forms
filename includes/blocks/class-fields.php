@@ -85,7 +85,10 @@ if ( ! class_exists( 'Gutena_Forms_Fields' ) ) :
 			}
 
 			if ( in_array( $block['blockName'], $standalone_block_names, true ) ) {
-				$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
+				$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = Gutena_Forms_Helper::merge_block_default_attributes(
+					$block['blockName'],
+					$block['attrs']
+				);
 			}
 
 			return $form_schema;

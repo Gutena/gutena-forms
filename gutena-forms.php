@@ -874,7 +874,10 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 				}
 
 				if ( ! empty( $block['blockName'] ) && 'gutena/form-field' === $block['blockName'] && ! empty( $block['attrs']['nameAttr'] ) ) {
-					$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
+					$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = Gutena_Forms_Helper::merge_block_default_attributes(
+						$block['blockName'],
+						$block['attrs']
+					);
 				}
 
 				if ( ! empty( $form_id ) && ! empty( $block['blockName'] ) ) {
