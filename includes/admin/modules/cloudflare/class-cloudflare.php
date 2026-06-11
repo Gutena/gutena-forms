@@ -159,28 +159,6 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 		 * @since 1.8.0
 		 */
 		private function run() {
-			add_action( 'gutena_forms__saving_block', array( $this, 'save_cloudflare' ), 10, 3 );
-		}
-
-		/**
-		 * Saving cloudflare settings.
-		 *
-		 * @since 1.8.0
-		 * @param array   $attributes Block attributes.
-		 * @param array   $block Current block.
-		 * @param WP_Post $post Post object.
-		 */
-		public function save_cloudflare( $attributes, $block, $post ) {
-			if ( ! Gutena_Forms_Settings_Migrator::is_single_form_site() ) {
-				return;
-			}
-
-			if ( empty( $attributes['cloudflareTurnstile'] ) || ! is_array( $attributes['cloudflareTurnstile'] ) ) {
-				return;
-			}
-
-			$this->settings = Gutena_Forms_Settings_Migrator::sanitize_settings_for_option( $attributes['cloudflareTurnstile'] );
-			update_option( 'gutena_forms__cloudflare', $this->settings );
 		}
 	}
 

@@ -220,29 +220,6 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 		 * Running whole module
 		 */
 		public function run() {
-			add_action( 'gutena_forms__saving_block', array( $this, 'save_recaptcha_settings' ), 10, 3 );
-		}
-
-		/**
-		 * Saving recaptcha settings
-		 *
-		 * @since 1.8.0
-		 * @param array   $attributes Block attributes.
-		 * @param array   $block All blocks.
-		 * @param WP_Post $post Post object.
-		 */
-		public function save_recaptcha_settings( $attributes, $block, $post ) {
-			if ( ! Gutena_Forms_Settings_Migrator::is_single_form_site() ) {
-				return;
-			}
-
-			$recaptcha = isset( $attributes['recaptcha'] ) && is_array( $attributes['recaptcha'] ) ? $attributes['recaptcha'] : array();
-			if ( empty( $recaptcha ) ) {
-				return;
-			}
-
-			$this->settings = Gutena_Forms_Settings_Migrator::sanitize_settings_for_option( $recaptcha );
-			update_option( 'gutena_forms__recaptcha', $this->settings );
 		}
 	}
 

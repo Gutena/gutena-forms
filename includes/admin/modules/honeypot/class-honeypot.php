@@ -144,30 +144,6 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 		 * @since 1.8.0
 		 */
 		private function run() {
-			add_action( 'gutena_forms__saving_block', array( $this, 'save_honeypot' ), 10, 3 );
-		}
-
-		/**
-		 * Saving the default settings.
-		 *
-		 * @since 1.8.0
-		 * @param array   $attributes The attiributes of the block being saved, including the honeypot settings.
-		 * @param array   $blocks All blocks of the post.
-		 * @param WP_Post $post Current post object.
-		 */
-		public function save_honeypot( $attributes, $blocks, $post ) {
-			$honeypot = isset( $attributes['honeypot'] ) && is_array( $attributes['honeypot'] ) ? $attributes['honeypot'] : array();
-
-			if ( ! Gutena_Forms_Settings_Migrator::is_single_form_site() ) {
-				return;
-			}
-
-			if ( empty( $honeypot ) ) {
-				return;
-			}
-
-			$this->settings = Gutena_Forms_Settings_Migrator::sanitize_settings_for_option( $honeypot );
-			update_option( 'gutena_forms__honeypot', $this->settings );
 		}
 	}
 

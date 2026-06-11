@@ -51,6 +51,20 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 		 */
 		private function __construct() {
 			add_action( 'admin_init', array( $this, 'fetch_all_gutena_forms' ) );
+			add_action( 'gutena_forms__saving_block', array( __CLASS__, 'on_saving_form_block' ), 5, 3 );
+		}
+
+		/**
+		 * Seed or sync globals when a gutena/forms block is saved.
+		 *
+		 * @since 1.9.0
+		 * @param array   $attributes Block attributes.
+		 * @param array   $block      Block data.
+		 * @param WP_Post $post       Post object.
+		 */
+		public static function on_saving_form_block( $attributes, $block, $post ) {
+			unset( $block, $post );
+			self::seed_globals_from_form_block( $attributes );
 		}
 
 		/**
@@ -127,7 +141,10 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 		 * @return int
 		 */
 		public static function get_form_count() {
-			return count( self::get_form_ids_list() );
+			$from_option = count( self::get_form_ids_list() );
+			$from_cpt    = count( self::collect_form_ids_from_cpts() );
+
+			return max( $from_option, $from_cpt );
 		}
 
 		/**
@@ -533,49 +550,290 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 		}
 
 		/**
+		 * Whether a global module option is empty or has no meaningful configuration.
+		 *
+		 * @since 1.9.0
+		 * @param string $module_key Module attr key (recaptcha, cloudflareTurnstile, honeypot, messages).
+		 * @return bool
+		 */
+		public static function is_global_module_empty( $module_key ) {
+			$option_name = self::global_option_name_for_module( $module_key );
+			if ( '' === $option_name ) {
+				return true;
+			}
+
+			$settings = get_option( $option_name, array() );
+
+			return ! self::is_module_settings_meaningful( $module_key, $settings );
+		}
+
+		/**
+		 * Whether a global integration slice is empty or has no meaningful configuration.
+		 *
+		 * @since 1.9.0
+		 * @param string $integration_id Integration key (mailchimp, brevo, activecampaign).
+		 * @return bool
+		 */
+		public static function is_integration_global_empty( $integration_id ) {
+			$integration_id = sanitize_key( $integration_id );
+			if ( '' === $integration_id ) {
+				return true;
+			}
+
+			$all_settings = get_option( 'gutena_forms__integration_settings', array() );
+			if ( ! is_array( $all_settings ) || empty( $all_settings[ $integration_id ] ) ) {
+				return true;
+			}
+
+			return ! self::is_integration_attrs_meaningful( $integration_id, $all_settings[ $integration_id ] );
+		}
+
+		/**
+		 * Whether form block attrs for a module contain meaningful configuration worth seeding globals.
+		 *
+		 * @since 1.9.0
+		 * @param string $module_key Module attr key.
+		 * @param array  $slice      Module settings from block attrs.
+		 * @return bool
+		 */
+		public static function is_module_attrs_meaningful( $module_key, $slice ) {
+			return self::is_module_settings_meaningful( $module_key, $slice );
+		}
+
+		/**
+		 * Whether stored module settings contain meaningful configuration.
+		 *
+		 * @since 1.9.0
+		 * @param string $module_key Module attr key.
+		 * @param array  $settings   Settings array.
+		 * @return bool
+		 */
+		public static function is_module_settings_meaningful( $module_key, $settings ) {
+			$settings = self::sanitize_settings_for_option( is_array( $settings ) ? $settings : array() );
+
+			switch ( $module_key ) {
+				case 'recaptcha':
+					if ( ! empty( $settings['enable'] ) ) {
+						return true;
+					}
+					if ( class_exists( 'Gutena_Forms_ReCAPTCHA' ) ) {
+						$resolved = Gutena_Forms_ReCAPTCHA::resolve_settings( $settings );
+						return ! empty( $resolved['site_key'] ) || ! empty( $resolved['secret_key'] );
+					}
+					return ! empty( $settings['site_key'] ) || ! empty( $settings['secret_key'] );
+
+				case 'cloudflareTurnstile':
+					if ( ! empty( $settings['enable'] ) ) {
+						return true;
+					}
+					return ! empty( $settings['site_key'] ) || ! empty( $settings['secret_key'] );
+
+				case 'honeypot':
+					return ! empty( $settings['enable'] ) || ! empty( $settings['timeCheckValue'] );
+
+				case 'messages':
+					$message_keys = array(
+						'required_msg',
+						'required_msg_optin',
+						'required_msg_select',
+						'required_msg_check',
+						'invalid_email_msg',
+						'invalid_url_msg',
+						'min_value_msg',
+						'max_value_msg',
+					);
+					foreach ( $message_keys as $message_key ) {
+						if ( ! empty( $settings[ $message_key ] ) ) {
+							return true;
+						}
+					}
+					return false;
+
+				default:
+					return ! empty( $settings );
+			}
+		}
+
+		/**
+		 * Whether integration block attrs contain meaningful configuration.
+		 *
+		 * @since 1.9.0
+		 * @param string $integration_id Integration key.
+		 * @param array  $slice          Integration settings from block attrs.
+		 * @return bool
+		 */
+		public static function is_integration_attrs_meaningful( $integration_id, $slice ) {
+			$integration_id = sanitize_key( $integration_id );
+			$slice          = self::sanitize_settings_for_option( is_array( $slice ) ? $slice : array() );
+
+			if ( ! empty( $slice['enable'] ) ) {
+				return true;
+			}
+
+			switch ( $integration_id ) {
+				case 'mailchimp':
+				case 'brevo':
+					return ! empty( $slice['api_key'] ) || ! empty( $slice['list_id'] );
+				case 'activecampaign':
+					return ! empty( $slice['api_key'] ) || ! empty( $slice['api_url'] );
+				default:
+					return ! empty( $slice );
+			}
+		}
+
+		/**
+		 * Whether form block attrs may update the global option for a module.
+		 *
+		 * @since 1.9.0
+		 * @param string $module_key    Module attr key.
+		 * @param array  $module_settings Module settings from block attrs.
+		 * @param bool   $only_if_empty Multi-form seed mode when true.
+		 * @return bool
+		 */
+		public static function should_form_push_module_to_global( $module_key, $module_settings, $only_if_empty ) {
+			if ( ! self::is_module_attrs_meaningful( $module_key, $module_settings ) ) {
+				return false;
+			}
+
+			if ( self::is_global_module_empty( $module_key ) ) {
+				return true;
+			}
+
+			$uses_global_defaults = ! isset( $module_settings['defaultSettings'] )
+				|| rest_sanitize_boolean( $module_settings['defaultSettings'] );
+
+			if ( ! $uses_global_defaults ) {
+				return false;
+			}
+
+			return ! $only_if_empty;
+		}
+
+		/**
+		 * Whether form block attrs may update the global option for an integration.
+		 *
+		 * @since 1.9.0
+		 * @param string $integration_id Integration key.
+		 * @param array  $slice          Integration settings from block attrs.
+		 * @param bool   $only_if_empty Multi-form seed mode when true.
+		 * @return bool
+		 */
+		public static function should_form_push_integration_to_global( $integration_id, $slice, $only_if_empty ) {
+			if ( ! self::is_integration_attrs_meaningful( $integration_id, $slice ) ) {
+				return false;
+			}
+
+			if ( self::is_integration_global_empty( $integration_id ) ) {
+				return true;
+			}
+
+			$uses_global_defaults = ! isset( $slice['defaultSettings'] )
+				|| rest_sanitize_boolean( $slice['defaultSettings'] );
+
+			if ( ! $uses_global_defaults ) {
+				return false;
+			}
+
+			return ! $only_if_empty;
+		}
+
+		/**
+		 * Seed globals from form block attrs and sync inheriting forms.
+		 *
+		 * @since 1.9.0
+		 * @param array $attributes Form block attributes.
+		 */
+		public static function seed_globals_from_form_block( $attributes ) {
+			$attributes    = is_array( $attributes ) ? $attributes : array();
+			$only_if_empty = ! self::is_single_form_site();
+
+			$previous_modules      = self::get_pre_upgrade_global_modules_snapshot();
+			$previous_integrations = get_option( 'gutena_forms__integration_settings', array() );
+			if ( ! is_array( $previous_integrations ) ) {
+				$previous_integrations = array();
+			}
+
+			$seeded = self::apply_attrs_to_globals( $attributes, $only_if_empty );
+
+			foreach ( $seeded['modules'] as $module_key ) {
+				$option_name = self::global_option_name_for_module( $module_key );
+				if ( '' === $option_name ) {
+					continue;
+				}
+				$next = get_option( $option_name, array() );
+				$prev = isset( $previous_modules[ $module_key ] ) ? $previous_modules[ $module_key ] : array();
+				self::sync_global_module_to_forms( $module_key, $prev, $next );
+			}
+
+			foreach ( $seeded['integrations'] as $integration_id ) {
+				$all_settings = get_option( 'gutena_forms__integration_settings', array() );
+				$next         = ( is_array( $all_settings ) && isset( $all_settings[ $integration_id ] ) )
+					? $all_settings[ $integration_id ]
+					: array();
+				$prev         = isset( $previous_integrations[ $integration_id ] )
+					? $previous_integrations[ $integration_id ]
+					: array();
+				self::sync_global_integration_to_forms(
+					$integration_id,
+					self::sanitize_settings_for_option( $prev ),
+					self::sanitize_settings_for_option( $next )
+				);
+			}
+		}
+
+		/**
 		 * Write global options from form attrs (only fills empty options when $only_if_empty).
 		 *
 		 * @since 1.9.0
 		 * @param array $attributes Form block attrs.
 		 * @param bool  $only_if_empty Only update when target option is empty.
+		 * @return array{modules: string[], integrations: string[]} Keys of modules/integrations written.
 		 */
 		public static function apply_attrs_to_globals( $attributes, $only_if_empty = false ) {
 			$attributes = is_array( $attributes ) ? $attributes : array();
+			$seeded     = array(
+				'modules'      => array(),
+				'integrations' => array(),
+			);
 
 			if ( ! empty( $attributes['recaptcha'] ) && is_array( $attributes['recaptcha'] ) ) {
-				if ( ! $only_if_empty || empty( get_option( 'gutena_forms__recaptcha', array() ) ) ) {
+				if ( self::should_form_push_module_to_global( 'recaptcha', $attributes['recaptcha'], $only_if_empty ) ) {
 					$recaptcha = self::sanitize_settings_for_option( $attributes['recaptcha'] );
 					if ( class_exists( 'Gutena_Forms_ReCAPTCHA' ) ) {
 						$recaptcha = Gutena_Forms_ReCAPTCHA::resolve_settings( $recaptcha );
 					}
 					update_option( 'gutena_forms__recaptcha', $recaptcha );
+					$seeded['modules'][] = 'recaptcha';
 				}
 			}
 
 			if ( ! empty( $attributes['cloudflareTurnstile'] ) && is_array( $attributes['cloudflareTurnstile'] ) ) {
-				if ( ! $only_if_empty || empty( get_option( 'gutena_forms__cloudflare', array() ) ) ) {
+				if ( self::should_form_push_module_to_global( 'cloudflareTurnstile', $attributes['cloudflareTurnstile'], $only_if_empty ) ) {
 					update_option(
 						'gutena_forms__cloudflare',
 						self::sanitize_settings_for_option( $attributes['cloudflareTurnstile'] )
 					);
+					$seeded['modules'][] = 'cloudflareTurnstile';
 				}
 			}
 
 			if ( ! empty( $attributes['honeypot'] ) && is_array( $attributes['honeypot'] ) ) {
-				if ( ! $only_if_empty || empty( get_option( 'gutena_forms__honeypot', array() ) ) ) {
+				if ( self::should_form_push_module_to_global( 'honeypot', $attributes['honeypot'], $only_if_empty ) ) {
 					update_option(
 						'gutena_forms__honeypot',
 						self::sanitize_settings_for_option( $attributes['honeypot'] )
 					);
+					$seeded['modules'][] = 'honeypot';
 				}
 			}
 
 			if ( ! empty( $attributes['messages'] ) && is_array( $attributes['messages'] ) ) {
-				if ( ! $only_if_empty || empty( get_option( 'gutena_forms__form_validation_messages', array() ) ) ) {
+				if ( self::should_form_push_module_to_global( 'messages', $attributes['messages'], $only_if_empty ) ) {
 					update_option(
 						'gutena_forms__form_validation_messages',
 						self::sanitize_settings_for_option( $attributes['messages'] )
 					);
+					$seeded['modules'][] = 'messages';
 				}
 			}
 
@@ -595,18 +853,20 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 					) {
 						continue;
 					}
-					if ( $only_if_empty && ! empty( $integration_option[ $integration_id ] ) ) {
+					$slice = $attributes['settings']['integration'][ $integration_id ];
+					if ( ! self::should_form_push_integration_to_global( $integration_id, $slice, $only_if_empty ) ) {
 						continue;
 					}
-					$integration_option[ $integration_id ] = self::sanitize_settings_for_option(
-						$attributes['settings']['integration'][ $integration_id ]
-					);
+					$integration_option[ $integration_id ] = self::sanitize_settings_for_option( $slice );
+					$seeded['integrations'][]              = $integration_id;
 					$changed                               = true;
 				}
 				if ( $changed ) {
 					update_option( 'gutena_forms__integration_settings', $integration_option );
 				}
 			}
+
+			return $seeded;
 		}
 
 		/**

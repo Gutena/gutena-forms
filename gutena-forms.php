@@ -753,7 +753,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 							$current_form_id = $single_form_schema['form_attrs']['formID'];
 							// Only inherited/default messages may update the global option; local overrides stay on this form only.
 							// If no forms exist yet, or only this form exists, it is the Primary Form.
-							if ( $is_default_messages && ( empty( $all_form_ids ) || ( count( $all_form_ids ) === 1 && in_array( $current_form_id, $all_form_ids, true ) ) ) ) {
+							if (
+								$is_default_messages
+								&& (
+									empty( $all_form_ids )
+									|| ( count( $all_form_ids ) === 1 && in_array( $current_form_id, $all_form_ids, true ) )
+									|| (
+										class_exists( 'Gutena_Forms_Settings_Migrator' )
+										&& Gutena_Forms_Settings_Migrator::is_global_module_empty( 'messages' )
+									)
+								)
+							) {
 								$messages_for_global = json_decode( wp_json_encode( $single_form_schema['form_attrs']['messages'] ), true );
 								if ( ! is_array( $messages_for_global ) ) {
 									$messages_for_global = is_array( $single_form_schema['form_attrs']['messages'] ) ? $single_form_schema['form_attrs']['messages'] : array();

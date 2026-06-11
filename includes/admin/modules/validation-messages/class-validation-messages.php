@@ -188,26 +188,6 @@ if ( ! class_exists( 'Gutena_Forms_Validation_Messages' ) || class_exists( 'Gute
 		 * @since 1.8.0
 		 */
 		private function run() {
-			add_action( 'gutena_forms__saving_block', array( $this, 'save_messages_to_default_option' ), 10, 3 );
-		}
-
-		/**
-		 * Saving the settings global settings.
-		 *
-		 * @since 1.8.0
-		 * @param array   $attributes Block attributes.
-		 * @param array   $block bocks.
-		 * @param WP_Post $post Current post object.
-		 */
-		public function save_messages_to_default_option( $attributes, $block, $post ) {
-			$messages = isset( $attributes['messages'] ) && is_array( $attributes['messages'] ) ? $attributes['messages'] : array();
-
-			if ( ! Gutena_Forms_Settings_Migrator::is_single_form_site() || empty( $messages ) ) {
-				return;
-			}
-
-			$this->settings = Gutena_Forms_Settings_Migrator::sanitize_settings_for_option( $messages );
-			update_option( 'gutena_forms__form_validation_messages', $this->settings );
 		}
 	}
 
