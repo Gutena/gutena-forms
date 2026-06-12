@@ -25,68 +25,12 @@
 			return self::$instance;
 		}
 
-		public function __construct() {	
-            parent::__construct();
-			//Filter gutena forms render form
-			add_filter('gutena_forms_save_form_schema', array( $this, 'save_form_schema' ), 10, 3 );
-			//save submiited gutena forms
+		public function __construct() {
+			parent::__construct();
+			add_filter( 'gutena_forms_save_form_schema', array( $this, 'save_form_schema' ), 10, 3 );
 			add_action( 'gutena_forms_submitted_data', array( $this, 'save_form_entry' ), 10, 3 );
-
-            //Update form entry status to read
-			add_action( 'wp_ajax_gutena_forms_entries_read', array( $this, 'entries_read_status_update' ) );
-
-			add_action( 'wp_loaded', array($this, 'process_bulk_action') );
-			
 		}
 
-		//form entries table bulk action
-		public function process_bulk_action() { 
-
-			if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['form_entry_id'] ) && function_exists( 'absint' ) && ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
-
-				//check nonce
-				check_ajax_referer( 'gutena_Forms', 'gfnonce' );
-				$form_id = sanitize_key( $_GET['formid'] );
-
-				//check user access 
-				if ( ( ! has_filter( 'gutena_forms_check_user_access' ) && ! Gutena_Forms_Admin_Helper::is_admin() )  || ! apply_filters( 'gutena_forms_check_user_access', true, 'edit_entries' ) ) {
-					wp_redirect( esc_url( admin_url( 'admin.php?page=gutena-forms&formid='.$form_id ) ) );
-				}
-
-				$form_entry_id = wp_unslash( $_REQUEST['form_entry_id'] );
-				
-				global $wpdb;
-				$action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) );
-				//Admin Action 
-				do_action( 'gutena_forms_entries_admin_action', $form_id, $action, $form_entry_id );
-				$this->update_entries_status( $action, $form_entry_id );
-				
-				wp_safe_redirect( add_query_arg( 
-					array( 
-						'page' => 'gutena-forms',
-						'formid' => $form_id,
-					), admin_url( 'admin.php' ) ) 
-				);
-			}
-		}
-
-        //Update form entry status to read  mb
-		public function entries_read_status_update() {
-			check_ajax_referer( 'gutena_Forms', 'gfnonce' );
-            global $wpdb;
-            //Update status
-            if ( ! empty( $wpdb ) && ! empty( $_POST['form_entry_id'] ) && is_numeric( $_POST['form_entry_id'] ) && function_exists( 'absint' ) ) {
-				
-				$this->update_entries_status( 'read', absint( wp_unslash( $_POST['form_entry_id'] ) ) );
-
-				wp_send_json_success( array(
-                    'status'  => 'success',
-                    'message' => __( 'Status updated successfully', 'gutena-forms' ),
-                ) );
-			}
-		}
-
-	
 		/**
 		 * add new meta for form or entries
 		 * Required at least : 'form_id', 'data_type', 'metadata'

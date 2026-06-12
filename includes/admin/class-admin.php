@@ -136,7 +136,6 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			Gutena_Forms_Admin_Helper::optimize_submenu();
 			Gutena_Forms_Admin_Helper::pricing_page_redirection();
 			Gutena_Forms_Admin_Helper::feature_request_redirection();
-			Gutena_Forms_Admin_Helper::include_wp_list_table();
 		}
 
 		/**
