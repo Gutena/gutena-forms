@@ -1,0 +1,202 @@
+.gutena-froms#gutena-forms__root {
+  .gutena-forms__meta-box-container.gutena-forms__auto-responder-settings {
+    .gutena-forms__page-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      padding-right: 0;
+    }
+
+    .gutena-forms__settings-meta-box-desc {
+      color: #424d55;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: normal;
+      margin: 0 0 16px;
+    }
+
+    .gutena-forms__settings-meta-box {
+      padding: 19px 21px 20px;
+    }
+  }
+
+  .gutena-forms__auto-responder {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 404px;
+    width: 100%;
+
+    .gutena-forms__auto-responder-toggle-row {
+      align-items: flex-start;
+      display: flex;
+      gap: 9px;
+      width: 100%;
+    }
+
+    .gutena-forms__auto-responder-switch {
+      background: #c3c4c7;
+      border: none;
+      border-radius: 100px;
+      cursor: pointer;
+      flex-shrink: 0;
+      height: 20px;
+      padding: 0;
+      position: relative;
+      width: 36px;
+
+      &.is-on {
+        background: #0da88c;
+
+        .gutena-forms__auto-responder-switch-thumb {
+          left: 18px;
+        }
+      }
+    }
+
+    .gutena-forms__auto-responder-switch-thumb {
+      background: #fff;
+      border-radius: 100px;
+      box-shadow: 0 2px 4px rgba(39, 39, 39, 0.1);
+      height: 16px;
+      left: 2px;
+      position: absolute;
+      top: 2px;
+      transition: left 0.15s ease;
+      width: 16px;
+    }
+
+    .gutena-forms__auto-responder-toggle-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .gutena-forms__auto-responder-toggle-title {
+      color: #000;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      line-height: normal;
+      margin: 0;
+    }
+
+    .gutena-forms__auto-responder-toggle-desc {
+      color: #424d55;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: normal;
+      margin: 0;
+    }
+
+    .gutena-forms__auto-responder-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+
+      &.is-disabled {
+        opacity: 0.55;
+      }
+    }
+
+    .gutena-forms__auto-responder-label {
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: normal;
+      margin: 0;
+    }
+
+    .gutena-forms__auto-responder-input,
+    .gutena-forms__auto-responder-textarea {
+      border: 1px solid #e2e2e2;
+      border-radius: 4px;
+      box-shadow: none;
+      color: #2c3338;
+      font-family: "Satoshi", sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: normal;
+      outline: none;
+      padding: 7px 15px;
+      width: 100%;
+
+      &:focus {
+        border-color: #0da88c;
+      }
+
+      &:disabled {
+        background: #f5f6f7;
+        cursor: not-allowed;
+      }
+    }
+
+    .gutena-forms__auto-responder-input {
+      height: 35px;
+    }
+
+    .gutena-forms__auto-responder-textarea {
+      min-height: 122px;
+      resize: vertical;
+    }
+
+    .gutena-forms__auto-responder-merge-label {
+      color: #424d55;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: normal;
+      margin: 0;
+    }
+
+    .gutena-forms__auto-responder-merge-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .gutena-forms__auto-responder-merge-tag {
+      background: #f0fffc;
+      border: none;
+      border-radius: 4px;
+      color: #424d55;
+      cursor: pointer;
+      font-family: "Satoshi", sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: normal;
+      padding: 6px;
+
+      &:hover:not(:disabled) {
+        background: #dff8f2;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+      }
+    }
+
+    .gutena-forms__auto-responder-save {
+      align-self: flex-start;
+      background: #0da88c;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-family: "Satoshi", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: normal;
+      padding: 6px 10px;
+
+      &:hover:not(:disabled) {
+        background: #0b9679;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+    }
+  }
+}

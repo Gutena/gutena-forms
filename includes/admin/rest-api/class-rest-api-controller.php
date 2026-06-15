@@ -241,6 +241,10 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							'title' => __( 'Validation Messages', 'gutena-forms' ),
 							'slug'  => 'validation-messages',
 						),
+						array(
+							'title' => __( 'Auto Responder', 'gutena-forms' ),
+							'slug'  => 'auto-responder',
+						),
 					),
 				),
 				array(

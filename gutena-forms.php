@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.9.1
+ * Version:           1.9.0
  * Author:            Gutena Forms
  * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
@@ -182,6 +182,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		 */
 		private function includes() {
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-helper.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-auto-responder-helper.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-cpt.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';

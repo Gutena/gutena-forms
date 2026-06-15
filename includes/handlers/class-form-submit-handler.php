@@ -188,13 +188,16 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $this->id, $field_schema );
 			do_action( 'gutena_forms_submission', $form_submit_data, $this->schema );
 
+			if ( class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) {
+				Gutena_Forms_Auto_Responder_Helper::send_auto_responder( $form_submit_data, $this->schema, $field_schema );
+			}
+
 			// If admin don't want to get Email notification.
 			if ( isset( $this->schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->schema['form_attrs']['emailNotifyAdmin'] || false === $this->schema['form_attrs']['emailNotifyAdmin'] || '0' === $this->schema['form_attrs']['emailNotifyAdmin'] ) ) {
 				wp_send_json(
 					array(
 						'status'  => 'Success',
 						'message' => __( 'success', 'gutena-forms' ),
-						'detail'  => __( 'admin email notification off', 'gutena-forms' ),
 					)
 				);
 			}
