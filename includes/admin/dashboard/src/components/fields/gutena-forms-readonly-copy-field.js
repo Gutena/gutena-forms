@@ -21,26 +21,55 @@ const GutenaFormsReadonlyCopyField = ( { label, id, desc, value } ) => {
 		setFieldValue( value || '' );
 	}, [ value ] );
 
+	const copyTextToClipboard = async ( text ) => {
+		if ( navigator.clipboard?.writeText ) {
+			try {
+				await navigator.clipboard.writeText( text );
+				return true;
+			} catch {
+				// Fall back to execCommand for non-secure contexts (e.g. local HTTP).
+			}
+		}
+
+		const textarea = document.createElement( 'textarea' );
+		textarea.value = text;
+		textarea.setAttribute( 'readonly', '' );
+		textarea.style.position = 'fixed';
+		textarea.style.top = '0';
+		textarea.style.left = '0';
+		textarea.style.opacity = '0';
+		textarea.style.pointerEvents = 'none';
+		document.body.appendChild( textarea );
+		textarea.focus();
+		textarea.select();
+		textarea.setSelectionRange( 0, text.length );
+
+		let copied = false;
+
+		try {
+			copied = document.execCommand( 'copy' );
+		} catch {
+			copied = false;
+		}
+
+		document.body.removeChild( textarea );
+
+		return copied;
+	};
+
 	const handleCopy = async () => {
 		if ( ! fieldValue ) {
 			return;
 		}
 
-		try {
-			await navigator.clipboard.writeText( fieldValue );
+		const copied = await copyTextToClipboard( fieldValue );
+
+		if ( copied ) {
 			toast.success( __( 'Copied to clipboard!', 'gutena-forms' ) );
-		} catch {
-			const input = document.getElementById( inputId );
-			if ( input ) {
-				input.select();
-				try {
-					document.execCommand( 'copy' );
-					toast.success( __( 'Copied to clipboard!', 'gutena-forms' ) );
-				} catch {
-					toast.error( __( 'Failed to copy.', 'gutena-forms' ) );
-				}
-			}
+			return;
 		}
+
+		toast.error( __( 'Failed to copy.', 'gutena-forms' ) );
 	};
 
 	return (
@@ -60,9 +89,9 @@ const GutenaFormsReadonlyCopyField = ( { label, id, desc, value } ) => {
 					type="button"
 					className={ 'gutena-forms__readonly-copy-field-button' }
 					onClick={ handleCopy }
+					aria-label={ __( 'Copy', 'gutena-forms' ) }
 				>
 					<CopyIcon />
-					<span>{ __( 'Copy', 'gutena-forms' ) }</span>
 				</button>
 			</div>
 			{ desc && (

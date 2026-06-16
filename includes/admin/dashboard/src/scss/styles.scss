@@ -330,15 +330,14 @@
             background: #fff;
             border: 1px solid #E5E7EB;
             border-radius: 4px;
-            color: #424D55;
+            color: #6E7376;
             cursor: pointer;
             display: inline-flex;
             flex-shrink: 0;
-            font-size: 12px;
-            font-weight: 600;
-            gap: 6px;
-            min-height: 36px;
-            padding: 0 12px;
+            height: 36px;
+            justify-content: center;
+            padding: 0;
+            width: 36px;
 
             &:hover {
               border-color: #D1D5DB;
