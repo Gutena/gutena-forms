@@ -12,19 +12,38 @@ import GutenaFormsIntegrations from '../screens/gutena-forms-integrations'
 import { applyFilters } from '@wordpress/hooks';
 import GutenaFormsMcp from "../screens/gutena-forms-mcp";
 
-/**
- * React components for settings sub-screens (pro: tags, status, user access).
- *
- * @since 1.7.0
- * @type {Object.<string, React.ComponentType>}
- */
-export const SettingsTemplates = {
+const baseSettingsTemplates = {
 	'manage-tags': GutenaFormsManageTags,
 	'manage-status': GutenaFormsManageStatus,
 	'user-access': GutenaFormsUserAccess,
 	'integrations': GutenaFormsIntegrations,
 	'mcp': GutenaFormsMcp,
-	...applyFilters( 'gutena-forms.components', {} )
+};
+
+/**
+ * Resolve a settings screen template at render time so Pro can register overrides after the free bundle loads.
+ *
+ * @since 1.7.0
+ * @param {string} templateName Template key from settings field config.
+ * @returns {React.ComponentType|undefined}
+ */
+export const getSettingsTemplate = ( templateName ) => {
+	const proTemplates = applyFilters( 'gutena-forms.components', {} );
+
+	if ( proTemplates[ templateName ] ) {
+		return proTemplates[ templateName ];
+	}
+
+	return baseSettingsTemplates[ templateName ];
+};
+
+/**
+ * @deprecated Use getSettingsTemplate() so Pro overrides are resolved after both bundles load.
+ * @type {Object.<string, React.ComponentType>}
+ */
+export const SettingsTemplates = {
+	...baseSettingsTemplates,
+	...applyFilters( 'gutena-forms.components', {} ),
 };
 
 import GutenaFormsForms from '../screens/gutena-forms-forms';

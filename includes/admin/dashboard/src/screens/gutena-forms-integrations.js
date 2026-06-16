@@ -3,6 +3,7 @@ import Settings from '../icons/settings';
 import Mailchimp from "../icons/mailchimp";
 import Brevo from "../icons/brevo";
 import ActiveCampaign from "../icons/activecampaign";
+import Zapier from "../icons/zapier";
 
 const GutenaFormsIntegrations = () => {
 
@@ -21,6 +22,11 @@ const GutenaFormsIntegrations = () => {
 			title: 'Active Campaign',
 			desc: 'This module allows you to send form submissions to your Acti',
 			Icon: ActiveCampaign,
+		},
+		{
+			title: 'Zapier',
+			desc: 'This module allows you to send form submissions to Zapier to',
+			Icon: Zapier,
 		},
 	];
 

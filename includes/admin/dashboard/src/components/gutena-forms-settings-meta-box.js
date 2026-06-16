@@ -5,15 +5,18 @@ import GutenaFormsToggleField from './fields/gutena-forms-toggle-field';
 import GutenaFormsEmailField from './fields/gutena-forms-email-field';
 import GutenaFormsSubmitButton from './fields/gutena-forms-submit-button';
 import GutenaFormsTextField from './fields/gutena-forms-text-field';
+import GutenaFormsReadonlyCopyField from './fields/gutena-forms-readonly-copy-field';
+import GutenaFormsNoticeField from './fields/gutena-forms-notice-field';
 import GutenaFormsRadioGroup from './fields/gutena-forms-radio-group';
 import { gutenaFormsUpdateSettings } from "../api";
 import { toast } from 'react-toastify';
 import { __ } from '@wordpress/i18n';
-import { SettingsTemplates, FieldTemplates } from '../utils/templates';
+import { getSettingsTemplate, FieldTemplates } from '../utils/templates';
 import GutenaFormsProBadge from './gutena-forms-pro-badge';
 import Activecampaign from '../icons/activecampaign';
 import Brevo from '../icons/brevo';
 import Mailchimp from '../icons/mailchimp';
+import Zapier from '../icons/zapier';
 import Recaptcha from "../icons/recaptcha";
 import Cloudflare from "../icons/cloudflare";
 
@@ -36,13 +39,22 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 					setTemplate( item.name );
 				} else if ( 'field-template' === item.type ) {
 					parsedSettings.push( { id, ...item } );
-				} else {
+				} else if ( 'readonly-copy' !== item.type && 'notice' !== item.type ) {
 					initialFieldValue[ item.id ] = item.value || item.default;
 					parsedSettings.push( {
 						id: item.id,
 						type: item.type,
 						label: item.name,
 						desc: item.desc,
+						attrs: item.attrs || {},
+					} );
+				} else {
+					parsedSettings.push( {
+						id: item.id,
+						type: item.type,
+						label: item.name,
+						desc: item.desc,
+						value: item.value || item.default || '',
 						attrs: item.attrs || {},
 					} );
 				}
@@ -80,7 +92,16 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	}
 
 	const handleSubmit = () => {
-		gutenaFormsUpdateSettings( settings_id, fieldValue )
+		const payload = { ...fieldValue };
+		if ( settings ) {
+			settings.forEach( ( field ) => {
+				if ( 'readonly-copy' === field.type || 'notice' === field.type ) {
+					delete payload[ field.id ];
+				}
+			} );
+		}
+
+		gutenaFormsUpdateSettings( settings_id, payload )
 			.then( () => {
 				toast.success(
 					__( 'Settings updated successfully.', 'gutena-forms' )
@@ -168,6 +189,25 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				);
 				break;
 
+			case 'readonly-copy':
+				fieldElement = (
+					<GutenaFormsReadonlyCopyField
+						id={ field.id }
+						label={ field.label }
+						desc={ field.desc }
+						value={ field.value }
+					/>
+				);
+				break;
+
+			case 'notice':
+				fieldElement = (
+					<GutenaFormsNoticeField
+						desc={ field.desc }
+					/>
+				);
+				break;
+
 			case 'text':
 				fieldElement = (
 					<GutenaFormsTextField
@@ -206,7 +246,6 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				break;
 
 			default:
-				console.log( 'Field not found', field )
 				fieldElement = null;
 				break;
 		}
@@ -218,7 +257,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		);
 	};
 
-	const ScreenTemplate = SettingsTemplates[ template ];
+	const ScreenTemplate = getSettingsTemplate( template );
 	const showProPopup = () => {
 		if ( ! isPro ) {
 			return;
@@ -231,6 +270,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		'active-campaign': <Activecampaign />,
 		'brevo': <Brevo />,
 		'mailchimp': <Mailchimp />,
+		'zapier': <Zapier />,
 		'recaptcha': <Recaptcha />,
 		'cloudflare': <Cloudflare />,
 	};

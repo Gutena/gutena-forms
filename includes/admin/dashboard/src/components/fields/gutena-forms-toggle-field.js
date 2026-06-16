@@ -1,8 +1,12 @@
 import { ToggleControl } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 
 const GutenaFormsToggleField = ( { id, label, desc, checked, onChange } ) => {
 	const [ isChecked, setIsChecked ] = useState( checked );
+
+	useEffect( () => {
+		setIsChecked( checked );
+	}, [ checked ] );
 
 	const handleChange = ( newValue ) => {
 		setIsChecked( newValue );

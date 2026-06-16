@@ -296,6 +296,63 @@
           }
         }
 
+        .gutena-forms__readonly-copy-field {
+          margin-top: 20px;
+
+          &-label {
+            color: #000;
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+          }
+
+          &-row {
+            align-items: stretch;
+            display: flex;
+            gap: 10px;
+          }
+
+          &-input {
+            background: #F3F4F6;
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+            color: #4B5563;
+            flex: 1;
+            font-size: 13px;
+            min-height: 36px;
+            padding: 8px 12px;
+            width: 100%;
+          }
+
+          &-button {
+            align-items: center;
+            background: #fff;
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+            color: #424D55;
+            cursor: pointer;
+            display: inline-flex;
+            flex-shrink: 0;
+            font-size: 12px;
+            font-weight: 600;
+            gap: 6px;
+            min-height: 36px;
+            padding: 0 12px;
+
+            &:hover {
+              border-color: #D1D5DB;
+            }
+          }
+        }
+
+        .gutena-forms__notice-field {
+          color: #424D55;
+          font-size: 12px;
+          font-weight: 400;
+          margin: 8px 0 0;
+        }
+
         .gutena-forms__submit-button {
           margin-top: 30px;
 
@@ -1341,15 +1398,18 @@
 
 
   .gutena-forms__integrations {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
 
     .gutena-forms__integration {
-      display: inline-block;
-      width: calc( 100% / 3 - 30px );
+      display: block;
+      width: auto;
       border: 1px solid #e2e2e2;
       border-radius: 4px;
       padding: 10px;
-      margin-right: 10px;
-      margin-bottom: 10px;
+      margin-right: 0;
+      margin-bottom: 0;
       height: 150px;
       position: relative;
       vertical-align: top;

@@ -248,7 +248,7 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				! empty( $attrs['settings']['integration'] )
 				&& is_array( $attrs['settings']['integration'] )
 			) {
-				foreach ( array( 'mailchimp', 'brevo', 'activecampaign' ) as $integration_id ) {
+				foreach ( array( 'mailchimp', 'brevo', 'activecampaign', 'zapier' ) as $integration_id ) {
 					if (
 						! empty( $attrs['settings']['integration'][ $integration_id ] )
 						&& is_array( $attrs['settings']['integration'][ $integration_id ] )
@@ -588,7 +588,7 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 					$integration_option = array();
 				}
 				$changed = false;
-				foreach ( array( 'mailchimp', 'brevo', 'activecampaign' ) as $integration_id ) {
+				foreach ( array( 'mailchimp', 'brevo', 'activecampaign', 'zapier' ) as $integration_id ) {
 					if (
 						empty( $attributes['settings']['integration'][ $integration_id ] )
 						|| ! is_array( $attributes['settings']['integration'][ $integration_id ] )
@@ -653,7 +653,7 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 					if ( ! isset( $attrs['settings']['integration'] ) || ! is_array( $attrs['settings']['integration'] ) ) {
 						$attrs['settings']['integration'] = array();
 					}
-					foreach ( array( 'mailchimp', 'brevo', 'activecampaign' ) as $integration_id ) {
+					foreach ( array( 'mailchimp', 'brevo', 'activecampaign', 'zapier' ) as $integration_id ) {
 						if ( empty( $integration_global[ $integration_id ] ) ) {
 							continue;
 						}
@@ -730,7 +730,7 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 
 			$integration_global = get_option( 'gutena_forms__integration_settings', array() );
 			if ( ! empty( $integration_global ) && is_array( $integration_global ) ) {
-				foreach ( array( 'mailchimp', 'brevo', 'activecampaign' ) as $integration_id ) {
+				foreach ( array( 'mailchimp', 'brevo', 'activecampaign', 'zapier' ) as $integration_id ) {
 					if ( empty( $integration_global[ $integration_id ] ) ) {
 						continue;
 					}

@@ -1,12 +1,8 @@
-import { Icon } from '@wordpress/components';
-
 const Settings = ( { disabled } ) => {
 
     const color = disabled ? '#D2D5DA' : '#0DA88C';
 
     return (
-            <Icon
-            icon={ () => (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -27,9 +23,7 @@ const Settings = ( { disabled } ) => {
                           fill={ color }
                     />
                 </svg>
-            ) }
-        />
-    )
+    );
 };
 
 export default Settings;

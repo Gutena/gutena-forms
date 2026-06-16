@@ -24,6 +24,7 @@ import { SelectControl } from '@wordpress/components';
 import Activecampaign from '../icons/activecampaign';
 import Brevo from '../icons/brevo';
 import Mailchimp from '../icons/mailchimp';
+import Zapier from '../icons/zapier';
 import { NavLink } from 'react-router';
 import GutenaFormsDescWrapper from '../components/gutena-forms-desc-wrapper';
 import GutenaFormsToggleField from '../components/fields/gutena-forms-toggle-field';
@@ -48,6 +49,7 @@ addFilter(
 		components['Activecampaign'] 		  = Activecampaign;
 		components['Brevo'] 				  = Brevo;
 		components['Mailchimp'] 			  = Mailchimp;
+		components['Zapier'] 				  = Zapier;
 		components['NavLink'] 			      = NavLink;
 		components['GutenaFormsDescWrapper']  = GutenaFormsDescWrapper;
 		components['GutenaFormsToggleField']  = GutenaFormsToggleField;
