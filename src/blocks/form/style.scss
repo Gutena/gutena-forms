@@ -354,6 +354,8 @@
 	//Full width input field block
 	.wp-block-gutena-form-field {
 		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
 	}
 
 	/**********************************

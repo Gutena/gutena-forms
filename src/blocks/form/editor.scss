@@ -5,6 +5,16 @@
  */
 
 .editor-styles-wrapper .wp-block-gutena-forms, .wp-block-gutena-forms {
+	.wp-block-gutena-field-group {
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.wp-block-gutena-form-field {
+		box-sizing: border-box;
+		max-width: 100%;
+	}
+
 	.heading-input-label-gutena {
 		color: var(--wp--gutena-forms--label-color);
 		font-size: var(--wp--gutena-forms--label-font-size, 13px);
