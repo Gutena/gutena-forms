@@ -10,14 +10,6 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Admin_Helper' ) ) :
 	class Gutena_Forms_Admin_Helper {
-		public static function include_wp_list_table() {
-			if ( ! class_exists( 'WP_List_Table' ) ) {
-				if ( file_exists( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' ) ) {
-					require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
-				}
-			}
-		}
-
 		public static function feature_request_redirection() {
 			if ( isset( $_GET['pagetype'] ) && 'feature-request' === sanitize_key( wp_unslash( $_GET['pagetype'] ) ) ) {
 				echo '<script type="text/javascript">
