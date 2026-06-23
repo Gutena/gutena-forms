@@ -20,7 +20,7 @@ Gutena Tabs is a simple and easy-to-use WordPress plugin which allows you to cre
 
 * Complete control over the look and feel
 * Fully customizable, so you can easily change the color, border, radius, typography, padding, margin and much more..
-* No jQuery, so it wonÃ¢â‚¬â„¢t slow down your website
+* No jQuery, so it won’t slow down your website
 * You can add icons to the tabs
 * You can add other core blocks inside the tab container
 * Control all tabs from a single setting
