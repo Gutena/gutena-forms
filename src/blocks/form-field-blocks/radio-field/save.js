@@ -37,36 +37,40 @@ export default function Save( { attributes } ) {
 
 	return (
 		<div { ...blockProps }>
-			<span className="heading-input-label-gutena">
-				{ fieldName }
-				{ isRequired ? ' *' : '' }
-			</span>
 			<div className={ fieldClasses }>
-				{ Array.isArray( selectOptions ) && selectOptions.map( ( option, key ) => {
-					if ( gfIsEmpty( option ) ) {
-						return null;
-					}
+				<fieldset>
+					<legend>
+						<span className="heading-input-label-gutena">
+							{ fieldName }
+							{ isRequired ? ' *' : '' }
+						</span>
+					</legend>
+					{ Array.isArray( selectOptions ) && selectOptions.map( ( option, key ) => {
+						if ( gfIsEmpty( option ) ) {
+							return null;
+						}
 
-					const optId = `${ nameAttr }_${ key }`;
-					return (
-						<label
-							key={ key }
-							className={ 'radio-container' }
-							htmlFor={ optId }
-						>
-							<div>{ option }</div>
-							<div>
-								<input
-									id={ optId }
-									type="radio"
-									name={ nameAttr }
-									value={ option }
-								/>
-								<span className="checkmark" />
-							</div>
-						</label>
-					);
-				} ) }
+						const optId = `${ nameAttr }_${ key }`;
+						return (
+							<label
+								key={ key }
+								className={ 'radio-container' }
+								htmlFor={ optId }
+							>
+								<div>{ option }</div>
+								<div>
+									<input
+										id={ optId }
+										type="radio"
+										name={ nameAttr }
+										value={ option }
+									/>
+									<span className="checkmark" />
+								</div>
+							</label>
+						);
+					} ) }
+				</fieldset>
 			</div>
 			{ ! gfIsEmpty( description ) && <p className="gutena-forms-radio-field-description">{ description }</p> }
 			<p className="gutena-forms-field-error-msg" />

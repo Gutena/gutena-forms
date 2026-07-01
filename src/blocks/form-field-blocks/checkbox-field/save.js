@@ -34,30 +34,34 @@ export default function Save( { attributes } ) {
 
 	return (
 		<div { ...blockProps }>
-			<span className="heading-input-label-gutena">
-				{ fieldName }
-				{ isRequired ? ' *' : '' }
-			</span>
 			<div className={ fieldClasses }>
-				{ Array.isArray( selectOptions ) &&
-					selectOptions.map( ( item, index ) => {
-						if ( gfIsEmpty( item ) ) {
-							return null;
-						}
-						const optId = `${ nameAttr }_${ index }`;
-						return (
-							<label key={ index } className="checkbox-container" htmlFor={ optId }>
-								{ item }
-								<input
-									id={ optId }
-									type="checkbox"
-									name={ nameWithBrackets }
-									value={ item }
-								/>
-								<span className="checkmark" />
-							</label>
-						);
-					} ) }
+				<fieldset>
+					<legend>
+						<span className="heading-input-label-gutena">
+							{ fieldName }
+							{ isRequired ? ' *' : '' }
+						</span>
+					</legend>
+					{ Array.isArray( selectOptions ) &&
+						selectOptions.map( ( item, index ) => {
+							if ( gfIsEmpty( item ) ) {
+								return null;
+							}
+							const optId = `${ nameAttr }_${ index }`;
+							return (
+								<label key={ index } className="checkbox-container" htmlFor={ optId }>
+									{ item }
+									<input
+										id={ optId }
+										type="checkbox"
+										name={ nameWithBrackets }
+										value={ item }
+									/>
+									<span className="checkmark" />
+								</label>
+							);
+						} ) }
+				</fieldset>
 			</div>
 			{ ! gfIsEmpty( description ) && <p className="gutena-forms-checkbox-field-description">{ description }</p> }
 			<p className="gutena-forms-field-error-msg" />
