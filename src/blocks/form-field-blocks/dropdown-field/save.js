@@ -92,6 +92,7 @@ export default function Save( { attributes } ) {
 						className={ `gf-dropdown-custom__native ${ fieldClasses }` }
 						tabIndex={ -1 }
 						aria-hidden="true"
+						aria-labelledby={ labelId }
 						required={ isRequired }
 					>
 						{ options }
@@ -103,6 +104,7 @@ export default function Save( { attributes } ) {
 						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls={ listboxId }
+						aria-labelledby={ labelId }
 					>
 						<span
 							className="gf-dropdown-custom__value"

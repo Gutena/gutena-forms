@@ -220,6 +220,7 @@ function DropdownCustomEditor( {
 				className={ `gf-dropdown-custom__native ${ fieldClasses }` }
 				tabIndex={ -1 }
 				aria-hidden="true"
+				aria-labelledby={ labelId }
 				value={ selectedValue }
 				onChange={ ( e ) => setSelectedValue( e.target.value ) }
 			>
@@ -236,6 +237,7 @@ function DropdownCustomEditor( {
 				aria-haspopup="listbox"
 				aria-expanded={ isOpen }
 				aria-controls={ listboxId }
+				aria-labelledby={ labelId }
 				onClick={ ( ev ) => {
 					ev.preventDefault();
 					setIsOpen( ( o ) => ! o );
