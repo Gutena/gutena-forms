@@ -9,7 +9,7 @@
   ],
   "category": "gutena",
   "icon": "privacy",
-  "description": "Standalone opt-in checkbox field for Gutena Forms.",
+  "description": "Add a consent checkbox for privacy policies, terms, or GDPR compliance.",
   "keywords": [
     "optin",
     "consent",
