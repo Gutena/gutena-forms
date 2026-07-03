@@ -1,5 +1,24 @@
 // Responsive adjustments
 @media (max-width: 768px) {
+  .gutena-froms#gutena-forms__root {
+    .gutena-forms__add-new-form-screen {
+      padding: 0 16px;
+
+      .gutena-forms__creation-cards {
+        flex-direction: column;
+      }
+
+      .gutena-forms__creation-card {
+        max-width: 100%;
+      }
+
+      .gutena-forms__add-new-form-actions {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+  }
+
   .gf-introduction-page {
     .gf-video-section {
       .gf-video-heading {

@@ -1398,4 +1398,146 @@
       }
     }
   }
+
+  .gutena-forms__add-new-form-screen {
+    max-width: 1220px;
+    margin: 30px auto;
+    padding: 0 30px;
+
+    .gutena-forms__add-new-form-header {
+      text-align: center;
+      margin-bottom: 30px;
+
+      h2 {
+        color: #000;
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 27px;
+        margin: 0 0 6px;
+      }
+
+      p {
+        color: #6E7376;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 19px;
+        margin: 0;
+      }
+    }
+
+    .gutena-forms__add-new-form-divider {
+      background: #E2E2E2;
+      height: 1px;
+      margin: 0 0 30px;
+      width: 100%;
+    }
+
+    .gutena-forms__creation-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .gutena-forms__creation-card {
+      background: #fff;
+      border: 1px solid #E2E2E2;
+      border-radius: 15px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 270px;
+      padding: 10px;
+      text-align: left;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      width: 100%;
+
+      &:hover,
+      &:focus {
+        border-color: #0DA88C;
+        box-shadow: 0 4px 16px rgba(13, 168, 140, 0.12);
+        outline: none;
+      }
+    }
+
+    .gutena-forms__creation-card-visual {
+      align-items: center;
+      background: #F9FAFB;
+      border-radius: 15px;
+      display: flex;
+      height: 150px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .gutena-forms__creation-card-content {
+      padding: 0 4px 4px;
+
+      h3 {
+        color: #000;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: normal;
+        margin: 0 0 4px;
+      }
+
+      p {
+        color: #000;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: normal;
+        margin: 0;
+      }
+    }
+
+    .gutena-forms__add-new-form-actions {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      max-width: 700px;
+    }
+
+    .gutena-forms__back-button {
+      align-items: center;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      color: #6E7376 !important;
+      display: inline-flex;
+      font-size: 14px !important;
+      gap: 8px;
+      height: auto !important;
+      padding: 10px !important;
+
+      svg {
+        margin: 0;
+      }
+    }
+  }
+
+  .gutena-forms__choose-layout-screen {
+    .gutena-forms__layout-placeholder {
+      background: #F9FAFB;
+      border: 1px dashed #E2E2E2;
+      border-radius: 15px;
+      margin: 0 auto 30px;
+      max-width: 700px;
+      padding: 60px 30px;
+      text-align: center;
+
+      p {
+        color: #6E7376;
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+
+    .gutena-forms__add-new-form-actions {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 700px;
+    }
+  }
 }

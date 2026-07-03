@@ -86,6 +86,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/integrations/class-inegrations.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/mcp/class-mcp.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/settings-migrator/class-settings-migrator.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/ai/class-ai-endpoints.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/rest-api/class-rest-api-controller.php';
 		}
 
@@ -177,7 +178,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 				__( 'Add New Forms', 'gutena-forms' ),
 				__( 'Add New Forms', 'gutena-forms' ),
 				'manage_options',
-				'post-new.php?post_type=gutena_forms'
+				'admin.php?page=gutena-forms#/settings/add-new-form'
 			);
 
 			add_submenu_page(

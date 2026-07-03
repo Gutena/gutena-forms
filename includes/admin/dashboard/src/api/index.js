@@ -354,4 +354,30 @@ export async function gutenaFormsFetchEntriesFiltered( { formId, tag, status } =
 	throw new Error( 'Gutena Forms FetchEntriesFiltered Error' );
 }
 
+/**
+ * Generate a form via AI middleware and create a gutena_forms post.
+ *
+ * @since 1.9.2
+ * @param {Object} params Request params.
+ * @param {string} params.prompt User prompt.
+ * @param {string} [params.category] Optional category slug.
+ * @returns {Promise<Object>} API response with edit_url on success.
+ */
+export async function gutenaFormsAiGenerateForm( { prompt, category = '' } ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }ai/generate-form`,
+		data: {
+			prompt,
+			category,
+		},
+	} );
+
+	if ( 'success' === response.status && response.edit_url ) {
+		return response;
+	}
+
+	throw response;
+}
+
 export { gutenaFormsDeleteEntry, deleteMultipleEntries } from './entries';

@@ -199,6 +199,9 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-form-submit-handler.php';
 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/rest-api/class-rest-api.php';
+
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/ai/class-gutena-forms-ai-middleware-client.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/ai/class-gutena-forms-ai-form-service.php';
 		}
 
 		/**

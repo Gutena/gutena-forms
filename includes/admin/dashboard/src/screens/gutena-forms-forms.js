@@ -3,7 +3,7 @@ import { Button } from '@wordpress/components';
 import { Plus } from '../icons/plus';
 import NoFormBanner from '../icons/NoFormBanner';
 import GutenaFormsYouTubeModal from '../components/gutena-forms-youtube-modal';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import GutenaFormsDataTable from '../components/gutena-forms-datatable'
 import Edit from '../icons/edit';
 import Eye from '../icons/eye';
@@ -15,8 +15,13 @@ import { activateLeftMenu } from '../utils/functions';
 import FormsLoading from "../skeletons/forms-loading";
 
 const GutenaFormsForms = ( { setActiveMenu } ) => {
+	const navigate = useNavigate();
 	const [ forms, setForms ] = useState( false );
 	const [ loading, setLoading ] = useState( true );
+
+	const goToAddNewForm = () => {
+		navigate( '/settings/add-new-form' );
+	};
 
 	useEffect( () => {
 		activateLeftMenu( 2 );
@@ -107,7 +112,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 					{/* Create Button */}
 					<div className={ 'gutena-forms__empty-state-actions' }>
 						<Button
-							href={ 'post-new.php?post_type=gutena_forms' }
+							onClick={ goToAddNewForm }
 							className="gutena-forms-create-first-form-button"
 							variant="primary"
 						>
@@ -149,7 +154,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 						<h2 className={ 'gutena-forms__page-title' }>
 							{ __( 'Gutena Forms', 'gutena-forms' ) }
 							<Button
-								href={ 'post-new.php?post_type=gutena_forms' }
+								onClick={ goToAddNewForm }
 								className="gutena-forms-add-new-form-button"
 								variant="primary"
 							>

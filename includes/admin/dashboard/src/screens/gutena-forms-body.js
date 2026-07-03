@@ -3,6 +3,9 @@ import GutenaFormsSettingsLayout from '../layouts/gutena-forms-settings-layout';
 import GutenaFormsPageLayout from '../layouts/gutena-forms-page-layout';
 import GutenaFormsDashboard from './gutena-forms-dashboard';
 import GuennaFormsKnowledgeBase from './gutena-forms-knowledge-base';
+import GutenaFormsAddNewForm from './gutena-forms-add-new-form';
+import GutenaFormsCreateWithAi from './gutena-forms-create-with-ai';
+import GutenaFormsChooseLayout from './gutena-forms-choose-layout';
 import { applyFilters } from '@wordpress/hooks';
 
 const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
@@ -29,6 +32,18 @@ const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 					showProPopupHandler={ showProPopupHandler }
 					setActiveMenu={ setActiveMenu }
 				/> }
+			/>
+			<Route
+				path={ '/settings/add-new-form' }
+				element={ <GutenaFormsAddNewForm /> }
+			/>
+			<Route
+				path={ '/settings/add-new-form/ai' }
+				element={ <GutenaFormsCreateWithAi /> }
+			/>
+			<Route
+				path={ '/settings/add-new-form/layouts' }
+				element={ <GutenaFormsChooseLayout /> }
 			/>
 			<Route
 				path={ 'settings/:slug/' }
