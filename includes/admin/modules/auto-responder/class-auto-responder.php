@@ -68,7 +68,8 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 		 * @return array
 		 */
 		public function get_settings() {
-			$defaults = Gutena_Forms_Auto_Responder_Helper::get_defaults();
+			$defaults   = Gutena_Forms_Auto_Responder_Helper::get_defaults();
+			$merge_tags = Gutena_Forms_Auto_Responder_Helper::get_static_merge_tags();
 
 			return array(
 				'id'          => 'auto-responder',
@@ -76,17 +77,46 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 				'description' => __( 'Enable automated email responses using customizable templates and merge tags.', 'gutena-forms' ),
 				'fields'      => array(
 					array(
-						'type' => 'template',
-						'name' => 'auto-responder',
+						'id'    => 'enable',
+						'type'  => 'toggle',
+						'name'  => __( 'Enable Auto-Responder', 'gutena-forms' ),
+						'desc'  => __( 'Send an automatic reply to users who submit the form.', 'gutena-forms' ),
+						'value' => ! empty( $this->settings['enable'] ),
 					),
-				),
-				'values'      => array(
-					'enable'  => ! empty( $this->settings['enable'] ),
-					'subject' => $this->settings['subject'],
-					'message' => $this->settings['message'],
-					'merge_tags' => Gutena_Forms_Auto_Responder_Helper::get_static_merge_tags(),
-					'default_subject' => $defaults['subject'],
-					'default_message' => $defaults['message'],
+					array(
+						'id'    => 'subject',
+						'type'  => 'text',
+						'name'  => __( 'Subject', 'gutena-forms' ),
+						'value' => empty( $this->settings['subject'] ) ? $defaults['subject'] : $this->settings['subject'],
+						'attrs' => array(
+							'merge_tag_field' => true,
+							'placeholder'     => $defaults['subject'],
+						),
+					),
+					array(
+						'id'    => 'merge_tags',
+						'type'  => 'merge-tags',
+						'name'  => __( 'Merge Tags', 'gutena-forms' ),
+						'attrs' => array(
+							'tags' => $merge_tags,
+						),
+					),
+					array(
+						'id'    => 'message',
+						'type'  => 'textarea',
+						'name'  => __( 'Message', 'gutena-forms' ),
+						'value' => empty( $this->settings['message'] ) ? $defaults['message'] : $this->settings['message'],
+						'attrs' => array(
+							'merge_tag_field' => true,
+							'placeholder'     => $defaults['message'],
+							'rows'            => 6,
+						),
+					),
+					array(
+						'id'   => 'submit_button',
+						'type' => 'submit',
+						'name' => __( 'Save Changes', 'gutena-forms' ),
+					),
 				),
 			);
 		}
