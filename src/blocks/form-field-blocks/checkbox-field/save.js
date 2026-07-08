@@ -34,14 +34,14 @@ export default function Save( { attributes } ) {
 
 	return (
 		<div { ...blockProps }>
-			<div className={ fieldClasses }>
-				<fieldset>
-					<legend>
-						<span className="heading-input-label-gutena">
-							{ fieldName }
-							{ isRequired ? ' *' : '' }
-						</span>
-					</legend>
+			<fieldset>
+				<legend>
+				<span className="heading-input-label-gutena">
+					{ fieldName }
+					{ isRequired ? ' *' : '' }
+				</span>
+				</legend>
+				<div className={ fieldClasses }>
 					{ Array.isArray( selectOptions ) &&
 						selectOptions.map( ( item, index ) => {
 							if ( gfIsEmpty( item ) ) {
@@ -61,8 +61,8 @@ export default function Save( { attributes } ) {
 								</label>
 							);
 						} ) }
-				</fieldset>
-			</div>
+				</div>
+			</fieldset>
 			{ ! gfIsEmpty( description ) && <p className="gutena-forms-checkbox-field-description">{ description }</p> }
 			<p className="gutena-forms-field-error-msg" />
 		</div>
