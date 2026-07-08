@@ -77,9 +77,9 @@ const FormsLoading = () => {
                     </thead>
 
                     <tbody>
-                    { Array.from( { length: 4 } ).map( () => {
+                    { Array.from( { length: 4 } ).map( ( _, rowIndex ) => {
                         return (
-                            <tr>
+                            <tr key={ `forms-loading-row-${ rowIndex }` }>
                                 <td
                                     style={ tdStyles }
                                 >
@@ -87,9 +87,10 @@ const FormsLoading = () => {
                                 </td>
 
 								{
-									Array.from( { length: 4 } ).map( () => {
+									Array.from( { length: 4 } ).map( ( _, colIndex ) => {
 										return (
 											<td
+												key={ `forms-loading-col-${ rowIndex }-${ colIndex }` }
 												style={ tdStyles }
 											>
 												<Skeleton width={ Math.floor( Math.random() * 100 ) } height={ 15 } />

@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
-import { gutenaFormsFetchEntryData } from '../../api/entries'
+import { gutenaFormsFetchEntryData } from '../../api/entries';
+import { gutenaFormsStrContains } from '../../utils/functions';
 
 const GutenaFormsEntryData = ( { entryId } ) => {
 
@@ -16,19 +17,51 @@ const GutenaFormsEntryData = ( { entryId } ) => {
 			} );
 	}, [ entryId ] );
 
+	const handleFileValue = ( value ) => {
+		let files = [];
+		if ( gutenaFormsStrContains( value, ',' ) ) {
+			files = String( value ).split( ',' );
+		} else {
+			files = [ value ]
+		}
+		let filesArray = {};
+		files.forEach( ( file, id ) => {
+			let filename = String( file ).split( '/' );
+			filename = filename[ filename.length -1 ];
+			filesArray[ filename ] = file;
+		} );
+
+		return filesArray;
+	}
+
 	const handleDataByFieldType = ( fieldType, value ) => {
 
 		switch ( fieldType ) {
 			case 'file':
-				let filename = String( value ).split( '/' );
-				filename = filename[ filename.length - 1 ];
+
+				const files = handleFileValue( value );
 
 				return (
-					<a
-						target={ '_blank' }
-						href={ value }
-					>{ filename }</a>
+					<>
+						{ Object.values( files ).length && (
+							<ol>
+								{ Object.keys( files ).map( ( filename, key ) => {
+									const fileUrl = files[ filename ];
+
+									return (
+										<li key={ key }>
+											<a
+												href={ fileUrl }
+												target={ '_blank' }
+											>{ filename }</a>
+										</li>
+									);
+								} ) }
+							</ol>
+						) }
+					</>
 				);
+
 			case 'url':
 				return (
 					<a
