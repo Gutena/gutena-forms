@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.9.1
+ * Version:           2.0.0
  * Author:            Gutena Forms
  * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
@@ -41,7 +41,17 @@ if ( ! defined( 'GUTENA_FORMS_PLUGIN_URL' ) ) {
  * Plugin version.
  */
 if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-	define( 'GUTENA_FORMS_VERSION', '1.9.1' );
+	define( 'GUTENA_FORMS_VERSION', '2.0.0' );
+}
+
+/**
+ * Minimum Gutena Forms Pro version compatible with this Free version.
+ *
+ * Older Pro builds hide the form field blocks from the inserter and do not
+ * register the standalone field blocks, so users on an outdated Pro must update.
+ */
+if ( ! defined( 'GUTENA_FORMS_MIN_PRO_VERSION' ) ) {
+	define( 'GUTENA_FORMS_MIN_PRO_VERSION', '1.3.0' );
 }
 
 /**
@@ -219,8 +229,58 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( Gutena_Forms_Submit_Form_Handler::get_instance(), 'handle_submit' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
 			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
+			add_action( 'admin_notices', array( $this, 'maybe_show_update_pro_notice' ) );
 
 			$this->load_dashboard();
+		}
+
+		/**
+		 * Show an admin notice when an outdated Gutena Forms Pro is active.
+		 *
+		 * Older Pro builds hide the form field blocks from the inserter and do not
+		 * register standalone field blocks, which removes the fields from the editor.
+		 * Prompt the user to update Pro so the blocks are restored.
+		 *
+		 * @since 1.9.1
+		 */
+		public function maybe_show_update_pro_notice() {
+			if ( ! current_user_can( 'update_plugins' ) ) {
+				return;
+			}
+
+			if ( ! is_gutena_forms_pro() ) {
+				return;
+			}
+
+			$pro_version = $this->get_pro_plugin_version();
+
+			if ( '' === $pro_version || ! version_compare( $pro_version, GUTENA_FORMS_MIN_PRO_VERSION, '<' ) ) {
+				return;
+			}
+			?>
+			<div class="notice notice-error is-dismissible">
+				<p><?php echo esc_html__( 'Please update the Pro version to the latest version to get blocks back.', 'gutena-forms' ); ?></p>
+			</div>
+			<?php
+		}
+
+		/**
+		 * Get the installed Gutena Forms Pro version from its plugin header.
+		 *
+		 * Reads the header instead of GUTENA_FORMS_PRO_VERSION because Pro sets that
+		 * constant to a timestamp in dev environments, which breaks version comparisons.
+		 *
+		 * @since 1.9.1
+		 * @return string Pro plugin version, or empty string when it cannot be resolved.
+		 */
+		private function get_pro_plugin_version() {
+			if ( ! defined( 'GUTENA_FORMS_PRO_FILE' ) || ! file_exists( GUTENA_FORMS_PRO_FILE ) ) {
+				return '';
+			}
+
+			$pro_data = get_file_data( GUTENA_FORMS_PRO_FILE, array( 'Version' => 'Version' ) );
+
+			return ( ! empty( $pro_data['Version'] ) ) ? $pro_data['Version'] : '';
 		}
 
 		/**
@@ -392,8 +452,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			Gutena_Forms_Form_Block::get_instance()->register_block();
 			Gutena_Forms_Existing_Forms_Block::get_instance()->register_block();
 			Gutena_Forms_Fields::get_instance()->register_blocks();
-			
-			
+
+
 			Gutena_Forms_Field_Block::get_instance()->register_block( 'backward compatibility' );
 			Gutena_Forms_Form_Field_Block::get_instance()->register_block( 'backward compatibility' );
 			Gutena_Forms_Field_Label_Block::get_instance()->register_block( 'backward compatibility' );
