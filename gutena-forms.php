@@ -230,6 +230,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
 			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
 			add_action( 'admin_notices', array( $this, 'maybe_show_update_pro_notice' ) );
+			add_action( 'admin_init', array( $this, 'register_pro_plugin_row_notice' ) );
 
 			$this->load_dashboard();
 		}
@@ -272,6 +273,62 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 					?>
 				</p>
 			</div>
+			<?php
+		}
+
+		/**
+		 * Hook the outdated-Pro notice into the Pro plugin row on the Plugins screen.
+		 *
+		 * @since 1.9.1
+		 */
+		public function register_pro_plugin_row_notice() {
+			if ( ! defined( 'GUTENA_FORMS_PRO_FILE' ) ) {
+				return;
+			}
+
+			$basename = plugin_basename( GUTENA_FORMS_PRO_FILE );
+			add_action( "after_plugin_row_{$basename}", array( $this, 'render_pro_plugin_row_notice' ), 10, 2 );
+		}
+
+		/**
+		 * Render an inline notice under the Gutena Forms Pro row on the Plugins screen.
+		 *
+		 * @since 1.9.1
+		 * @param string $plugin_file Plugin file path (unused).
+		 * @param array  $plugin_data Plugin header data (unused).
+		 */
+		public function render_pro_plugin_row_notice( $plugin_file, $plugin_data ) {
+			if ( ! current_user_can( 'update_plugins' ) || ! is_gutena_forms_pro() ) {
+				return;
+			}
+
+			$pro_version = $this->get_pro_plugin_version();
+
+			if ( '' === $pro_version || ! version_compare( $pro_version, GUTENA_FORMS_MIN_PRO_VERSION, '<=' ) ) {
+				return;
+			}
+
+			$list_table = function_exists( '_get_list_table' ) ? _get_list_table( 'WP_Plugins_List_Table' ) : null;
+			$colspan    = ( $list_table && method_exists( $list_table, 'get_column_count' ) ) ? $list_table->get_column_count() : 3;
+			?>
+			<tr class="plugin-update-tr active">
+				<td colspan="<?php echo esc_attr( $colspan ); ?>" class="plugin-update colspanchange">
+					<div class="update-message notice inline notice-error notice-alt">
+						<p>
+							<?php
+							printf(
+								/* translators: %s: current Gutena Forms Pro version number. */
+								wp_kses(
+									__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
+									array( 'strong' => array() )
+								),
+								esc_html( $pro_version )
+							);
+							?>
+						</p>
+					</div>
+				</td>
+			</tr>
 			<?php
 		}
 
