@@ -254,12 +254,23 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 
 			$pro_version = $this->get_pro_plugin_version();
 
-			if ( '' === $pro_version || ! version_compare( $pro_version, GUTENA_FORMS_MIN_PRO_VERSION, '<' ) ) {
+			if ( '' === $pro_version || ! version_compare( $pro_version, GUTENA_FORMS_MIN_PRO_VERSION, '<=' ) ) {
 				return;
 			}
 			?>
 			<div class="notice notice-error is-dismissible">
-				<p><?php echo esc_html__( 'Please update the Pro version to the latest version to get blocks back.', 'gutena-forms' ); ?></p>
+				<p>
+					<?php
+					printf(
+						/* translators: %s: current Gutena Forms Pro version number. */
+						wp_kses(
+							__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
+							array( 'strong' => array() )
+						),
+						esc_html( $pro_version )
+					);
+					?>
+				</p>
 			</div>
 			<?php
 		}
