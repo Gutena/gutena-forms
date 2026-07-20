@@ -203,6 +203,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-existing-forms-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-pro-field-blocks.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-fields.php';
 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-handle-save-form.php';
@@ -520,6 +521,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			Gutena_Forms_Form_Block::get_instance()->register_block();
 			Gutena_Forms_Existing_Forms_Block::get_instance()->register_block();
 			Gutena_Forms_Fields::get_instance()->register_blocks();
+			Gutena_Forms_Pro_Field_Blocks::get_instance()->register_blocks( 'only when pro version not available' );
 
 
 			Gutena_Forms_Field_Block::get_instance()->register_block( 'backward compatibility' );

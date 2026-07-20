@@ -8,6 +8,7 @@ import save from './save';
 import metadata from './block.json';
 import { gutenaFormsIcon } from './icon';
 import { Icon } from '@wordpress/components';
+import './pro/pro-fields-handler';
 
 registerBlockType( metadata, {
 	icon: gutenaFormsIcon,
