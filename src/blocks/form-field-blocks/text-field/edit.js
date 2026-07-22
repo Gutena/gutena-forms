@@ -3,7 +3,7 @@ import { useEffect } from '@wordpress/element';
 import { select } from '@wordpress/data';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { PanelBody, TextControl, ToggleControl, RangeControl } from '@wordpress/components';
-import { gfIsEmpty, gfSanitizeName } from '../../../shared/utils/helper';
+import { gfIsEmpty, gfSanitizeName, gfGetTextAutocompleteAttr } from '../../../shared/utils/helper';
 
 const isFieldNameAttrReserved = ( nameAttrCheck, clientIdCheck ) => {
 	const blocksClientIds = select( 'core/block-editor' ).getClientIdsWithDescendants();
@@ -65,7 +65,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						} }
 					/>
 					<TextControl
-						label={ __( 'Name attribute', 'gutena-forms' ) + ' *' }
+						label={ __( 'Field ID', 'gutena-forms' ) + ' *' }
 						value={ nameAttr ?? '' }
 						onChange={ ( nextNameAttr ) => setAttributes( { nameAttr: gfSanitizeName( nextNameAttr ) } ) }
 						help={ __( 'Used as input name in form submission.', 'gutena-forms' ) }
@@ -119,6 +119,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						placeholder={ placeholder || __( 'Placeholder...', 'gutena-forms' ) }
 						defaultValue={ defaultValue }
 						maxLength={ maxlength && maxlength > 0 ? maxlength : undefined }
+						autoComplete={ gfGetTextAutocompleteAttr( autocomplete, nameAttr, fieldName ) }
 						readOnly
 					/>
 				</div>

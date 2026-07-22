@@ -1,5 +1,5 @@
 import { useBlockProps } from '@wordpress/block-editor';
-import { gfIsEmpty } from '../../../shared/utils/helper';
+import { gfIsEmpty, gfGetAutocompleteAttr } from '../../../shared/utils/helper';
 
 function getFieldClasses( { isRequired, autocomplete } ) {
 	const parts = [ 'gutena-forms-field', 'optin-field' ];
@@ -35,7 +35,13 @@ export default function Save( { attributes } ) {
 			<div className={ fieldClasses }>
 				<label className="optin-container" htmlFor={ nameAttr }>
 					{ fieldName }
-					<input id={ nameAttr } type="checkbox" name={ nameAttr } value="1" />
+					<input
+						id={ nameAttr }
+						type="checkbox"
+						name={ nameAttr }
+						value="1"
+						autoComplete={ gfGetAutocompleteAttr( autocomplete, 'on' ) }
+					/>
 					<span className="checkmark" />
 				</label>
 			</div>

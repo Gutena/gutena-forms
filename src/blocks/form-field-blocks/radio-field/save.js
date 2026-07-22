@@ -1,5 +1,5 @@
 import { useBlockProps } from '@wordpress/block-editor';
-import { gfIsEmpty } from '../../../shared/utils/helper';
+import { gfIsEmpty, gfGetAutocompleteAttr } from '../../../shared/utils/helper';
 
 function getFieldClasses( { isRequired, optionsInline, optionsColumns, autocomplete } ) {
 	const parts = [ 'gutena-forms-field', 'radio-field' ];
@@ -64,6 +64,7 @@ export default function Save( { attributes } ) {
 											type="radio"
 											name={ nameAttr }
 											value={ option }
+											autoComplete={ gfGetAutocompleteAttr( autocomplete, 'on' ) }
 										/>
 										<span className="checkmark" />
 									</div>

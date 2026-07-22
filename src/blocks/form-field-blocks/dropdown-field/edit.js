@@ -355,7 +355,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						} }
 					/>
 					<TextControl
-						label={ __( 'Name attribute', 'gutena-forms' ) + ' *' }
+						label={ __( 'Field ID', 'gutena-forms' ) + ' *' }
 						value={ nameAttr ?? '' }
 						onChange={ ( nextNameAttr ) =>
 							setAttributes( {

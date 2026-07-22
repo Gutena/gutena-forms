@@ -1,5 +1,5 @@
 import { useBlockProps } from '@wordpress/block-editor';
-import { gfIsEmpty } from '../../../shared/utils/helper';
+import { gfIsEmpty, gfGetAutocompleteAttr } from '../../../shared/utils/helper';
 
 function numAttr( v ) {
 	if ( gfIsEmpty( v ) && v !== 0 && v !== '0' ) {
@@ -47,6 +47,7 @@ export default function Save( { attributes } ) {
 					min={ min }
 					max={ max }
 					step={ step }
+					autoComplete={ gfGetAutocompleteAttr( autocomplete, 'on' ) }
 					required={ isRequired ? 'required' : undefined }
 				/>
 			</div>

@@ -1,6 +1,6 @@
 import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import { gfIsEmpty } from '../../../shared/utils/helper';
+import { gfIsEmpty, gfGetAutocompleteAttr } from '../../../shared/utils/helper';
 
 function getFieldClasses( { isRequired, autocomplete } ) {
 	const parts = [ 'gutena-forms-field', 'select-field' ];
@@ -93,6 +93,7 @@ export default function Save( { attributes } ) {
 						tabIndex={ -1 }
 						aria-hidden="true"
 						aria-labelledby={ labelId }
+						autoComplete={ gfGetAutocompleteAttr( autocomplete, 'on' ) }
 						required={ isRequired }
 					>
 						{ options }

@@ -1,5 +1,5 @@
 import { useBlockProps } from '@wordpress/block-editor';
-import { gfIsEmpty } from '../../../shared/utils/helper';
+import { gfIsEmpty, gfGetTextAutocompleteAttr } from '../../../shared/utils/helper';
 
 export default function Save( { attributes } ) {
 	const {
@@ -34,6 +34,7 @@ export default function Save( { attributes } ) {
 					placeholder={ placeholder }
 					value={ defaultValue }
 					maxLength={ maxlength && maxlength > 0 ? maxlength : undefined }
+					autoComplete={ gfGetTextAutocompleteAttr( autocomplete, nameAttr, fieldName ) }
 					required={ isRequired ? 'required' : undefined }
 				/>
 			</div>

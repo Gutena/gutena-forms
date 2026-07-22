@@ -65,7 +65,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						} }
 					/>
 					<TextControl
-						label={ __( 'Name attribute', 'gutena-forms' ) + ' *' }
+						label={ __( 'Field ID', 'gutena-forms' ) + ' *' }
 						value={ nameAttr ?? '' }
 						onChange={ ( nextNameAttr ) => setAttributes( { nameAttr: gfSanitizeName( nextNameAttr ) } ) }
 						help={ __( 'Used as input name in form submission.', 'gutena-forms' ) }
