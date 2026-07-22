@@ -69,7 +69,11 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 			return array(
 				'id'          => 'recaptcha',
 				'title'       => __( 'Google reCAPTCHA Settings', 'gutena-forms' ),
-				'description' => __( 'Protect your forms using Google reCAPTCHA to prevent automated spam.', 'gutena-forms' ),
+				'description' => sprintf(
+					/* translators: %1$s: Learn More link. */
+					__( 'Protect your forms using Google reCAPTCHA to prevent automated spam. %1$s', 'gutena-forms' ),
+					'<a target="_blank" href="https://gutenaforms.com/docs/spam-protection/google-recaptcha/">' . __( 'Learn More', 'gutena-forms' ) . '</a>'
+				),
 				'fields'      => array(
 					array(
 						'id'      => 'enable',

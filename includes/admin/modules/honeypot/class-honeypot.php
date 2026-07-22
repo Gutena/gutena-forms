@@ -55,7 +55,11 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 		public function get_settings() {
 			return array(
 				'title'       => __( 'Honeypot Field Settings', 'gutena-forms' ),
-				'description' => __( 'Use Honeypot protection to silently block spam bots without affecting real users.', 'gutena-forms' ),
+				'description' => sprintf(
+					/* translators: %1$s: Learn More link. */
+					__( 'Use Honeypot protection to silently block spam bots without affecting real users. %1$s', 'gutena-forms' ),
+					'<a target="_blank" href="https://gutenaforms.com/docs/spam-protection/honeypot-security/">' . __( 'Learn More', 'gutena-forms' ) . '</a>'
+				),
 				'fields'      => array(
 					array(
 						'id'      => 'enable',

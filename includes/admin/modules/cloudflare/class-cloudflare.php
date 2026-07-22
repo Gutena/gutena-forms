@@ -92,7 +92,11 @@ if ( ! class_exists( 'Gutena_Forms_Cloudflare' ) && class_exists( 'Gutena_Forms_
 			return array(
 				'id'          => 'cloudflare',
 				'title'       => __( 'Cloudflare Turnstile', 'gutena-forms' ),
-				'description' => __( 'Secure your forms with Cloudflare Turnstile to block bots without affecting user experience.', 'gutena-forms' ),
+				'description' => sprintf(
+					/* translators: %1$s: Learn More link. */
+					__( 'Secure your forms with Cloudflare Turnstile to block bots without affecting user experience. %1$s', 'gutena-forms' ),
+					'<a target="_blank" href="https://gutenaforms.com/docs/spam-protection/cloudflare-turnstile/">' . __( 'Learn More', 'gutena-forms' ) . '</a>'
+				),
 				'fields'      => array(
 					array(
 						'id'      => 'enable',
