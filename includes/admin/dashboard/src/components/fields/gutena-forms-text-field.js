@@ -1,7 +1,7 @@
 import { TextControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 
-const GutenaFormsTextField = ( { onChange, label, id, desc, value, placeholder, disabled = false } ) => {
+const GutenaFormsTextField = ( { onChange, label, id, desc, value, placeholder, disabled = false, onFocus } ) => {
 
     const [ fieldValue, setFieldValue ] = useState( '' );
 
@@ -24,6 +24,7 @@ const GutenaFormsTextField = ( { onChange, label, id, desc, value, placeholder, 
                 label={ label }
                 value={ fieldValue }
                 onChange={ handleChange }
+                onFocus={ onFocus }
                 placeholder={ placeholder }
 				disabled={ disabled }
             />
