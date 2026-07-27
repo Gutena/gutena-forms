@@ -38,6 +38,7 @@ import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
 } from '@wordpress/blocks';
+import { applyFilters } from '@wordpress/hooks';
 import RangeControlUnit from '../../shared/components/RangeControlUnit';
 import './editor.scss';
 import variations from './variations';
@@ -734,6 +735,14 @@ export default function Edit( props ) {
 		'gutena/rating-field',
 	];
 
+	const allowedProBlocks =
+		typeof gutenaFormsBlock !== 'undefined' && gutenaFormsBlock?.is_pro
+			? applyFilters(
+					'gutena_forms__allowed_inner_blocks',
+					PRO_STANDALONE_BLOCK_NAMES
+			  )
+			: [];
+
 	const ALLOWED_BLOCKS = [
 		'core/columns',
 		'core/group',
@@ -749,9 +758,7 @@ export default function Edit( props ) {
 		'gutena/radio-field',
 		'gutena/checkbox-field',
 		'core/buttons',
-		...( typeof gutenaFormsBlock !== 'undefined' && gutenaFormsBlock?.is_pro
-			? PRO_STANDALONE_BLOCK_NAMES
-			: [] ),
+		...allowedProBlocks,
 	];
 
 	const blockProps = useBlockProps( {
