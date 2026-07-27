@@ -1,8 +1,8 @@
 === Gutena Forms – Contact Form, Survey Form, Feedback Form, Booking Form, and Custom Form Builder ===
 Contributors:      wpexpertsio
 Tags:              contact form, custom form, forms, form builder, WordPress form plugin
-Tested up to:      6.9
-Stable tag:        1.9.0
+Tested up to:      7.0
+Stable tag:        2.0.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,8 @@ WordPress form builder to create lightweight contact forms, survey forms, feedba
 
 = WordPress Contact Form Builder Plugin =
 
-[👑Checkout Premium Version](https://gutenaforms.com/pricing/?utm_source=wp_org&utm_medium=website&utm_campaign=free_plugin) |  [💻 Live Demo](https://app.instawp.io/launch?s=demo-gutena-forms&d=v2) |  [Support](https://objectsws.atlassian.net/servicedesk/customer/portal/239)
+[👑Checkout Premium Version](https://gutenaforms.com/pricing/?utm_source=wp_org&utm_medium=website&utm_campaign=free_plugin) | [💻 Live Demo](https://app.instawp.io/launch?s=demo-gutena-forms&d=v2) | [Documentation](https://gutenaforms.com/docs/) | [Support](https://objectsws.atlassian.net/servicedesk/customer/portal/239)
+
 
 [Gutena Forms](https://gutenaforms.com/) is the easiest WordPress form builder for creating responsive, lightweight forms in the WordPress block editor (formerly Gutenberg). It works as a block editor native form plugin that lets you build contact forms, survey forms, feedback forms, booking forms, and any custom form using a dedicated WordPress block.
 
@@ -242,7 +243,7 @@ Use Gutena Forms for any form-building need, including:
 
 * [Contact Form](https://gutenaforms.com/forms-block#contact-form)
 
-* [Surveys and feedback forms]((https://gutenaforms.com/forms-block#contact-form))
+* [Surveys and feedback forms](https://gutenaforms.com/forms-block#contact-form)
 
 * [Lead generation forms](https://gutenaforms.com/forms-block#appointment-form)
 
@@ -401,6 +402,12 @@ Please report security bugs found in the source code of the undefined plugin thr
 
 
 == Changelog ==
+
+= 2.0.0 - Jul 26, 2026 =
+* New - Redesigned frontend UI for all form fields with consistent layout, labels, validation states, and accessibility
+* New - Standalone single-block fields: each field type is now one block with merged settings (no nested child blocks)
+* Fixed – Security enhancement on behalf of CVE-2026-11995
+* Fixed – Accessibility issues
 
 = 1.9.0 – May 22, 2026 =
 * New - Added global and form-specific settings for default validation messages
