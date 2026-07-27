@@ -30,7 +30,7 @@ if ( ! class_exists( 'Gutena_Forms_Field_Label_Block' ) ) :
 		 */
 		public function register_block() {
 			register_block_type(
-				GUTENA_FORMS_DIR_PATH . 'build/field-label',
+				GUTENA_FORMS_DIR_PATH . 'build/blocks/field-label',
 				array(
 					'render_callback' => array( $this, 'render' ),
 				)

@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           1.9.0
+ * Version:           2.0.0
  * Author:            Gutena Forms
  * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
@@ -41,7 +41,17 @@ if ( ! defined( 'GUTENA_FORMS_PLUGIN_URL' ) ) {
  * Plugin version.
  */
 if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-	define( 'GUTENA_FORMS_VERSION', '1.9.0' );
+	define( 'GUTENA_FORMS_VERSION', '2.0.0' );
+}
+
+/**
+ * Minimum Gutena Forms Pro version compatible with this Free version.
+ *
+ * Older Pro builds hide the form field blocks from the inserter and do not
+ * register the standalone field blocks, so users on an outdated Pro must update.
+ */
+if ( ! defined( 'GUTENA_FORMS_MIN_PRO_VERSION' ) ) {
+	define( 'GUTENA_FORMS_MIN_PRO_VERSION', '1.3.0' );
 }
 
 /**
@@ -187,13 +197,18 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-dummy-fields.php';
 
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/legacy-blocks.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-existing-forms-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-pro-field-blocks.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-fields.php';
+
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-handle-save-form.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-form-submit-handler.php';
+
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/rest-api/class-rest-api.php';
 		}
 
@@ -215,8 +230,126 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			add_action( 'wp_ajax_nopriv_gutena_forms_submit', array( Gutena_Forms_Submit_Form_Handler::get_instance(), 'handle_submit' ) );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ), 1000 );
 			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
+			add_action( 'admin_notices', array( $this, 'maybe_show_update_pro_notice' ) );
+			add_action( 'admin_init', array( $this, 'register_pro_plugin_row_notice' ) );
 
 			$this->load_dashboard();
+		}
+
+		/**
+		 * Show an admin notice when an outdated Gutena Forms Pro is active.
+		 *
+		 * Older Pro builds hide the form field blocks from the inserter and do not
+		 * register standalone field blocks, which removes the fields from the editor.
+		 * Prompt the user to update Pro so the blocks are restored.
+		 *
+		 * @since 1.9.1
+		 */
+		public function maybe_show_update_pro_notice() {
+			if ( ! current_user_can( 'update_plugins' ) ) {
+				return;
+			}
+
+			if ( ! is_gutena_forms_pro() ) {
+				return;
+			}
+
+			$pro_version = $this->get_pro_plugin_version();
+
+			if ( '' === $pro_version || ! version_compare( $pro_version, GUTENA_FORMS_MIN_PRO_VERSION, '<=' ) ) {
+				return;
+			}
+			?>
+			<div class="notice notice-error is-dismissible">
+				<p>
+					<?php
+					printf(
+						/* translators: %s: current Gutena Forms Pro version number. */
+						wp_kses(
+							__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
+							array( 'strong' => array() )
+						),
+						esc_html( $pro_version )
+					);
+					?>
+				</p>
+			</div>
+			<?php
+		}
+
+		/**
+		 * Hook the outdated-Pro notice into the Pro plugin row on the Plugins screen.
+		 *
+		 * @since 1.9.1
+		 */
+		public function register_pro_plugin_row_notice() {
+			if ( ! defined( 'GUTENA_FORMS_PRO_FILE' ) ) {
+				return;
+			}
+
+			$basename = plugin_basename( GUTENA_FORMS_PRO_FILE );
+			add_action( "after_plugin_row_{$basename}", array( $this, 'render_pro_plugin_row_notice' ), 10, 2 );
+		}
+
+		/**
+		 * Render an inline notice under the Gutena Forms Pro row on the Plugins screen.
+		 *
+		 * @since 1.9.1
+		 * @param string $plugin_file Plugin file path (unused).
+		 * @param array  $plugin_data Plugin header data (unused).
+		 */
+		public function render_pro_plugin_row_notice( $plugin_file, $plugin_data ) {
+			if ( ! current_user_can( 'update_plugins' ) || ! is_gutena_forms_pro() ) {
+				return;
+			}
+
+			$pro_version = $this->get_pro_plugin_version();
+
+			if ( '' === $pro_version || ! version_compare( $pro_version, GUTENA_FORMS_MIN_PRO_VERSION, '<=' ) ) {
+				return;
+			}
+
+			$list_table = function_exists( '_get_list_table' ) ? _get_list_table( 'WP_Plugins_List_Table' ) : null;
+			$colspan    = ( $list_table && method_exists( $list_table, 'get_column_count' ) ) ? $list_table->get_column_count() : 3;
+			?>
+			<tr class="plugin-update-tr active">
+				<td colspan="<?php echo esc_attr( $colspan ); ?>" class="plugin-update colspanchange">
+					<div class="update-message notice inline notice-error notice-alt">
+						<p>
+							<?php
+							printf(
+								/* translators: %s: current Gutena Forms Pro version number. */
+								wp_kses(
+									__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
+									array( 'strong' => array() )
+								),
+								esc_html( $pro_version )
+							);
+							?>
+						</p>
+					</div>
+				</td>
+			</tr>
+			<?php
+		}
+
+		/**
+		 * Get the installed Gutena Forms Pro version from its plugin header.
+		 *
+		 * Reads the header instead of GUTENA_FORMS_PRO_VERSION because Pro sets that
+		 * constant to a timestamp in dev environments, which breaks version comparisons.
+		 *
+		 * @since 1.9.1
+		 * @return string Pro plugin version, or empty string when it cannot be resolved.
+		 */
+		private function get_pro_plugin_version() {
+			if ( ! defined( 'GUTENA_FORMS_PRO_FILE' ) || ! file_exists( GUTENA_FORMS_PRO_FILE ) ) {
+				return '';
+			}
+
+			$pro_data = get_file_data( GUTENA_FORMS_PRO_FILE, array( 'Version' => 'Version' ) );
+
+			return ( ! empty( $pro_data['Version'] ) ) ? $pro_data['Version'] : '';
 		}
 
 		/**
@@ -386,18 +519,25 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			}
 
 			Gutena_Forms_Form_Block::get_instance()->register_block();
-			Gutena_Forms_Field_Block::get_instance()->register_block();
-			Gutena_Forms_Form_Field_Block::get_instance()->register_block();
 			Gutena_Forms_Existing_Forms_Block::get_instance()->register_block();
-			Gutena_Forms_Field_Label_Block::get_instance()->register_block();
+			Gutena_Forms_Fields::get_instance()->register_blocks();
+			Gutena_Forms_Pro_Field_Blocks::get_instance()->register_blocks( 'only when pro version not available' );
+
+
+			Gutena_Forms_Field_Block::get_instance()->register_block( 'backward compatibility' );
+			Gutena_Forms_Form_Field_Block::get_instance()->register_block( 'backward compatibility' );
+			Gutena_Forms_Field_Label_Block::get_instance()->register_block( 'backward compatibility' );
+
+			register_block_type(
+				GUTENA_FORMS_DIR_PATH . 'build/blocks/field-group',
+				gutena_forms_legacy_block_registration_args()
+			);
 
 			// Form Confirmation Message Block.
-			register_block_type( __DIR__ . '/build/form-confirm-msg' );
+			register_block_type( __DIR__ . '/build/blocks/form-confirm-msg' );
 
 			// Form Error Message Block.
-			register_block_type( __DIR__ . '/build/form-error-msg' );
-
-			register_block_type( __DIR__ . '/build/field-group' );
+			register_block_type( __DIR__ . '/build/blocks/form-error-msg' );
 
 			// google recaptcha.
 			$grecaptcha = get_option( 'gutena_forms__recaptcha', array() );
@@ -415,6 +555,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 				'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
 				'required_msg_check'  => __( 'Please check an option', 'gutena-forms' ),
 				'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
+				'invalid_url_msg'     => __( 'Please enter a valid URL', 'gutena-forms' ),
 				'min_value_msg'       => __( 'Input value should be greater than', 'gutena-forms' ),
 				'max_value_msg'       => __( 'Input value should be less than', 'gutena-forms' ),
 			);
@@ -473,6 +614,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 						'is_gutena_forms_post_type'     => $gutena_forms_post_type,
 						'forms_available'               => $forms_available,
 						'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
+						'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
 					),
 					$gf_message
 				)
@@ -701,6 +843,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 							'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
 							'required_msg_check'  => __( 'Please check an option', 'gutena-forms' ),
 							'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
+							'invalid_url_msg'     => __( 'Please enter a valid URL', 'gutena-forms' ),
 							'min_value_msg'       => __( 'Input value should be greater than', 'gutena-forms' ),
 							'max_value_msg'       => __( 'Input value should be less than', 'gutena-forms' ),
 						);
@@ -740,7 +883,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 							$current_form_id = $single_form_schema['form_attrs']['formID'];
 							// Only inherited/default messages may update the global option; local overrides stay on this form only.
 							// If no forms exist yet, or only this form exists, it is the Primary Form.
-							if ( $is_default_messages && ( empty( $all_form_ids ) || ( count( $all_form_ids ) === 1 && in_array( $current_form_id, $all_form_ids, true ) ) ) ) {
+							if (
+								$is_default_messages
+								&& (
+									empty( $all_form_ids )
+									|| ( count( $all_form_ids ) === 1 && in_array( $current_form_id, $all_form_ids, true ) )
+									|| (
+										class_exists( 'Gutena_Forms_Settings_Migrator' )
+										&& Gutena_Forms_Settings_Migrator::is_global_module_empty( 'messages' )
+									)
+								)
+							) {
 								$messages_for_global = json_decode( wp_json_encode( $single_form_schema['form_attrs']['messages'] ), true );
 								if ( ! is_array( $messages_for_global ) ) {
 									$messages_for_global = is_array( $single_form_schema['form_attrs']['messages'] ) ? $single_form_schema['form_attrs']['messages'] : array();
@@ -861,7 +1014,14 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 				}
 
 				if ( ! empty( $block['blockName'] ) && 'gutena/form-field' === $block['blockName'] && ! empty( $block['attrs']['nameAttr'] ) ) {
-					$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = $block['attrs'];
+					$form_schema[ $form_id ]['form_fields'][ $block['attrs']['nameAttr'] ] = Gutena_Forms_Helper::merge_block_default_attributes(
+						$block['blockName'],
+						$block['attrs']
+					);
+				}
+
+				if ( ! empty( $form_id ) && ! empty( $block['blockName'] ) ) {
+					$form_schema = apply_filters( 'gutena_forms_map_block_field_schema', $form_schema, $block, $form_id );
 				}
 
 				if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {

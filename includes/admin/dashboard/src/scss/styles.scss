@@ -293,6 +293,12 @@
             font-size: 12px;
             font-weight: 400;
             margin-top: 4px;
+
+            a {
+              color: #0da88c;
+              font-weight: 500;
+              font-size: 12px;
+            }
           }
         }
 
@@ -1341,6 +1347,7 @@
 
 
   .gutena-forms__integrations {
+    margin-top: 20px;
 
     .gutena-forms__integration {
       display: inline-block;

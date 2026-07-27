@@ -30,9 +30,11 @@ if ( ! class_exists( 'Gutena_Forms_Form_Field_Block' ) ) :
 		 */
 		public function register_block() {
 			register_block_type(
-				GUTENA_FORMS_DIR_PATH . 'build/form-field',
-				array(
-					'render_callback' => array( $this, 'render' ),
+				GUTENA_FORMS_DIR_PATH . 'build/blocks/form-field',
+				gutena_forms_legacy_block_registration_args(
+					array(
+						'render_callback' => array( $this, 'render' ),
+					)
 				)
 			);
 		}

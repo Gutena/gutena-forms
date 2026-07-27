@@ -24,7 +24,7 @@ if ( ! class_exists( 'Gutena_Forms_Existing_Forms_Block' ) ) :
 		 */
 		public function register_block() {
 			register_block_type(
-				GUTENA_FORMS_DIR_PATH . 'build/existing-forms',
+				GUTENA_FORMS_DIR_PATH . 'build/blocks/existing-forms',
 				array(
 					'render_callback' => array( $this, 'render' ),
 				)

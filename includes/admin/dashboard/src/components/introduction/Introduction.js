@@ -172,7 +172,7 @@ const Introduction = ( props ) => {
             {/* CTA Section */}
             <div className="gf-cta-section">
                 <a
-                    href="https://gutenaforms.com/#faq"
+                    href="https://gutenaforms.com/docs/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="gf-read-guide-link"

@@ -54,7 +54,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		 */
 		public function register_block() {
 			register_block_type(
-				GUTENA_FORMS_DIR_PATH . 'build',
+				GUTENA_FORMS_DIR_PATH . 'build/blocks/form',
 				array(
 					'render_callback' => array( $this, 'render_block' ),
 				)
@@ -196,10 +196,10 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 					? intval( $honeypot_settings['timeCheckValue'] )
 					: 4; // default 4 seconds
 				// we need to different hidden fields 1 for checking time second for check honeypot.
-				$honeypot_html .= '<div style="display:none;">
+				$honeypot_html .= '<div style="display:none;" aria-hidden="true">
 					<label for="gf_hp_' . esc_attr( $attributes['formID'] ) . '">' . esc_html__( 'Leave this field empty', 'gutena-forms' ) . '</label>
-					<input type="text" name="gf_hp_' . esc_attr( $attributes['formID'] ) . '" id="gf_hp_' . esc_attr( $attributes['formID'] ) . '" value="" />
-					<input type="hidden" name="gf_time_check_' . esc_attr( $attributes['formID'] ) . '" value="' . esc_attr( time() + $time_check_value ) . '" />
+					<input type="text" name="gf_hp_' . esc_attr( $attributes['formID'] ) . '" id="gf_hp_' . esc_attr( $attributes['formID'] ) . '" value="" autocomplete="off" tabindex="-1" />
+					<input type="hidden" name="gf_time_check_' . esc_attr( $attributes['formID'] ) . '" value="' . esc_attr( time() + $time_check_value ) . '" autocomplete="off" />
 				</div>';
 			}
 

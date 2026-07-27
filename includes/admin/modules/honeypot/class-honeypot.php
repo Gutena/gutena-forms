@@ -55,7 +55,11 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 		public function get_settings() {
 			return array(
 				'title'       => __( 'Honeypot Field Settings', 'gutena-forms' ),
-				'description' => __( 'Use Honeypot protection to silently block spam bots without affecting real users.', 'gutena-forms' ),
+				'description' => sprintf(
+					/* translators: %1$s: Learn More link. */
+					__( 'Use Honeypot protection to silently block spam bots without affecting real users. %1$s', 'gutena-forms' ),
+					'<a target="_blank" href="https://gutenaforms.com/docs/spam-protection/honeypot-security/">' . __( 'Learn More', 'gutena-forms' ) . '</a>'
+				),
 				'fields'      => array(
 					array(
 						'id'      => 'enable',
@@ -144,30 +148,6 @@ if ( ! class_exists( 'Gutena_Forms_Honeypot' ) && class_exists( 'Gutena_Forms_Fo
 		 * @since 1.8.0
 		 */
 		private function run() {
-			add_action( 'gutena_forms__saving_block', array( $this, 'save_honeypot' ), 10, 3 );
-		}
-
-		/**
-		 * Saving the default settings.
-		 *
-		 * @since 1.8.0
-		 * @param array   $attributes The attiributes of the block being saved, including the honeypot settings.
-		 * @param array   $blocks All blocks of the post.
-		 * @param WP_Post $post Current post object.
-		 */
-		public function save_honeypot( $attributes, $blocks, $post ) {
-			$honeypot = isset( $attributes['honeypot'] ) && is_array( $attributes['honeypot'] ) ? $attributes['honeypot'] : array();
-
-			if ( ! Gutena_Forms_Settings_Migrator::is_single_form_site() ) {
-				return;
-			}
-
-			if ( empty( $honeypot ) ) {
-				return;
-			}
-
-			$this->settings = Gutena_Forms_Settings_Migrator::sanitize_settings_for_option( $honeypot );
-			update_option( 'gutena_forms__honeypot', $this->settings );
 		}
 	}
 

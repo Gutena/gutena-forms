@@ -151,27 +151,27 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 														capabilities && capabilities.map( cap => {
 															if ( 'view' === cap ) {
 																return (
-																	<>
-																		<Link
-																			to={ `/settings/entry/${ row.entry_id }` }
-																		>
-																			<Eye />
-																		</Link>
-																	</>
+																	<Link
+																		key={ `entry-action-view-${ row.entry_id }` }
+																		to={ `/settings/entry/${ row.entry_id }` }
+																	>
+																		<Eye />
+																	</Link>
 																);
 															}
 
 															if ( 'delete' === cap ) {
 																return (
-																	<>
-																		<Button
-																			onClick={ () => handleDeleteEntry( row ) }
-																		>
-																			<Bin />
-																		</Button>
-																	</>
+																	<Button
+																		key={ `entry-action-delete-${ row.entry_id }` }
+																		onClick={ () => handleDeleteEntry( row ) }
+																	>
+																		<Bin />
+																	</Button>
 																);
 															}
+
+															return null;
 														} )
 													}
 

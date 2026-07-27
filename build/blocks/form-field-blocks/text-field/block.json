@@ -1,0 +1,73 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/text-field",
+  "version": "1.0.0",
+  "title": "Text Field",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena",
+  "icon": "text",
+  "description": "Standalone text input field for Gutena Forms.",
+  "keywords": [
+    "text field",
+    "input",
+    "gutena forms"
+  ],
+  "attributes": {
+    "nameAttr": {
+      "type": "string",
+      "default": ""
+    },
+    "fieldName": {
+      "type": "string",
+      "default": "Name"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": ""
+    },
+    "isRequired": {
+      "type": "boolean",
+      "default": false
+    },
+    "defaultValue": {
+      "type": "string",
+      "default": ""
+    },
+    "maxlength": {
+      "type": "number",
+      "default": 0
+    },
+    "autocomplete": {
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "errorRequiredMsg": {
+      "type": "string",
+      "default": "Field is required"
+    },
+    "fieldType": {
+      "type": "string",
+      "default": "text"
+    }
+  },
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "textdomain": "gutena-forms",
+  "editorScript": "file:./index.js"
+}
