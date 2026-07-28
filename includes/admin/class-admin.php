@@ -295,19 +295,27 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		 * Enqueue admin scripts
 		 */
 		public function enqueue_scripts_admin() {
-			if ( is_gutena_forms_pro() ) {
-				wp_enqueue_script( 'gutena-forms-admin', GUTENA_FORMS_PLUGIN_URL . 'assets/minify/js/admin.min.js', array(), GUTENA_FORMS_VERSION, true );
-			}
+			// Notice + dismiss AJAX only apply when Pro is inactive; script must load for free.
+			if ( ! is_gutena_forms_pro( false ) ) {
+				wp_enqueue_script(
+					'gutena-forms-admin',
+					GUTENA_FORMS_PLUGIN_URL . 'assets/minify/js/admin.min.js',
+					array(),
+					GUTENA_FORMS_VERSION,
+					true
+				);
 
-			wp_localize_script(
-				'gutena-forms-admin',
-				'gutenaFormsAdmin',
-				array(
-					'dismiss_notice_action' => 'gutena_forms_dismiss_notice',
-					'ajax_url'              => admin_url( 'admin-ajax.php' ),
-					'nonce'                 => wp_create_nonce( 'gutena_Forms' ),
-				)
-			);
+				// Separate object so dashboard localize of gutenaFormsAdmin does not overwrite these.
+				wp_localize_script(
+					'gutena-forms-admin',
+					'gutenaFormsAdminNotice',
+					array(
+						'dismiss_notice_action' => 'gutena_forms_dismiss_notice',
+						'ajax_url'              => admin_url( 'admin-ajax.php' ),
+						'nonce'                 => wp_create_nonce( 'gutena_Forms' ),
+					)
+				);
+			}
 
 			$assets_file = GUTENA_FORMS_DIR_PATH . 'includes/admin/dashboard/build/index.asset.php';
 			if ( file_exists( $assets_file ) ) {
