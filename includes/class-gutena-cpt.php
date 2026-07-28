@@ -125,7 +125,7 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 		/**
 		 * Removed Gutena Forms post type from sitemap
 		 *
-		 * @since 5.0.0
+		 * @since 2.3.0
 		 * @param array $post_types All registered post types.
 		 *
 		 * @return array
