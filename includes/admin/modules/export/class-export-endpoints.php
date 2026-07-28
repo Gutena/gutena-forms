@@ -44,6 +44,7 @@ if ( ! class_exists( 'Gutena_Forms_Export_Endpoints' ) ) :
 		 */
 		private function __construct() {
 			include_once plugin_dir_path( __FILE__ ) . 'class-export-entries.php';
+			include_once plugin_dir_path( __FILE__ ) . 'class-export-forms.php';
 			add_filter( 'gutena_forms__rest_routs', array( $this, 'rest_routes' ), 10, 2 );
 		}
 
@@ -67,6 +68,13 @@ if ( ! class_exists( 'Gutena_Forms_Export_Endpoints' ) ) :
 				'route'    => 'entries/export',
 				'methods'  => $server::CREATABLE,
 				'callback' => array( $this, 'export_entries' ),
+				'auth'     => true,
+			);
+
+			$routes[] = array(
+				'route'    => 'forms/export',
+				'methods'  => $server::CREATABLE,
+				'callback' => array( $this, 'export_forms' ),
 				'auth'     => true,
 			);
 
@@ -151,6 +159,45 @@ if ( ! class_exists( 'Gutena_Forms_Export_Endpoints' ) ) :
 					'filename' => $result['filename'],
 					'mime'     => $result['mime'],
 					'message'  => __( 'Entries exported successfully.', 'gutena-forms' ),
+				)
+			);
+		}
+
+		/**
+		 * Export selected forms (block trees) as JSON.
+		 *
+		 * Body: { form_ids: number[] }
+		 *
+		 * @since 2.1.0
+		 * @param WP_REST_Request $request REST request.
+		 * @return WP_REST_Response|WP_Error
+		 */
+		public function export_forms( $request ) {
+			$form_ids = $request->get_param( 'form_ids' );
+
+			if ( empty( $form_ids ) || ! is_array( $form_ids ) ) {
+				return new WP_Error(
+					'missing_forms',
+					__( 'Please select at least one form to export.', 'gutena-forms' ),
+					array( 'status' => 400 )
+				);
+			}
+
+			$exporter = new Gutena_Forms_Export_Forms();
+			$result   = $exporter->export( $form_ids );
+
+			if ( is_wp_error( $result ) ) {
+				$result->add_data( array( 'status' => 400 ) );
+				return $result;
+			}
+
+			return rest_ensure_response(
+				array(
+					'status'   => 'success',
+					'file'     => $result['file'],
+					'filename' => $result['filename'],
+					'mime'     => $result['mime'],
+					'message'  => __( 'Forms exported successfully.', 'gutena-forms' ),
 				)
 			);
 		}

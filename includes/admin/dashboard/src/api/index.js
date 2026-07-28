@@ -248,6 +248,56 @@ export async function gutenaFormsExportEntries( payload ) {
 }
 
 /**
+ * Export selected forms (parent + child blocks) as JSON.
+ *
+ * @since 2.1.0
+ * @param {Array<number|string>} formIds Form CPT post IDs.
+ * @returns {Promise<{file: string, filename: string, mime: string}>} Base64 file payload.
+ */
+export async function gutenaFormsExportForms( formIds ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }forms/export`,
+		data: {
+			form_ids: formIds,
+		},
+	} );
+
+	if ( response && 'success' === response.status && response.file ) {
+		return response;
+	}
+
+	throw new Error(
+		response?.message || 'Gutena Forms ExportForms Error'
+	);
+}
+
+/**
+ * Import forms from a Gutena Forms export JSON payload.
+ *
+ * @since 2.1.0
+ * @param {Object} payload Parsed export JSON object.
+ * @returns {Promise<{imported: Array, count: number, message: string}>} Import result.
+ */
+export async function gutenaFormsImportForms( payload ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }forms/import`,
+		data: {
+			payload,
+		},
+	} );
+
+	if ( response && 'success' === response.status ) {
+		return response;
+	}
+
+	throw new Error(
+		response?.message || 'Gutena Forms ImportForms Error'
+	);
+}
+
+/**
  * Trigger a browser download from a base64-encoded file.
  *
  * @since 2.1.0
