@@ -3,6 +3,6 @@ output/
 .npm
 .eslintcache
 .env
-*-lock.json
+package-lock.json
 phpcs.xml
 test-data/

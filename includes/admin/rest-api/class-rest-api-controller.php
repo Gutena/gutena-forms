@@ -262,6 +262,20 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					),
 				),
 				array(
+					'title' => __( 'Tools', 'gutena-forms' ),
+					'icon'  => 'Tools',
+					'menus' => array(
+						array(
+							'title' => __( 'Import', 'gutena-forms' ),
+							'slug'  => 'import',
+						),
+						array(
+							'title' => __( 'Export', 'gutena-forms' ),
+							'slug'  => 'export',
+						),
+					),
+				),
+				array(
 					'title' => __( 'MCP', 'gutena-forms' ),
 					'icon'  => 'Robot',
 					'menus' => array(),

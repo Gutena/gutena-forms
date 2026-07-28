@@ -5,6 +5,7 @@ import Integration from '../icons/integration';
 import { useState, useEffect } from '@wordpress/element';
 import { gutenaFormsFetchSettingsMenu } from '../api';
 import Robot from "../icons/robot";
+import Tools from '../icons/tools';
 
 const GutenaFormsLeftMenuNavigation = () => {
 
@@ -43,6 +44,10 @@ const GutenaFormsLeftMenuNavigation = () => {
 
 											case 'Robot':
 												IconComponent = <Robot />;
+												break;
+
+											case 'Tools':
+												IconComponent = <Tools />;
 												break;
 
 											case 'Gear':

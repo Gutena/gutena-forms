@@ -11,6 +11,8 @@ import GutenaFormsUserAccess from '../screens/gutena-forms-user-access';
 import GutenaFormsIntegrations from '../screens/gutena-forms-integrations'
 import { applyFilters } from '@wordpress/hooks';
 import GutenaFormsMcp from "../screens/gutena-forms-mcp";
+import GutenaFormsImport from '../screens/gutena-forms-import';
+import GutenaFormsExport from '../screens/gutena-forms-export';
 
 /**
  * React components for settings sub-screens (pro: tags, status, user access).
@@ -24,6 +26,8 @@ export const SettingsTemplates = {
 	'user-access': GutenaFormsUserAccess,
 	'integrations': GutenaFormsIntegrations,
 	'mcp': GutenaFormsMcp,
+	'import': GutenaFormsImport,
+	'export': GutenaFormsExport,
 	...applyFilters( 'gutena-forms.components', {} )
 };
 
