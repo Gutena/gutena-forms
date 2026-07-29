@@ -15,6 +15,7 @@ const GutenaFormsMergeTagsField = ( { tags = [], onInsert, disabled = false } ) 
 						type="button"
 						className="gutena-forms__merge-tag-pill"
 						disabled={ disabled }
+						onMouseDown={ ( event ) => event.preventDefault() }
 						onClick={ () => onInsert( tag ) }
 					>
 						{ tag }

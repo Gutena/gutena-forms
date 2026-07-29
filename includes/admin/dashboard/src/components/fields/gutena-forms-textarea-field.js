@@ -1,17 +1,7 @@
-import { useState, useEffect } from '@wordpress/element';
-
 const GutenaFormsTextareaField = ( { onChange, label, id, desc, value, placeholder, disabled = false, rows = 5, onFocus } ) => {
-	const [ fieldValue, setFieldValue ] = useState( '' );
-
-	useEffect( () => {
-		setFieldValue( value || '' );
-	}, [ value ] );
-
 	const handleChange = ( event ) => {
-		const newValue = event.target.value;
-		setFieldValue( newValue );
 		if ( onChange ) {
-			onChange( newValue );
+			onChange( event.target.value );
 		}
 	};
 
@@ -23,7 +13,7 @@ const GutenaFormsTextareaField = ( { onChange, label, id, desc, value, placehold
 			<textarea
 				id={ id }
 				className="gutena-forms__textarea-control-input"
-				value={ fieldValue }
+				value={ value || '' }
 				onChange={ handleChange }
 				onFocus={ onFocus }
 				placeholder={ placeholder }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useLayoutEffect, useRef, useState } from '@wordpress/element';
 import {NavLink, useParams} from 'react-router';
 import GutenaFormsNumberField from './fields/gutena-forms-number-field';
 import GutenaFormsToggleField from './fields/gutena-forms-toggle-field';
@@ -26,6 +26,22 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	const [ loading, setLoading ] = useState( true );
 	const [ template, setTemplate ] = useState( false );
 	const [ activeMergeField, setActiveMergeField ] = useState( 'subject' );
+	const pendingMergeCursor = useRef( null );
+
+	useLayoutEffect( () => {
+		const pending = pendingMergeCursor.current;
+		if ( ! pending ) {
+			return;
+		}
+
+		const element = document.getElementById( pending.field );
+		if ( element ) {
+			element.focus();
+			element.setSelectionRange( pending.pos, pending.pos );
+		}
+
+		pendingMergeCursor.current = null;
+	}, [ fieldValue ] );
 
 	useEffect(
 		() => {
@@ -75,7 +91,20 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	const insertMergeTag = ( tag ) => {
 		const targetField = activeMergeField || 'message';
 		const currentValue = fieldValue?.[ targetField ] || '';
-		handleFieldChange( targetField, `${ currentValue }${ tag }` );
+		const element = document.getElementById( targetField );
+		const start = element && typeof element.selectionStart === 'number'
+			? element.selectionStart
+			: currentValue.length;
+		const end = element && typeof element.selectionEnd === 'number'
+			? element.selectionEnd
+			: start;
+		const nextValue = `${ currentValue.slice( 0, start ) }${ tag }${ currentValue.slice( end ) }`;
+
+		pendingMergeCursor.current = {
+			field: targetField,
+			pos: start + tag.length,
+		};
+		handleFieldChange( targetField, nextValue );
 	};
 
 	const shouldRenderField = ( fieldId ) => {

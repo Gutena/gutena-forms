@@ -1,9 +1,9 @@
 .gutena-froms#gutena-forms__root {
   .gutena-forms__meta-box-container.gutena-forms__auto-responder-settings {
     .gutena-forms__page-title {
-      font-size: 16px;
+      font-size: 24px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 10px;
       padding-right: 0;
     }
 
@@ -16,12 +16,12 @@
     }
 
     .gutena-forms__settings-meta-box {
-      max-width: 404px;
-      padding: 19px 21px 20px;
+      max-width: 540px;
+      padding: 20px;
     }
 
     .gutena-forms__settings-meta-box .gutena-forms__field-container {
-      margin-bottom: 12px;
+      margin-bottom: 20px;
     }
 
     .gutena-forms__settings-meta-box .gutena-forms__field-container:last-child {
@@ -29,7 +29,7 @@
     }
 
     .gutena-forms__toggle-control-input .components-toggle-control__label {
-      font-size: 13px !important;
+      font-size: 14px !important;
       font-weight: 700 !important;
     }
 
@@ -43,11 +43,16 @@
     .gutena-forms__text-control .components-base-control__label,
     .gutena-forms__textarea-control .components-base-control__label {
       color: #000;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       line-height: normal;
       margin-bottom: 6px;
       text-transform: none;
+    }
+
+    .gutena-forms__textarea-control .components-base-control__label {
+      margin-top: 5px;
+      margin-bottom: 5px;
     }
 
     .gutena-forms__text-control .components-text-control__input,
@@ -57,7 +62,7 @@
       box-shadow: none;
       color: #2c3338;
       font-family: "Satoshi", sans-serif;
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 400;
       line-height: normal;
       padding: 7px 15px;
@@ -71,18 +76,19 @@
       min-height: 122px;
       resize: vertical;
       width: 100%;
+      margin-top: 5px;
     }
 
     .gutena-forms__merge-tags {
-      margin-top: 2px;
+      margin-top: 0;
     }
 
     .gutena-forms__merge-tags-label {
       color: #424d55;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 400;
       line-height: normal;
-      margin: 0 0 6px;
+      margin: 7px 0;
     }
 
     .gutena-forms__merge-tags-list {
@@ -98,7 +104,7 @@
       color: #424d55;
       cursor: pointer;
       font-family: "Satoshi", sans-serif;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 400;
       line-height: normal;
       padding: 6px;

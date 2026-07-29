@@ -1,41 +1,26 @@
 import { TextControl } from '@wordpress/components';
-import { useState, useEffect } from '@wordpress/element';
 
 const GutenaFormsTextField = ( { onChange, label, id, desc, value, placeholder, disabled = false, onFocus } ) => {
-
-    const [ fieldValue, setFieldValue ] = useState( '' );
-
-    useEffect( () => {
-        setFieldValue( value || '' );
-    }, [ value ] );
-
-    const handleChange = ( newValue ) => {
-        setFieldValue( newValue );
-        if ( onChange ) {
-            onChange( newValue );
-        }
-    }
-
-    return (
-        <div className={ 'gutena-forms__text-control' }>
-            <TextControl
-                className={ 'gutena-forms__text-control-input' }
-                id={ id }
-                label={ label }
-                value={ fieldValue }
-                onChange={ handleChange }
-                onFocus={ onFocus }
-                placeholder={ placeholder }
+	return (
+		<div className={ 'gutena-forms__text-control' }>
+			<TextControl
+				className={ 'gutena-forms__text-control-input' }
+				id={ id }
+				label={ label }
+				value={ value || '' }
+				onChange={ onChange }
+				onFocus={ onFocus }
+				placeholder={ placeholder }
 				disabled={ disabled }
-            />
-            { desc && (
-                <p
-                    className={ 'gutena-forms__field-description' }
-                    dangerouslySetInnerHTML={ { __html: desc } }
-              />
-            ) }
-        </div>
-    );
+			/>
+			{ desc && (
+				<p
+					className={ 'gutena-forms__field-description' }
+					dangerouslySetInnerHTML={ { __html: desc } }
+				/>
+			) }
+		</div>
+	);
 };
 
 export default GutenaFormsTextField;
