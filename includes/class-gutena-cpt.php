@@ -58,21 +58,22 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 		 *
 		 * @since 1.5.0
 		 */
-		private function __construct() {
-			add_action( 'init', array( $this, 'register_post_type' ) );
-			add_filter( 'block_categories_all', array( $this, 'move_gutena_to_top' ), 100 );
-			add_action( 'wp_trash_post', array( $this, 'trashing_post' ) );
-			add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
-		}
-		
-		/**
-		 * Register post type
-		 *
-		 * @since 1.5.0
-		 */
-		public function register_post_type() {
-			register_post_type( $this->post_type, $this->post_type_args() );
-		}
+	private function __construct() {
+		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_filter( 'block_categories_all', array( $this, 'move_gutena_to_top' ), 100 );
+		add_action( 'wp_trash_post', array( $this, 'trashing_post' ) );
+		add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
+	}
+
+	
+	/**
+	 * Register post type
+	 *
+	 * @since 1.5.0
+	 */
+	public function register_post_type() {
+		register_post_type( $this->post_type, $this->post_type_args() );
+	}
 		
 		/**
 		 * Post type args
@@ -205,7 +206,7 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 					wp_update_post(
 							array(
 									'ID'           => $connected_post_id,
-									'post_content' => $new_content,
+									'post_content' => wp_slash( $new_content ),
 							),
 							false,
 							false
@@ -328,29 +329,29 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 				remove_action( 'save_post', array( $this, 'save_post' ), -1 );
 				remove_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10 );
 				
-				$new_post_content = '';
-				
-				$blocks = parse_blocks( $post->post_content );
-				
-				foreach ( $blocks as $k => $block ) {
-					if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
-						$blocks[ $k ]['attrs']['formName'] = $post->post_title;
-					}
+			$new_post_content = '';
+			
+			$blocks = parse_blocks( $post->post_content );
+			
+			foreach ( $blocks as $k => $block ) {
+				if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
+					$blocks[ $k ]['attrs']['formName'] = $post->post_title;
 				}
-				
-				foreach ( $blocks as $block ) {
-					$new_post_content .= serialize_block( $block );
-				}
-				
-				wp_update_post(
+			}
+			
+			foreach ( $blocks as $block ) {
+				$new_post_content .= serialize_block( $block );
+			}
+			
+			wp_update_post(
 						array(
 								'ID'           => $post_id,
-								'post_content' => $new_post_content,
+								'post_content' => wp_slash( $new_post_content ),
 						),
 						false,
 						false
 				);
-				
+
 				// Re-add the actions after update.
 				add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
 				add_action( 'save_post', array( Gutena_Forms::get_instance(), 'save_gutena_forms_schema' ), 10, 3 );
@@ -450,28 +451,28 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 					)
 			);
 			
-			if ( ! empty( $post ) ) {
-				$post_id = $post[0];
-				wp_update_post(
-						array(
-								'ID'           => $post_id,
-								'post_title'   => $form_name,
-								'post_content' => serialize_block( $block ),
-						),
-						false,
-						false
-				);
+		if ( ! empty( $post ) ) {
+			$post_id = $post[0];
+			wp_update_post(
+					array(
+							'ID'           => $post_id,
+							'post_title'   => $form_name,
+							'post_content' => wp_slash( serialize_block( $block ) ),
+					),
+					false,
+					false
+			);
 			} else {
-				$post_id = wp_insert_post(
-						array(
-								'post_type'    => $this->post_type,
-								'post_title'   => $form_name,
-								'post_status'  => 'publish',
-								'post_content' => serialize_block( $block ),
-						),
-						false,
-						false
-				);
+			$post_id = wp_insert_post(
+					array(
+							'post_type'    => $this->post_type,
+							'post_title'   => $form_name,
+							'post_status'  => 'publish',
+							'post_content' => wp_slash( serialize_block( $block ) ),
+					),
+					false,
+					false
+			);
 				
 				update_post_meta( $post_id, 'gutena_form_id', $form_id );
 				update_post_meta( $post_id, '_gutena_connected_posts', array( $parent_post_id ) );
