@@ -188,16 +188,19 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $this->id, $field_schema );
 			do_action( 'gutena_forms_submission', $form_submit_data, $this->schema );
 
-			// If admin don't want to get Email notification.
-			if ( isset( $this->schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->schema['form_attrs']['emailNotifyAdmin'] || false === $this->schema['form_attrs']['emailNotifyAdmin'] || '0' === $this->schema['form_attrs']['emailNotifyAdmin'] ) ) {
-				wp_send_json(
+		// If admin don't want to get Email notification.
+		if ( isset( $this->schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->schema['form_attrs']['emailNotifyAdmin'] || false === $this->schema['form_attrs']['emailNotifyAdmin'] || '0' === $this->schema['form_attrs']['emailNotifyAdmin'] ) ) {
+			wp_send_json(
+				apply_filters(
+					'gutena_forms_submit_response',
 					array(
 						'status'  => 'Success',
 						'message' => __( 'success', 'gutena-forms' ),
 						'detail'  => __( 'admin email notification off', 'gutena-forms' ),
 					)
-				);
-			}
+				)
+			);
+		}
 
 			// Email headers.
 			$headers = array(
@@ -226,14 +229,17 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			$subject = esc_html( $subject );
 			$res     = wp_mail( $to, $subject, $body, $headers );
 
-			if ( $res ) {
-				wp_send_json(
+		if ( $res ) {
+			wp_send_json(
+				apply_filters(
+					'gutena_forms_submit_response',
 					array(
 						'status'  => 'Success',
 						'message' => __( 'success', 'gutena-forms' ),
 					)
-				);
-			} else {
+				)
+			);
+		} else {
 				wp_send_json(
 					array(
 						'status'  => 'error',

@@ -321,6 +321,15 @@ document.addEventListener("DOMContentLoaded", function(){
 					'display-success-message'
 				);
 
+				// Notify add-ons (e.g. Gutena Forms Pro Quiz) of a successful
+				// submission so they can react to the response payload.
+				gutena_forms.dispatchEvent(
+					new CustomEvent( 'gutena-forms:submit-success', {
+						bubbles: true,
+						detail: { response },
+					} )
+				);
+
 				if (
 					hasClass(
 						gutena_forms,
