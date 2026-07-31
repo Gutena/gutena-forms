@@ -173,20 +173,32 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'title' => __( 'Entries', 'gutena-forms' ),
 					'slug'  => '/entries',
 				),
-				array(
-					'title' => __( 'Settings', 'gutena-forms' ),
-					'slug'  => '/settings/manage-status',
-				),
-				array(
-					'title'    => __( 'Feature Request', 'gutena-forms' ),
-					'slug'     => 'https://gutenaforms.com/roadmap/?utm_source=plugin&utm_medium=tab&utm_campaign=feature_requests',
-					'external' => true,
-				),
-				array(
-					'title' => __( 'Knowledge Base', 'gutena-forms' ),
-					'slug'  => '/knowledge-base',
-				),
 			);
+
+			// When Pro is active, add a "Quizzes" tab right after "Entries".
+			if ( function_exists( 'is_gutena_forms_pro' ) && is_gutena_forms_pro() ) {
+				$menus[] = array(
+					'title' => __( 'Quizzes', 'gutena-forms' ),
+					'slug'  => '/quizzes',
+				);
+			}
+
+			$menus[] = array(
+				'title' => __( 'Settings', 'gutena-forms' ),
+				'slug'  => '/settings/manage-status',
+			);
+			$menus[] = array(
+				'title'    => __( 'Feature Request', 'gutena-forms' ),
+				'slug'     => 'https://gutenaforms.com/roadmap/?utm_source=plugin&utm_medium=tab&utm_campaign=feature_requests',
+				'external' => true,
+			);
+			$menus[] = array(
+				'title' => __( 'Knowledge Base', 'gutena-forms' ),
+				'slug'  => '/knowledge-base',
+			);
+
+			// Allow add-ons (e.g. Pro) to inject dashboard menu items.
+			$menus = apply_filters( 'gutena_forms__dashboard_menus', $menus );
 
 			if ( is_array( $menus ) && ! empty( $menus ) ) {
 				return rest_ensure_response(

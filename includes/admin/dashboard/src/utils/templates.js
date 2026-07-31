@@ -33,12 +33,16 @@ import GutenaFormsEntries from '../screens/gutena-forms-entries';
 /**
  * React components for main dashboard pages (forms list, entries list).
  *
+ * Add-ons (e.g. Pro) can inject additional page templates via the
+ * `gutena-forms.page-templates` filter.
+ *
  * @since 1.7.0
  * @type {Object.<string, React.ComponentType>}
  */
 export const PageTemplates = {
 	'forms': GutenaFormsForms,
 	'entries': GutenaFormsEntries,
+	...applyFilters( 'gutena-forms.page-templates', {} ),
 };
 
 import MCPConfigurationTemplate from "../components/mcp-configuration-template";

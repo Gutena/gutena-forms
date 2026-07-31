@@ -17,9 +17,13 @@ import Tag from '../icons/tag';
 import Profile from '../icons/profile';
 import Notes from '../icons/notes';
 import Edit from '../icons/edit';
+import Eye from '../icons/eye';
+import { ArrowLeft } from '../icons/arrow';
 import { FilledStar, Star } from "../icons/star";
-import {gutenaFormsStrContains} from "./functions";
+import {gutenaFormsStrContains, activateLeftMenu} from "./functions";
+import { deleteMultipleEntries } from '../api';
 import SettingsLoading from "../skeletons/settings-loading";
+import EntriesLoading from "../skeletons/entries-loading";
 import { SelectControl } from '@wordpress/components';
 import Activecampaign from '../icons/activecampaign';
 import Brevo from '../icons/brevo';
@@ -28,6 +32,7 @@ import { NavLink } from 'react-router';
 import GutenaFormsDescWrapper from '../components/gutena-forms-desc-wrapper';
 import GutenaFormsToggleField from '../components/fields/gutena-forms-toggle-field';
 import Settings from '../icons/settings';
+import GutenaFormsDatatable from '../components/gutena-forms-datatable';
 
 addFilter(
 	'gutenaFormsPro.core.components',
@@ -43,6 +48,8 @@ addFilter(
 		components['Profile']                 = Profile;
 		components['Notes'] 				  = Notes;
 		components['Edit'] 				      = Edit;
+		components['Eye'] 				      = Eye;
+		components['ArrowLeft'] 			      = ArrowLeft;
 		components['Star'] 				  	  = Star;
 		components['FilledStar'] 			  = FilledStar;
 		components['Activecampaign'] 		  = Activecampaign;
@@ -52,6 +59,7 @@ addFilter(
 		components['GutenaFormsDescWrapper']  = GutenaFormsDescWrapper;
 		components['GutenaFormsToggleField']  = GutenaFormsToggleField;
 		components['Settings']  			  = Settings;
+		components['GutenaFormsDatatable']    = GutenaFormsDatatable;
 
 		return components;
 	}
@@ -71,6 +79,8 @@ addFilter(
 addFilter( 'gutenaFormsPro.core.functions', 'gutena-forms-free-fetch-functions', ( functions ) => {
 
 	functions['gutenaFormsStrContains'] = gutenaFormsStrContains;
+	functions['activateLeftMenu']       = activateLeftMenu;
+	functions['deleteMultipleEntries']   = deleteMultipleEntries;
 
 	return functions;
 } );
@@ -79,6 +89,7 @@ addFilter(
 	'gutenaFormsPro.skeletons', 'gutenaForms.free.skeleton.merge', ( skeletons ) => {
 
 		skeletons['SettingsLoading'] = SettingsLoading;
+		skeletons['EntriesLoading']   = EntriesLoading;
 
 		return skeletons;
 	}
