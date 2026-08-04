@@ -111,19 +111,21 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 		 * @return int
 		 */
 		private static function find_post_id_by_form_id( $form_id ) {
-			$posts = get_posts(
-				array(
-					'post_type'              => 'gutena_forms',
-					'post_status'            => array( 'publish', 'draft', 'private', 'pending' ),
-					'posts_per_page'         => 1,
-					'meta_key'               => 'gutena_form_id',
-					'meta_value'             => $form_id,
-					'fields'                 => 'ids',
-					'no_found_rows'          => true,
-					'update_post_meta_cache' => false,
-					'update_post_term_cache' => false,
-				)
-			);
+		$posts = get_posts(
+			array(
+				'post_type'              => 'gutena_forms',
+				'post_status'            => array( 'publish', 'draft', 'private', 'pending' ),
+				'posts_per_page'         => 1,
+				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- gutena_forms CPT is small; lookup maps form_id to post ID.
+				'meta_key'               => 'gutena_form_id',
+				'meta_value'             => $form_id,
+				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+			)
+		);
 
 			return ! empty( $posts[0] ) ? (int) $posts[0] : 0;
 		}

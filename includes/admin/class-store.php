@@ -81,28 +81,43 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 				} elseif ( ! empty( $form_entry_id ) && is_numeric( $form_entry_id ) ) {
 					$form_entry_ids[] = absint( $form_entry_id );
 				}
-				// comma separated string id1,id2,...
-				$form_entry_ids = implode( ',', $form_entry_ids );
-				// Update status
-				// Wpdb add single quotes for string
+
+				if ( empty( $form_entry_ids ) ) {
+					return false;
+				}
+
+				// Build dynamic IN (...) placeholders for the prepared statement.
+				// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders is a safe string of %d tokens.
+				$placeholders = implode( ',', array_fill( 0, count( $form_entry_ids ), '%d' ) );
+				$table        = $this->table_gutenaforms_entries;
 				$action_query = '';
 
 				switch ( $action ) {
 					case 'read':
-						$action_query = "UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'read' WHERE entry_id IN ({$form_entry_ids})";
+						$action_query = $wpdb->prepare(
+							"UPDATE %i SET entry_status = 'read' WHERE entry_id IN ($placeholders)",
+							array_merge( array( $table ), $form_entry_ids )
+						);
 						break;
 					case 'unread':
-						$action_query = "UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'unread' WHERE entry_id IN ({$form_entry_ids})";
+						$action_query = $wpdb->prepare(
+							"UPDATE %i SET entry_status = 'unread' WHERE entry_id IN ($placeholders)",
+							array_merge( array( $table ), $form_entry_ids )
+						);
 						break;
 					case 'trash':
-						$action_query = "UPDATE {$this->table_gutenaforms_entries} SET trash = 1 WHERE entry_id IN ({$form_entry_ids})";
+						$action_query = $wpdb->prepare(
+							"UPDATE %i SET trash = 1 WHERE entry_id IN ($placeholders)",
+							array_merge( array( $table ), $form_entry_ids )
+						);
 						break;
 					default:
 						break;
 				}
+				// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 				if ( ! empty( $action_query ) && 25 < strlen( $action_query ) ) {
-					$wpdb->query( $action_query );
+					$wpdb->query( $action_query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter
 					return true;
 				}
 			}
@@ -122,13 +137,14 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 			// form table
 			$table_forms = $this->table_gutenaforms;
 			// get form details
-			$fom_schema_row = $wpdb->get_results(
+			$fom_schema_row = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 				$wpdb->prepare(
 					"
-					SELECT * FROM {$table_forms}
+					SELECT * FROM %i
 					WHERE block_form_id = %s
 					AND published = %d
 					",
+					$table_forms,
 					sanitize_key( $block_form_id ),
 					1
 				)
@@ -149,7 +165,7 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 			}
 			// $wpdb->insert( $table_name, $data, $data_format );
 			// Insert query
-			$wpdb->insert(
+			$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 				$this->table_gutenaforms,
 				array(
 					'user_id'       => $this->current_user_id(),

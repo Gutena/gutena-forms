@@ -45,6 +45,7 @@
 			
 			//$wpdb->insert( $table_name, $data, $data_format );
 			//Insert query
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->insert(
 				$this->table_gutenaforms_meta,
 				array(
@@ -104,10 +105,11 @@
 					) );
 				}
 				
-				//step2: Update gutenaforms table row
-				//$wpdb->update( $table_name, $data, $where, $data_format, $where_format );
-				$wpdb->update(
-					$table_forms,
+			//step2: Update gutenaforms table row
+			//$wpdb->update( $table_name, $data, $where, $data_format, $where_format );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			$wpdb->update(
+				$table_forms,
 					array(
 						'user_id' => $this->current_user_id(),
 						'form_name' => $this->get_form_name( $form_schema ) ,
@@ -151,9 +153,10 @@
 				$fieldSchema['form_id'] = sanitize_key( $fom_schema_row->form_id );
 				$fieldSchema['user_id'] = $this->current_user_id();
 				
-				//Step2: Create form entry in table_gutenaforms_entries
-				$wpdb->insert(
-					$this->table_gutenaforms_entries,
+			//Step2: Create form entry in table_gutenaforms_entries
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			$wpdb->insert(
+				$this->table_gutenaforms_entries,
 					array(
 						'form_id' => $fieldSchema['form_id'],
 						'user_id' => $fieldSchema['user_id'],
@@ -197,9 +200,10 @@
 					} else {
 						$field_value = sanitize_textarea_field( wp_unslash( $field_value ) );
 					}
-					//Insert query
-					$wpdb->insert(
-					    $this->table_gutenaforms_field_value,
+				//Insert query
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->insert(
+				    $this->table_gutenaforms_field_value,
 						array(
 							'entry_id' => $fieldSchema['entry_id'],
 							'field_name' => $name_attr,

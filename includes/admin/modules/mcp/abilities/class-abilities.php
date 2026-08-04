@@ -50,6 +50,10 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 		 * @since 1.8.0
 		 */
 		private function run() {
+			// Bail on WordPress versions that do not ship the Abilities API (requires WP 6.9+).
+			if ( ! function_exists( 'wp_register_ability_category' ) || ! function_exists( 'wp_register_ability' ) ) {
+				return;
+			}
 			add_action( 'wp_abilities_api_categories_init', array( $this, 'categories_init' ) );
 			add_action( 'wp_abilities_api_init', array( $this, 'api_init' ) );
 		}
@@ -60,6 +64,7 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 		 * @since 1.8.0
 		 */
 		public function categories_init() {
+			// phpcs:ignore PluginCheck.CodeAnalysis.WpFunctionNotCompatibleWithRequiresWP -- guarded by function_exists() in run().
 			wp_register_ability_category(
 				'gutena-forms',
 				array(
@@ -75,6 +80,7 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 		 * @since 1.8.0
 		 */
 		public function api_init() {
+			// phpcs:ignore PluginCheck.CodeAnalysis.WpFunctionNotCompatibleWithRequiresWP -- guarded by function_exists() in run().
 			wp_register_ability(
 				'gutena-forms/get-all-forms',
 				array(
@@ -100,6 +106,7 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 					),
 				)
 			);
+			// phpcs:ignore PluginCheck.CodeAnalysis.WpFunctionNotCompatibleWithRequiresWP -- guarded by function_exists() in run().
 			wp_register_ability(
 				'gutena-forms/get-all-entries',
 				array(
@@ -126,6 +133,7 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 					),
 				)
 			);
+			// phpcs:ignore PluginCheck.CodeAnalysis.WpFunctionNotCompatibleWithRequiresWP -- guarded by function_exists() in run().
 			wp_register_ability(
 				'gutena-forms/get-form-entries',
 				array(
@@ -162,6 +170,7 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 					),
 				)
 			);
+			// phpcs:ignore PluginCheck.CodeAnalysis.WpFunctionNotCompatibleWithRequiresWP -- guarded by function_exists() in run().
 			wp_register_ability(
 				'gutena-forms/get-entry-details',
 				array(
@@ -266,7 +275,7 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 			foreach ( $details as $k => $v ) {
 
 				if ( 'user_id' === $k ) {
-					$user         = get_user( $v );
+					$user         = get_userdata( $v );
 					$entry_data[] = array(
 						'label' => __( 'User', 'gutena-forms' ),
 						'value' => $user ? $user->user_login : 'Unknown User',

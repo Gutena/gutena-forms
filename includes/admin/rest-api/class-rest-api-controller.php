@@ -252,11 +252,11 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							'slug'  => 'honeypot',
 						),
 						array(
-							'title' => __( 'Google reCAPTCHA' ),
+							'title' => __( 'Google reCAPTCHA', 'gutena-forms' ),
 							'slug'  => 'google-recaptcha',
 						),
 						array(
-							'title' => __( 'Cloudflare Turnstile' ),
+							'title' => __( 'Cloudflare Turnstile', 'gutena-forms' ),
 							'slug'  => 'cloudflare-turnstile',
 						),
 					),

@@ -7,11 +7,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$plugin_url    		  = defined( 'GUTENA_FORMS_PLUGIN_URL' ) ? GUTENA_FORMS_PLUGIN_URL : '';
-$has_pro       		  = is_gutena_forms_pro();
-$forms_data           = apply_filters( 'gutena_forms__get_entries', array() );
-$total_entries        = apply_filters( 'gutena_forms__get_total_entries', 0 );
-$total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change', 0 );
+$gutena_forms_plugin_url          = defined( 'GUTENA_FORMS_PLUGIN_URL' ) ? GUTENA_FORMS_PLUGIN_URL : '';
+$gutena_forms_has_pro             = is_gutena_forms_pro();
+$gutena_forms_forms_data          = apply_filters( 'gutena_forms__get_entries', array() );
+$gutena_forms_total_entries       = apply_filters( 'gutena_forms__get_total_entries', 0 );
+$gutena_forms_total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change', 0 );
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -39,7 +39,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 							<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 								<tr>
 									<td align="center" style="padding-bottom: 20px;">
-										<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/header-logo.png' ); ?>" alt="<?php echo esc_attr__( 'Gutena Forms', 'gutena-forms' ); ?>" style="display: block; max-width: 200px; height: auto; margin: 0 auto;">
+										<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/header-logo.png' ); ?>" alt="<?php echo esc_attr__( 'Gutena Forms', 'gutena-forms' ); ?>" style="display: block; max-width: 200px; height: auto; margin: 0 auto;">
 									</td>
 								</tr>
 								<tr>
@@ -66,7 +66,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 								<tr>
 									<td width="40" style="padding-right: 16px; vertical-align: middle;">
 										<!-- Icon Square -->
-										<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/total-entries-form.png' ); ?>" alt="<?php echo esc_attr__( 'Total Entries', 'gutena-forms' ); ?>" style="display: block;">
+										<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/total-entries-form.png' ); ?>" alt="<?php echo esc_attr__( 'Total Entries', 'gutena-forms' ); ?>" style="display: block;">
 									</td>
 									<td style="vertical-align: middle; padding-right: 16px;">
 										<p style="margin: 0; font-size: 16px; font-weight: 700; color: #21222F;"><?php echo esc_html__( 'Total entries this week:', 'gutena-forms' ); ?></p>
@@ -76,19 +76,19 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 											<tr>
 												<td style="border: 1px solid #0DA88C; border-radius: 6px; padding: 8px 16px; background-color: #ffffff;">
 													<span style="font-size: 18px; font-weight: 700; color: #0DA88C;">
-														<?php echo esc_html( $total_entries ); ?>
+														<?php echo esc_html( $gutena_forms_total_entries ); ?>
 													</span>
 												</td>
 												<td style="padding-left: 20px;">
-													<?php if ( $has_pro ) : ?>
-														<?php $percentage = Gutena_Forms_Email_Reports::calculate_percentage_change( $total_entries, $total_entries_change ); ?>
+													<?php if ( $gutena_forms_has_pro ) : ?>
+														<?php $gutena_forms_percentage = Gutena_Forms_Email_Reports::calculate_percentage_change( $gutena_forms_total_entries, $gutena_forms_total_entries_change ); ?>
 														<?php
-															$arrow_image = $percentage >= 0 ? 'arrow-up.png' : 'arrow-down.png';
-															$rate_color  = $percentage >= 0 ? '#0DA88C' : '#A04';
+															$gutena_forms_arrow_image = $gutena_forms_percentage >= 0 ? 'arrow-up.png' : 'arrow-down.png';
+															$gutena_forms_rate_color  = $gutena_forms_percentage >= 0 ? '#0DA88C' : '#A04';
 														?>
-														<span style="font-size: 12px; color: <?php echo esc_attr( $rate_color ); ?>;font-weight: 700;">
-															<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/' . $arrow_image ); ?>" alt="<?php echo $percentage >= 0 ? '↑' : '↓'; ?>" style="display: inline-block; vertical-align: middle; opacity: 0.8;">
-															<?php echo esc_html( abs( $percentage ) ); ?>%
+														<span style="font-size: 12px; color: <?php echo esc_attr( $gutena_forms_rate_color ); ?>;font-weight: 700;">
+															<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/' . $gutena_forms_arrow_image ); ?>" alt="<?php echo $gutena_forms_percentage >= 0 ? '↑' : '↓'; ?>" style="display: inline-block; vertical-align: middle; opacity: 0.8;">
+															<?php echo esc_html( abs( $gutena_forms_percentage ) ); ?>%
 														</span>
 													<?php endif; ?>
 												</td>
@@ -117,30 +117,30 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 									</td>
 								</tr>
 
-								<?php foreach ( $forms_data as $form ) : ?>
+								<?php foreach ( $gutena_forms_forms_data as $gutena_forms_form ) : ?>
 
 									<tr>
 										<td style="padding: 12px 16px; border-bottom: 1px solid #DFF2EE;">
 											<p style="margin: 0; font-size: 14px; font-weight: 400; color: #21222F;">
-												<?php echo esc_html( $form['form_name'] ); ?>
+												<?php echo esc_html( $gutena_forms_form['form_name'] ); ?>
 											</p>
 										</td>
 										<td align="right" style="padding: 12px 16px; border-bottom: 1px solid #DFF2EE;">
 											<span style="font-size: 14px; font-weight: 700; color: #0DA88C; margin-right: 20px;">
-												<?php echo esc_html( $form['entries_count'] ); ?>
+												<?php echo esc_html( $gutena_forms_form['entries_count'] ); ?>
 											</span>
 										</td>
 										<td align="right" style="padding: 12px 16px; border-bottom: 1px solid #DFF2EE;">
-											<?php if ( $has_pro ) : ?>
+											<?php if ( $gutena_forms_has_pro ) : ?>
 												<?php
-													$conversion_rate = Gutena_Forms_Email_Reports::calculate_percentage_change( $form['entries_count'], $form['conversion_rate'] );
-													$arrow_image     = $conversion_rate >= 0 ? 'arrow-up.png' : 'arrow-down.png';
-													$rate_color      = $conversion_rate >= 0 ? '#0DA88C' : '#A04';
+													$gutena_forms_conversion_rate = Gutena_Forms_Email_Reports::calculate_percentage_change( $gutena_forms_form['entries_count'], $gutena_forms_form['conversion_rate'] );
+													$gutena_forms_arrow_image     = $gutena_forms_conversion_rate >= 0 ? 'arrow-up.png' : 'arrow-down.png';
+													$gutena_forms_rate_color      = $gutena_forms_conversion_rate >= 0 ? '#0DA88C' : '#A04';
 												?>
 
-												<span style="font-size: 12px; color: <?php echo esc_attr( $rate_color ); ?>; font-weight: 700;">
-													<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/' . $arrow_image ); ?>" alt="<?php echo $conversion_rate >= 0 ? '↑' : '↓'; ?>" style="display: inline-block; vertical-align: middle; opacity: 0.8;">
-													<?php echo esc_html( abs( $conversion_rate ) ); ?>%
+												<span style="font-size: 12px; color: <?php echo esc_attr( $gutena_forms_rate_color ); ?>; font-weight: 700;">
+													<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/' . $gutena_forms_arrow_image ); ?>" alt="<?php echo $gutena_forms_conversion_rate >= 0 ? '↑' : '↓'; ?>" style="display: inline-block; vertical-align: middle; opacity: 0.8;">
+													<?php echo esc_html( abs( $gutena_forms_conversion_rate ) ); ?>%
 												</span>
 											<?php endif; ?>
 										</td>
@@ -160,7 +160,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 						</td>
 					</tr>
 
-					<?php if ( ! $has_pro ) : ?>
+					<?php if ( ! $gutena_forms_has_pro ) : ?>
 
 						<!-- Footer Promotional Banner -->
 						<tr>
@@ -176,7 +176,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 														<table role="presentation" cellspacing="0" cellpadding="0" border="0">
 															<tr>
 																<td style="padding-bottom: 24px;">
-																	<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/footer-logo.png' ); ?>" alt="<?php echo esc_attr__( 'Gutena Forms', 'gutena-forms' ); ?>" style="display: block; max-width: 180px; height: auto;">
+																	<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/footer-logo.png' ); ?>" alt="<?php echo esc_attr__( 'Gutena Forms', 'gutena-forms' ); ?>" style="display: block; max-width: 180px; height: auto;">
 																</td>
 															</tr>
 														</table>
@@ -187,7 +187,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 																	<table role="presentation" cellspacing="0" cellpadding="0" border="0">
 																		<tr>
 																			<td width="20" valign="top" style="padding-right: 8px; padding-top: 2px;">
-																				<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
+																				<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
 																			</td>
 																			<td valign="top">
 																				<p style="margin: 0; font-size: 10px; line-height: 1.5; color: #015D61; font-weight: 700;"><?php echo esc_html__( 'Advance Filter for Entries', 'gutena-forms' ); ?></p>
@@ -199,7 +199,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 																	<table role="presentation" cellspacing="0" cellpadding="0" border="0">
 																		<tr>
 																			<td width="20" valign="top" style="padding-right: 8px; padding-top: 2px;">
-																				<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
+																				<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
 																			</td>
 																			<td valign="top">
 																				<p style="margin: 0; font-size: 10px; line-height: 1.5; color: #015D61; font-weight: 700;"><?php echo esc_html__( 'Tags Management', 'gutena-forms' ); ?></p>
@@ -213,7 +213,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 																	<table role="presentation" cellspacing="0" cellpadding="0" border="0">
 																		<tr>
 																			<td width="20" valign="top" style="padding-right: 8px; padding-top: 2px;">
-																				<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
+																				<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
 																			</td>
 																			<td valign="top">
 																				<p style="margin: 0; font-size: 10px; line-height: 1.5; color: #015D61; font-weight: 700;"><?php echo esc_html__( 'Entry Notes', 'gutena-forms' ); ?></p>
@@ -225,7 +225,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 																	<table role="presentation" cellspacing="0" cellpadding="0" border="0">
 																		<tr>
 																			<td width="20" valign="top" style="padding-right: 8px; padding-top: 2px;">
-																				<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
+																				<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
 																			</td>
 																			<td valign="top">
 																				<p style="margin: 0; font-size: 10px; line-height: 1.5; color: #015D61; font-weight: 700;"><?php echo esc_html__( 'User Access Management', 'gutena-forms' ); ?></p>
@@ -239,7 +239,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 																	<table role="presentation" cellspacing="0" cellpadding="0" border="0">
 																		<tr>
 																			<td width="20" valign="top" style="padding-right: 8px; padding-top: 2px;">
-																				<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
+																				<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
 																			</td>
 																			<td valign="top">
 																				<p style="margin: 0; font-size: 10px; line-height: 1.5; color: #015D61; font-weight: 700;"><?php echo esc_html__( 'Status Management', 'gutena-forms' ); ?></p>
@@ -251,7 +251,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 																	<table role="presentation" cellspacing="0" cellpadding="0" border="0">
 																		<tr>
 																			<td width="20" valign="top" style="padding-right: 8px; padding-top: 2px;">
-																				<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
+																				<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/check.png' ); ?>" alt="✓" style="display: block;">
 																			</td>
 																			<td valign="top">
 																				<p style="margin: 0; font-size: 10px; line-height: 1.5; color: #015D61; font-weight: 700;"><?php echo esc_html__( 'Premium Support', 'gutena-forms' ); ?></p>
@@ -272,7 +272,7 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 													</td>
 													<!-- Right Column: Form Illustration -->
 													<td width="30%" valign="top" align="right">
-														<img src="<?php echo esc_url( $plugin_url . 'assets/img/email/footer-form.png' ); ?>" alt="<?php echo esc_attr__( 'Form Illustration', 'gutena-forms' ); ?>" style="display: block;">
+														<img src="<?php echo esc_url( $gutena_forms_plugin_url . 'assets/img/email/footer-form.png' ); ?>" alt="<?php echo esc_attr__( 'Form Illustration', 'gutena-forms' ); ?>" style="display: block;">
 													</td>
 												</tr>
 											</table>

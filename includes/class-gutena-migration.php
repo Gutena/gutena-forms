@@ -96,18 +96,20 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 			$parent_post_id = $form_data['parent_post_id'];
 			$form_name      = $form_data['form_name'];
 
-			$existing_forms = get_posts(
-				array(
-					'post_type'      => 'gutena_forms',
-					'posts_per_page' => 1,
-					'meta_key'       => 'gutena_form_id',
-					'meta_value'     => $form_id,
-					'post_status'    => 'any',
-					'fields'         => 'ids',
-				)
-			);
+		$existing_forms = get_posts(
+			array(
+				'post_type'      => 'gutena_forms',
+				'posts_per_page' => 1,
+				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-time migration; gutena_forms CPT is small.
+				'meta_key'       => 'gutena_form_id',
+				'meta_value'     => $form_id,
+				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'post_status'    => 'any',
+				'fields'         => 'ids',
+			)
+		);
 
-			if ( ! empty( $existing_forms ) ) {
+		if ( ! empty( $existing_forms ) ) {
 				// Form already exists, just update connected posts
 				$cpt_post_id = $existing_forms[0];
 			} else {
@@ -193,16 +195,18 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 					}
 
 					$form_id	   = sanitize_key( $form_block['attrs']['formID'] );
-					$existing_form = get_posts(
-						array(
-							'post_type'      => 'gutena_forms',
-							'posts_per_page' => 1,
-							'meta_key'       => 'gutena_form_id',
-							'meta_value'     => $form_id,
-							'post_status'    => 'any',
-							'fields'         => 'ids',
-						)
-					);
+				$existing_form = get_posts(
+					array(
+						'post_type'      => 'gutena_forms',
+						'posts_per_page' => 1,
+						// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-time migration; gutena_forms CPT is small.
+						'meta_key'       => 'gutena_form_id',
+						'meta_value'     => $form_id,
+						// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+						'post_status'    => 'any',
+						'fields'         => 'ids',
+					)
+				);
 
 					if ( empty( $existing_form ) ) {
 						$forms_to_migrate[] = array(
