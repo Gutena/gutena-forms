@@ -31,7 +31,9 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 		 * Constructor.
 		 */
 		public function __construct() {
-			$this->settings = Gutena_Forms_Auto_Responder_Helper::get_settings();
+			// Raw option only — avoid __() via get_defaults() before init (WP 6.7+ notice).
+			$settings       = get_option( Gutena_Forms_Auto_Responder_Helper::OPTION_NAME, array() );
+			$this->settings = is_array( $settings ) ? $settings : array();
 		}
 
 		/**
