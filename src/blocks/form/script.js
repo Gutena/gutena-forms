@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(){
 	const ready = () => {
+		sync_hide_form_after_submit_from_embedded();
 		range_slider_onchange();
 		field_validation_on_input();
 		form_sumbit();
@@ -23,6 +24,24 @@ document.addEventListener("DOMContentLoaded", function(){
 			( ' ' + element.className + ' ' ).indexOf( ' ' + className + ' ' ) >
 			-1
 		);
+	};
+
+	// Existing Forms embeds can lose hide-form-after-submit on the inner form tag (nested <form>).
+	// Marker from PHP means selected form had hide enabled — copy class onto the parent form.
+	const sync_hide_form_after_submit_from_embedded = () => {
+		let forms = document.querySelectorAll(
+			'form.wp-block-gutena-forms'
+		);
+		for ( let i = 0; i < forms.length; i++ ) {
+			if (
+				forms[ i ].querySelector(
+					'[data-gutena-hide-form-after-submit]'
+				) &&
+				! hasClass( forms[ i ], 'hide-form-after-submit' )
+			) {
+				forms[ i ].classList.add( 'hide-form-after-submit' );
+			}
+		}
 	};
 
 	//validate Email
@@ -325,6 +344,9 @@ document.addEventListener("DOMContentLoaded", function(){
 					hasClass(
 						gutena_forms,
 						'hide-form-after-submit'
+					) ||
+					gutena_forms.querySelector(
+						'[data-gutena-hide-form-after-submit]'
 					)
 				) {
 					gutena_forms.classList.add(

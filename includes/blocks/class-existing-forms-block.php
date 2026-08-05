@@ -51,7 +51,15 @@ if ( ! class_exists( 'Gutena_Forms_Existing_Forms_Block' ) ) :
 				return $content;
 			}
 
-			return do_blocks( wp_unslash( $form->post_content ) );
+			$html = do_blocks( wp_unslash( $form->post_content ) );
+
+			// Nested Form > Existing Forms: inner <form> (with hide class) is dropped by the browser.
+			// Emit a marker so frontend JS can apply hide-form-after-submit on the parent form.
+			if ( false !== strpos( $html, 'hide-form-after-submit' ) ) {
+				$html = '<span hidden data-gutena-hide-form-after-submit="1"></span>' . $html;
+			}
+
+			return $html;
 		}
 
 		/**
