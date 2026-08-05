@@ -111,7 +111,15 @@ const Edit = ( { attributes, setAttributes } ) => {
 										setFormId( event.target.value );
 										setAttributes( { formID: event.target.value } );
 									} }
-									style={ { width: '100%', border: 'none' }}
+									style={ {
+										width: '100%',
+										border: 'none',
+										appearance: 'none',
+										WebkitAppearance: 'none',
+										MozAppearance: 'none',
+										background: 'transparent',
+										padding: '10px',
+									} }
 									ref={ selectReference }
 								>
 									<option value={ false }>Choose an existing form</option>
