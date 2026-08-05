@@ -14,19 +14,20 @@ const GoogleRecaptchaSettings = ( { recaptcha, setAttributes } ) => {
     };
 
     const getValue = ( type, version ) => {
-        if ( recaptcha?.defaultSettings ) {
-            if ( gfIsEmpty( gutenaFormsBlock?.grecaptcha[ `${ version }_${ type }` ] ) ) {
-                return gutenaFormsBlock?.grecaptcha?.site_key;
-            } else {
-                return gutenaFormsBlock?.grecaptcha[ `${ version }_${ type }` ];
-            }
-        } else {
-            if ( gfIsEmpty( recaptcha[ `${ version }_${ type }` ] ) ) {
-                return recaptcha?.site_key;
-            } else {
-                return recaptcha[ `${ version }_${ type }` ];
-            }
+        const source = recaptcha?.defaultSettings ? gutenaFormsBlock?.grecaptcha : recaptcha;
+        const versionedKey = source?.[ `${ version }_${ type }` ];
+
+        if ( ! gfIsEmpty( versionedKey ) ) {
+            return versionedKey;
         }
+
+        // Legacy site_key/secret_key apply only to the active type.
+        const activeType = source?.type || 'v2';
+        if ( version === activeType && ! gfIsEmpty( source?.[ type ] ) ) {
+            return source[ type ];
+        }
+
+        return '';
     }
 
     const recaptchaType = recaptcha?.defaultSettings ? gutenaFormsBlock?.grecaptcha?.type : recaptcha?.type;

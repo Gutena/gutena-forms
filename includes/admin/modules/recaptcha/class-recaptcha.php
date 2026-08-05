@@ -158,7 +158,16 @@ if ( ! class_exists( 'Gutena_Forms_ReCAPTCHA' ) && class_exists( 'Gutena_Forms_F
 				return $this->settings[ $version . '_' . $key ];
 			}
 
-			return isset( $this->settings[ $key ] ) ? $this->settings[ $key ] : '';
+			// Legacy site_key/secret_key apply only to the active type.
+			$active_type = ( ! empty( $this->settings['type'] ) && in_array( $this->settings['type'], array( 'v2', 'v3' ), true ) )
+				? $this->settings['type']
+				: 'v2';
+
+			if ( $version === $active_type && isset( $this->settings[ $key ] ) ) {
+				return $this->settings[ $key ];
+			}
+
+			return '';
 		}
 
 		/**

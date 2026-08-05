@@ -798,11 +798,11 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 
 			if ( ! empty( $attributes['recaptcha'] ) && is_array( $attributes['recaptcha'] ) ) {
 				if ( self::should_form_push_module_to_global( 'recaptcha', $attributes['recaptcha'], $only_if_empty ) ) {
-					$recaptcha = self::sanitize_settings_for_option( $attributes['recaptcha'] );
-					if ( class_exists( 'Gutena_Forms_ReCAPTCHA' ) ) {
-						$recaptcha = Gutena_Forms_ReCAPTCHA::resolve_settings( $recaptcha );
-					}
-					update_option( 'gutena_forms__recaptcha', $recaptcha );
+					// Keep versioned keys (v2_*/v3_*); do not flatten via resolve_settings.
+					update_option(
+						'gutena_forms__recaptcha',
+						self::sanitize_settings_for_option( $attributes['recaptcha'] )
+					);
 					$seeded['modules'][] = 'recaptcha';
 				}
 			}
