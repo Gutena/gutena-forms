@@ -1,0 +1,279 @@
+/**
+ * Gutena Forms → SMTP (Post SMTP cross-marketing)
+ * Matches Figma: Gutena-Backend / 2164:9263
+ */
+
+.gutena-forms-smtp-wrap {
+	margin: 0 0 0 -20px;
+	padding: 0;
+	background: #f9fafb;
+	min-height: calc(100vh - 32px);
+}
+
+.gutena-forms-smtp-wrap .notice,
+.gutena-forms-smtp-wrap > h1 {
+	display: none !important;
+}
+
+.gutena-forms-smtp {
+	box-sizing: border-box;
+	max-width: 756px;
+	margin: 0 auto;
+	padding: 50px 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 50px;
+	font-family: "Satoshi", sans-serif !important;
+	font-weight: 400 !important;
+	color: #000;
+}
+
+.gutena-forms-smtp *,
+.gutena-forms-smtp *::before,
+.gutena-forms-smtp *::after {
+	box-sizing: border-box;
+}
+
+.gutena-forms-smtp__hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 30px;
+	width: 100%;
+	max-width: 754px;
+}
+
+.gutena-forms-smtp__logos {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	line-height: 0;
+}
+
+.gutena-forms-smtp__logos-img {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: 115px;
+	background: transparent;
+}
+
+.gutena-forms-smtp__intro {
+	text-align: center;
+	width: 100%;
+	max-width: 715px;
+}
+
+.gutena-forms-smtp__title {
+	margin: 0 0 8px !important;
+	padding: 0 !important;
+	font-family: "Satoshi", sans-serif !important;
+	font-size: 24px !important;
+	font-weight: 700 !important;
+	line-height: normal !important;
+	color: #000 !important;
+}
+
+.gutena-forms-smtp__subtitle {
+	margin: 0 !important;
+	padding: 0 !important;
+	font-family: "Satoshi", sans-serif !important;
+	font-size: 16px !important;
+	font-weight: 400 !important;
+	line-height: normal !important;
+	color: #3d3d3d !important;
+}
+
+.gutena-forms-smtp__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 !important;
+	padding: 12px 18px !important;
+	border: 0;
+	border-radius: 6px;
+	background: linear-gradient(180.16deg, #5279cc 39.77%, #293d66 354.56%);
+	color: #fff !important;
+	font-family: "Satoshi", sans-serif !important;
+	font-size: 18px !important;
+	font-weight: 700 !important;
+	line-height: normal !important;
+	cursor: pointer;
+	white-space: nowrap;
+	box-shadow: none;
+	text-decoration: none;
+}
+
+.gutena-forms-smtp__btn:hover,
+.gutena-forms-smtp__btn:focus {
+	color: #fff !important;
+	background: linear-gradient(180.16deg, #5279cc 39.77%, #293d66 354.56%);
+	opacity: 0.95;
+	box-shadow: none;
+}
+
+.gutena-forms-smtp__btn:disabled {
+	opacity: 0.75;
+	cursor: wait;
+}
+
+.gutena-forms-smtp__video {
+	position: relative;
+	width: 100%;
+	max-width: 754px;
+	aspect-ratio: 16 / 9;
+	border-radius: 21px;
+	overflow: hidden;
+	box-shadow: 0 10.545px 10.545px rgba(0, 0, 0, 0.08);
+	background: #5279cc;
+	line-height: 0;
+}
+
+.gutena-forms-smtp__video-trigger {
+	display: block;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+}
+
+.gutena-forms-smtp__video-trigger img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	background: transparent;
+}
+
+.gutena-forms-smtp__video-iframe {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.gutena-forms-smtp__features {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 40px;
+	width: 100%;
+	max-width: 754px;
+}
+
+.gutena-forms-smtp__features-title {
+	margin: 0 !important;
+	padding: 0 !important;
+	width: 100%;
+	max-width: 715px;
+	font-family: "Satoshi", sans-serif !important;
+	font-size: 24px !important;
+	font-weight: 700 !important;
+	line-height: normal !important;
+	text-align: center;
+	color: #000 !important;
+}
+
+.gutena-forms-smtp__grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 50px;
+	width: 100%;
+}
+
+.gutena-forms-smtp__feature {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 14px;
+	min-width: 0;
+}
+
+.gutena-forms-smtp__feature-icon {
+	display: block;
+	width: 45px;
+	height: 45px;
+	background: transparent;
+}
+
+.gutena-forms-smtp__feature-copy {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+}
+
+.gutena-forms-smtp__feature h3 {
+	margin: 0 !important;
+	padding: 0 !important;
+	font-family: "Satoshi", sans-serif !important;
+	font-size: 18px !important;
+	font-weight: 700 !important;
+	line-height: normal !important;
+	color: #000 !important;
+}
+
+.gutena-forms-smtp__feature p {
+	margin: 0 !important;
+	padding: 0 !important;
+	font-family: "Satoshi", sans-serif !important;
+	font-size: 16px !important;
+	font-weight: 400 !important;
+	line-height: normal !important;
+	color: #3d3d3d !important;
+}
+
+.gutena-forms-smtp__footer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+	width: 100%;
+	max-width: 754px;
+}
+
+.gutena-forms-smtp__footer-text {
+	margin: 0 !important;
+	padding: 0 !important;
+	width: 100%;
+	max-width: 715px;
+	font-family: "Satoshi", sans-serif !important;
+	font-size: 16px !important;
+	font-weight: 400 !important;
+	line-height: normal !important;
+	text-align: center;
+	color: #000 !important;
+}
+
+@media screen and (max-width: 782px) {
+	.gutena-forms-smtp-wrap {
+		margin-left: -10px;
+	}
+
+	.gutena-forms-smtp {
+		padding: 30px 16px;
+		gap: 36px;
+	}
+
+	.gutena-forms-smtp__logos-img {
+		max-height: 72px;
+	}
+
+	.gutena-forms-smtp__grid {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+
+	.gutena-forms-smtp__btn {
+		white-space: normal;
+		text-align: center;
+	}
+}
