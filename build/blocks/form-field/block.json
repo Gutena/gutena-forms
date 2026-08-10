@@ -11,6 +11,14 @@
   "icon": "feedback",
   "description": "Form field",
   "attributes": {
+    "conditionalLogic": {
+      "type": "object",
+      "default": {
+        "enabled": false,
+        "action": "show",
+        "groups": []
+      }
+    },
     "nameAttr": {
       "type": "string",
       "default": "input_1"

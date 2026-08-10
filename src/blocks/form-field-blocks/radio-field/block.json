@@ -10,6 +10,14 @@
 	"description": "Standalone radio button group for Gutena Forms.",
 	"keywords": [ "radio", "choice", "gutena forms" ],
 	"attributes": {
+		"conditionalLogic": {
+			"type": "object",
+			"default": {
+				"enabled": false,
+				"action": "show",
+				"groups": []
+			}
+		},
 		"nameAttr": {
 			"type": "string",
 			"default": ""

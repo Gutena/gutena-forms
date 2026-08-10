@@ -11,6 +11,14 @@
 	"icon": "menu",
 	"description": "Provide a list of selectable options in a compact dropdown menu.",
 	"attributes": {
+		"conditionalLogic": {
+			"type": "object",
+			"default": {
+				"enabled": false,
+				"action": "show",
+				"groups": []
+			}
+		},
 		"nameAttr": {
 			"type": "string",
 			"default": "gf-input-1"

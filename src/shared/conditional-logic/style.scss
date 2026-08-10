@@ -1,0 +1,185 @@
+/* Conditional Logic editor panel + modal styles. */
+
+/* Visual indicator on fields that have conditional logic enabled. */
+.wp-block-gutena-field-group.has-conditional-logic {
+	position: relative;
+	outline: 1px dashed #0ea489;
+	outline-offset: -1px;
+}
+
+.wp-block-gutena-field-group.has-conditional-logic::after {
+	content: "Conditional logic";
+	position: absolute;
+	top: -10px;
+	right: 8px;
+	background: #0ea489;
+	color: #fff;
+	font-size: 10px;
+	line-height: 1.4;
+	font-weight: 600;
+	padding: 1px 6px;
+	border-radius: 3px;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.gf-conditional-logic-panel {
+	.gf-conditional-logic-panel__configure {
+		width: 100%;
+		justify-content: center;
+		margin-top: 8px;
+	}
+}
+
+.gf-condition-summary {
+	margin: 8px 0;
+	padding: 8px 10px;
+	background: #f6f7f7;
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	font-size: 12px;
+	line-height: 1.5;
+
+	.gf-condition-summary__action {
+		font-weight: 600;
+		margin-bottom: 4px;
+	}
+
+	.gf-condition-summary__or {
+		text-transform: uppercase;
+		font-weight: 600;
+		color: #888;
+		margin: 4px 0;
+	}
+
+	.gf-condition-summary__line {
+		color: #1e1e1e;
+	}
+}
+
+.gf-condition-builder.components-modal__frame,
+.gf-condition-builder {
+	width: 700px;
+	max-width: 100%;
+
+	.gf-condition-builder__body {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.gf-condition-builder__empty {
+		color: #666;
+		font-style: italic;
+		margin: 0;
+	}
+
+	.gf-condition-group__or {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin: 4px 0;
+	}
+
+	.gf-condition-group__or-line {
+		flex: 1 1 auto;
+		height: 0;
+		border-top: 1px dashed #dedede;
+	}
+
+	.gf-condition-group__or-text {
+		font-size: 10px;
+		font-weight: 590;
+		text-transform: uppercase;
+		color: #8b8b8b;
+		flex: 0 0 auto;
+	}
+
+	.gf-condition-builder__add-group {
+		align-self: flex-start;
+	}
+
+	.gf-condition-builder__footer {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+		margin-top: 16px;
+	}
+
+	// Primary buttons (Set Rules, OR Group): solid teal, white text.
+	.components-button.is-primary {
+		background-color: #0da88c;
+		color: #fff;
+		border-color: #0da88c;
+
+		&:hover:not(:disabled) {
+			background-color: #0b9580;
+			color: #fff;
+			border-color: #0b9580;
+		}
+
+		&:focus:not(:disabled) {
+			box-shadow: 0 0 0 1px #fff, 0 0 0 2px #0da88c;
+			border-color: #0da88c;
+		}
+
+		&:disabled {
+			background-color: #0da88c;
+			color: #fff;
+			border-color: #0da88c;
+			opacity: 0.6;
+		}
+	}
+
+	// Secondary buttons (Cancel, Add Condition): white with light border.
+	.components-button.is-secondary {
+		background-color: #fff;
+		color: #1e1e1e;
+		border-color: #dedede;
+
+		&:hover:not(:disabled) {
+			background-color: #fff;
+			color: #1e1e1e;
+			border-color: #b3b3b3;
+		}
+	}
+}
+
+.gf-condition-row {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-bottom: 8px;
+
+	.gf-condition-row__line {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-wrap: wrap;
+
+		> .components-base-control {
+			flex: 1 1 0;
+			min-width: 120px;
+		}
+	}
+
+	// "And" button at the end of each row: bordered pill, fixed width.
+	.gf-condition-row__and.components-button {
+		flex: 0 0 auto;
+		width: 60px;
+		min-width: 60px;
+		justify-content: center;
+		padding: 4px 8px;
+		font-weight: 590;
+	}
+
+	.gf-condition-row__remove {
+		flex: 0 0 auto;
+		min-width: 24px;
+		color: #1e1e1e;
+	}
+
+	.gf-condition-row__notice {
+		margin: 0;
+	}
+}

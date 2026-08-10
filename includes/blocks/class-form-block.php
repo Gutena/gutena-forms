@@ -203,16 +203,28 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				</div>';
 			}
 
-			// Add validation messages data attribute.
-			if ( ! empty( $attributes['messages'] ) && isset( $attributes['messages']['defaultSettings'] ) && false === $attributes['messages']['defaultSettings'] ) {
-				$messages_json = wp_json_encode( $attributes['messages'] );
-				$content       = preg_replace(
-					'/' . preg_quote( '>', '/' ) . '/',
-					' data-validation-messages="' . esc_attr( $messages_json ) . '">',
-					$content,
-					1
-				);
-			}
+		// Add validation messages data attribute.
+		if ( ! empty( $attributes['messages'] ) && isset( $attributes['messages']['defaultSettings'] ) && false === $attributes['messages']['defaultSettings'] ) {
+			$messages_json = wp_json_encode( $attributes['messages'] );
+			$content       = preg_replace(
+				'/' . preg_quote( '>', '/' ) . '/',
+				' data-validation-messages="' . esc_attr( $messages_json ) . '">',
+				$content,
+				1
+			);
+		}
+
+		// Add conditional logic data attribute.
+		$conditions = $this->get_conditional_logic_map( $attributes );
+		if ( ! empty( $conditions ) ) {
+			$conditions_json = wp_json_encode( $conditions );
+			$content = preg_replace(
+				'/' . preg_quote( '>', '/' ) . '/',
+				' data-gf-conditions="' . esc_attr( $conditions_json ) . '">',
+				$content,
+				1
+			);
+		}
 
 			// Add recaptcha data attributes for frontend (per-form site key / type).
 			if ( ! empty( $effective_recaptcha ) ) {
@@ -248,12 +260,54 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				$content
 			);
 			// filter content.
-			$content = apply_filters( 'gutena_forms_render_form', $content, $attributes );
-			// Enqueue block styles.
-			$this->enqueue_block_styles( $attributes['formStyle'] );
+		$content = apply_filters( 'gutena_forms_render_form', $content, $attributes );
+		// Enqueue block styles.
+		$this->enqueue_block_styles( $attributes['formStyle'] );
 
-			return $content;
+		return $content;
+	}
+
+	/**
+	 * Build the conditional logic map for the rendered form.
+	 *
+	 * Reads the stored form schema and collects each field's `conditionalLogic`
+	 * configuration keyed by the field's nameAttr, but only for fields where
+	 * conditional logic is enabled. The resulting map is JSON-encoded and emitted
+	 * on the form element as `data-gf-conditions` for the runtime evaluator
+	 * (src/blocks/form/view.js) to consume.
+	 *
+	 * @since 1.9.1
+	 * @param array $attributes Form block attributes (must contain formID).
+	 * @return array Map of nameAttr => { action, groups }. Empty when none enabled.
+	 */
+	private function get_conditional_logic_map( $attributes ) {
+		if ( empty( $attributes['formID'] ) || ! function_exists( 'gutena_forms_get_form_schema_option' ) ) {
+			return array();
 		}
+
+		$schema = gutena_forms_get_form_schema_option( $attributes['formID'], false );
+		if ( empty( $schema ) || empty( $schema['form_fields'] ) || ! is_array( $schema['form_fields'] ) ) {
+			return array();
+		}
+
+		$conditions = array();
+		foreach ( $schema['form_fields'] as $name_attr => $field_schema ) {
+			if ( ! is_array( $field_schema ) || empty( $field_schema['conditionalLogic'] ) ) {
+				continue;
+			}
+			$cl = $field_schema['conditionalLogic'];
+			if ( empty( $cl['enabled'] ) ) {
+				continue;
+			}
+			// Only carry the runtime-relevant fields; drop the enabled flag.
+			$conditions[ $name_attr ] = array(
+				'action' => ! empty( $cl['action'] ) ? $cl['action'] : 'show',
+				'groups' => ( ! empty( $cl['groups'] ) && is_array( $cl['groups'] ) ) ? $cl['groups'] : array(),
+			);
+		}
+
+		return $conditions;
+	}
 
 		/**
 		 * String last replace.

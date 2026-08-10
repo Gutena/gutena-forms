@@ -225,6 +225,7 @@
 	"textdomain": "gutena-forms",
 	"editorScript": "file:./index.js",
 	"script": "file:./script.js",
+	"viewScript": "file:./view.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css"
 }

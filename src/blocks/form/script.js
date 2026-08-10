@@ -81,6 +81,23 @@ document.addEventListener("DOMContentLoaded", function(){
 		return parents;
 	};
 
+	/**
+	 * Whether a form field is currently hidden by conditional logic.
+	 * Hidden fields are skipped during validation and excluded from the
+	 * submission payload (their inputs are disabled by view.js, so FormData
+	 * naturally omits them).
+	 *
+	 * @param {HTMLElement} formField
+	 * @return {boolean}
+	 */
+	const isConditionallyHidden = ( formField ) => {
+		const group = getParents( formField, '.wp-block-gutena-field-group' );
+		if ( isEmpty( group ) ) {
+			return false;
+		}
+		return hasClass( group[ 0 ], 'gf-conditionally-hidden' );
+	};
+
 	const resolveRecaptchaSiteKey = ( grecaptcha ) => {
 		if ( isEmpty( grecaptcha ) ) {
 			return '';
@@ -198,17 +215,21 @@ document.addEventListener("DOMContentLoaded", function(){
 					let formCheck = true;
 					let error_field = form_fields[ 0 ];
 
-					//Check for validation
-					for ( let j = 0; j < form_fields.length; j++ ) {
-						//Validate form field
-						if ( false === field_validation( form_fields[ j ] ) ) {
-							//get first error field for scroll into view
-							if ( true === formCheck ) {
-								error_field = form_fields[ j ];
-							}
-							formCheck = false;
-						}
+				//Check for validation
+				for ( let j = 0; j < form_fields.length; j++ ) {
+					//Skip fields hidden by conditional logic.
+					if ( isConditionallyHidden( form_fields[ j ] ) ) {
+						continue;
 					}
+					//Validate form field
+					if ( false === field_validation( form_fields[ j ] ) ) {
+						//get first error field for scroll into view
+						if ( true === formCheck ) {
+							error_field = form_fields[ j ];
+						}
+						formCheck = false;
+					}
+				}
 
 					//exit and scroll to error field
 					if ( false === formCheck ) {
@@ -377,6 +398,10 @@ document.addEventListener("DOMContentLoaded", function(){
 		if ( 0 < formField.length ) {
 			for ( let i = 0; i < formField.length; i++ ) {
 				formField[ i ].addEventListener( 'input', function () {
+					//Skip live validation for fields hidden by conditional logic.
+					if ( isConditionallyHidden( formField[ i ] ) ) {
+						return;
+					}
 					field_validation( formField[ i ] );
 				} );
 			}
@@ -388,6 +413,11 @@ document.addEventListener("DOMContentLoaded", function(){
 		if ( isEmpty( form_field ) ) {
 			console.log( 'No input fields found' );
 			return false;
+		}
+
+		//Hidden conditional fields are always treated as valid (no error).
+		if ( isConditionallyHidden( form_field ) ) {
+			return true;
 		}
 
 		//get gutena_forms

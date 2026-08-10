@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 import { select } from '@wordpress/data';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import ConditionalLogicPanel from '../../../shared/conditional-logic/conditional-logic-panel';
 import {
 	PanelBody,
 	PanelRow,
@@ -86,7 +87,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	}, [] );
 
 	const blockProps = useBlockProps( {
-		className: 'wp-block-gutena-field-group wp-block-gutena-range-field field-group-type-range standalone-range-field',
+		className: 'wp-block-gutena-field-group wp-block-gutena-range-field field-group-type-range standalone-range-field' + ( attributes.conditionalLogic && attributes.conditionalLogic.enabled ? ' has-conditional-logic' : '' ),
 	} );
 
 	const min = numAttr( minMaxStep?.min );
@@ -187,6 +188,11 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						onChange={ ( nextDescription ) => setAttributes( { description: nextDescription } ) }
 					/>
 				</PanelBody>
+			<ConditionalLogicPanel
+				clientId={ clientId }
+				conditionalLogic={ attributes.conditionalLogic }
+				setAttributes={ setAttributes }
+			/>
 			</InspectorControls>
 			<div { ...blockProps }>
 				<label htmlFor={ nameAttr } className="heading-input-label-gutena">

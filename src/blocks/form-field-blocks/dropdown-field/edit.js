@@ -8,6 +8,7 @@ import {
 } from '@wordpress/element';
 import { select } from '@wordpress/data';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import ConditionalLogicPanel from '../../../shared/conditional-logic/conditional-logic-panel';
 import {
 	PanelBody,
 	TextControl,
@@ -328,7 +329,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 
 	const blockProps = useBlockProps( {
 		className:
-			'wp-block-gutena-field-group wp-block-gutena-dropdown-field field-group-type-select standalone-dropdown-field',
+			'wp-block-gutena-field-group wp-block-gutena-dropdown-field field-group-type-select standalone-dropdown-field' + ( attributes.conditionalLogic && attributes.conditionalLogic.enabled ? ' has-conditional-logic' : '' ),
 	} );
 
 	const labelId = `${ nameAttr }-gf-label`;
@@ -397,6 +398,11 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						}
 					/>
 				</PanelBody>
+			<ConditionalLogicPanel
+				clientId={ clientId }
+				conditionalLogic={ attributes.conditionalLogic }
+				setAttributes={ setAttributes }
+			/>
 			</InspectorControls>
 			<div { ...blockProps }>
 				<label

@@ -11,6 +11,14 @@
 	"icon": "yes-alt",
 	"description": "Allow users to select one or multiple options from a list.",
 	"attributes": {
+		"conditionalLogic": {
+			"type": "object",
+			"default": {
+				"enabled": false,
+				"action": "show",
+				"groups": []
+			}
+		},
 		"nameAttr": {
 			"type": "string",
 			"default": "gf-input-1"

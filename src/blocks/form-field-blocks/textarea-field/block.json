@@ -10,6 +10,14 @@
 	"description": "Standalone textarea field for Gutena Forms.",
 	"keywords": [ "textarea", "message", "gutena forms" ],
 	"attributes": {
+		"conditionalLogic": {
+			"type": "object",
+			"default": {
+				"enabled": false,
+				"action": "show",
+				"groups": []
+			}
+		},
 		"nameAttr": {
 			"type": "string",
 			"default": ""

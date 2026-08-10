@@ -11,6 +11,14 @@
 	"icon": "text",
 	"description": "Collect short text inputs such as names, titles, or single-line responses.",
 	"attributes": {
+		"conditionalLogic": {
+			"type": "object",
+			"default": {
+				"enabled": false,
+				"action": "show",
+				"groups": []
+			}
+		},
 		"nameAttr": {
 			"type": "string",
 			"default": "gf-input-1"

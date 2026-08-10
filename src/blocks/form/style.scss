@@ -411,6 +411,11 @@
 		display: none;
 	}
 
+	//Conditional logic: hide fields toggled out by the runtime evaluator.
+	.wp-block-gutena-field-group.gf-conditionally-hidden {
+		display: none !important;
+	}
+
 	//error messages
 	.wp-block-gutena-field-group{
 		margin-bottom: 1.5rem;

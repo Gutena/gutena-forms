@@ -16,6 +16,14 @@
     "gutena forms"
   ],
   "attributes": {
+    "conditionalLogic": {
+      "type": "object",
+      "default": {
+        "enabled": false,
+        "action": "show",
+        "groups": []
+      }
+    },
     "nameAttr": {
       "type": "string",
       "default": ""

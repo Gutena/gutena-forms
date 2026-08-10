@@ -22,6 +22,7 @@ import {
 } from '@wordpress/components';
 import SelectFieldType from '../../shared/components/SelectFieldType';
 import { gutenaFormsIcon } from '../form/icon';
+import ConditionalLogicPanel from '../../shared/conditional-logic/conditional-logic-panel';
 
 
 //check for duplicate name attr
@@ -513,7 +514,7 @@ export default function edit( {
 	 *******************************/
 
 	const blockProps = useBlockProps( {
-		className: `gutena-forms-${ fieldType }-field field-name-${ nameAttr } ${ optionsInline ? 'gf-inline-content' : '' }`,
+		className: `gutena-forms-${ fieldType }-field field-name-${ nameAttr } ${ optionsInline ? 'gf-inline-content' : '' }` + ( attributes.conditionalLogic && attributes.conditionalLogic.enabled ? ' has-conditional-logic' : '' ),
 	} );
 
 	
@@ -715,12 +716,19 @@ export default function edit( {
 							label={ __( 'Default Value', 'gutena-forms' ) }
 							value={ defaultValue }
 							type='text'
-							onChange={ ( defaultValue ) =>
-								setAttributes( { defaultValue } )
-							}
-						/>
-					) }
+						onChange={ ( defaultValue ) =>
+							setAttributes( { defaultValue } )
+						}
+					/>
+				) }
 				</PanelBody>
+				{ 'hidden' !== fieldType && (
+					<ConditionalLogicPanel
+						clientId={ clientId }
+						conditionalLogic={ attributes.conditionalLogic }
+						setAttributes={ setAttributes }
+					/>
+				) }
 			</InspectorControls>
 			<div { ...blockProps }>
 				{ fieldType.length > 0 ? inputFieldComponent() : '' }

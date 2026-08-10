@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { select } from '@wordpress/data';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import ConditionalLogicPanel from '../../../shared/conditional-logic/conditional-logic-panel';
 import {
 	PanelBody,
 	TextControl,
@@ -75,7 +76,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	);
 
 	const blockProps = useBlockProps( {
-		className: 'wp-block-gutena-field-group wp-block-gutena-radio-field field-group-type-radio standalone-radio-field',
+		className: 'wp-block-gutena-field-group wp-block-gutena-radio-field field-group-type-radio standalone-radio-field' + ( attributes.conditionalLogic && attributes.conditionalLogic.enabled ? ' has-conditional-logic' : '' ),
 	} );
 
 	return (
@@ -137,6 +138,11 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						onChange={ ( nextDescription ) => setAttributes( { description: nextDescription } ) }
 					/>
 				</PanelBody>
+			<ConditionalLogicPanel
+				clientId={ clientId }
+				conditionalLogic={ attributes.conditionalLogic }
+				setAttributes={ setAttributes }
+			/>
 			</InspectorControls>
 			<div { ...blockProps }>
 				<span className="heading-input-label-gutena">

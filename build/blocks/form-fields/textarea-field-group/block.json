@@ -11,6 +11,14 @@
   "icon": "editor-paragraph",
   "description": "Capture longer, multi-line responses such as messages or feedback.",
   "attributes": {
+    "conditionalLogic": {
+      "type": "object",
+      "default": {
+        "enabled": false,
+        "action": "show",
+        "groups": []
+      }
+    },
     "nameAttr": {
       "type": "string",
       "default": "gf-input-1"

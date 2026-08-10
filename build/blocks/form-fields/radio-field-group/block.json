@@ -11,6 +11,14 @@
   "icon": "forms",
   "description": "Enable users to choose a single option from multiple choices.",
   "attributes": {
+    "conditionalLogic": {
+      "type": "object",
+      "default": {
+        "enabled": false,
+        "action": "show",
+        "groups": []
+      }
+    },
     "nameAttr": {
       "type": "string",
       "default": "gf-input-1"

@@ -11,6 +11,14 @@
   "icon": "privacy",
   "description": "Add a consent checkbox for privacy policies, terms, or GDPR compliance.",
   "attributes": {
+    "conditionalLogic": {
+      "type": "object",
+      "default": {
+        "enabled": false,
+        "action": "show",
+        "groups": []
+      }
+    },
     "nameAttr": {
       "type": "string",
       "default": "gf-input-1"
