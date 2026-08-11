@@ -106,7 +106,7 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 					return false;
 			}
 
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query is prepared below.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- updates the plugin's own custom table (gutenaforms_entries) which has no WordPress API equivalent.
 			$wpdb->query(
 				$wpdb->prepare(
 					$query,
@@ -131,13 +131,15 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 			// form table
 			$table_forms = $this->table_gutenaforms;
 			// get form details
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- queries the plugin's own custom table (gutenaforms) which has no WordPress API equivalent.
 			$fom_schema_row = $wpdb->get_results(
 				$wpdb->prepare(
 					"
-					SELECT * FROM {$table_forms}
+					SELECT * FROM %i
 					WHERE block_form_id = %s
 					AND published = %d
 					",
+					$table_forms,
 					sanitize_key( $block_form_id ),
 					1
 				)
@@ -158,6 +160,7 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 			}
 			// $wpdb->insert( $table_name, $data, $data_format );
 			// Insert query
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- inserts into the plugin's own custom table (gutenaforms) which has no WordPress API equivalent.
 			$wpdb->insert(
 				$this->table_gutenaforms,
 				array(

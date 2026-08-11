@@ -44,9 +44,10 @@
             }
             $table_name = $this->table_gutenaforms; 
             //check if table exist
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- checks existence of the plugin's own custom table; runs once on activation, no WordPress API equivalent.
             if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) ) ) === $table_name ) {
                 //check if table already initialized
-                if ( empty( $wpdb->get_var( "SELECT COUNT(form_id) FROM $table_name" ) ) ) {
+                if ( empty( $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(form_id) FROM %i', $table_name ) ) ) ) {
                     $completed_ids = array();
                     foreach ($gutena_form_ids as $form_id) {
                         //continue for repeating id
@@ -94,6 +95,7 @@
             $all_tables_craeted = true;
             foreach ( $table_names as $table_name ) {
                 //check if table exist
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- checks existence of the plugin's own custom tables; runs once on activation, no WordPress API equivalent.
                 if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) ) ) !== $table_name ) {
                     $all_tables_craeted = false;
                     break;

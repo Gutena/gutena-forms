@@ -92,11 +92,12 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		/**
 		 * Initialize form id if exist in url
 		 */
-		private function initialize() {
-			if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
-				$this->form_id = absint( sanitize_key( $_GET['formid'] ) );
-			}
+	private function initialize() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display check on an admin $_GET param; no data is modified.
+		if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
+			$this->form_id = absint( sanitize_key( $_GET['formid'] ) );
 		}
+	}
 
 		/**
 		 * Running the admin file
@@ -343,8 +344,9 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		/**
 		 * Redirect old screen to new dashboard
 		 */
-		public function redirect_when_old_screen() {
-			if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) {
+	public function redirect_when_old_screen() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only navigation check on an admin $_GET param; performs an internal safe redirect, no data is modified.
+		if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) {
 				global $current_screen;
 				if ( ! is_null( $current_screen ) && 'edit-gutena_forms' === $current_screen->id ) {
 					wp_safe_redirect(

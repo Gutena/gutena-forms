@@ -46,6 +46,7 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 		}
 
 		public function settings_fields() {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display check on an admin $_GET param; renders a settings form, no data is modified here.
 			if ( isset( $_GET['pagetype'] ) && 'forms-summary-report' === sanitize_text_field( wp_unslash( $_GET['pagetype'] ) ) ) {
 				echo '<div style="padding: 0 20px" class="wrap">
 				<form action="options.php" method="post">';
@@ -156,6 +157,7 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 	public function get_total_entries() {
 		global $wpdb;
 		$last_week = gmdate( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- queries the plugin's own custom table (gutenaforms_entries) which has no WordPress API equivalent; runs once per week for the email report.
 		return $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT( * ) FROM %i WHERE added_time >= %s AND trash = 0;',
@@ -173,6 +175,7 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 	public function get_entries() {
 		global $wpdb;
 		$last_week = gmdate( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- queries the plugin's own custom tables (gutenaforms, gutenaforms_entries) which have no WordPress API equivalent; runs once per week for the email report.
 		return $wpdb->get_results(
 			$wpdb->prepare(
 				'SELECT COUNT(*) as entries_count, gutenaforms.form_name, gutenaforms.form_id FROM %i gutenaforms LEFT JOIN %i gutenaforms_entries ON gutenaforms.form_id = gutenaforms_entries.form_id WHERE gutenaforms.published = 1 AND gutenaforms_entries.trash = 0 AND gutenaforms_entries.added_time >= %s GROUP BY gutenaforms_entries.form_id;',

@@ -5,6 +5,8 @@
  * @package Gutena Forms
  */
 
+// phpcs:ignoreFile WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- this is a render template require()'d inside get_email_content() with output buffering; the variables below are method-local, not global.
+
 defined( 'ABSPATH' ) || exit;
 
 $plugin_url    		  = defined( 'GUTENA_FORMS_PLUGIN_URL' ) ? GUTENA_FORMS_PLUGIN_URL : '';

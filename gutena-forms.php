@@ -138,6 +138,7 @@ if ( ! function_exists( 'is_gutena_forms_pro' ) ) :
 	 *
 	 * @return bool
 	 */
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- intentional public API function shared with the Gutena Forms Pro add-on; wrapped in function_exists() so Pro may override it. Renaming would break the add-on contract.
 	function is_gutena_forms_pro() {
 		if ( did_action( 'plugins_loaded' ) ) {
 			if ( defined( 'GUTENA_FORMS__PRO_LOADED' ) && GUTENA_FORMS__PRO_LOADED ) {

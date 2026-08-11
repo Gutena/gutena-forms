@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 if ( ! class_exists( 'Gutena_Forms_Admin_Helper' ) ) :
 	class Gutena_Forms_Admin_Helper {
 		public static function feature_request_redirection() {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display check on an admin $_GET param; no data is modified, no action is performed.
 			if ( isset( $_GET['pagetype'] ) && 'feature-request' === sanitize_key( wp_unslash( $_GET['pagetype'] ) ) ) {
 				echo '<script type="text/javascript">
 					window.location.href = "https://gutenaforms.com/roadmap/?utm_source=plugin&utm_medium=tab&utm_campaign=feature_requests";
@@ -20,7 +21,9 @@ if ( ! class_exists( 'Gutena_Forms_Admin_Helper' ) ) :
 		}
 
 		public static function pricing_page_redirection() {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only navigation check on an admin $_GET param; no data is modified.
 			if ( isset( $_GET['page'] ) && 'gutena-forms-upgrade' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
+				// phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect -- redirects to the plugin author's own hardcoded external URL (gutenaforms.com); wp_safe_redirect() would block external hosts.
 				wp_redirect(
 					add_query_arg(
 						array(

@@ -45,6 +45,7 @@
 			
 			//$wpdb->insert( $table_name, $data, $data_format );
 			//Insert query
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- inserts into the plugin's own custom table (gutenaforms_meta) which has no WordPress API equivalent.
 			$wpdb->insert(
 				$this->table_gutenaforms_meta,
 				array(
@@ -106,6 +107,7 @@
 				
 				//step2: Update gutenaforms table row
 				//$wpdb->update( $table_name, $data, $where, $data_format, $where_format );
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- updates the plugin's own custom table (gutenaforms) which has no WordPress API equivalent.
 				$wpdb->update(
 					$table_forms,
 					array(
@@ -152,6 +154,7 @@
 				$fieldSchema['user_id'] = $this->current_user_id();
 				
 				//Step2: Create form entry in table_gutenaforms_entries
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- inserts into the plugin's own custom table (gutenaforms_entries) which has no WordPress API equivalent.
 				$wpdb->insert(
 					$this->table_gutenaforms_entries,
 					array(
@@ -197,9 +200,10 @@
 					} else {
 						$field_value = sanitize_textarea_field( wp_unslash( $field_value ) );
 					}
-					//Insert query
-					$wpdb->insert(
-					    $this->table_gutenaforms_field_value,
+				//Insert query
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- inserts into the plugin's own custom table (gutenaforms_field_value) which has no WordPress API equivalent.
+				$wpdb->insert(
+				    $this->table_gutenaforms_field_value,
 						array(
 							'entry_id' => $fieldSchema['entry_id'],
 							'field_name' => $name_attr,

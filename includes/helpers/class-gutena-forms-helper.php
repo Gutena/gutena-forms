@@ -116,6 +116,7 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 					'post_type'              => 'gutena_forms',
 					'post_status'            => array( 'publish', 'draft', 'private', 'pending' ),
 					'posts_per_page'         => 1,
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- necessary lookup by the plugin's own gutena_form_id meta key; limited to 1 result with no_found_rows and disabled term/meta caches.
 					'meta_key'               => 'gutena_form_id',
 					'meta_value'             => $form_id,
 					'fields'                 => 'ids',
