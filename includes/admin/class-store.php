@@ -91,18 +91,22 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 
 			switch ( $action ) {
 				case 'read':
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $in_placeholders are %d tokens filled via $wpdb->prepare() below.
 					$query = "UPDATE %i SET entry_status = 'read' WHERE entry_id IN ($in_placeholders)";
 					break;
 				case 'unread':
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $in_placeholders are %d tokens filled via $wpdb->prepare() below.
 					$query = "UPDATE %i SET entry_status = 'unread' WHERE entry_id IN ($in_placeholders)";
 					break;
 				case 'trash':
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $in_placeholders are %d tokens filled via $wpdb->prepare() below.
 					$query = "UPDATE %i SET trash = 1 WHERE entry_id IN ($in_placeholders)";
 					break;
 				default:
 					return false;
 			}
 
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query is prepared below.
 			$wpdb->query(
 				$wpdb->prepare(
 					$query,

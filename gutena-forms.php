@@ -430,16 +430,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 							$cloudflare_settings = $cloudflare_attr;
 						}
 
-					if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
-						// phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile is a required third-party anti-bot service, not self-offloading to our own servers.
-						wp_enqueue_script(
-							'gutena-forms-cloudflare-turnstile-scripts',
-							'https://challenges.cloudflare.com/turnstile/v0/api.js',
-							array(),
-							null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-							false
-						);
-					}
+				if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
+					// phpcs:disable PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile is a required third-party anti-bot service, not self-offloading to our own servers.
+					wp_enqueue_script(
+						'gutena-forms-cloudflare-turnstile-scripts',
+						'https://challenges.cloudflare.com/turnstile/v0/api.js',
+						array(),
+						null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+						false
+					);
+					// phpcs:enable PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent
+				}
 
 						// Continue into inner blocks if any.
 						if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {

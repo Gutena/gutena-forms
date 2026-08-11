@@ -123,13 +123,12 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		 * @return string Form name (currently placeholder).
 		 */
 	public function get_name_by_id( $form_id ) {
-		return $this->wpdb->get_var(
-			$this->wpdb->prepare(
-				'SELECT form_name FROM %i WHERE form_id = %d',
-				$this->store->table_gutenaforms,
-				$form_id
-			)
+		$sql = $this->wpdb->prepare(
+			'SELECT form_name FROM %i WHERE form_id = %d',
+			$this->store->table_gutenaforms,
+			$form_id
 		);
+		return $this->wpdb->get_var( $sql );
 	}
 
 		/**
