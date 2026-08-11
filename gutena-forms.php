@@ -263,19 +263,19 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			<div class="notice notice-error is-dismissible">
 				<p>
 					<?php
-					printf(
+				printf(
+					wp_kses(
 						/* translators: %s: current Gutena Forms Pro version number. */
-						wp_kses(
-							__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
-							array( 'strong' => array() )
-						),
-						esc_html( $pro_version )
-					);
-					?>
-				</p>
-			</div>
-			<?php
-		}
+						__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
+						array( 'strong' => array() )
+					),
+					esc_html( $pro_version )
+				);
+				?>
+			</p>
+		</div>
+		<?php
+	}
 
 		/**
 		 * Hook the outdated-Pro notice into the Pro plugin row on the Plugins screen.
@@ -317,14 +317,14 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 					<div class="update-message notice inline notice-error notice-alt">
 						<p>
 							<?php
-							printf(
+						printf(
+							wp_kses(
 								/* translators: %s: current Gutena Forms Pro version number. */
-								wp_kses(
-									__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
-									array( 'strong' => array() )
-								),
-								esc_html( $pro_version )
-							);
+								__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
+								array( 'strong' => array() )
+							),
+							esc_html( $pro_version )
+						);
 							?>
 						</p>
 					</div>
@@ -430,15 +430,16 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 							$cloudflare_settings = $cloudflare_attr;
 						}
 
-						if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
-							wp_enqueue_script(
-								'gutena-forms-cloudflare-turnstile-scripts',
-								'https://challenges.cloudflare.com/turnstile/v0/api.js',
-								array(),
-								null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-								false
-							);
-						}
+					if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
+						// phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile is a required third-party anti-bot service, not self-offloading to our own servers.
+						wp_enqueue_script(
+							'gutena-forms-cloudflare-turnstile-scripts',
+							'https://challenges.cloudflare.com/turnstile/v0/api.js',
+							array(),
+							null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+							false
+						);
+					}
 
 						// Continue into inner blocks if any.
 						if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
@@ -490,7 +491,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			if ( ! is_gutena_forms_pro() ) {
 				$new_link = sprintf(
 					'<a style="color: #36a78a; font-weight: 600;" target="_blank" href="https://gutenaforms.com/pricing/?utm_source=all_plugins&utm_medium=website&utm_campaign=free_plugin">%s</a>',
-					__( 'Get Gutena Forms Pro' )
+					__( 'Get Gutena Forms Pro', 'gutena-forms' )
 				);
 
 				// required link in first place.

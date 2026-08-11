@@ -251,14 +251,14 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							'title' => __( 'Honeypot', 'gutena-forms' ),
 							'slug'  => 'honeypot',
 						),
-						array(
-							'title' => __( 'Google reCAPTCHA' ),
-							'slug'  => 'google-recaptcha',
-						),
-						array(
-							'title' => __( 'Cloudflare Turnstile' ),
-							'slug'  => 'cloudflare-turnstile',
-						),
+					array(
+						'title' => __( 'Google reCAPTCHA', 'gutena-forms' ),
+						'slug'  => 'google-recaptcha',
+					),
+					array(
+						'title' => __( 'Cloudflare Turnstile', 'gutena-forms' ),
+						'slug'  => 'cloudflare-turnstile',
+					),
 					),
 				),
 				array(

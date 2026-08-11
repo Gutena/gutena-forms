@@ -44,8 +44,7 @@
             }
             $table_name = $this->table_gutenaforms; 
             //check if table exist
-            $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
-            if ( $wpdb->get_var( $query ) === $table_name ) {
+            if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) ) ) === $table_name ) {
                 //check if table already initialized
                 if ( empty( $wpdb->get_var( "SELECT COUNT(form_id) FROM $table_name" ) ) ) {
                     $completed_ids = array();
@@ -95,8 +94,7 @@
             $all_tables_craeted = true;
             foreach ( $table_names as $table_name ) {
                 //check if table exist
-                $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
-                if ( $wpdb->get_var( $query ) !== $table_name ) {
+                if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) ) ) !== $table_name ) {
                     $all_tables_craeted = false;
                     break;
                 }
