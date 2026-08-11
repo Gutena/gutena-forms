@@ -92,12 +92,11 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		/**
 		 * Initialize form id if exist in url
 		 */
-	private function initialize() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only admin screen param, no state change.
-		if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
-			$this->form_id = absint( sanitize_key( $_GET['formid'] ) );
+		private function initialize() {
+			if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
+				$this->form_id = absint( sanitize_key( $_GET['formid'] ) );
+			}
 		}
-	}
 
 		/**
 		 * Running the admin file
@@ -288,7 +287,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 					<path d="M19.7772 12.6675H23.999L12.6663 24.0002V19.8114L19.7772 12.6675Z" fill="#0DA88C"/>
 					<rect width="8.81436" height="2.60358" transform="matrix(1 0 0 -1 11.9624 15.2695)" fill="#0DA88C"/>
 					</svg>
-					<p> <strong>' . esc_html__( 'Exciting News!', 'gutena-forms' ) . ' </strong>' . esc_html__( ' Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms' ) ) . '" style="color: #E35D3F;margin-left:1rem;" > ' . esc_html__( 'See all Entries', 'gutena-forms' ) . ' </strong></a></p></div>';
+					<p> <strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong>' . __( ' Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms' ) ) . '" style="color: #E35D3F;margin-left:1rem;" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </strong></a></p></div>';
 			}
 		}
 
@@ -344,9 +343,8 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		/**
 		 * Redirect old screen to new dashboard
 		 */
-	public function redirect_when_old_screen() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only admin screen param, no state change.
-		if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) {
+		public function redirect_when_old_screen() {
+			if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) {
 				global $current_screen;
 				if ( ! is_null( $current_screen ) && 'edit-gutena_forms' === $current_screen->id ) {
 					wp_safe_redirect(

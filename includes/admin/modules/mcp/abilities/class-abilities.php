@@ -59,31 +59,23 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 		 *
 		 * @since 1.8.0
 		 */
-	public function categories_init() {
-		if ( ! function_exists( 'wp_register_ability_category' ) ) {
-			return;
+		public function categories_init() {
+			wp_register_ability_category(
+				'gutena-forms',
+				array(
+					'label'       => __( 'Gutena Forms', 'gutena-forms' ),
+					'description' => __( 'Abilities related to Gutena Forms plugin, including permissions for forms and entries.', 'gutena-forms' ),
+				)
+			);
 		}
-		// phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() above.
-		wp_register_ability_category(
-			'gutena-forms',
-			array(
-				'label'       => __( 'Gutena Forms', 'gutena-forms' ),
-				'description' => __( 'Abilities related to Gutena Forms plugin, including permissions for forms and entries.', 'gutena-forms' ),
-			)
-		);
-	}
 
 		/**
 		 * Register abilities
 		 *
 		 * @since 1.8.0
 		 */
-	public function api_init() {
-		if ( ! function_exists( 'wp_register_ability' ) ) {
-			return;
-		}
-		// phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() above.
-		wp_register_ability(
+		public function api_init() {
+			wp_register_ability(
 				'gutena-forms/get-all-forms',
 				array(
 					'label'               => __( 'Get All Forms', 'gutena-forms' ),
@@ -108,7 +100,6 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 					),
 				)
 			);
-			// phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() in api_init().
 			wp_register_ability(
 				'gutena-forms/get-all-entries',
 				array(
@@ -135,7 +126,6 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 					),
 				)
 			);
-			// phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() in api_init().
 			wp_register_ability(
 				'gutena-forms/get-form-entries',
 				array(
@@ -172,7 +162,6 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 					),
 				)
 			);
-			// phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() in api_init().
 			wp_register_ability(
 				'gutena-forms/get-entry-details',
 				array(
@@ -277,7 +266,7 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 			foreach ( $details as $k => $v ) {
 
 				if ( 'user_id' === $k ) {
-					$user         = get_userdata( $v );
+					$user         = get_user( $v );
 					$entry_data[] = array(
 						'label' => __( 'User', 'gutena-forms' ),
 						'value' => $user ? $user->user_login : 'Unknown User',

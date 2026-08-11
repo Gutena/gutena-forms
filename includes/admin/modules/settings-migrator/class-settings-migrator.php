@@ -174,15 +174,15 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				return false;
 			}
 
-		$posts = get_posts(
-			array(
-				'post_type'      => 'gutena_forms',
-				'posts_per_page' => 1,
-				'post_status'    => array( 'publish', 'draft', 'private' ),
-				'meta_key'       => 'gutena_form_id', // phpcs:ignore WordPress.DB.SlowDBQuery.query_posts -- migration lookup on a low-volume custom post type.
-				'meta_value'     => $form_id, // phpcs:ignore WordPress.DB.SlowDBQuery.query_posts -- migration lookup on a low-volume custom post type.
-			)
-		);
+			$posts = get_posts(
+				array(
+					'post_type'      => 'gutena_forms',
+					'posts_per_page' => 1,
+					'post_status'    => array( 'publish', 'draft', 'private' ),
+					'meta_key'       => 'gutena_form_id',
+					'meta_value'     => $form_id,
+				)
+			);
 
 			if ( ! empty( $posts ) ) {
 				return $posts[0];

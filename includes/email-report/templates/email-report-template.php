@@ -7,7 +7,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template-scoped variables in an included email partial; not true globals.
 $plugin_url    		  = defined( 'GUTENA_FORMS_PLUGIN_URL' ) ? GUTENA_FORMS_PLUGIN_URL : '';
 $has_pro       		  = is_gutena_forms_pro();
 $forms_data           = apply_filters( 'gutena_forms__get_entries', array() );
@@ -291,5 +290,3 @@ $total_entries_change = apply_filters( 'gutena_forms__get_total_entries_change',
 	</table>
 </body>
 </html>
-<?php
-// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound.

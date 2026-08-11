@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Gutena Forms – Contact Form, Survey Form, Feedback Form, Booking Form, and Custom Form Builder
+ * Plugin Name:       Gutena Forms - Contact Forms Block
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
@@ -138,7 +138,6 @@ if ( ! function_exists( 'is_gutena_forms_pro' ) ) :
 	 *
 	 * @return bool
 	 */
-	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- shared API with Gutena Forms Pro; renaming is a breaking change.
 	function is_gutena_forms_pro() {
 		if ( did_action( 'plugins_loaded' ) ) {
 			if ( defined( 'GUTENA_FORMS__PRO_LOADED' ) && GUTENA_FORMS__PRO_LOADED ) {
@@ -264,10 +263,12 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			<div class="notice notice-error is-dismissible">
 				<p>
 					<?php
-					/* translators: %s: current Gutena Forms Pro version number. */
-					$update_message = __( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' );
 					printf(
-						wp_kses( $update_message, array( 'strong' => array() ) ),
+						/* translators: %s: current Gutena Forms Pro version number. */
+						wp_kses(
+							__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
+							array( 'strong' => array() )
+						),
 						esc_html( $pro_version )
 					);
 					?>
@@ -313,18 +314,20 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			?>
 			<tr class="plugin-update-tr active">
 				<td colspan="<?php echo esc_attr( $colspan ); ?>" class="plugin-update colspanchange">
-				<div class="update-message notice inline notice-error notice-alt">
-					<p>
-						<?php
-						/* translators: %s: current Gutena Forms Pro version number. */
-						$update_message = __( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' );
-						printf(
-							wp_kses( $update_message, array( 'strong' => array() ) ),
-							esc_html( $pro_version )
-						);
-						?>
-					</p>
-				</div>
+					<div class="update-message notice inline notice-error notice-alt">
+						<p>
+							<?php
+							printf(
+								/* translators: %s: current Gutena Forms Pro version number. */
+								wp_kses(
+									__( 'Please update <strong>Gutena Forms Pro</strong> to the latest version to get blocks back. You are currently using version <strong>%s</strong>.', 'gutena-forms' ),
+									array( 'strong' => array() )
+								),
+								esc_html( $pro_version )
+							);
+							?>
+						</p>
+					</div>
 				</td>
 			</tr>
 			<?php
@@ -427,16 +430,15 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 							$cloudflare_settings = $cloudflare_attr;
 						}
 
-					if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
-						// phpcs:ignore PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Cloudflare Turnstile SDK must be loaded from Cloudflare's CDN.
-						wp_enqueue_script(
-							'gutena-forms-cloudflare-turnstile-scripts',
-							'https://challenges.cloudflare.com/turnstile/v0/api.js',
-							array(),
-							null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-							false
-						);
-					}
+						if ( isset( $cloudflare_settings['enable'] ) && $cloudflare_settings['enable'] ) {
+							wp_enqueue_script(
+								'gutena-forms-cloudflare-turnstile-scripts',
+								'https://challenges.cloudflare.com/turnstile/v0/api.js',
+								array(),
+								null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+								false
+							);
+						}
 
 						// Continue into inner blocks if any.
 						if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
@@ -488,7 +490,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			if ( ! is_gutena_forms_pro() ) {
 				$new_link = sprintf(
 					'<a style="color: #36a78a; font-weight: 600;" target="_blank" href="https://gutenaforms.com/pricing/?utm_source=all_plugins&utm_medium=website&utm_campaign=free_plugin">%s</a>',
-					__( 'Get Gutena Forms Pro', 'gutena-forms' )
+					__( 'Get Gutena Forms Pro' )
 				);
 
 				// required link in first place.

@@ -67,64 +67,48 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 		 *
 		 * @param number|array $form_entry_ids entry id
 		 */
-	public function update_entries_status( $action, $form_entry_id ) {
-		// check for valid action
-		global $wpdb;
-		if ( ! empty( $action ) && ! empty( $wpdb ) && ! empty( $form_entry_id ) ) {
-			$form_entry_ids = array();
-			if ( is_array( $form_entry_id ) ) {
-				foreach ( $form_entry_id as $id ) {
-					if ( ! empty( $id ) && is_numeric( $id ) ) {
-						$form_entry_ids[] = absint( $id );
+		public function update_entries_status( $action, $form_entry_id ) {
+			// check for valid action
+			global $wpdb;
+			if ( ! empty( $action ) && ! empty( $wpdb ) && ! empty( $form_entry_id ) ) {
+				$form_entry_ids = array();
+				if ( is_array( $form_entry_id ) ) {
+					foreach ( $form_entry_id as $id ) {
+						if ( ! empty( $id ) && is_numeric( $id ) ) {
+							$form_entry_ids[] = absint( $id );
+						}
 					}
+				} elseif ( ! empty( $form_entry_id ) && is_numeric( $form_entry_id ) ) {
+					$form_entry_ids[] = absint( $form_entry_id );
 				}
-			} elseif ( ! empty( $form_entry_id ) && is_numeric( $form_entry_id ) ) {
-				$form_entry_ids[] = absint( $form_entry_id );
+				// comma separated string id1,id2,...
+				$form_entry_ids = implode( ',', $form_entry_ids );
+				// Update status
+				// Wpdb add single quotes for string
+				$action_query = '';
+
+				switch ( $action ) {
+					case 'read':
+						$action_query = "UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'read' WHERE entry_id IN ({$form_entry_ids})";
+						break;
+					case 'unread':
+						$action_query = "UPDATE {$this->table_gutenaforms_entries} SET entry_status = 'unread' WHERE entry_id IN ({$form_entry_ids})";
+						break;
+					case 'trash':
+						$action_query = "UPDATE {$this->table_gutenaforms_entries} SET trash = 1 WHERE entry_id IN ({$form_entry_ids})";
+						break;
+					default:
+						break;
+				}
+
+				if ( ! empty( $action_query ) && 25 < strlen( $action_query ) ) {
+					$wpdb->query( $action_query );
+					return true;
+				}
 			}
 
-			if ( empty( $form_entry_ids ) ) {
-				return false;
-			}
-
-			// Build placeholders for the IN clause (one %d per id).
-			$placeholders = implode( ',', array_fill( 0, count( $form_entry_ids ), '%d' ) );
-			$table        = $this->table_gutenaforms_entries;
-
-			switch ( $action ) {
-				case 'read':
-					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- admin-only status update.
-					$wpdb->query(
-						$wpdb->prepare(
-							"UPDATE {$table} SET entry_status = 'read' WHERE entry_id IN ({$placeholders})",
-							$form_entry_ids
-						)
-					);
-					return true;
-				case 'unread':
-					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- admin-only status update.
-					$wpdb->query(
-						$wpdb->prepare(
-							"UPDATE {$table} SET entry_status = 'unread' WHERE entry_id IN ({$placeholders})",
-							$form_entry_ids
-						)
-					);
-					return true;
-				case 'trash':
-					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- admin-only status update.
-					$wpdb->query(
-						$wpdb->prepare(
-							"UPDATE {$table} SET trash = 1 WHERE entry_id IN ({$placeholders})",
-							$form_entry_ids
-						)
-					);
-					return true;
-				default:
-					return false;
-			}
+			return false;
 		}
-
-		return false;
-	}
 
 		/***
 		 * Get form details
@@ -138,7 +122,6 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 			// form table
 			$table_forms = $this->table_gutenaforms;
 			// get form details
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- admin-only read from custom plugin table.
 			$fom_schema_row = $wpdb->get_results(
 				$wpdb->prepare(
 					"
@@ -166,7 +149,6 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 			}
 			// $wpdb->insert( $table_name, $data, $data_format );
 			// Insert query
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- write to custom plugin table.
 			$wpdb->insert(
 				$this->table_gutenaforms,
 				array(
