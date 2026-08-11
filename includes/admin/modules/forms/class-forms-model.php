@@ -122,12 +122,15 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		 * @param int|string $form_id Form ID.
 		 * @return string Form name (currently placeholder).
 		 */
-		public function get_name_by_id( $form_id ) {
-			$sql = 'SELECT form_name FROM %i WHERE form_id = %d';
-			$sql = $this->wpdb->prepare( $sql, $this->store->table_gutenaforms, $form_id );
-
-			return $this->wpdb->get_var( $sql );
-		}
+	public function get_name_by_id( $form_id ) {
+		return $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				'SELECT form_name FROM %i WHERE form_id = %d',
+				$this->store->table_gutenaforms,
+				$form_id
+			)
+		);
+	}
 
 		/**
 		 * Get list of published forms with title and block id (for search options).

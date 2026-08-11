@@ -74,22 +74,22 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 *
 		 * @return array|object|stdClass|null
 		 */
-		public function get_details( $entry_id ) {
-			$sql = 'SELECT entry_id, form_id, user_id, added_time, entry_status FROM %i WHERE entry_id = %d AND trash = 0';
-			$sql = $this->wpdb->prepare(
-				$sql,
+	public function get_details( $entry_id ) {
+		$details = $this->wpdb->get_row(
+			$this->wpdb->prepare(
+				'SELECT entry_id, form_id, user_id, added_time, entry_status FROM %i WHERE entry_id = %d AND trash = 0',
 				$this->store->table_gutenaforms_entries,
 				$entry_id
-			);
+			),
+			ARRAY_A
+		);
 
-			$details = $this->wpdb->get_row( $sql, ARRAY_A );
-
-			if ( ! empty( $details ) && ! empty( $details['entry_status'] ) && 'unread' === $details['entry_status'] ) {
-				$this->store->update_entries_status( 'read', $entry_id );
-			}
-
-			return $details;
+		if ( ! empty( $details ) && ! empty( $details['entry_status'] ) && 'unread' === $details['entry_status'] ) {
+			$this->store->update_entries_status( 'read', $entry_id );
 		}
+
+		return $details;
+	}
 
 		/**
 		 * Get entry data
@@ -99,16 +99,15 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 *
 		 * @return string|null
 		 */
-		public function get_data( $entry_id ) {
-			$sql    = 'SELECT entry_data FROM %i WHERE entry_id = %d AND trash = 0';
-			$sql    = $this->wpdb->prepare(
-				$sql,
+	public function get_data( $entry_id ) {
+		return $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				'SELECT entry_data FROM %i WHERE entry_id = %d AND trash = 0',
 				$this->store->table_gutenaforms_entries,
 				$entry_id
-			);
-
-			return $this->wpdb->get_var( $sql );
-		}
+			)
+		);
+	}
 
 		/**
 		 * Get related entries
@@ -118,17 +117,17 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 *
 		 * @return array|object|stdClass[]|null
 		 */
-		public function get_related( $entry_id ) {
-			$sql = 'SELECT related.entry_id, related.added_time FROM %i main LEFT JOIN %i related ON main.user_id = related.user_id AND main.entry_id != related.entry_id WHERE main.entry_id = %d';
-			$sql = $this->wpdb->prepare(
-				$sql,
+	public function get_related( $entry_id ) {
+		return $this->wpdb->get_results(
+			$this->wpdb->prepare(
+				'SELECT related.entry_id, related.added_time FROM %i main LEFT JOIN %i related ON main.user_id = related.user_id AND main.entry_id != related.entry_id WHERE main.entry_id = %d',
 				$this->store->table_gutenaforms_entries,
 				$this->store->table_gutenaforms_entries,
 				$entry_id
-			);
-
-			return $this->wpdb->get_results( $sql, ARRAY_A );
-		}
+			),
+			ARRAY_A
+		);
+	}
 
 		/**
 		 * Get count of entries by form ID
@@ -138,18 +137,17 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 *
 		 * @return string|null
 		 */
-		public function get_count_by_form_id( $form_id ) {
-			$block_form_id = get_post_meta( $form_id, 'gutena_form_id', true );
-			$sql           = 'SELECT COUNT( gutenaFormsEntries.entry_id ) FROM %i gutenaForms LEFT JOIN %i gutenaFormsEntries ON gutenaForms.form_id = gutenaFormsEntries.form_id WHERE gutenaForms.block_form_id = %s AND gutenaFormsEntries.trash = 0';
-			$sql           = $this->wpdb->prepare(
-				$sql,
+	public function get_count_by_form_id( $form_id ) {
+		$block_form_id = get_post_meta( $form_id, 'gutena_form_id', true );
+		return $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				'SELECT COUNT( gutenaFormsEntries.entry_id ) FROM %i gutenaForms LEFT JOIN %i gutenaFormsEntries ON gutenaForms.form_id = gutenaFormsEntries.form_id WHERE gutenaForms.block_form_id = %s AND gutenaFormsEntries.trash = 0',
 				$this->store->table_gutenaforms,
 				$this->store->table_gutenaforms_entries,
 				$block_form_id
-			);
-
-			return $this->wpdb->get_var( $sql );
-		}
+			)
+		);
+	}
 
 		/**
 		 * Get all entries, optionally by form ID
@@ -159,23 +157,23 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 *
 		 * @return array|object|stdClass[]|null
 		 */
-		public function get_all( $form_id = 0 ) {
-			$sql = "SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data, e.entry_status AS status, m.metadata AS starred FROM %i e LEFT JOIN %i f ON e.form_id = f.form_id LEFT JOIN %i m ON e.entry_id = m.entry_id AND m.data_type = 'starred' WHERE e.trash = 0 ";
-			$sql = $this->wpdb->prepare(
-				$sql,
-				$this->store->table_gutenaforms_entries,
-				$this->store->table_gutenaforms,
-				$this->store->table_gutenaforms_meta
-			);
+	public function get_all( $form_id = 0 ) {
+		$sql = $this->wpdb->prepare(
+			"SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data, e.entry_status AS status, m.metadata AS starred FROM %i e LEFT JOIN %i f ON e.form_id = f.form_id LEFT JOIN %i m ON e.entry_id = m.entry_id AND m.data_type = 'starred' WHERE e.trash = 0 ",
+			$this->store->table_gutenaforms_entries,
+			$this->store->table_gutenaforms,
+			$this->store->table_gutenaforms_meta
+		);
 
-			if ( ! empty( $form_id ) ) {
-				$sql .= ' AND f.block_form_id = %s ';
-				$sql = $this->wpdb->prepare( $sql, $form_id );
-			}
+		if ( ! empty( $form_id ) ) {
+			$sql .= ' AND f.block_form_id = %s ';
+			$sql = $this->wpdb->prepare( $sql, $form_id );
+		}
 
-			$sql .= ' ORDER BY e.entry_id DESC ';
+		$sql .= ' ORDER BY e.entry_id DESC ';
 
-			$results = $this->wpdb->get_results( $sql, ARRAY_A );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sql is built and prepared above.
+		$results = $this->wpdb->get_results( $sql, ARRAY_A );
 
 			return array_map(
 				function ( $entry ) {
@@ -209,16 +207,16 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		public function get_entries_header( $form_id ) {
 			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
 
-			$sql    = 'SELECT entries.entry_data FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s LIMIT 1';
-			$sql    = $this->wpdb->prepare(
-				$sql,
+		$result = $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				'SELECT entries.entry_data FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s LIMIT 1',
 				$this->store->table_gutenaforms,
 				$this->store->table_gutenaforms_entries,
 				$form_id
-			);
-			$result = $this->wpdb->get_var( $sql );
+			)
+		);
 
-			$headers = array(
+		$headers = array(
 				array(
 					'key'   => 'checkbox',
 					'value' => 'entry_id',
@@ -277,17 +275,18 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		public function get_entry_data( $form_id ) {
 			$form_id = get_post_meta( $form_id, 'gutena_form_id', true );
 
-			$sql    = "SELECT entries.entry_data, entries.entry_id, entries.added_time, entries.entry_status, metadata.metadata AS starred FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id LEFT JOIN %i metadata ON entries.entry_id = metadata.entry_id AND metadata.data_type = 'starred' WHERE forms.block_form_id = %s AND entries.trash = 0 ORDER BY entries.entry_id DESC";
-			$sql    = $this->wpdb->prepare(
-				$sql,
+		$result = $this->wpdb->get_results(
+			$this->wpdb->prepare(
+				"SELECT entries.entry_data, entries.entry_id, entries.added_time, entries.entry_status, metadata.metadata AS starred FROM %i forms LEFT JOIN %i entries ON forms.form_id = entries.form_id LEFT JOIN %i metadata ON entries.entry_id = metadata.entry_id AND metadata.data_type = 'starred' WHERE forms.block_form_id = %s AND entries.trash = 0 ORDER BY entries.entry_id DESC",
 				$this->store->table_gutenaforms,
 				$this->store->table_gutenaforms_entries,
 				$this->store->table_gutenaforms_meta,
 				$form_id
-			);
-			$result = $this->wpdb->get_results( $sql, ARRAY_A );
+			),
+			ARRAY_A
+		);
 
-			$result = array_map(
+		$result = array_map(
 				function ( $result ) {
 					$result['entry_data']   = maybe_unserialize( $result['entry_data'] );
 					$result['entry_status'] = ! empty( $result['entry_status'] ) ? $result['entry_status'] : 'Unknown';
@@ -313,26 +312,24 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 * @param int        $serial_no  Unused; serial number is computed from results.
 		 * @return array{total_count: int, previous_entry: int|null, next_entry: int|null, serial_no: int}
 		 */
-		public function fetch_current_prev_details( $entry_id, $serial_no ) {
-			$sql = 'SELECT form_id FROM %i WHERE entry_id = %d';
-			$sql = $this->wpdb->prepare(
-				$sql,
+	public function fetch_current_prev_details( $entry_id, $serial_no ) {
+		$form_id = $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				'SELECT form_id FROM %i WHERE entry_id = %d',
 				$this->store->table_gutenaforms_entries,
 				$entry_id
-			);
+			)
+		);
 
-			$form_id = $this->wpdb->get_var( $sql );
-
-			$sql = 'SELECT entry_id FROM %i WHERE form_id = %d AND trash = 0 GROUP BY entry_id ORDER BY entry_id';
-			$sql = $this->wpdb->prepare(
-				$sql,
+		$results = $this->wpdb->get_col(
+			$this->wpdb->prepare(
+				'SELECT entry_id FROM %i WHERE form_id = %d AND trash = 0 GROUP BY entry_id ORDER BY entry_id',
 				$this->store->table_gutenaforms_entries,
 				$form_id
-			);
+			)
+		);
 
-			$results = $this->wpdb->get_col( $sql );
-
-			$total_entries = count( $results );
+		$total_entries = count( $results );
 
 			$previous = null;
 			$next     = null;
@@ -384,29 +381,27 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 * @since 1.7.0
 		 * @param string $entry_id Entry id.
 		 */
-		public function get_status_by_id( $entry_id ) {
-			$sql = 'SELECT entry_status FROM %i WHERE entry_id = %d';
-			$sql = $this->wpdb->prepare(
-				$sql,
+	public function get_status_by_id( $entry_id ) {
+		return $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				'SELECT entry_status FROM %i WHERE entry_id = %d',
 				$this->store->table_gutenaforms_entries,
 				$entry_id
-			);
+			)
+		);
+	}
 
-			return $this->wpdb->get_var( $sql );
-		}
-
-		public function get_form_id_by_entry_id( $entry_id ) {
-			$sql = 'SELECT form_id FROM %i WHERE entry_id = %d';
-			$sql = $this->wpdb->prepare(
-				$sql,
+	public function get_form_id_by_entry_id( $entry_id ) {
+		$form_id = $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				'SELECT form_id FROM %i WHERE entry_id = %d',
 				$this->store->table_gutenaforms_entries,
 				$entry_id
-			);
+			)
+		);
 
-			$form_id = $this->wpdb->get_var( $sql );
-
-			return is_null( $form_id ) ? 0 : $form_id;
-		}
+		return is_null( $form_id ) ? 0 : $form_id;
+	}
 	}
 
 	Gutena_Forms_Entries_Model::get_instance();

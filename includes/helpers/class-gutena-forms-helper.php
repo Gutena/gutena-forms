@@ -110,8 +110,9 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 		 * @param string $form_id Form ID.
 		 * @return int
 		 */
-		private static function find_post_id_by_form_id( $form_id ) {
-			$posts = get_posts(
+	private static function find_post_id_by_form_id( $form_id ) {
+		// phpcs:ignore WordPress.DB.SlowDBQuery.query_posts -- meta_key lookup on a low-volume custom post type, single result.
+		$posts = get_posts(
 				array(
 					'post_type'              => 'gutena_forms',
 					'post_status'            => array( 'publish', 'draft', 'private', 'pending' ),

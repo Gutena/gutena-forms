@@ -45,8 +45,9 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 			$this->filter_email_data();
 		}
 
-		public function settings_fields() {
-			if ( isset( $_GET['pagetype'] ) && 'forms-summary-report' === sanitize_text_field( wp_unslash( $_GET['pagetype'] ) ) ) {
+	public function settings_fields() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only admin screen param, no state change.
+		if ( isset( $_GET['pagetype'] ) && 'forms-summary-report' === sanitize_text_field( wp_unslash( $_GET['pagetype'] ) ) ) {
 				echo '<div style="padding: 0 20px" class="wrap">
 				<form action="options.php" method="post">';
 
@@ -153,26 +154,36 @@ if ( ! class_exists( 'Gutena_Forms_Email_Reports' ) ) :
 		 *
 		 * @return string
 		 */
-		public function get_total_entries() {
-			global $wpdb;
-			$last_week = date( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
-			$sql 	   = 'SELECT COUNT( * ) FROM %i WHERE added_time >= %s AND trash = 0;';
-			$sql       = $wpdb->prepare( $sql, $wpdb->prefix . 'gutenaforms_entries', $last_week );
-			return $wpdb->get_var( $sql );
-		}
+	public function get_total_entries() {
+		global $wpdb;
+		$last_week = gmdate( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
+		return $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT( * ) FROM %i WHERE added_time >= %s AND trash = 0;',
+				$wpdb->prefix . 'gutenaforms_entries',
+				$last_week
+			)
+		);
+	}
 
-		/**
-		 * Get entries grouped by form in the last week.
-		 *
-		 * @return array
-		 */
-		public function get_entries() {
-			global $wpdb;
-			$last_week = date( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
-			$sql       = 'SELECT COUNT(*) as entries_count, gutenaforms.form_name, gutenaforms.form_id FROM %i gutenaforms LEFT JOIN %i gutenaforms_entries ON gutenaforms.form_id = gutenaforms_entries.form_id WHERE gutenaforms.published = 1 AND gutenaforms_entries.trash = 0 AND gutenaforms_entries.added_time >= %s GROUP BY gutenaforms_entries.form_id;';
-			$sql       = $wpdb->prepare( $sql, $wpdb->prefix . 'gutenaforms', $wpdb->prefix . 'gutenaforms_entries', $last_week );
-			return $wpdb->get_results( $sql, ARRAY_A );
-		}
+	/**
+	 * Get entries grouped by form in the last week.
+	 *
+	 * @return array
+	 */
+	public function get_entries() {
+		global $wpdb;
+		$last_week = gmdate( 'Y-m-d H:i:s', strtotime( '-7 days' ) );
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT COUNT(*) as entries_count, gutenaforms.form_name, gutenaforms.form_id FROM %i gutenaforms LEFT JOIN %i gutenaforms_entries ON gutenaforms.form_id = gutenaforms_entries.form_id WHERE gutenaforms.published = 1 AND gutenaforms_entries.trash = 0 AND gutenaforms_entries.added_time >= %s GROUP BY gutenaforms_entries.form_id;',
+				$wpdb->prefix . 'gutenaforms',
+				$wpdb->prefix . 'gutenaforms_entries',
+				$last_week
+			),
+			ARRAY_A
+		);
+	}
 
 		public static function calculate_percentage_change( $new_value, $old_value ) {
 			if ( 0 == $old_value ) {

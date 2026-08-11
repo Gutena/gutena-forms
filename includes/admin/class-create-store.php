@@ -47,7 +47,8 @@
             $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
             if ( $wpdb->get_var( $query ) === $table_name ) {
                 //check if table already initialized
-                if ( empty( $wpdb->get_var( "SELECT COUNT(form_id) FROM $table_name" ) ) ) {
+                $count_query = $wpdb->prepare( 'SELECT COUNT(form_id) FROM %i', $table_name ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one-time migration check.
+                if ( empty( $wpdb->get_var( $count_query ) ) ) {
                     $completed_ids = array();
                     foreach ($gutena_form_ids as $form_id) {
                         //continue for repeating id

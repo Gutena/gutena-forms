@@ -10,8 +10,9 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Admin_Helper' ) ) :
 	class Gutena_Forms_Admin_Helper {
-		public static function feature_request_redirection() {
-			if ( isset( $_GET['pagetype'] ) && 'feature-request' === sanitize_key( wp_unslash( $_GET['pagetype'] ) ) ) {
+	public static function feature_request_redirection() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only admin screen param, no state change.
+		if ( isset( $_GET['pagetype'] ) && 'feature-request' === sanitize_key( wp_unslash( $_GET['pagetype'] ) ) ) {
 				echo '<script type="text/javascript">
 					window.location.href = "https://gutenaforms.com/roadmap/?utm_source=plugin&utm_medium=tab&utm_campaign=feature_requests";
 				</script>';
@@ -19,19 +20,20 @@ if ( ! class_exists( 'Gutena_Forms_Admin_Helper' ) ) :
 			}
 		}
 
-		public static function pricing_page_redirection() {
-			if ( isset( $_GET['page'] ) && 'gutena-forms-upgrade' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
-				wp_redirect(
-					add_query_arg(
-						array(
-							'utm_source'   => 'wordpress_admin_menu',
-							'utm_medium'   => 'website',
-							'utm_campaign' => 'free_plugin',
-						),
-						'https://gutenaforms.com/pricing/'
-					)
-				);
-				exit;
+	public static function pricing_page_redirection() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only admin screen param, no state change.
+		if ( isset( $_GET['page'] ) && 'gutena-forms-upgrade' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'utm_source'   => 'wordpress_admin_menu',
+						'utm_medium'   => 'website',
+						'utm_campaign' => 'free_plugin',
+					),
+					'https://gutenaforms.com/pricing/'
+				)
+			);
+			exit;
 			}
 		}
 
