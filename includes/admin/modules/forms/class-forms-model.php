@@ -128,7 +128,7 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 			$this->store->table_gutenaforms,
 			$form_id
 		);
-		return $this->wpdb->get_var( $sql );
+		return $this->wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 	}
 
 		/**

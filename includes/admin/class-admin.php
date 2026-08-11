@@ -93,10 +93,11 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		 * Initialize form id if exist in url
 		 */
 	private function initialize() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display check on an admin $_GET param; no data is modified.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only display check on an admin $_GET param; no data is modified.
 		if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
 			$this->form_id = absint( sanitize_key( $_GET['formid'] ) );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 	}
 
 		/**

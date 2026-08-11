@@ -101,14 +101,14 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 					'post_type'      => 'gutena_forms',
 					'posts_per_page' => 1,
 					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-time migration lookup by the plugin's own gutena_form_id meta key; limited to 1 result.
-					'meta_key'       => 'gutena_form_id',
-					'meta_value'     => $form_id,
-					'post_status'    => 'any',
-					'fields'         => 'ids',
-				)
-			);
+				'meta_key'       => 'gutena_form_id',
+				'meta_value'     => $form_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-time migration lookup by the plugin's own gutena_form_id meta key; limited to 1 result.
+				'post_status'    => 'any',
+				'fields'         => 'ids',
+			)
+		);
 
-			if ( ! empty( $existing_forms ) ) {
+		if ( ! empty( $existing_forms ) ) {
 				// Form already exists, just update connected posts
 				$cpt_post_id = $existing_forms[0];
 			} else {
@@ -199,9 +199,9 @@ if ( ! class_exists( 'Gutena_Forms_Migration' ) ) :
 							'post_type'      => 'gutena_forms',
 							'posts_per_page' => 1,
 							// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-time migration lookup by the plugin's own gutena_form_id meta key; limited to 1 result.
-							'meta_key'       => 'gutena_form_id',
-							'meta_value'     => $form_id,
-							'post_status'    => 'any',
+						'meta_key'       => 'gutena_form_id',
+						'meta_value'     => $form_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-time migration lookup by the plugin's own gutena_form_id meta key; limited to 1 result.
+						'post_status'    => 'any',
 							'fields'         => 'ids',
 						)
 					);

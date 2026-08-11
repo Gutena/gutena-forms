@@ -80,7 +80,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$this->store->table_gutenaforms_entries,
 			$entry_id
 		);
-		$details = $this->wpdb->get_row( $sql, ARRAY_A );
+		$details = $this->wpdb->get_row( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 
 		if ( ! empty( $details ) && ! empty( $details['entry_status'] ) && 'unread' === $details['entry_status'] ) {
 			$this->store->update_entries_status( 'read', $entry_id );
@@ -103,7 +103,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$this->store->table_gutenaforms_entries,
 			$entry_id
 		);
-		return $this->wpdb->get_var( $sql );
+		return $this->wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 	}
 
 		/**
@@ -121,7 +121,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$this->store->table_gutenaforms_entries,
 			$entry_id
 		);
-		return $this->wpdb->get_results( $sql, ARRAY_A );
+		return $this->wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 	}
 
 		/**
@@ -140,7 +140,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$this->store->table_gutenaforms_entries,
 			$block_form_id
 		);
-		return $this->wpdb->get_var( $sql );
+		return $this->wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 	}
 
 		/**
@@ -167,11 +167,12 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 
 		$query .= ' ORDER BY e.entry_id DESC ';
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is built dynamically and prepared via $wpdb->prepare() below.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $query is built dynamically and prepared via $wpdb->prepare() below.
 		$results = $this->wpdb->get_results(
 			$this->wpdb->prepare( $query, $args ),
 			ARRAY_A
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 			return array_map(
 				function ( $entry ) {
@@ -211,7 +212,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$this->store->table_gutenaforms_entries,
 			$form_id
 		);
-		$result = $this->wpdb->get_var( $sql );
+		$result = $this->wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 
 		$headers = array(
 			array(
@@ -279,7 +280,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$this->store->table_gutenaforms_meta,
 			$form_id
 		);
-		$result = $this->wpdb->get_results( $sql, ARRAY_A );
+		$result = $this->wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 
 			$result = array_map(
 				function ( $result ) {
@@ -313,14 +314,14 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$this->store->table_gutenaforms_entries,
 			$entry_id
 		);
-		$form_id = $this->wpdb->get_var( $sql );
+		$form_id = $this->wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 
 		$sql = $this->wpdb->prepare(
 			'SELECT entry_id FROM %i WHERE form_id = %d AND trash = 0 GROUP BY entry_id ORDER BY entry_id',
 			$this->store->table_gutenaforms_entries,
 			$form_id
 		);
-		$results = $this->wpdb->get_col( $sql );
+		$results = $this->wpdb->get_col( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 
 			$total_entries = count( $results );
 
@@ -380,7 +381,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$this->store->table_gutenaforms_entries,
 			$entry_id
 		);
-		return $this->wpdb->get_var( $sql );
+		return $this->wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 	}
 
 	public function get_form_id_by_entry_id( $entry_id ) {
@@ -389,7 +390,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 			$this->store->table_gutenaforms_entries,
 			$entry_id
 		);
-		$form_id = $this->wpdb->get_var( $sql );
+		$form_id = $this->wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is the prepared result from $wpdb->prepare() above.
 		return is_null( $form_id ) ? 0 : $form_id;
 	}
 	}

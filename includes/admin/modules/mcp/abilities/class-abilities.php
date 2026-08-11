@@ -63,8 +63,8 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 		if ( ! function_exists( 'wp_register_ability_category' ) ) {
 			return;
 		}
-		wp_register_ability_category(
-				'gutena-forms',
+		wp_register_ability_category( // phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() above; degrades gracefully on WP < 6.9.0.
+			'gutena-forms',
 				array(
 					'label'       => __( 'Gutena Forms', 'gutena-forms' ),
 					'description' => __( 'Abilities related to Gutena Forms plugin, including permissions for forms and entries.', 'gutena-forms' ),
@@ -81,8 +81,8 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 		if ( ! function_exists( 'wp_register_ability' ) ) {
 			return;
 		}
-		wp_register_ability(
-				'gutena-forms/get-all-forms',
+		wp_register_ability( // phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() above; degrades gracefully on WP < 6.9.0.
+			'gutena-forms/get-all-forms',
 				array(
 					'label'               => __( 'Get All Forms', 'gutena-forms' ),
 					'description'         => __( 'Retrieve all forms.', 'gutena-forms' ),
@@ -106,8 +106,8 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 					),
 				)
 			);
-			wp_register_ability(
-				'gutena-forms/get-all-entries',
+		wp_register_ability( // phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() above; degrades gracefully on WP < 6.9.0.
+			'gutena-forms/get-all-entries',
 				array(
 					'label'               => __( 'Get All Entries', 'gutena-forms' ),
 					'description'         => __( 'Retrieve all entries.', 'gutena-forms' ),
@@ -132,8 +132,8 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 					),
 				)
 			);
-			wp_register_ability(
-				'gutena-forms/get-form-entries',
+		wp_register_ability( // phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() above; degrades gracefully on WP < 6.9.0.
+			'gutena-forms/get-form-entries',
 				array(
 					'label'               => __( 'Get Entries', 'gutena-forms' ),
 					'description'         => __( 'Retrieve all entries of a form by form id.', 'gutena-forms' ),
@@ -168,8 +168,8 @@ if ( ! class_exists( 'Gutena_Forms_Abilities' ) ) :
 					),
 				)
 			);
-			wp_register_ability(
-				'gutena-forms/get-entry-details',
+		wp_register_ability( // phpcs:ignore wp_function_not_compatible_with_requires_wp -- guarded by function_exists() above; degrades gracefully on WP < 6.9.0.
+			'gutena-forms/get-entry-details',
 				array(
 					'label'               => __( 'Get Entry Details', 'gutena-forms' ),
 					'description'         => __( 'Retrieve entry data by entry id.', 'gutena-forms' ),

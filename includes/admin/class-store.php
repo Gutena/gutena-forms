@@ -106,13 +106,14 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 					return false;
 			}
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- updates the plugin's own custom table (gutenaforms_entries) which has no WordPress API equivalent.
+			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $query is built with %d IN() placeholders and prepared below; updates the plugin's own custom table (gutenaforms_entries) which has no WordPress API equivalent.
 			$wpdb->query(
 				$wpdb->prepare(
 					$query,
 					array_merge( array( $this->table_gutenaforms_entries ), $form_entry_ids )
 				)
 			);
+			// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			return true;
 		}
 

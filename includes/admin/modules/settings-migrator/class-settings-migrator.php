@@ -180,9 +180,9 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 					'posts_per_page' => 1,
 					'post_status'    => array( 'publish', 'draft', 'private' ),
 					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-time migration lookup by the plugin's own gutena_form_id meta key; limited to 1 result.
-					'meta_key'       => 'gutena_form_id',
-					'meta_value'     => $form_id,
-				)
+				'meta_key'       => 'gutena_form_id',
+				'meta_value'     => $form_id, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- one-time migration lookup by the plugin's own gutena_form_id meta key; limited to 1 result.
+			)
 			);
 
 			if ( ! empty( $posts ) ) {
