@@ -282,29 +282,17 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'slug'  => 'mcp',
 				),
 				array(
+					'title' => __( 'REST API', 'gutena-forms' ),
+					'icon'  => 'Settings',
+					'menus' => array(),
+					'slug'  => 'rest-api',
+				),
+				array(
 					'title' => __( 'Integrations', 'gutena-forms' ),
 					'icon'  => 'Integration',
 					'menus' => array(),
 					'slug'  => 'integrations',
 				),
-			array(
-				'title' => __( 'MCP', 'gutena-forms' ),
-				'icon'  => 'Robot',
-				'menus' => array(),
-				'slug'  => 'mcp',
-			),
-			array(
-				'title' => __( 'REST API', 'gutena-forms' ),
-				'icon'  => 'Settings',
-				'menus' => array(),
-				'slug'  => 'rest-api',
-			),
-			array(
-				'title' => __( 'Integrations', 'gutena-forms' ),
-				'icon'  => 'Integration',
-				'menus' => array(),
-				'slug'  => 'integrations',
-			),
 			);
 
 			if ( ! empty( $menus ) ) {
