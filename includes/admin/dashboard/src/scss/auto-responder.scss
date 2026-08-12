@@ -66,6 +66,22 @@
       font-weight: 400;
       line-height: normal;
       padding: 7px 15px;
+
+      // Same focus outline as Weekly Forms Summary (WP TextControl accent).
+      &:focus {
+        border-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #2271b1));
+        box-shadow: 0 0 0 1px var(--wp-components-color-accent, var(--wp-admin-theme-color, #2271b1));
+        outline: 2px solid transparent;
+      }
+
+      // Same disabled look as Weekly Forms Summary fields.
+      &:disabled {
+        background: #f5f6f7;
+        border-color: #e2e4e7;
+        box-shadow: none;
+        color: #8a8f98;
+        cursor: not-allowed;
+      }
     }
 
     .gutena-forms__text-control .components-text-control__input {
@@ -116,6 +132,8 @@
 
     .gutena-forms__merge-tags.is-disabled .gutena-forms__merge-tag-pill,
     .gutena-forms__merge-tag-pill:disabled {
+      background: #f5f6f7;
+      color: #8a8f98;
       cursor: not-allowed;
     }
 

@@ -79,11 +79,12 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 				'description' => __( 'Enable automated email responses using customizable templates and merge tags.', 'gutena-forms' ),
 				'fields'      => array(
 					array(
-						'id'    => 'enable',
-						'type'  => 'toggle',
-						'name'  => __( 'Enable Auto-Responder', 'gutena-forms' ),
-						'desc'  => __( 'Send an automatic reply to users who submit the form.', 'gutena-forms' ),
-						'value' => ! empty( $this->settings['enable'] ),
+						'id'      => 'enable',
+						'type'    => 'toggle',
+						'name'    => __( 'Enable Auto-Responder', 'gutena-forms' ),
+						'desc'    => __( 'Send an automatic reply to users who submit the form.', 'gutena-forms' ),
+						'default' => false,
+						'value'   => ! empty( $this->settings['enable'] ),
 					),
 					array(
 						'id'    => 'subject',

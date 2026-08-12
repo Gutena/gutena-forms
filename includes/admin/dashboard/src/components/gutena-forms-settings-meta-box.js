@@ -64,7 +64,8 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 						attrs: item.attrs || {},
 					} );
 				} else {
-					initialFieldValue[ item.id ] = item.value || item.default;
+					// Use ?? so boolean false (e.g. enable off) is kept — `||` dropped it and left fields editable on first load.
+					initialFieldValue[ item.id ] = item.value ?? item.default;
 					parsedSettings.push( {
 						id: item.id,
 						type: item.type,
