@@ -1,0 +1,12 @@
+/**
+ * Gutena Forms admin submenu separators.
+ */
+#toplevel_page_gutena-forms .wp-submenu li.wp-first-item::after,
+#toplevel_page_gutena-forms .wp-submenu li:has(> a[href*="settings/entries"])::after {
+	content: "";
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+	display: block;
+	float: left;
+	margin: 8px 0;
+	width: 100%;
+}

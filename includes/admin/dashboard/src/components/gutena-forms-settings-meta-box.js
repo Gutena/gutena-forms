@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from '@wordpress/element';
+import { createInterpolateElement, useEffect, useLayoutEffect, useRef, useState } from '@wordpress/element';
 import {NavLink, useParams} from 'react-router';
 import GutenaFormsNumberField from './fields/gutena-forms-number-field';
 import GutenaFormsToggleField from './fields/gutena-forms-toggle-field';
@@ -336,6 +336,30 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				className={ 'gutena-forms__settings-meta-box-desc' }
 				dangerouslySetInnerHTML={ { __html: description } }
 			/>
+
+			{ 'auto-responder' === id && (
+				<div className="gutena-forms__auto-responder-notice">
+					<span className="dashicons dashicons-info" aria-hidden="true" />
+					<p>
+						{ createInterpolateElement(
+							__(
+								'<strong>Note:</strong> Auto-responder settings apply to all forms when enabled. For custom settings per form, please contact our <a>support team</a>.',
+								'gutena-forms'
+							),
+							{
+								strong: <strong />,
+								a: (
+									<a
+										href="https://objectsws.atlassian.net/servicedesk/customer/portal/239"
+										target="_blank"
+										rel="noopener noreferrer"
+									/>
+								),
+							}
+						) }
+					</p>
+				</div>
+			) }
 
 			<div className={ 'gutena-forms__settings-meta-box' }>
 				{ ! template && ! loading && settings && settings.map( ( field ) => {

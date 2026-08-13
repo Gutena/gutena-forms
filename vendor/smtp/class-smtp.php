@@ -44,6 +44,7 @@ if ( ! class_exists( 'Gutena_Forms_Smtp' ) ) :
 		 */
 		private function __construct() {
 			add_action( 'admin_menu', array( $this, 'register_submenu' ), 20 );
+			add_action( 'admin_init', array( $this, 'maybe_redirect_to_postman' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 			add_action( 'wp_ajax_gutena_forms_post_smtp_request', array( $this, 'request_post_smtp_ajax' ) );
 		}
@@ -74,12 +75,9 @@ if ( ! class_exists( 'Gutena_Forms_Smtp' ) ) :
 
 		/**
 		 * Register SMTP submenu before Upgrade.
+		 * Active Post SMTP → link to Post SMTP admin; otherwise marketing screen.
 		 */
 		public function register_submenu() {
-			if ( self::is_post_smtp_active() ) {
-				return;
-			}
-
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
 			}
@@ -89,34 +87,64 @@ if ( ! class_exists( 'Gutena_Forms_Smtp' ) ) :
 				return;
 			}
 
-			add_submenu_page(
-				'gutena-forms',
-				__( 'SMTP', 'gutena-forms' ),
-				__( 'SMTP', 'gutena-forms' ),
-				'manage_options',
-				self::PAGE_SLUG,
-				array( $this, 'render_page' )
-			);
+			if ( self::is_post_smtp_active() ) {
+				$menu_slug = 'admin.php?page=postman';
+				add_submenu_page(
+					'gutena-forms',
+					__( 'SMTP', 'gutena-forms' ),
+					__( 'SMTP', 'gutena-forms' ),
+					'manage_options',
+					$menu_slug
+				);
+			} else {
+				$menu_slug = self::PAGE_SLUG;
+				add_submenu_page(
+					'gutena-forms',
+					__( 'SMTP', 'gutena-forms' ),
+					__( 'SMTP', 'gutena-forms' ),
+					'manage_options',
+					$menu_slug,
+					array( $this, 'render_page' )
+				);
+			}
 
-			$this->move_submenu_before_upgrade();
+			$this->move_submenu_before_upgrade( $menu_slug );
+		}
+
+		/**
+		 * If marketing slug is opened while Post SMTP is active, go to Post SMTP.
+		 */
+		public function maybe_redirect_to_postman() {
+			if ( empty( $_GET['page'] ) || self::PAGE_SLUG !== sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				return;
+			}
+
+			if ( ! self::is_post_smtp_active() ) {
+				return;
+			}
+
+			wp_safe_redirect( admin_url( 'admin.php?page=postman' ) );
+			exit;
 		}
 
 		/**
 		 * Place SMTP item immediately before Upgrade.
+		 *
+		 * @param string $smtp_slug Registered submenu slug for SMTP.
 		 */
-		private function move_submenu_before_upgrade() {
+		private function move_submenu_before_upgrade( $smtp_slug ) {
 			global $submenu;
 
 			if ( empty( $submenu['gutena-forms'] ) || ! is_array( $submenu['gutena-forms'] ) ) {
 				return;
 			}
 
-			$smtp_item    = null;
-			$upgrade_key  = null;
-			$rebuilt      = array();
+			$smtp_item   = null;
+			$upgrade_key = null;
+			$rebuilt     = array();
 
 			foreach ( $submenu['gutena-forms'] as $key => $item ) {
-				if ( isset( $item[2] ) && self::PAGE_SLUG === $item[2] ) {
+				if ( isset( $item[2] ) && $smtp_slug === $item[2] ) {
 					$smtp_item = $item;
 					continue;
 				}
@@ -130,7 +158,7 @@ if ( ! class_exists( 'Gutena_Forms_Smtp' ) ) :
 			}
 
 			foreach ( $submenu['gutena-forms'] as $key => $item ) {
-				if ( isset( $item[2] ) && self::PAGE_SLUG === $item[2] ) {
+				if ( isset( $item[2] ) && $smtp_slug === $item[2] ) {
 					continue;
 				}
 				if ( null !== $upgrade_key && (int) $key === (int) $upgrade_key ) {

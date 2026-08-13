@@ -297,6 +297,13 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		 * Enqueue admin scripts
 		 */
 		public function enqueue_scripts_admin() {
+			wp_enqueue_style(
+				'gutena-forms-admin-menu',
+				GUTENA_FORMS_PLUGIN_URL . 'assets/css/admin-menu.css',
+				array(),
+				GUTENA_FORMS_VERSION
+			);
+
 			// Notice + dismiss AJAX only apply when Pro is inactive; script must load for free.
 			if ( ! is_gutena_forms_pro( false ) ) {
 				wp_enqueue_script(
