@@ -1,6 +1,5 @@
 @import "./animation";
 @import "./old-styles";
-@import "./responsive-styles";
 @import "./auto-responder";
 
 .gutena-froms#gutena-forms__root {
@@ -73,6 +72,7 @@
     padding: 0 20px;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 
     .gutena-forms_icon-menu-container {
       display: flex;
@@ -125,6 +125,56 @@
               }
             }
           }
+        }
+      }
+    }
+
+    .gutena-forms__header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      // Burger toggle button. Hidden on desktop, shown on small screens
+      // via responsive-styles.scss.
+      .gutena-forms__burger-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: 0;
+        padding: 6px;
+        margin: 0;
+        cursor: pointer;
+        color: #424D55;
+        width: 36px;
+        height: 36px;
+        border-radius: 4px;
+        transition: background-color 0.15s ease;
+
+        &:hover,
+        &:focus {
+          background-color: rgba(13, 168, 140, 0.08);
+          outline: none;
+          box-shadow: none;
+        }
+
+        svg {
+          display: block;
+          width: 22px;
+          height: 22px;
+          fill: currentColor;
+        }
+
+        // Explicitly set fill on the path so the burger lines are visible.
+        // Without this, WordPress admin CSS can override the inherited
+        // fill to transparent.
+        svg path {
+          fill: currentColor;
+        }
+
+        // The close icon uses stroke instead of fill.
+        svg path[stroke] {
+          fill: none;
         }
       }
     }
@@ -1408,3 +1458,8 @@
     }
   }
 }
+
+// Responsive styles imported last so media-query overrides win the cascade
+// against the base rules above (which share the same specificity via the
+// #gutena-forms__root ID prefix).
+@import "./responsive-styles";

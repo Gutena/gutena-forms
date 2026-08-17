@@ -42,3 +42,112 @@
     }
   }
 }
+
+@media ( max-width: 835px ) {
+	.gutena-froms#gutena-forms__root {
+		.gutena-forms__header-container {
+			padding: 0 12px;
+
+			.gutena-forms_icon-menu-container {
+				.gutena-forms_icon-menu {
+					margin-right: 8px;
+
+					img {
+						max-height: 32px;
+						width: auto;
+					}
+				}
+
+				// Dropdown menu: hidden by default, revealed via .is-open.
+				.gutena-forms__header-menu {
+					display: none;
+					position: absolute;
+					top: 100%;
+					left: 0;
+					right: 0;
+					background: #FFFFFF;
+					border-bottom: 0.5px solid #E2E2E2;
+					box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+					z-index: 100;
+
+					&.is-open {
+						display: block;
+						animation: gutena-forms-menu-slide 0.18s ease-out;
+					}
+
+					ul {
+						li {
+							display: block;
+							width: 100%;
+							height: auto;
+
+							a {
+								display: block;
+								padding: 12px 20px;
+								line-height: 1.4;
+								height: auto;
+								border-bottom: 1px solid #F1F1F1;
+
+								&:last-child {
+									border-bottom: 0;
+								}
+
+								&.active {
+									height: auto;
+									border-bottom: 1px solid #F1F1F1;
+									border-left: 3px solid #0DA88C;
+									padding-left: 17px;
+									background: rgba(13, 168, 140, 0.04);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.gutena-forms__header-right {
+				// Show the burger toggle on small screens.
+				.gutena-forms__burger-toggle {
+					display: inline-flex;
+				}
+
+				// Slightly tighten the upgrade button on small screens.
+				.gutena-forms__upgrade-button {
+					padding: 4px 10px;
+					font-size: 12px;
+
+					svg {
+						margin-right: 4px;
+					}
+				}
+			}
+		}
+	}
+}
+
+// On very narrow screens, drop the upgrade button's icon margin so the
+// burger + logo + upgrade all fit comfortably.
+@media ( max-width: 420px ) {
+	.gutena-froms#gutena-forms__root {
+		.gutena-forms__header-container {
+			.gutena-forms__header-right {
+				.gutena-forms__upgrade-button {
+					svg {
+						margin-right: 0;
+					}
+				}
+			}
+		}
+	}
+}
+
+@keyframes gutena-forms-menu-slide {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
