@@ -2,7 +2,7 @@
 Contributors:      wpexpertsio
 Tags:              contact form, custom form, forms, form builder, WordPress form plugin
 Tested up to:      7.0
-Stable tag:        2.1.0
+Stable tag:        2.2.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -408,6 +408,8 @@ Please report security bugs found in the source code of the undefined plugin thr
 
 
 == Changelog ==
+= 2.2.0 - =
+
 
 = 2.1.0 - Aug 13, 2026 =
 * New – Added Auto Responder feature.
