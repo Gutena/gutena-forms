@@ -2,7 +2,7 @@
 Contributors:      wpexpertsio
 Tags:              contact form, custom form, forms, form builder, WordPress form plugin
 Tested up to:      7.0
-Stable tag:        2.0.0
+Stable tag:        2.1.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -409,7 +409,10 @@ Please report security bugs found in the source code of the undefined plugin thr
 
 == Changelog ==
 
-= 2.0.0 - Jul 26, 2026 =
+= 2.1.0 - Aug 13, 2026 =
+* New – Added Auto Responder feature.
+
+= 2.0.0 - Jul 27, 2026 =
 * New - Redesigned frontend UI for all form fields with consistent layout, labels, validation states, and accessibility
 * New - Standalone single-block fields: each field type is now one block with merged settings (no nested child blocks)
 * Fixed – Security enhancement on behalf of CVE-2026-11995
