@@ -340,6 +340,12 @@ document.addEventListener("DOMContentLoaded", function(){
 					'display-success-message'
 				);
 
+				gutena_forms.dispatchEvent(
+					new CustomEvent( 'gutena-forms-submit-success', {
+						bubbles: false,
+					} )
+				);
+
 				if (
 					hasClass(
 						gutena_forms,
@@ -627,6 +633,15 @@ document.addEventListener("DOMContentLoaded", function(){
 			}
 		}
 	}	
+
+	window.gutenaFormsValidation = {
+		isEmpty,
+		hasClass,
+		getParents,
+		validateEmail,
+		validateUrl,
+		field_validation,
+	};
 
 	ready();
 });

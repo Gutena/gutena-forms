@@ -127,6 +127,46 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		}
 
 		/**
+		 * Convert the outer wrapper from form to div when an embedded form is present.
+		 * Prevents invalid nested forms (e.g. existing-forms block inside gutena/forms).
+		 *
+		 * @since 1.6.0
+		 * @param string $content Block HTML.
+		 * @return string
+		 */
+		private function demote_nested_form_wrapper( $content ) {
+			if ( ! preg_match_all( '/<form\b/i', $content, $matches ) || count( $matches[0] ) < 2 ) {
+				return $content;
+			}
+
+			$content = preg_replace( '/<form\b/i', '<div', $content, 1 );
+			$pos     = strripos( $content, '</form>' );
+
+			if ( false !== $pos ) {
+				$content = substr_replace( $content, '</div>', $pos, 7 );
+			}
+
+			return $content;
+		}
+
+		/**
+		 * Inject a data attribute into the opening form tag.
+		 *
+		 * @since 1.6.0
+		 * @param string $content            Block HTML.
+		 * @param string $attribute_fragment Attribute string (leading space required).
+		 * @return string
+		 */
+		private function inject_form_opening_attribute( $content, $attribute_fragment ) {
+			return preg_replace(
+				'/<form\b([^>]*)>/i',
+				'<form$1' . $attribute_fragment . '>',
+				$content,
+				1
+			);
+		}
+
+		/**
 		 * Render Form Block
 		 *
 		 * @since 1.6.0
@@ -136,6 +176,19 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		 * @return string
 		 */
 		public function render_block( $attributes, $content ) {
+			$content = $this->demote_nested_form_wrapper( $content );
+
+			// Page-break / multi-step settings for front end (independent of email settings).
+			if ( ! empty( $attributes['settings']['pageBreak'] ) && is_array( $attributes['settings']['pageBreak'] ) ) {
+				$page_break_json = wp_json_encode( $attributes['settings']['pageBreak'] );
+				if ( $page_break_json ) {
+					$content = $this->inject_form_opening_attribute(
+						$content,
+						' data-page-break-settings="' . esc_attr( $page_break_json ) . '"'
+					);
+				}
+			}
+
 			// No changes if attributes is empty.
 			if ( empty( $attributes ) || empty( $attributes['adminEmails'] ) ) {
 				return $content;

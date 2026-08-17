@@ -220,7 +220,7 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 					wp_update_post(
 							array(
 									'ID'           => $connected_post_id,
-									'post_content' => $new_content,
+									'post_content' => wp_slash( $new_content ),
 							),
 							false,
 							false
@@ -360,7 +360,7 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 				wp_update_post(
 						array(
 								'ID'           => $post_id,
-								'post_content' => $new_post_content,
+								'post_content' => wp_slash( $new_post_content ),
 						),
 						false,
 						false
@@ -464,30 +464,30 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 							'fields'         => 'ids',
 					)
 			);
-
-			if ( ! empty( $post ) ) {
-				$post_id = $post[0];
-				wp_update_post(
-						array(
-								'ID'           => $post_id,
-								'post_title'   => $form_name,
-								'post_content' => serialize_block( $block ),
-						),
-						false,
-						false
-				);
+			
+		if ( ! empty( $post ) ) {
+			$post_id = $post[0];
+			wp_update_post(
+					array(
+							'ID'           => $post_id,
+							'post_title'   => $form_name,
+							'post_content' => wp_slash( serialize_block( $block ) ),
+					),
+					false,
+					false
+			);
 			} else {
-				$post_id = wp_insert_post(
-						array(
-								'post_type'    => $this->post_type,
-								'post_title'   => $form_name,
-								'post_status'  => 'publish',
-								'post_content' => serialize_block( $block ),
-						),
-						false,
-						false
-				);
-
+			$post_id = wp_insert_post(
+					array(
+							'post_type'    => $this->post_type,
+							'post_title'   => $form_name,
+							'post_status'  => 'publish',
+							'post_content' => wp_slash( serialize_block( $block ) ),
+					),
+					false,
+					false
+			);
+				
 				update_post_meta( $post_id, 'gutena_form_id', $form_id );
 				update_post_meta( $post_id, '_gutena_connected_posts', array( $parent_post_id ) );
 			}
