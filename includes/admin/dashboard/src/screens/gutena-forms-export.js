@@ -6,7 +6,7 @@
  */
 
 import { __ } from '@wordpress/i18n';
-import { Button, CheckboxControl } from '@wordpress/components';
+import { Button, CheckboxControl, RadioControl } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import ExportIcon from '../icons/export';
 import {
@@ -227,8 +227,9 @@ const GutenaFormsExport = () => {
 
 	return (
 		<div className="gutena-forms__import-export gutena-forms__export">
-			{ /* Export Entries */ }
-			<section className="gutena-forms__export-section">
+			<div className="gutena-forms__export-content">
+				{ /* Export Entries */ }
+				<section className="gutena-forms__export-section">
 				<div className="gutena-forms__import-export-section-heading">
 					<h3>{ __( 'Export Entries', 'gutena-forms' ) }</h3>
 					<p>
@@ -333,21 +334,15 @@ const GutenaFormsExport = () => {
 							<h4>
 								{ __( 'Export Options', 'gutena-forms' ) }
 							</h4>
-							<div className="gutena-forms__export-checkbox-list">
-								{ exportFormats.map( ( format ) => (
-									<CheckboxControl
-										key={ format.id }
-										label={ format.label }
-										checked={
-											exportFormat === format.id
-										}
-										onChange={ ( checked ) => {
-											if ( checked ) {
-												setExportFormat( format.id );
-											}
-										} }
-									/>
-								) ) }
+							<div className="gutena-forms__export-radio-list">
+								<RadioControl
+									selected={ exportFormat }
+									options={ exportFormats.map( ( format ) => ( {
+										label: format.label,
+										value: format.id,
+									} ) ) }
+									onChange={ setExportFormat }
+								/>
 							</div>
 						</div>
 					</>
@@ -475,21 +470,22 @@ const GutenaFormsExport = () => {
 						</ul>
 					) }
 				</div>
-
-				<Button
-					className={ `gutena-forms__primary-button gutena-forms__import-export-action ${
-						! canExportForms ? 'is-disabled' : ''
-					}` }
-					disabled={ ! canExportForms }
-					isBusy={ exportingForms }
-					onClick={ handleExportForms }
-				>
-					<ExportIcon />
-					{ exportingForms
-						? __( 'Exporting…', 'gutena-forms' )
-						: __( 'Export', 'gutena-forms' ) }
-				</Button>
 			</section>
+			</div>
+
+			<Button
+				className={ `gutena-forms__primary-button gutena-forms__import-export-action ${
+					! canExportForms ? 'is-disabled' : ''
+				}` }
+				disabled={ ! canExportForms }
+				isBusy={ exportingForms }
+				onClick={ handleExportForms }
+			>
+				<ExportIcon />
+				{ exportingForms
+					? __( 'Exporting…', 'gutena-forms' )
+					: __( 'Export', 'gutena-forms' ) }
+			</Button>
 		</div>
 	);
 };

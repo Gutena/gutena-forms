@@ -27,12 +27,29 @@
 		}
 
 		.gutena-forms__import-export-action {
-			font-size: 14px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			align-self: flex-start;
+			width: auto;
+			max-width: 100%;
+			gap: 10px;
+			border: none;
+			box-shadow: none;
+			white-space: nowrap;
+			line-height: normal;
+			font-size: 12px;
 			font-weight: 700;
 			border-radius: 6px;
 			padding: 6px 10px;
 			height: auto;
 			min-height: 0;
+			cursor: pointer;
+
+			svg {
+				margin-right: 0;
+				flex-shrink: 0;
+			}
 
 			&.is-disabled,
 			&:disabled {
@@ -46,8 +63,14 @@
 	}
 
 	.gutena-forms__import {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 15px;
+		width: 100%;
+
 		.gutena-forms__import-file-field {
-			margin-bottom: 15px;
+			margin-bottom: 0;
 		}
 
 		.gutena-forms__import-file-row {
@@ -120,9 +143,24 @@
 	}
 
 	.gutena-forms__export {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+		width: 100%;
+
+		.gutena-forms__export-content {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 20px;
+			width: 100%;
+		}
+
 		.gutena-forms__export-section {
 			display: flex;
 			flex-direction: column;
+			align-items: flex-start;
 			gap: 14px;
 			width: 100%;
 		}
@@ -131,7 +169,7 @@
 			height: 0.8px;
 			background: #d9d9d9;
 			width: 100%;
-			margin: 20px 0;
+			margin: 0;
 		}
 
 		.gutena-forms__export-options-block {
@@ -140,6 +178,30 @@
 				font-size: 14px;
 				font-weight: 700;
 				color: #000;
+			}
+		}
+
+		.gutena-forms__export-radio-list {
+			.components-base-control {
+				margin-bottom: 0;
+			}
+
+			.components-radio-control__label {
+				font-size: 12px;
+				color: #000;
+			}
+
+			.components-radio-control__option {
+				margin-bottom: 6px;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+
+			.components-radio-control__input[type='radio']:checked {
+				background-color: #0da88c;
+				border-color: #0da88c;
 			}
 		}
 
