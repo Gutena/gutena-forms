@@ -179,6 +179,67 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 		}
 
 		/**
+		 * Remove reCAPTCHA secret keys from settings intended for the frontend.
+		 *
+		 * @since 1.9.2
+		 * @param array $settings Raw reCAPTCHA settings.
+		 * @return array
+		 */
+		public static function strip_recaptcha_secret_keys( $settings ) {
+			$settings = is_array( $settings ) ? $settings : array();
+
+			unset( $settings['secret_key'], $settings['v2_secret_key'], $settings['v3_secret_key'] );
+
+			return $settings;
+		}
+
+		/**
+		 * Remove Cloudflare Turnstile secret keys from settings intended for the frontend.
+		 *
+		 * @since 1.9.2
+		 * @param array $settings Raw Turnstile settings.
+		 * @return array
+		 */
+		public static function strip_turnstile_secret_keys( $settings ) {
+			$settings = is_array( $settings ) ? $settings : array();
+
+			unset( $settings['secret_key'] );
+
+			return $settings;
+		}
+
+		/**
+		 * Strip captcha secret keys from form block attrs when global defaults are used.
+		 *
+		 * @since 1.9.2
+		 * @param array $form_attrs Form block attributes.
+		 * @return array
+		 */
+		public static function strip_captcha_secrets_from_form_attrs( $form_attrs ) {
+			$form_attrs = is_array( $form_attrs ) ? $form_attrs : array();
+
+			if ( ! empty( $form_attrs['recaptcha'] ) && is_array( $form_attrs['recaptcha'] ) ) {
+				$use_global = ! isset( $form_attrs['recaptcha']['defaultSettings'] )
+					|| false !== $form_attrs['recaptcha']['defaultSettings'];
+
+				if ( $use_global ) {
+					$form_attrs['recaptcha'] = self::strip_recaptcha_secret_keys( $form_attrs['recaptcha'] );
+				}
+			}
+
+			if ( ! empty( $form_attrs['cloudflareTurnstile'] ) && is_array( $form_attrs['cloudflareTurnstile'] ) ) {
+				$use_global = ! isset( $form_attrs['cloudflareTurnstile']['defaultSettings'] )
+					|| false !== $form_attrs['cloudflareTurnstile']['defaultSettings'];
+
+				if ( $use_global ) {
+					$form_attrs['cloudflareTurnstile'] = self::strip_turnstile_secret_keys( $form_attrs['cloudflareTurnstile'] );
+				}
+			}
+
+			return $form_attrs;
+		}
+
+		/**
 		 * Sanitize array
 		 *
 		 * @since 1.8.0

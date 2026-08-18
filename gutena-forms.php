@@ -595,31 +595,54 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 				}
 			}
 
+			$grecaptcha_public = Gutena_Forms_Helper::strip_recaptcha_secret_keys( $grecaptcha );
+			$cloudflare_public = Gutena_Forms_Helper::strip_turnstile_secret_keys( $cloudflare_turnstile_defaults );
+
+			$gutena_forms_block_data = array_merge(
+				array(
+					'submit_action'                 => 'gutena_forms_submit',
+					'ajax_url'                      => admin_url( 'admin-ajax.php' ),
+					'nonce'                         => wp_create_nonce( 'gutena_Forms' ),
+					'grecaptcha'                    => ! empty( $grecaptcha_public )
+						? $grecaptcha_public
+						: array(
+							'enable' => false,
+							'type'   => 'v2',
+						),
+					'pricing_link'                  => 'https://gutenaforms.com/pricing/',
+					'cloudflare_turnstile_defaults' => is_array( $cloudflare_public ) ? $cloudflare_public : array(),
+					'is_pro'                        => is_gutena_forms_pro(),
+					'is_gutena_forms_post_type'     => $gutena_forms_post_type,
+					'forms_available'               => $forms_available,
+					'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
+					'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
+				),
+				$gf_message
+			);
+
 			wp_localize_script(
 				'gutena-forms-script',
 				'gutenaFormsBlock',
-				array_merge(
-					array(
-						'submit_action'                 => 'gutena_forms_submit',
-						'ajax_url'                      => admin_url( 'admin-ajax.php' ),
-						'nonce'                         => wp_create_nonce( 'gutena_Forms' ),
-						'grecaptcha'                    => ! empty( $grecaptcha )
-							? $grecaptcha
-							: array(
-								'enable' => false,
-								'type'   => 'v2',
-							),
-						'pricing_link'                  => 'https://gutenaforms.com/pricing/',
-						'cloudflare_turnstile_defaults' => is_array( $cloudflare_turnstile_defaults ) ? $cloudflare_turnstile_defaults : array(),
-						'is_pro'                        => is_gutena_forms_pro(),
-						'is_gutena_forms_post_type'     => $gutena_forms_post_type,
-						'forms_available'               => $forms_available,
-						'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
-						'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
-					),
-					$gf_message
-				)
+				$gutena_forms_block_data
 			);
+
+			// Block editor needs secret keys for per-form settings UI; never expose them on the public frontend script.
+			if ( is_admin() && current_user_can( 'edit_posts' ) ) {
+				$gutena_forms_editor_data = $gutena_forms_block_data;
+				$gutena_forms_editor_data['grecaptcha'] = ! empty( $grecaptcha )
+					? $grecaptcha
+					: array(
+						'enable' => false,
+						'type'   => 'v2',
+					);
+				$gutena_forms_editor_data['cloudflare_turnstile_defaults'] = is_array( $cloudflare_turnstile_defaults ) ? $cloudflare_turnstile_defaults : array();
+
+				wp_localize_script(
+					'gutena-forms-editor-script',
+					'gutenaFormsBlock',
+					$gutena_forms_editor_data
+				);
+			}
 		}
 
 		/**
@@ -866,6 +889,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 								array( 'defaultSettings' => true )
 							);
 						}
+
+						$single_form_schema['form_attrs'] = Gutena_Forms_Helper::strip_captcha_secrets_from_form_attrs( $single_form_schema['form_attrs'] );
 
 						// filter for formSchema.
 						$form_schema_filtered = apply_filters( 'gutena_forms_save_form_schema', $single_form_schema, $single_form_schema['form_attrs']['formID'], $gutena_form_ids );
