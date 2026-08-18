@@ -2,8 +2,8 @@
 	.gutena-forms__import-export {
 		.gutena-forms__import-export-label {
 			display: block;
-			font-size: 12px;
-			font-weight: 500;
+			font-size: 14px;
+			font-weight: 700;
 			color: #000;
 			margin-bottom: 6px;
 		}
@@ -11,7 +11,7 @@
 		.gutena-forms__import-export-section-heading {
 			h3 {
 				margin: 0 0 4px;
-				font-size: 12px;
+				font-size: 14px;
 				font-weight: 700;
 				color: #000;
 				line-height: normal;
@@ -19,7 +19,7 @@
 
 			p {
 				margin: 0;
-				font-size: 10px;
+				font-size: 12px;
 				font-weight: 400;
 				color: #000;
 				line-height: normal;
@@ -27,7 +27,7 @@
 		}
 
 		.gutena-forms__import-export-action {
-			font-size: 12px;
+			font-size: 14px;
 			font-weight: 700;
 			border-radius: 6px;
 			padding: 6px 10px;
@@ -64,7 +64,7 @@
 			border: 1px solid #e2e2e2;
 			border-radius: 6px;
 			padding: 7px 15px;
-			font-size: 10px;
+			font-size: 12px;
 			color: #101010;
 			background: #fff;
 			display: flex;
@@ -80,7 +80,7 @@
 			border-radius: 6px !important;
 			background: #f0f0f1 !important;
 			color: #000 !important;
-			font-size: 10px !important;
+			font-size: 12px !important;
 			font-weight: 700 !important;
 			padding: 7px 15px !important;
 			box-shadow: none !important;
@@ -101,7 +101,7 @@
 			border-radius: 6px;
 			padding: 10px 15px;
 			margin-bottom: 15px;
-			font-size: 10px;
+			font-size: 12px;
 			color: #000;
 			line-height: 1;
 		}
@@ -137,7 +137,7 @@
 		.gutena-forms__export-options-block {
 			h4 {
 				margin: 0 0 10px;
-				font-size: 12px;
+				font-size: 14px;
 				font-weight: 700;
 				color: #000;
 			}
@@ -150,7 +150,7 @@
 			}
 
 			.components-checkbox-control__label {
-				font-size: 10px;
+				font-size: 12px;
 				color: #000;
 			}
 
@@ -159,8 +159,30 @@
 			}
 
 			input[type='checkbox']:checked {
-				background: #0da88c;
+				background-color: #0da88c;
 				border-color: #0da88c;
+			}
+		}
+
+		.gutena-forms__export-dropdown-option {
+			input[type='checkbox'] {
+				appearance: none;
+				width: 16px;
+				height: 16px;
+				border: 1px solid #949494;
+				border-radius: 2px;
+				background-color: #fff;
+				margin: 0;
+				flex-shrink: 0;
+			}
+
+			input[type='checkbox']:checked {
+				background-color: #0da88c;
+				border-color: #0da88c;
+				background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E");
+				background-repeat: no-repeat;
+				background-position: center;
+				background-size: 14px 14px;
 			}
 		}
 
@@ -206,7 +228,7 @@
 
 		.gutena-forms__export-fields-status {
 			margin: 0;
-			font-size: 10px;
+			font-size: 12px;
 			color: #6b7280;
 		}
 
@@ -227,7 +249,7 @@
 			border: 1px solid #e2e2e2;
 			border-radius: 6px;
 			padding: 10px 15px;
-			font-size: 10px;
+			font-size: 12px;
 			color: #000;
 			cursor: pointer;
 			text-align: left;
@@ -269,7 +291,7 @@
 				padding: 8px 15px;
 				border: 0;
 				background: transparent;
-				font-size: 10px;
+				font-size: 12px;
 				color: #000;
 				cursor: pointer;
 				text-align: left;
@@ -283,7 +305,7 @@
 
 		.gutena-forms__export-dropdown-empty {
 			padding: 8px 15px;
-			font-size: 10px;
+			font-size: 12px;
 			color: #6b7280;
 		}
 
@@ -307,7 +329,7 @@
 			background: #e2e2e2;
 			border-radius: 3px;
 			padding: 4px 8px;
-			font-size: 10px;
+			font-size: 12px;
 			font-weight: 500;
 			color: #000;
 		}
