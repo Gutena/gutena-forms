@@ -183,6 +183,7 @@ export default function Edit( props ) {
 		recaptcha,
 		cloudflareTurnstile,
 		honeypot,
+		paymentStripe,
 	} = attributes;
 
 	const { getClientIdsOfDescendants, getBlock } =
@@ -365,6 +366,23 @@ export default function Edit( props ) {
 						},
 					} );
 				}
+			}
+
+			if ( ! gfIsEmpty( paymentStripe ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.payment_stripe ) ) {
+				const payment_stripe_defaults = gutenaFormsBlock.payment_stripe;
+				setAttributes( {
+					paymentStripe: {
+						enable: payment_stripe_defaults.enable,
+						payment_mode: payment_stripe_defaults.payment_mode || 'test',
+						currency: payment_stripe_defaults.currency || 'USD',
+						currency_sign_position: payment_stripe_defaults.currency_sign_position || 'left',
+						connected: payment_stripe_defaults.connected || false,
+						account_name: payment_stripe_defaults.account_name || '',
+						webhook_connected: payment_stripe_defaults.webhook_connected || false,
+						webhook_slots_exceeded: payment_stripe_defaults.webhook_slots_exceeded || false,
+						defaultSettings: true,
+					},
+				} );
 			}
 
 			const messageKeys = [

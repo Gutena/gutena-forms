@@ -301,6 +301,8 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		onClick();
 	}
 
+	const isCustomTemplateScreen = [ 'stripe-settings', 'payment-methods' ].includes( template );
+
 	const IconMap = {
 		'active-campaign': <Activecampaign />,
 		'brevo': <Brevo />,
@@ -310,32 +312,36 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	};
 
 	return (
-		<div className={ `gutena-forms__meta-box-container${ 'auto-responder' === id ? ' gutena-forms__auto-responder-settings' : '' }` } onClick={ showProPopup }>
-			<h2 className={ 'gutena-forms__page-title' }>
-				<div>
-					{ IconMap[ id ] && IconMap[ id ] } { title }
-					{
-						isPro && (
-							<GutenaFormsProBadge />
-						)
-					}
-				</div>
-				<div>
-					{ goBack && (
-						<div className={ 'gutena-forms__submit-button secondary' }>
-							<NavLink
-								to={ goBack }
-							>
-								{ __( 'Go Back', 'gutena-forms' ) }
-							</NavLink>
+		<div className={ `gutena-forms__meta-box-container${ 'auto-responder' === id ? ' gutena-forms__auto-responder-settings' : '' }${ isCustomTemplateScreen ? ' gutena-forms__meta-box-container--template-screen' : '' }` } onClick={ showProPopup }>
+			{ ! isCustomTemplateScreen && (
+				<>
+					<h2 className={ 'gutena-forms__page-title' }>
+						<div>
+							{ IconMap[ id ] && IconMap[ id ] } { title }
+							{
+								isPro && (
+									<GutenaFormsProBadge />
+								)
+							}
 						</div>
-					) }
-				</div>
-			</h2>
-			<p
-				className={ 'gutena-forms__settings-meta-box-desc' }
-				dangerouslySetInnerHTML={ { __html: description } }
-			/>
+						<div>
+							{ goBack && (
+								<div className={ 'gutena-forms__submit-button secondary' }>
+									<NavLink
+										to={ goBack }
+									>
+										{ __( 'Go Back', 'gutena-forms' ) }
+									</NavLink>
+								</div>
+							) }
+						</div>
+					</h2>
+					<p
+						className={ 'gutena-forms__settings-meta-box-desc' }
+						dangerouslySetInnerHTML={ { __html: description } }
+					/>
+				</>
+			) }
 
 			{ 'auto-responder' === id && (
 				<div className="gutena-forms__auto-responder-notice">
@@ -361,7 +367,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				</div>
 			) }
 
-			<div className={ 'gutena-forms__settings-meta-box' }>
+			<div className={ `gutena-forms__settings-meta-box${ isCustomTemplateScreen ? ' gutena-forms__settings-meta-box--template-screen' : '' }` }>
 				{ ! template && ! loading && settings && settings.map( ( field ) => {
 					if ( field.type !== 'merge-tags' && ! shouldRenderField( field.id ) ) {
 						return null;

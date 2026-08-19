@@ -2,6 +2,7 @@ import GutenaFormsAccordion from './gutena-forms-accordion'
 import Gear from '../icons/gear';
 import Shield from '../icons/shield';
 import Integration from '../icons/integration';
+import Payment from '../icons/payment';
 import { useState, useEffect } from '@wordpress/element';
 import { gutenaFormsFetchSettingsMenu } from '../api';
 import Robot from "../icons/robot";
@@ -39,6 +40,10 @@ const GutenaFormsLeftMenuNavigation = () => {
 
 											case 'Integration':
 												IconComponent = <Integration />;
+												break;
+
+											case 'Payment':
+												IconComponent = <Payment />;
 												break;
 
 											case 'Robot':

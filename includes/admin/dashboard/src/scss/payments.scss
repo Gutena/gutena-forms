@@ -1,0 +1,552 @@
+.gutena-froms#gutena-forms__root {
+  .gutena-froms__settings-layout .gutena-forms__main-content-container {
+    .gutena-forms__meta-box-container--template-screen {
+      width: 750px;
+
+      .gutena-forms__settings-meta-box--template-screen {
+        background: transparent;
+        border: 0;
+        padding: 0;
+        position: static;
+      }
+    }
+
+    .gutena-forms__stripe-settings {
+      p.gutena-forms__payment-mode__label,
+      p.gutena-forms__currency-settings__label {
+        color: #000;
+        font-size: 12px;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      p.gutena-forms__payment-mode__help {
+        color: #6e7376;
+        font-size: 10px;
+        font-weight: 400;
+        line-height: 1.4;
+        margin: 0;
+      }
+
+      p.gutena-forms__currency-settings__help,
+      p.gutena-forms__stripe-connect__help {
+        color: #6e7376;
+        font-size: 10px;
+        font-weight: 400;
+        line-height: 1.4;
+        margin: 0;
+
+        a {
+          color: #0da88c;
+          font-size: 10px;
+          font-weight: 500;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .gutena-forms__payment-methods {
+    &__heading {
+      margin-bottom: 20px;
+
+      h1 {
+        color: #111827;
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0 0 4px;
+      }
+
+      p {
+        color: #000;
+        font-size: 12px;
+        font-weight: 400;
+        margin: 0;
+      }
+    }
+
+    &__search {
+      margin-bottom: 20px;
+
+      .components-text-control__input {
+        border: 1px solid #e2e2e2;
+        border-radius: 6px;
+        color: #6e7376;
+        font-size: 10px;
+        height: 35px;
+        max-width: 400px;
+        padding: 10px 15px;
+      }
+    }
+
+    &__grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    &__card {
+      border: 1px solid #e2e2e2;
+      border-radius: 4px;
+      box-sizing: border-box;
+      height: 162px;
+      padding: 10px;
+      position: relative;
+      width: 235px;
+
+      h3 {
+        color: #000;
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      p {
+        color: #1e1e1e;
+        font-size: 12px;
+        line-height: 1.4;
+        margin: 15px 0 20px;
+      }
+
+      .gutena-forms__desc-toggle {
+        color: #0da88c;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+      }
+    }
+
+    &__card-header {
+      align-items: center;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+
+    &__card-actions {
+      align-items: center;
+      bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      left: 10px;
+      position: absolute;
+      right: 10px;
+    }
+  }
+
+  .gutena-forms__stripe-settings {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 750px;
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    &__header {
+      align-items: center;
+      display: flex;
+      gap: 14px;
+
+      svg {
+        flex-shrink: 0;
+        height: 28px;
+        width: 28px;
+      }
+
+      h1 {
+        color: #000;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin: 0 0 4px;
+      }
+
+      p {
+        color: #000;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1.2;
+        margin: 0;
+      }
+    }
+
+    &__card {
+      background: #fff;
+      border: 1px solid #e2e2e2;
+      border-radius: 10px;
+      padding: 20px 22px;
+      width: 750px;
+    }
+
+    &__body {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 475px;
+    }
+
+    &__save {
+      align-self: flex-start;
+      background: #0da88c;
+      border: 0;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: normal;
+      min-height: 28px;
+      padding: 6px 10px;
+    }
+  }
+
+  .gutena-forms__payment-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+
+    &__label {
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    &__controls {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    &__options {
+      display: flex;
+      gap: 10px;
+    }
+
+    &__option {
+      align-items: center;
+      background: #fff;
+      border: 1px solid #e2e2e2;
+      border-radius: 6px;
+      color: #000;
+      cursor: pointer;
+      display: flex;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 500;
+      justify-content: space-between;
+      line-height: normal;
+      min-height: 28px;
+      padding: 7px 15px;
+      width: 130px;
+
+      &.is-active {
+        background: #f5fffd;
+        border-color: #0da88c;
+      }
+
+      span:first-child {
+        white-space: nowrap;
+      }
+    }
+
+    &__radio {
+      border: 1px solid #d1d5db;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+      height: 12px;
+      width: 12px;
+    }
+
+    &__option.is-active .gutena-forms__payment-mode__radio {
+      background: #0da88c;
+      border-color: #0da88c;
+      box-shadow: inset 0 0 0 2px #fff;
+    }
+  }
+
+  .gutena-forms__currency-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+
+    &__label {
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    &__field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    &__field-label {
+      color: #000;
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    &__select-wrap {
+      width: 100%;
+    }
+
+    &__select {
+      appearance: none;
+      background: #fff url("data:image/svg+xml,%3Csvg width='9' height='5' viewBox='0 0 9 5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L4.5 4L8 1' stroke='%23111827' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat right 15px center;
+      border: 1px solid #e2e2e2;
+      border-radius: 6px;
+      color: #000;
+      font-family: inherit;
+      font-size: 10px;
+      height: 28px;
+      line-height: normal;
+      padding: 7px 30px 7px 15px;
+      width: 100%;
+    }
+  }
+
+  .gutena-forms__stripe-connect {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+
+    &__button {
+      background: #5539fd;
+      border: 1px solid #ddd8ff;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: normal;
+      min-height: 28px;
+      padding: 6px 10px;
+      width: 85%;
+    }
+  }
+
+  .gutena-forms__connection-status {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+
+    &__heading {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      width: 384px;
+
+      p {
+        color: #000;
+        font-size: 12px;
+        font-weight: 500;
+        margin: 0;
+      }
+    }
+
+    &__badge {
+      background: #fefce8;
+      border: 0.5px solid #eab308;
+      border-radius: 4px;
+      color: #a16207;
+      font-size: 9px;
+      font-weight: 500;
+      line-height: 1;
+      padding: 3px 6px;
+    }
+
+    &__row {
+      align-items: flex-start;
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    &__account {
+      align-items: center;
+      background: #f4f4f4;
+      border: 1px solid #e2e2e2;
+      border-radius: 6px;
+      color: #101010;
+      display: flex;
+      flex-shrink: 0;
+      font-size: 10px;
+      gap: 10px;
+      min-height: 28px;
+      padding: 7px 15px;
+      width: 384px;
+    }
+
+    &__check {
+      background: #0da88c;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+      height: 12px;
+      position: relative;
+      width: 12px;
+
+      &::after {
+        border-bottom: 1.5px solid #fff;
+        border-right: 1.5px solid #fff;
+        content: '';
+        height: 5px;
+        left: 4px;
+        position: absolute;
+        top: 2px;
+        transform: rotate(45deg);
+        width: 3px;
+      }
+    }
+
+    &__disconnect {
+      background: #fff;
+      border: 1px solid #e2e2e2;
+      border-radius: 6px;
+      color: #727272;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 500;
+      line-height: normal;
+      min-height: 28px;
+      padding: 7px 15px;
+      white-space: nowrap;
+    }
+  }
+
+  .gutena-forms__currency-sign-position {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+
+    &__label {
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    &__field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    &__field-label {
+      color: #000;
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    &__select-wrap {
+      width: 100%;
+    }
+
+    &__select {
+      appearance: none;
+      background: #fff url("data:image/svg+xml,%3Csvg width='9' height='5' viewBox='0 0 9 5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L4.5 4L8 1' stroke='%23111827' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat right 15px center;
+      border: 1px solid #e2e2e2;
+      border-radius: 6px;
+      color: #000;
+      font-family: inherit;
+      font-size: 10px;
+      height: 28px;
+      line-height: normal;
+      padding: 7px 30px 7px 15px;
+      width: 100%;
+    }
+  }
+
+  .gutena-forms__webhook-error {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+
+    &__message {
+      color: #6e7376;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    &__actions {
+      align-items: center;
+      display: flex;
+      gap: 12px;
+    }
+
+    &__link {
+      color: #0da88c;
+      font-size: 10px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    &__retry {
+      background: #5539fd;
+      border: 1px solid #ddd8ff;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: normal;
+      min-height: 28px;
+      padding: 6px 10px;
+    }
+  }
+
+  .gutena-forms__webhook-status {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+
+    &__label {
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    &__message {
+      align-items: center;
+      background: #f4f4f4;
+      border: 1px solid #e2e2e2;
+      border-radius: 6px;
+      color: #000;
+      display: flex;
+      font-size: 10px;
+      gap: 8px;
+      line-height: normal;
+      min-height: 28px;
+      padding: 7px 15px;
+      width: 100%;
+    }
+  }
+}

@@ -549,6 +549,11 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			// cloudflare turnstile: global default settings (option gutena_forms__cloudflare).
 			$cloudflare_turnstile_defaults = get_option( 'gutena_forms__cloudflare', array() );
 
+			// Stripe payment defaults (no secrets; server-side credentials stay in gutena_forms__payment_credentials).
+			$payment_stripe_defaults = class_exists( 'Gutena_Forms_Stripe_Connect' )
+				? Gutena_Forms_Stripe_Connect::get_form_default_settings()
+				: array();
+
 			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array() : $gutena_forms_messages;
 			$gf_message            = array(
 				'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
@@ -615,6 +620,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 						'is_gutena_forms_post_type'     => $gutena_forms_post_type,
 						'forms_available'               => $forms_available,
 						'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
+						'payment_stripe'                => is_array( $payment_stripe_defaults ) ? $payment_stripe_defaults : array(),
 						'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
 					),
 					$gf_message

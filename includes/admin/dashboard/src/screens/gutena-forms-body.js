@@ -58,6 +58,13 @@ const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 					setActiveMenu={ setActiveMenu }
 				/> }
 			/>
+			<Route
+				path={ 'settings/settings/payment/:settings_id' }
+				element={ <GutenaFormsSettingsLayout
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
+			/>
 		</Routes>
 	);
 }

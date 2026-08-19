@@ -266,6 +266,16 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					),
 				),
 				array(
+					'title' => __( 'Payments', 'gutena-forms' ),
+					'icon'  => 'Payment',
+					'menus' => array(
+						array(
+							'title' => __( 'Payment Methods', 'gutena-forms' ),
+							'slug'  => 'payment-methods',
+						),
+					),
+				),
+				array(
 					'title' => __( 'MCP', 'gutena-forms' ),
 					'icon'  => 'Robot',
 					'menus' => array(),
@@ -309,23 +319,16 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 		public function get_settings( $request ) {
 			$settings_id = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
 
-			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
-			$integration_settings  = apply_filters( 'gutena_forms__integrations', array() );
-			$gutena_forms_settings = array_merge( $gutena_forms_settings, $integration_settings );
+			$settings_response = $this->resolve_settings_module( $settings_id );
 
-			if ( isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
-				$settings = $gutena_forms_settings[ $settings_id ];
-				$settings = new $settings();
-
-				if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
-					return rest_ensure_response(
-						array(
-							'settings' => $settings->get_settings(),
-							'status'   => 200,
-							'message'  => __( 'Settings fetched successfully.', 'gutena-forms' ),
-						)
-					);
-				}
+			if ( $settings_response ) {
+				return rest_ensure_response(
+					array(
+						'settings' => $settings_response,
+						'status'   => 200,
+						'message'  => __( 'Settings fetched successfully.', 'gutena-forms' ),
+					)
+				);
 			}
 
 			$response = rest_ensure_response(
@@ -353,24 +356,18 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 			$settings_id  = sanitize_text_field( wp_unslash( $request->get_param( 'settings_id' ) ) );
 			$settings_data = $request->get_param( 'settings_data' );
 
-			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
-			$integration_settings  = apply_filters( 'gutena_forms__integrations', array() );
-			$gutena_forms_settings = array_merge( $gutena_forms_settings, $integration_settings );
+			$settings_module = $this->get_settings_module_instance( $settings_id );
 
-			if ( isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
-				$settings = $gutena_forms_settings[ $settings_id ];
-				$settings = new $settings();
-				if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
-					$save_result = $settings->save_settings( $settings_data );
-					if ( $save_result ) {
-						return rest_ensure_response(
-							array(
-								'status'  => 200,
-								'message' => __( 'Settings saved successfully.', 'gutena-forms' ),
-								'success' => true,
-							)
-						);
-					}
+			if ( $settings_module instanceof Gutena_Forms_Forms_Settings ) {
+				$save_result = $settings_module->save_settings( $settings_data );
+				if ( $save_result ) {
+					return rest_ensure_response(
+						array(
+							'status'  => 200,
+							'message' => __( 'Settings saved successfully.', 'gutena-forms' ),
+							'success' => true,
+						)
+					);
 				}
 			}
 
@@ -380,6 +377,47 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'message' => __( 'Failed to save settings.', 'gutena-forms' ),
 				)
 			);
+		}
+
+		/**
+		 * Resolve settings from registered modules and gateways.
+		 *
+		 * @since 1.8.0
+		 * @param string $settings_id Settings screen id.
+		 * @return array|null
+		 */
+		private function resolve_settings_module( $settings_id ) {
+			$settings_module = $this->get_settings_module_instance( $settings_id );
+
+			if ( $settings_module instanceof Gutena_Forms_Forms_Settings ) {
+				return $settings_module->get_settings();
+			}
+
+			return null;
+		}
+
+		/**
+		 * Get a settings module instance by id.
+		 *
+		 * @since 1.8.0
+		 * @param string $settings_id Settings screen id.
+		 * @return Gutena_Forms_Forms_Settings|null
+		 */
+		private function get_settings_module_instance( $settings_id ) {
+			$gutena_forms_settings = apply_filters( 'gutena_forms__settings', array() );
+			$integration_settings  = apply_filters( 'gutena_forms__integrations', array() );
+			$payment_gateways      = apply_filters( 'gutena_forms__payment_gateways', array() );
+			$gutena_forms_settings = array_merge( $gutena_forms_settings, $integration_settings, $payment_gateways );
+
+			if ( isset( $gutena_forms_settings[ $settings_id ] ) && class_exists( $gutena_forms_settings[ $settings_id ] ) ) {
+				$settings = new $gutena_forms_settings[ $settings_id ]();
+
+				if ( $settings instanceof Gutena_Forms_Forms_Settings ) {
+					return $settings;
+				}
+			}
+
+			return null;
 		}
 	}
 

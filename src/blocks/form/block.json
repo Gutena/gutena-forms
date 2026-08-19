@@ -190,6 +190,20 @@
 				"timeCheckValue": 6,
 				"defaultSettings": true
 			}
+		},
+		"paymentStripe": {
+			"type": "object",
+			"default": {
+				"enable": false,
+				"payment_mode": "test",
+				"currency": "USD",
+				"currency_sign_position": "left",
+				"connected": false,
+				"account_name": "",
+				"webhook_connected": false,
+				"webhook_slots_exceeded": false,
+				"defaultSettings": true
+			}
 		}
 	},
 	"providesContext": {

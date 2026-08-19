@@ -9,6 +9,8 @@ import GutenaFormsManageTags from '../screens/gutena-forms-manage-tags';
 import GutenaFormsManageStatus from '../screens/gutena-forms-manage-status';
 import GutenaFormsUserAccess from '../screens/gutena-forms-user-access';
 import GutenaFormsIntegrations from '../screens/gutena-forms-integrations'
+import GutenaFormsPaymentMethods from '../screens/gutena-forms-payment-methods';
+import GutenaFormsStripeSettings from '../screens/gutena-forms-stripe-settings';
 import { applyFilters } from '@wordpress/hooks';
 import GutenaFormsMcp from "../screens/gutena-forms-mcp";
 
@@ -23,6 +25,8 @@ export const SettingsTemplates = {
 	'manage-status': GutenaFormsManageStatus,
 	'user-access': GutenaFormsUserAccess,
 	'integrations': GutenaFormsIntegrations,
+	'payment-methods': GutenaFormsPaymentMethods,
+	'stripe-settings': GutenaFormsStripeSettings,
 	'mcp': GutenaFormsMcp,
 	...applyFilters( 'gutena-forms.components', {} )
 };
