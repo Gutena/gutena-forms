@@ -33,7 +33,7 @@ if ( ! class_exists( 'Gutena_Forms_Weekly_Summary_Report' ) && class_exists( 'Gu
 			$this->settings = get_option(
 				'gutena_forms_weekly_report',
 				array(
-					'recipient_email' => false,
+					'recipient_email' => get_bloginfo( 'admin_email' ),
 					'enabled'         => false,
 				)
 			);
