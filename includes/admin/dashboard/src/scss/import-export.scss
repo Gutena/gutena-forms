@@ -406,5 +406,114 @@
 			cursor: pointer;
 			color: #000;
 		}
+
+		.gutena-forms__import-pro-warning {
+			max-width: 487px;
+			box-sizing: border-box;
+			background: #fffbea;
+			border: 0.5px solid #d97706;
+			border-radius: 6px;
+			padding: 15px;
+			margin-bottom: 15px;
+
+			.gutena-forms__import-pro-warning-header {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+
+				h4 {
+					margin: 0;
+					font-size: 13px;
+					font-weight: 700;
+					color: #000;
+					line-height: normal;
+				}
+			}
+
+			.gutena-forms__import-error-icon svg {
+				fill: #d97706;
+
+				path {
+					fill: #d97706;
+				}
+			}
+
+			.gutena-forms__import-pro-warning-form {
+				margin-top: 12px;
+
+				.gutena-forms__import-pro-warning-form-title {
+					margin: 0;
+					font-size: 13px;
+					font-weight: 700;
+					color: #000;
+					line-height: normal;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+
+				.gutena-forms__import-pro-warning-fields {
+					margin: 8px 0 0;
+					padding: 0;
+					list-style: none;
+				}
+
+				.gutena-forms__import-pro-warning-field {
+					display: flex;
+					align-items: baseline;
+					flex-wrap: wrap;
+					gap: 2px 6px;
+					padding: 3px 0 3px 14px;
+					position: relative;
+
+					&::before {
+						content: "";
+						position: absolute;
+						left: 2px;
+						top: 0.75em;
+						width: 5px;
+						height: 5px;
+						border-radius: 50%;
+						background: #d97706;
+					}
+
+					.gutena-forms__import-pro-warning-field-name {
+						font-size: 12px;
+						font-weight: 600;
+						color: #000;
+						line-height: normal;
+					}
+
+					.gutena-forms__import-pro-warning-field-msg {
+						font-size: 12px;
+						font-weight: 400;
+						color: #4b5563;
+						line-height: normal;
+					}
+				}
+			}
+
+			.gutena-forms__import-pro-warning-note {
+				margin: 12px 0 0;
+				font-size: 12px;
+				font-weight: 400;
+				color: #4b5563;
+				line-height: 1.5;
+			}
+
+			.gutena-forms__import-pro-warning-actions {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 8px;
+				margin-top: 14px;
+
+				a.components-button,
+				.components-button {
+					font-size: 12px;
+					box-shadow: none;
+				}
+			}
+		}
 	}
 }

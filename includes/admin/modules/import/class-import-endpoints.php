@@ -126,11 +126,12 @@ if ( ! class_exists( 'Gutena_Forms_Import_Endpoints' ) ) :
 
 			return rest_ensure_response(
 				array(
-					'status'   => 'success',
-					'imported' => $result['imported'],
-					'count'    => $result['count'],
-					'errors'   => $result['errors'],
-					'message'  => $message,
+					'status'     => 'success',
+					'imported'   => $result['imported'],
+					'count'      => $result['count'],
+					'errors'     => $result['errors'],
+					'pro_fields' => ! empty( $result['pro_fields'] ) && is_array( $result['pro_fields'] ) ? $result['pro_fields'] : array(),
+					'message'    => $message,
 				)
 			);
 		}

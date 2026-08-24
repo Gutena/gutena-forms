@@ -5,7 +5,7 @@
  * @package Gutena Forms
  */
 
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { useRef, useState } from '@wordpress/element';
 import Download from '../icons/download';
@@ -18,12 +18,141 @@ const INVALID_FILE_MESSAGE = __(
 	'gutena-forms'
 );
 
+const PRICING_URL =
+	'https://gutenaforms.com/pricing/?utm_source=admin_dashboard&utm_medium=website&utm_campaign=free_plugin';
+
+const PRO_FIELD_LABELS = {
+	date: __( 'Date Field', 'gutena-forms' ),
+	time: __( 'Time Field', 'gutena-forms' ),
+	rating: __( 'Rating Field', 'gutena-forms' ),
+	phone: __( 'Phone Field', 'gutena-forms' ),
+	country: __( 'Country Field', 'gutena-forms' ),
+	state: __( 'State Field', 'gutena-forms' ),
+	file: __( 'File Upload Field', 'gutena-forms' ),
+	'file-upload': __( 'File Upload Field', 'gutena-forms' ),
+	url: __( 'URL Field', 'gutena-forms' ),
+	hidden: __( 'Hidden Field', 'gutena-forms' ),
+	password: __( 'Password Field', 'gutena-forms' ),
+};
+
+const PRO_BLOCK_NAME_TOKENS = [
+	'date',
+	'time',
+	'rating',
+	'phone',
+	'country',
+	'state',
+	'file-upload',
+	'url',
+	'hidden',
+	'password',
+];
+
+const PRO_SCHEMA_FIELD_TYPES = [
+	...PRO_BLOCK_NAME_TOKENS,
+	'file',
+];
+
+const hasGutenaFormsPro =
+	typeof gutenaFormsAdmin !== 'undefined' &&
+	!! gutenaFormsAdmin.hasPro;
+
+const collectProFieldsFromBlockTree = ( block, found ) => {
+	if ( ! block || 'object' !== typeof block ) {
+		return;
+	}
+
+	const blockName = (
+		( block.blockName || '' ) + ''
+	).toLowerCase();
+
+	PRO_BLOCK_NAME_TOKENS.forEach( ( token ) => {
+		if (
+			`gutena/${ token }-field` === blockName ||
+			`gutena/${ token }-field-group` === blockName
+		) {
+			found[ token ] = PRO_FIELD_LABELS[ token ];
+		}
+	} );
+
+	if ( Array.isArray( block.innerBlocks ) ) {
+		block.innerBlocks.forEach( ( inner ) =>
+			collectProFieldsFromBlockTree( inner, found )
+		);
+	}
+};
+
+const detectProFieldsInForm = ( form ) => {
+	const found = {};
+
+	if ( form?.block && 'object' === typeof form.block ) {
+		collectProFieldsFromBlockTree( form.block, found );
+	}
+
+	if ( 'string' === typeof form?.content ) {
+		PRO_BLOCK_NAME_TOKENS.forEach( ( token ) => {
+			if (
+				form.content.includes( `"gutena/${ token }-field"` ) ||
+				form.content.includes( `gutena/${ token }-field-group` )
+			) {
+				found[ token ] = PRO_FIELD_LABELS[ token ];
+			}
+		} );
+	}
+
+	const schemaFields = form?.schema?.form_fields;
+	if ( schemaFields && 'object' === typeof schemaFields ) {
+		Object.values( schemaFields ).forEach( ( field ) => {
+			const type = ( field?.fieldType || '' ).toLowerCase();
+			if ( PRO_SCHEMA_FIELD_TYPES.includes( type ) ) {
+				found[ type ] = PRO_FIELD_LABELS[ type ];
+			}
+		} );
+	}
+
+	return Object.values( found );
+};
+
+const detectProFields = ( payload ) => {
+	if ( ! payload || ! Array.isArray( payload.forms ) ) {
+		return [];
+	}
+
+	const warnings = [];
+	payload.forms.forEach( ( form, index ) => {
+		if ( ! form || 'object' !== typeof form ) {
+			return;
+		}
+
+		const fields = detectProFieldsInForm( form );
+		if ( fields.length === 0 ) {
+			return;
+		}
+
+		warnings.push( {
+			form:
+				( 'string' === typeof form.title && form.title ) ||
+				( 'string' === typeof form?.block?.attrs?.formName &&
+					form.block.attrs.formName ) ||
+				sprintf(
+					/* translators: %d: form index */
+					__( 'Form #%d', 'gutena-forms' ),
+					index + 1
+				),
+			fields,
+		} );
+	} );
+
+	return warnings;
+};
+
 const GutenaFormsImport = () => {
 	const fileInputRef = useRef( null );
 	const [ fileName, setFileName ] = useState( '' );
 	const [ payload, setPayload ] = useState( null );
 	const [ error, setError ] = useState( '' );
 	const [ importing, setImporting ] = useState( false );
+	const [ pending, setPending ] = useState( null );
 
 	const openFilePicker = () => {
 		if ( fileInputRef.current ) {
@@ -41,6 +170,7 @@ const GutenaFormsImport = () => {
 		const file = event.target.files?.[ 0 ];
 		setError( '' );
 		setPayload( null );
+		setPending( null );
 
 		if ( ! file ) {
 			setFileName( '' );
@@ -77,35 +207,80 @@ const GutenaFormsImport = () => {
 					return;
 				}
 
-				setPayload( parsed );
+				const warnings = hasGutenaFormsPro
+					? []
+					: detectProFields( parsed );
+
+				if ( warnings.length > 0 ) {
+					setPending( { payload: parsed, warnings } );
+					setPayload( null );
+				} else {
+					setPayload( parsed );
+					setPending( null );
+				}
 				setError( '' );
 			} catch ( e ) {
 				setPayload( null );
+				setPending( null );
 				setError( INVALID_FILE_MESSAGE );
 			}
 		};
 		reader.onerror = () => {
 			setPayload( null );
+			setPending( null );
 			setError( INVALID_FILE_MESSAGE );
 		};
 		reader.readAsText( file );
 	};
 
-	const handleImport = () => {
-		if ( ! fileName || ! payload || error ) {
+	const handleProceedImport = () => {
+		if ( ! pending?.payload ) {
+			return;
+		}
+		const payloadToImport = pending.payload;
+		setPayload( payloadToImport );
+		setPending( null );
+		runImport( payloadToImport );
+	};
+
+	const handleCancelImport = () => {
+		setPending( null );
+		setPayload( null );
+		setFileName( '' );
+		setError( '' );
+		resetFileInput();
+	};
+
+	const runImport = ( payloadToImport ) => {
+		if ( ! payloadToImport ) {
 			setError( INVALID_FILE_MESSAGE );
 			return;
 		}
 
 		setImporting( true );
-		gutenaFormsImportForms( payload )
+		gutenaFormsImportForms( payloadToImport )
 			.then( ( response ) => {
 				toast.success(
 					response?.message ||
 						__( 'Forms imported successfully.', 'gutena-forms' )
 				);
+
+				if (
+					Array.isArray( response?.pro_fields ) &&
+					response.pro_fields.length > 0
+				) {
+					toast.warning(
+						__(
+							'Some imported forms contained Gutena Forms Pro fields. These fields were removed during the import.',
+							'gutena-forms'
+						),
+						{ autoClose: false }
+					);
+				}
+
 				setFileName( '' );
 				setPayload( null );
+				setPending( null );
 				setError( '' );
 				resetFileInput();
 			} )
@@ -119,6 +294,14 @@ const GutenaFormsImport = () => {
 			.finally( () => {
 				setImporting( false );
 			} );
+	};
+
+	const handleImport = () => {
+		if ( ! fileName || ! payload || error ) {
+			setError( INVALID_FILE_MESSAGE );
+			return;
+		}
+		runImport( payload );
 	};
 
 	const canImport = Boolean( fileName ) && Boolean( payload ) && ! error && ! importing;
@@ -157,6 +340,85 @@ const GutenaFormsImport = () => {
 						<AlertError />
 					</span>
 					<span>{ error }</span>
+				</div>
+			) }
+
+			{ pending && (
+				<div
+					className="gutena-forms__import-pro-warning"
+					role="alertdialog"
+					aria-label={ __(
+						'Gutena Forms Pro fields detected',
+						'gutena-forms'
+					) }
+				>
+					<div className="gutena-forms__import-pro-warning-header">
+						<span className="gutena-forms__import-error-icon">
+							<AlertError />
+						</span>
+						<h4>
+							{ __(
+								'This file uses fields that require Gutena Forms Pro',
+								'gutena-forms'
+							) }
+						</h4>
+					</div>
+
+					{ pending.warnings.map( ( warning, index ) => (
+						<div
+							className="gutena-forms__import-pro-warning-form"
+							key={ `${ warning.form }-${ index }` }
+						>
+							<p className="gutena-forms__import-pro-warning-form-title">
+								{ warning.form }
+							</p>
+							<ul className="gutena-forms__import-pro-warning-fields">
+								{ warning.fields.map( ( field ) => (
+									<li
+										className="gutena-forms__import-pro-warning-field"
+										key={ field }
+									>
+										<span className="gutena-forms__import-pro-warning-field-name">
+											{ field }
+										</span>
+										<span className="gutena-forms__import-pro-warning-field-msg">
+											{ __(
+												'This field is not available in the Gutena Forms free version.',
+												'gutena-forms'
+											) }
+										</span>
+									</li>
+								) ) }
+							</ul>
+						</div>
+					) ) }
+
+					<p className="gutena-forms__import-pro-warning-note">
+						{ __(
+							'These fields will be removed from the form during import to avoid broken blocks. Upgrade to Pro to keep them, or continue to import the form without these fields.',
+							'gutena-forms'
+						) }
+					</p>
+
+					<div className="gutena-forms__import-pro-warning-actions">
+						<Button
+							variant="secondary"
+							href={ PRICING_URL }
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{ __( 'Upgrade to Pro', 'gutena-forms' ) }
+						</Button>
+						<Button
+							variant="tertiary"
+							onClick={ handleProceedImport }
+						>
+							{ __( 'Import Anyway', 'gutena-forms' ) }
+						</Button>
+						<Button variant="tertiary" onClick={ handleCancelImport }>
+							{ __( 'Cancel', 'gutena-forms' ) }
+						</Button>
+					</div>
 				</div>
 			) }
 

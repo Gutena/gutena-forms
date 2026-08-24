@@ -16,11 +16,70 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 	 */
 	class Gutena_Forms_Import_Forms {
 		/**
+		 * Pro-only field type keys found in exported schemas.
+		 *
+		 * @since 2.4.0
+		 * @var string[]
+		 */
+		const PRO_SCHEMA_FIELD_TYPES = array(
+			'date',
+			'time',
+			'rating',
+			'phone',
+			'country',
+			'state',
+			'file',
+			'file-upload',
+			'url',
+			'hidden',
+			'password',
+		);
+
+		/**
+		 * Pro-only standalone block name tokens (gutena/{token}-field).
+		 *
+		 * @since 2.4.0
+		 * @var string[]
+		 */
+		const PRO_BLOCK_NAME_TOKENS = array(
+			'date',
+			'time',
+			'rating',
+			'phone',
+			'country',
+			'state',
+			'file-upload',
+			'url',
+			'hidden',
+			'password',
+		);
+
+		/**
+		 * Human readable labels for pro field types.
+		 *
+		 * @since 2.4.0
+		 * @var string[]
+		 */
+		const PRO_FIELD_LABELS = array(
+			'date'        => 'Date Field',
+			'time'        => 'Time Field',
+			'rating'      => 'Rating Field',
+			'phone'       => 'Phone Field',
+			'country'     => 'Country Field',
+			'state'       => 'State Field',
+			'file'        => 'File Upload Field',
+			'file-upload' => 'File Upload Field',
+			'url'         => 'URL Field',
+			'hidden'      => 'Hidden Field',
+			'password'    => 'Password Field',
+		);
+
+		/**
 		 * Import forms from a decoded export payload.
 		 *
 		 * @since 2.1.0
 		 * @param array $payload Export JSON decoded as array.
-		 * @return array|WP_Error { imported: array, count: int } or error.
+		 * @return array|WP_Error { imported: array, count: int, pro_fields: array } or error.
 		 */
 		public function import( $payload ) {
 			$validated = $this->validate_payload( $payload );
@@ -62,10 +121,134 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 			}
 
 			return array(
-				'imported' => $imported,
-				'count'    => count( $imported ),
-				'errors'   => $errors,
+				'imported'   => $imported,
+				'count'      => count( $imported ),
+				'errors'     => $errors,
+				'pro_fields' => $this->detect_pro_fields( $payload ),
 			);
+		}
+
+		/**
+		 * Whether Pro field blocks are supported in this environment.
+		 *
+		 * @since 2.4.0
+		 * @return bool
+		 */
+		private function pro_fields_supported() {
+			return function_exists( 'is_gutena_forms_pro' ) && is_gutena_forms_pro();
+		}
+
+		/**
+		 * Detect Pro-only fields present in an export payload.
+		 *
+		 * Scans block trees, serialized content and saved schemas for Pro field
+		 * blocks/types so users can be warned before relying on imported forms.
+		 *
+		 * @since 2.4.0
+		 * @param array $payload Export JSON decoded as array.
+		 * @return array[] List of { form, fields } for each form containing Pro-only fields.
+		 */
+		public function detect_pro_fields( $payload ) {
+			// Pro renders and stores these fields, so nothing to warn about.
+			if ( $this->pro_fields_supported() ) {
+				return array();
+			}
+
+			$warnings = array();
+			$forms    = ( ! empty( $payload['forms'] ) && is_array( $payload['forms'] ) ) ? $payload['forms'] : array();
+
+			foreach ( $forms as $index => $form ) {
+				if ( ! is_array( $form ) ) {
+					continue;
+				}
+
+				$found = $this->collect_pro_field_labels( $form );
+				if ( empty( $found ) ) {
+					continue;
+				}
+
+				$title = '';
+				if ( ! empty( $form['title'] ) && is_string( $form['title'] ) ) {
+					$title = sanitize_text_field( $form['title'] );
+				} elseif ( ! empty( $form['block']['attrs']['formName'] ) && is_string( $form['block']['attrs']['formName'] ) ) {
+					$title = sanitize_text_field( $form['block']['attrs']['formName'] );
+				}
+
+				$warnings[] = array(
+					'form'   => '' !== $title ? $title : sprintf( /* translators: %d: form index */ __( 'Form #%d', 'gutena-forms' ), $index + 1 ),
+					'fields' => array_values( array_unique( $found ) ),
+				);
+			}
+
+			return $warnings;
+		}
+
+		/**
+		 * Collect Pro field labels from a single exported form entry.
+		 *
+		 * @since 2.4.0
+		 * @param array $form Single form export entry.
+		 * @return string[] Labels of Pro fields found.
+		 */
+		private function collect_pro_field_labels( $form ) {
+			$found = array();
+
+			if ( ! empty( $form['block'] ) && is_array( $form['block'] ) ) {
+				$this->scan_block_tree_for_pro_fields( $form['block'], $found );
+			}
+
+			if ( ! empty( $form['content'] ) && is_string( $form['content'] ) ) {
+				foreach ( self::PRO_BLOCK_NAME_TOKENS as $token ) {
+					if ( false !== stripos( $form['content'], '"gutena/' . $token . '-field"' ) || false !== stripos( $form['content'], 'gutena/' . $token . '-field-group' ) ) {
+						$found[ $token ] = self::PRO_FIELD_LABELS[ $token ];
+					}
+				}
+			}
+
+			if ( ! empty( $form['schema']['form_fields'] ) && is_array( $form['schema']['form_fields'] ) ) {
+				foreach ( $form['schema']['form_fields'] as $field ) {
+					if ( empty( $field['fieldType'] ) || ! is_string( $field['fieldType'] ) ) {
+						continue;
+					}
+					$type = strtolower( $field['fieldType'] );
+					if ( in_array( $type, self::PRO_SCHEMA_FIELD_TYPES, true ) ) {
+						$found[ $type ] = self::PRO_FIELD_LABELS[ $type ];
+					}
+				}
+			}
+
+			return $found;
+		}
+
+		/**
+		 * Recursively scan a parsed block tree for Pro field block names.
+		 *
+		 * @since 2.4.0
+		 * @param array   $block Parsed block.
+		 * @param string[] $found Found labels keyed by field token.
+		 * @return void
+		 */
+		private function scan_block_tree_for_pro_fields( $block, &$found ) {
+			if ( empty( $block['blockName'] ) || ! is_string( $block['blockName'] ) ) {
+				return;
+			}
+
+			foreach ( self::PRO_BLOCK_NAME_TOKENS as $token ) {
+				if (
+					'gutena/' . $token . '-field' === strtolower( $block['blockName'] )
+					|| 'gutena/' . $token . '-field-group' === strtolower( $block['blockName'] )
+				) {
+					$found[ $token ] = self::PRO_FIELD_LABELS[ $token ];
+				}
+			}
+
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				foreach ( $block['innerBlocks'] as $inner ) {
+					if ( is_array( $inner ) ) {
+						$this->scan_block_tree_for_pro_fields( $inner, $found );
+					}
+				}
+			}
 		}
 
 		/**
@@ -173,10 +356,17 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 					if ( ! empty( $parsed[ $idx ]['attrs']['formClasses'] ) && is_string( $parsed[ $idx ]['attrs']['formClasses'] ) && '' !== $old_form_id ) {
 						$parsed[ $idx ]['attrs']['formClasses'] = str_replace( $old_form_id, $new_form_id, $parsed[ $idx ]['attrs']['formClasses'] );
 					}
+					// Remove Pro-only fields when Pro is not active to avoid broken blocks.
+					if ( ! $this->pro_fields_supported() ) {
+						$parsed[ $idx ] = $this->strip_pro_field_blocks( $parsed[ $idx ] );
+					}
 					$content = serialize_block( $parsed[ $idx ] );
 					break;
 				}
 			} else {
+				if ( ! $this->pro_fields_supported() ) {
+					$block = $this->strip_pro_field_blocks( $block );
+				}
 				$block = $this->remap_form_id_in_block( $block, $old_form_id, $new_form_id );
 				if ( ! isset( $block['attrs'] ) || ! is_array( $block['attrs'] ) ) {
 					$block['attrs'] = array();
@@ -266,6 +456,11 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 			$old_id = ! empty( $form['form_id'] ) ? sanitize_key( $form['form_id'] ) : '';
 			$schema = $this->remap_schema_form_id( $schema, $old_id, $new_form_id );
 
+			// Keep schema consistent with the stripped block content.
+			if ( ! $this->pro_fields_supported() ) {
+				$schema = $this->strip_pro_fields_from_schema( $schema );
+			}
+
 			if ( class_exists( 'Gutena_Forms_Helper' ) ) {
 				$schema = Gutena_Forms_Helper::sanitize_array( $schema, true );
 			}
@@ -293,6 +488,103 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 		}
 
 		/**
+		 * Check whether a parsed block name is a Pro-only field block.
+		 *
+		 * @since 2.4.0
+		 * @param string $block_name Parsed block name.
+		 * @return bool
+		 */
+		private function is_pro_block_name( $block_name ) {
+			if ( empty( $block_name ) || ! is_string( $block_name ) ) {
+				return false;
+			}
+
+			foreach ( self::PRO_BLOCK_NAME_TOKENS as $token ) {
+				if (
+					'gutena/' . $token . '-field' === strtolower( $block_name )
+					|| 'gutena/' . $token . '-field-group' === strtolower( $block_name )
+				) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Recursively remove Pro-only field blocks from a parsed block tree.
+		 *
+		 * innerContent entries are rebuilt so null placeholders stay aligned
+		 * with the remaining innerBlocks (required by serialize_block()).
+		 *
+		 * @since 2.4.0
+		 * @param array $block Parsed block.
+		 * @return array Block tree without Pro field blocks.
+		 */
+		private function strip_pro_field_blocks( $block ) {
+			if ( empty( $block['innerBlocks'] ) || ! is_array( $block['innerBlocks'] ) ) {
+				return $block;
+			}
+
+			$kept        = array();
+			$kept_map    = array();
+			$child_index = 0;
+
+			foreach ( $block['innerBlocks'] as $inner ) {
+				if ( is_array( $inner ) ) {
+					$inner = $this->strip_pro_field_blocks( $inner );
+					if ( ! $this->is_pro_block_name( isset( $inner['blockName'] ) ? $inner['blockName'] : '' ) ) {
+						$kept[ $child_index ] = $inner;
+					}
+				}
+				++$child_index;
+			}
+
+			$block['innerBlocks'] = array_values( $kept );
+
+			// Rebuild innerContent: keep strings, drop null slots of removed children.
+			if ( isset( $block['innerContent'] ) && is_array( $block['innerContent'] ) ) {
+				$new_inner_content = array();
+				$null_index        = 0;
+				foreach ( $block['innerContent'] as $chunk ) {
+					if ( is_string( $chunk ) ) {
+						$new_inner_content[] = $chunk;
+					} else {
+						if ( array_key_exists( $null_index, $kept ) ) {
+							$new_inner_content[] = $chunk;
+						}
+						++$null_index;
+					}
+				}
+				$block['innerContent'] = $new_inner_content;
+			}
+
+			return $block;
+		}
+
+		/**
+		 * Remove Pro-only fields from an exported schema's form_fields map.
+		 *
+		 * @since 2.4.0
+		 * @param array $schema Form schema.
+		 * @return array Schema without Pro field entries.
+		 */
+		private function strip_pro_fields_from_schema( $schema ) {
+			if ( empty( $schema['form_fields'] ) || ! is_array( $schema['form_fields'] ) ) {
+				return $schema;
+			}
+
+			foreach ( $schema['form_fields'] as $name_attr => $field ) {
+				$type = ( ! empty( $field['fieldType'] ) && is_string( $field['fieldType'] ) ) ? strtolower( $field['fieldType'] ) : '';
+				if ( in_array( $type, self::PRO_SCHEMA_FIELD_TYPES, true ) ) {
+					unset( $schema['form_fields'][ $name_attr ] );
+				}
+			}
+
+			return $schema;
+		}
+
+		/**
 		 * Remap formID inside an exported schema array.
 		 *
 		 * @since 2.1.0
@@ -301,8 +593,7 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 		 * @param string $new_form_id New ID.
 		 * @return array
 		 */
-		private function remap_schema_form_id( $schema, $old_form_id, $new_form_id ) {
-			$encoded = wp_json_encode( $schema );
+		private function remap_schema_form_id( $schema, $old_form_id, $new_form_id ) {			$encoded = wp_json_encode( $schema );
 			if ( false === $encoded ) {
 				return $schema;
 			}
