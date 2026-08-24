@@ -6,6 +6,7 @@
 			font-weight: 700;
 			color: #000;
 			margin-bottom: 6px;
+			line-height: normal;
 		}
 
 		.gutena-forms__import-export-section-heading {
@@ -88,6 +89,7 @@
 			border-radius: 6px;
 			padding: 7px 15px;
 			font-size: 12px;
+			font-weight: 400;
 			color: #101010;
 			background: #fff;
 			display: flex;
@@ -95,6 +97,7 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+			line-height: normal;
 		}
 
 		.gutena-forms__import-choose-button {
@@ -107,6 +110,7 @@
 			font-weight: 700 !important;
 			padding: 7px 15px !important;
 			box-shadow: none !important;
+			line-height: normal !important;
 		}
 
 		.gutena-forms__import-file-input {
@@ -125,8 +129,9 @@
 			padding: 10px 15px;
 			margin-bottom: 15px;
 			font-size: 12px;
+			font-weight: 400;
 			color: #000;
-			line-height: 1;
+			line-height: normal;
 		}
 
 		.gutena-forms__import-error-icon {
@@ -138,6 +143,105 @@
 			svg {
 				width: 12px;
 				height: 12px;
+			}
+		}
+
+		.gutena-forms__import-pro-warning {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			max-width: 487px;
+			box-sizing: border-box;
+			background: #fff2f2;
+			border: 0.5px solid #d70404;
+			border-radius: 6px;
+			padding: 10px 15px;
+
+			.gutena-forms__import-pro-warning-body {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+
+			.gutena-forms__import-pro-warning-header {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+
+				p {
+					margin: 0;
+					flex: 1;
+					font-size: 12px;
+					font-weight: 400;
+					color: #000;
+					line-height: normal;
+				}
+			}
+
+			.gutena-forms__import-pro-warning-fields {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 5px;
+			}
+
+			.gutena-forms__import-pro-warning-field-tag {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				background: #fff;
+				border-radius: 4px;
+				padding: 4px 8px;
+				font-size: 12px;
+				font-weight: 500;
+				color: #000;
+				line-height: normal;
+				white-space: nowrap;
+			}
+
+			.gutena-forms__import-pro-warning-actions {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 10px;
+			}
+
+			.gutena-forms__import-pro-warning-actions-left {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.gutena-forms__import-pro-warning-upgrade {
+				height: auto;
+				min-height: 0;
+				border: 0.5px solid #0da88c !important;
+				border-radius: 4px !important;
+				background: #fff !important;
+				color: #0e826d !important;
+				font-size: 12px !important;
+				font-weight: 700 !important;
+				padding: 6px 10px !important;
+				box-shadow: none !important;
+				line-height: normal !important;
+				text-decoration: none;
+			}
+
+			.gutena-forms__import-pro-warning-proceed,
+			.gutena-forms__import-pro-warning-cancel {
+				border: 0;
+				background: transparent;
+				padding: 6px 0;
+				font-size: 12px;
+				font-weight: 700;
+				color: #000;
+				line-height: normal;
+				cursor: pointer;
+
+				&:disabled {
+					opacity: 0.6;
+					cursor: not-allowed;
+				}
 			}
 		}
 	}
@@ -405,115 +509,6 @@
 			font-size: 12px;
 			cursor: pointer;
 			color: #000;
-		}
-
-		.gutena-forms__import-pro-warning {
-			max-width: 487px;
-			box-sizing: border-box;
-			background: #fffbea;
-			border: 0.5px solid #d97706;
-			border-radius: 6px;
-			padding: 15px;
-			margin-bottom: 15px;
-
-			.gutena-forms__import-pro-warning-header {
-				display: flex;
-				align-items: center;
-				gap: 10px;
-
-				h4 {
-					margin: 0;
-					font-size: 13px;
-					font-weight: 700;
-					color: #000;
-					line-height: normal;
-				}
-			}
-
-			.gutena-forms__import-error-icon svg {
-				fill: #d97706;
-
-				path {
-					fill: #d97706;
-				}
-			}
-
-			.gutena-forms__import-pro-warning-form {
-				margin-top: 12px;
-
-				.gutena-forms__import-pro-warning-form-title {
-					margin: 0;
-					font-size: 13px;
-					font-weight: 700;
-					color: #000;
-					line-height: normal;
-					white-space: nowrap;
-					overflow: hidden;
-					text-overflow: ellipsis;
-				}
-
-				.gutena-forms__import-pro-warning-fields {
-					margin: 8px 0 0;
-					padding: 0;
-					list-style: none;
-				}
-
-				.gutena-forms__import-pro-warning-field {
-					display: flex;
-					align-items: baseline;
-					flex-wrap: wrap;
-					gap: 2px 6px;
-					padding: 3px 0 3px 14px;
-					position: relative;
-
-					&::before {
-						content: "";
-						position: absolute;
-						left: 2px;
-						top: 0.75em;
-						width: 5px;
-						height: 5px;
-						border-radius: 50%;
-						background: #d97706;
-					}
-
-					.gutena-forms__import-pro-warning-field-name {
-						font-size: 12px;
-						font-weight: 600;
-						color: #000;
-						line-height: normal;
-					}
-
-					.gutena-forms__import-pro-warning-field-msg {
-						font-size: 12px;
-						font-weight: 400;
-						color: #4b5563;
-						line-height: normal;
-					}
-				}
-			}
-
-			.gutena-forms__import-pro-warning-note {
-				margin: 12px 0 0;
-				font-size: 12px;
-				font-weight: 400;
-				color: #4b5563;
-				line-height: 1.5;
-			}
-
-			.gutena-forms__import-pro-warning-actions {
-				display: flex;
-				flex-wrap: wrap;
-				align-items: center;
-				gap: 8px;
-				margin-top: 14px;
-
-				a.components-button,
-				.components-button {
-					font-size: 12px;
-					box-shadow: none;
-				}
-			}
 		}
 	}
 }

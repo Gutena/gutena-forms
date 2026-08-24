@@ -57,6 +57,32 @@ const hasGutenaFormsPro =
 	typeof gutenaFormsAdmin !== 'undefined' &&
 	!! gutenaFormsAdmin.hasPro;
 
+const getProFieldTypeLabel = ( token ) =>
+	PRO_FIELD_LABELS[ token ] || token;
+
+const formatProFieldEntry = ( token, titleName ) => {
+	const typeLabel = getProFieldTypeLabel( token );
+	const title = titleName || typeLabel;
+
+	return {
+		type: typeLabel,
+		title,
+		key: `${ typeLabel }:${ title }`,
+	};
+};
+
+const addProFieldEntry = ( found, token, titleName ) => {
+	const entry = formatProFieldEntry( token, titleName );
+	found[ entry.key ] = entry;
+};
+
+const getProFieldTokenFromBlockName = ( blockName ) =>
+	PRO_BLOCK_NAME_TOKENS.find(
+		( token ) =>
+			`gutena/${ token }-field` === blockName ||
+			`gutena/${ token }-field-group` === blockName
+	);
+
 const collectProFieldsFromBlockTree = ( block, found ) => {
 	if ( ! block || 'object' !== typeof block ) {
 		return;
@@ -65,15 +91,13 @@ const collectProFieldsFromBlockTree = ( block, found ) => {
 	const blockName = (
 		( block.blockName || '' ) + ''
 	).toLowerCase();
+	const token = getProFieldTokenFromBlockName( blockName );
 
-	PRO_BLOCK_NAME_TOKENS.forEach( ( token ) => {
-		if (
-			`gutena/${ token }-field` === blockName ||
-			`gutena/${ token }-field-group` === blockName
-		) {
-			found[ token ] = PRO_FIELD_LABELS[ token ];
-		}
-	} );
+	if ( token ) {
+		const titleName =
+			block?.attrs?.fieldName || block?.attrs?.nameAttr || '';
+		addProFieldEntry( found, token, titleName );
+	}
 
 	if ( Array.isArray( block.innerBlocks ) ) {
 		block.innerBlocks.forEach( ( inner ) =>
@@ -95,17 +119,20 @@ const detectProFieldsInForm = ( form ) => {
 				form.content.includes( `"gutena/${ token }-field"` ) ||
 				form.content.includes( `gutena/${ token }-field-group` )
 			) {
-				found[ token ] = PRO_FIELD_LABELS[ token ];
+				addProFieldEntry( found, token, '' );
 			}
 		} );
 	}
 
 	const schemaFields = form?.schema?.form_fields;
 	if ( schemaFields && 'object' === typeof schemaFields ) {
-		Object.values( schemaFields ).forEach( ( field ) => {
+		Object.entries( schemaFields ).forEach( ( [ nameAttr, field ] ) => {
 			const type = ( field?.fieldType || '' ).toLowerCase();
 			if ( PRO_SCHEMA_FIELD_TYPES.includes( type ) ) {
-				found[ type ] = PRO_FIELD_LABELS[ type ];
+				const titleName =
+					field?.fieldName ||
+					nameAttr.replace( /_/g, ' ' );
+				addProFieldEntry( found, type, titleName );
 			}
 		} );
 	}
@@ -306,6 +333,16 @@ const GutenaFormsImport = () => {
 
 	const canImport = Boolean( fileName ) && Boolean( payload ) && ! error && ! importing;
 
+	const proFields = pending
+		? [
+				...new Map(
+					pending.warnings
+						.flatMap( ( warning ) => warning.fields )
+						.map( ( field ) => [ field.key, field ] )
+				).values(),
+		  ]
+		: [];
+
 	return (
 		<div className="gutena-forms__import-export gutena-forms__import">
 			<div className="gutena-forms__import-file-field">
@@ -352,72 +389,62 @@ const GutenaFormsImport = () => {
 						'gutena-forms'
 					) }
 				>
-					<div className="gutena-forms__import-pro-warning-header">
-						<span className="gutena-forms__import-error-icon">
-							<AlertError />
-						</span>
-						<h4>
-							{ __(
-								'This file uses fields that require Gutena Forms Pro',
-								'gutena-forms'
-							) }
-						</h4>
+					<div className="gutena-forms__import-pro-warning-body">
+						<div className="gutena-forms__import-pro-warning-header">
+							<span className="gutena-forms__import-error-icon">
+								<AlertError />
+							</span>
+							<p>
+								{ __(
+									'Below fields required Gutena Forms Pro!',
+									'gutena-forms'
+								) }
+							</p>
+						</div>
+
+						{ proFields.length > 0 && (
+							<div className="gutena-forms__import-pro-warning-fields">
+								{ proFields.map( ( field ) => (
+									<span
+										className="gutena-forms__import-pro-warning-field-tag"
+										key={ field.key }
+									>
+										{ field.type }: { field.title }
+									</span>
+								) ) }
+							</div>
+						) }
 					</div>
 
-					{ pending.warnings.map( ( warning, index ) => (
-						<div
-							className="gutena-forms__import-pro-warning-form"
-							key={ `${ warning.form }-${ index }` }
-						>
-							<p className="gutena-forms__import-pro-warning-form-title">
-								{ warning.form }
-							</p>
-							<ul className="gutena-forms__import-pro-warning-fields">
-								{ warning.fields.map( ( field ) => (
-									<li
-										className="gutena-forms__import-pro-warning-field"
-										key={ field }
-									>
-										<span className="gutena-forms__import-pro-warning-field-name">
-											{ field }
-										</span>
-										<span className="gutena-forms__import-pro-warning-field-msg">
-											{ __(
-												'This field is not available in the Gutena Forms free version.',
-												'gutena-forms'
-											) }
-										</span>
-									</li>
-								) ) }
-							</ul>
-						</div>
-					) ) }
-
-					<p className="gutena-forms__import-pro-warning-note">
-						{ __(
-							'These fields will be removed from the form during import to avoid broken blocks. Upgrade to Pro to keep them, or continue to import the form without these fields.',
-							'gutena-forms'
-						) }
-					</p>
-
 					<div className="gutena-forms__import-pro-warning-actions">
-						<Button
-							variant="secondary"
-							href={ PRICING_URL }
-							target="_blank"
-							rel="noopener noreferrer"
+						<div className="gutena-forms__import-pro-warning-actions-left">
+							<Button
+								className="gutena-forms__import-pro-warning-upgrade"
+								href={ PRICING_URL }
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								{ __( 'Upgrade to Pro', 'gutena-forms' ) }
+							</Button>
+							<button
+								type="button"
+								className="gutena-forms__import-pro-warning-proceed"
+								onClick={ handleProceedImport }
+								disabled={ importing }
+							>
+								{ importing
+									? __( 'Importing…', 'gutena-forms' )
+									: __( 'Import Anyway', 'gutena-forms' ) }
+							</button>
+						</div>
+						<button
+							type="button"
+							className="gutena-forms__import-pro-warning-cancel"
+							onClick={ handleCancelImport }
+							disabled={ importing }
 						>
-							{ __( 'Upgrade to Pro', 'gutena-forms' ) }
-						</Button>
-						<Button
-							variant="tertiary"
-							onClick={ handleProceedImport }
-						>
-							{ __( 'Import Anyway', 'gutena-forms' ) }
-						</Button>
-						<Button variant="tertiary" onClick={ handleCancelImport }>
 							{ __( 'Cancel', 'gutena-forms' ) }
-						</Button>
+						</button>
 					</div>
 				</div>
 			) }
