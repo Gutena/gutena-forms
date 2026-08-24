@@ -54,6 +54,10 @@ const GutenaFormsStripeSettings = () => {
 
 	const [ stripeDashboardUrl, setStripeDashboardUrl ] = useState( 'https://dashboard.stripe.com/webhooks' );
 
+	const [ publishableKeyTest, setPublishableKeyTest ] = useState( '' );
+
+	const [ publishableKeyLive, setPublishableKeyLive ] = useState( '' );
+
 
 
 	const applySettingsValues = ( values ) => {
@@ -77,6 +81,10 @@ const GutenaFormsStripeSettings = () => {
 			setStripeDashboardUrl( values.stripe_dashboard_url );
 
 		}
+
+		setPublishableKeyTest( values.publishable_key_test || '' );
+
+		setPublishableKeyLive( values.publishable_key_live || '' );
 
 	};
 
@@ -145,6 +153,10 @@ const GutenaFormsStripeSettings = () => {
 			currency,
 
 			currency_sign_position: currencySignPosition,
+
+			publishable_key_test: publishableKeyTest,
+
+			publishable_key_live: publishableKeyLive,
 
 		} ).then( () => {
 
@@ -299,6 +311,58 @@ const GutenaFormsStripeSettings = () => {
 						onChange={ setCurrencySignPosition }
 
 					/>
+
+					<div className="gutena-forms__stripe-settings__publishable-key">
+
+						<label htmlFor="gutena-forms-stripe-publishable-key">
+
+							{ 'live' === paymentMode
+
+								? __( 'Publishable key (Live)', 'gutena-forms' )
+
+								: __( 'Publishable key (Test)', 'gutena-forms' ) }
+
+						</label>
+
+						<input
+
+							id="gutena-forms-stripe-publishable-key"
+
+							type="text"
+
+							className="gutena-forms__stripe-settings__input"
+
+							placeholder="pk_test_..."
+
+							value={ 'live' === paymentMode ? publishableKeyLive : publishableKeyTest }
+
+							onChange={ ( event ) => {
+
+								if ( 'live' === paymentMode ) {
+
+									setPublishableKeyLive( event.target.value );
+
+									return;
+
+								}
+
+								setPublishableKeyTest( event.target.value );
+
+							} }
+
+							autoComplete="off"
+
+							spellCheck={ false }
+
+						/>
+
+						<p className="gutena-forms__stripe-settings__help">
+
+							{ __( 'Copy this from your connected Stripe account: Dashboard → Developers → API keys. Required for the payment form on the frontend.', 'gutena-forms' ) }
+
+						</p>
+
+					</div>
 
 					{ connected ? (
 

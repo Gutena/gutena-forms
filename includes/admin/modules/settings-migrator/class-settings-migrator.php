@@ -546,6 +546,71 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				'cloudflareTurnstile' => get_option( 'gutena_forms__cloudflare', array() ),
 				'honeypot'            => get_option( 'gutena_forms__honeypot', array() ),
 				'messages'            => get_option( 'gutena_forms__form_validation_messages', array() ),
+				'paymentStripe'       => self::get_payment_stripe_global_settings(),
+			);
+		}
+
+		/**
+		 * Stripe settings slice from gutena_forms__payment_settings.
+		 *
+		 * @since 2.0.0
+		 * @return array
+		 */
+		public static function get_payment_stripe_global_settings() {
+			$all = get_option( 'gutena_forms__payment_settings', array() );
+			if ( ! is_array( $all ) || empty( $all['stripe'] ) || ! is_array( $all['stripe'] ) ) {
+				return array();
+			}
+
+			return self::sanitize_payment_stripe_settings( $all['stripe'] );
+		}
+
+		/**
+		 * Persist Stripe public settings into the payment settings option.
+		 *
+		 * @since 2.0.0
+		 * @param array $settings Stripe settings slice.
+		 * @return void
+		 */
+		public static function update_payment_stripe_global_settings( $settings ) {
+			$all = get_option( 'gutena_forms__payment_settings', array() );
+			if ( ! is_array( $all ) ) {
+				$all = array();
+			}
+
+			$current = isset( $all['stripe'] ) && is_array( $all['stripe'] ) ? $all['stripe'] : array();
+			$all['stripe'] = array_merge( $current, self::sanitize_payment_stripe_settings( $settings ) );
+			update_option( 'gutena_forms__payment_settings', $all );
+		}
+
+		/**
+		 * Sanitize Stripe settings stored on forms or globally.
+		 *
+		 * @since 2.0.0
+		 * @param array $settings Raw settings.
+		 * @return array
+		 */
+		public static function sanitize_payment_stripe_settings( $settings ) {
+			$settings = self::sanitize_settings_for_option( is_array( $settings ) ? $settings : array() );
+
+			$payment_mode = in_array( $settings['payment_mode'] ?? 'test', array( 'live', 'test' ), true )
+				? $settings['payment_mode']
+				: 'test';
+
+			$allowed_positions = array( 'left', 'right', 'left_space', 'right_space' );
+			$sign_position     = in_array( $settings['currency_sign_position'] ?? 'left', $allowed_positions, true )
+				? $settings['currency_sign_position']
+				: 'left';
+
+			return array(
+				'enable'                 => ! empty( $settings['enable'] ),
+				'payment_mode'           => $payment_mode,
+				'currency'               => sanitize_text_field( $settings['currency'] ?? 'USD' ),
+				'currency_sign_position' => $sign_position,
+				'connected'              => ! empty( $settings['connected'] ),
+				'account_name'           => sanitize_text_field( $settings['account_name'] ?? '' ),
+				'webhook_connected'      => ! empty( $settings['webhook_connected'] ),
+				'webhook_slots_exceeded' => ! empty( $settings['webhook_slots_exceeded'] ),
 			);
 		}
 
@@ -557,6 +622,13 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 		 * @return bool
 		 */
 		public static function is_global_module_empty( $module_key ) {
+			if ( 'paymentStripe' === $module_key ) {
+				return ! self::is_module_settings_meaningful(
+					$module_key,
+					self::get_payment_stripe_global_settings()
+				);
+			}
+
 			$option_name = self::global_option_name_for_module( $module_key );
 			if ( '' === $option_name ) {
 				return true;
@@ -646,6 +718,18 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 						if ( ! empty( $settings[ $message_key ] ) ) {
 							return true;
 						}
+					}
+					return false;
+
+				case 'paymentStripe':
+					if ( ! empty( $settings['connected'] ) || ! empty( $settings['enable'] ) ) {
+						return true;
+					}
+					if ( ! empty( $settings['payment_mode'] ) && 'test' !== $settings['payment_mode'] ) {
+						return true;
+					}
+					if ( ! empty( $settings['currency'] ) && 'USD' !== $settings['currency'] ) {
+						return true;
 					}
 					return false;
 
@@ -756,6 +840,13 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 			$seeded = self::apply_attrs_to_globals( $attributes, $only_if_empty );
 
 			foreach ( $seeded['modules'] as $module_key ) {
+				if ( 'paymentStripe' === $module_key ) {
+					$prev = isset( $previous_modules[ $module_key ] ) ? $previous_modules[ $module_key ] : array();
+					$next = self::get_payment_stripe_global_settings();
+					self::sync_global_module_to_forms( $module_key, $prev, $next );
+					continue;
+				}
+
 				$option_name = self::global_option_name_for_module( $module_key );
 				if ( '' === $option_name ) {
 					continue;
@@ -834,6 +925,15 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 						self::sanitize_settings_for_option( $attributes['messages'] )
 					);
 					$seeded['modules'][] = 'messages';
+				}
+			}
+
+			if ( ! empty( $attributes['paymentStripe'] ) && is_array( $attributes['paymentStripe'] ) ) {
+				if ( self::should_form_push_module_to_global( 'paymentStripe', $attributes['paymentStripe'], $only_if_empty ) ) {
+					self::update_payment_stripe_global_settings(
+						self::sanitize_payment_stripe_settings( $attributes['paymentStripe'] )
+					);
+					$seeded['modules'][] = 'paymentStripe';
 				}
 			}
 
@@ -976,9 +1076,20 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				'cloudflareTurnstile' => 'gutena_forms__cloudflare',
 				'honeypot'            => 'gutena_forms__honeypot',
 				'messages'            => 'gutena_forms__form_validation_messages',
+				'paymentStripe'       => 'gutena_forms__payment_settings',
 			);
 
 			foreach ( $modules as $module_key => $option_name ) {
+				if ( 'paymentStripe' === $module_key ) {
+					$next = self::get_payment_stripe_global_settings();
+					if ( empty( $next ) ) {
+						continue;
+					}
+					$prev = isset( $previous_globals[ $module_key ] ) ? $previous_globals[ $module_key ] : array();
+					self::sync_global_module_to_forms( $module_key, $prev, $next, false );
+					continue;
+				}
+
 				$next = get_option( $option_name, array() );
 				if ( empty( $next ) || ! is_array( $next ) ) {
 					continue;

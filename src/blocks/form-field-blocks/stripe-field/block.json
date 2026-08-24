@@ -1,0 +1,81 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "gutena/stripe-field",
+	"version": "1.0.0",
+	"title": "Stripe Payment",
+	"parent": [ "gutena/forms" ],
+	"category": "gutena",
+	"icon": "money-alt",
+	"description": "Collect payments with Stripe. Configure your Stripe account and payment settings for this form.",
+	"keywords": [ "stripe", "payment", "credit card", "gutena forms" ],
+	"attributes": {
+		"nameAttr": {
+			"type": "string",
+			"default": "stripe_payment"
+		},
+		"fieldName": {
+			"type": "string",
+			"default": "Payment"
+		},
+		"paymentType": {
+			"type": "string",
+			"default": "one_time"
+		},
+		"amountType": {
+			"type": "string",
+			"default": "fixed"
+		},
+		"fixedAmount": {
+			"type": "number",
+			"default": 0
+		},
+		"variableAmountField": {
+			"type": "string",
+			"default": ""
+		},
+		"minimumAmount": {
+			"type": "number",
+			"default": 0
+		},
+		"customerEmailField": {
+			"type": "string",
+			"default": ""
+		},
+		"customerNameField": {
+			"type": "string",
+			"default": ""
+		},
+		"subscriptionPlanName": {
+			"type": "string",
+			"default": ""
+		},
+		"billingInterval": {
+			"type": "string",
+			"default": "monthly"
+		},
+		"billingCycles": {
+			"type": "string",
+			"default": "never"
+		},
+		"customBillingCycles": {
+			"type": "number",
+			"default": 1
+		}
+	},
+	"supports": {
+		"inserter": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"usesContext": [ "gutena-forms/formID" ],
+	"textdomain": "gutena-forms",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

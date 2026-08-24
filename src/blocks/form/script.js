@@ -264,6 +264,45 @@ document.addEventListener("DOMContentLoaded", function(){
 					gutena_forms.classList.remove( 'display-error-message' );
 					gutena_forms.classList.remove( 'display-success-message' );
 
+					const submitForm = () => {
+						save_gutena_forms( gutena_forms, form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml );
+					};
+
+					const runStripeThenSubmit = () => {
+						if (
+							'undefined' !== typeof window.gutenaFormsStripe &&
+							window.gutenaFormsStripe.hasPaymentField( gutena_forms ) &&
+							'function' === typeof window.gutenaFormsStripe.processBeforeSubmit
+						) {
+							window.gutenaFormsStripe
+								.processBeforeSubmit( gutena_forms, form_data )
+								.then( submitForm )
+								.catch( ( stripeError ) => {
+									submitButton[ i ].disabled = false;
+									submitBtnLink.innerHTML = submitBtnLinkHtml;
+									gutena_forms.classList.remove( 'form-progress' );
+									gutena_forms.classList.add( 'display-error-message' );
+
+									const stripeRoot = gutena_forms.querySelector( '[data-gutena-stripe-payment]' );
+									if ( stripeRoot ) {
+										stripeRoot.scrollIntoView( { behavior: 'smooth' } );
+									}
+
+									const errorMsgElement = gutena_forms.querySelector(
+										'.wp-block-gutena-form-error-msg .gutena-forms-error-text'
+									);
+									if ( ! isEmpty( errorMsgElement ) && 0 !== errorMsgElement.length ) {
+										errorMsgElement.innerHTML =
+											stripeError?.message || 'Payment could not be processed. Please try again.';
+									}
+
+									console.log( 'Stripe payment error', stripeError );
+								} );
+							return;
+						}
+
+						submitForm();
+					};
 
 					//Google recaptcha
 					const formRecaptcha = getFormRecaptchaConfig( gutena_forms );
@@ -274,21 +313,21 @@ document.addEventListener("DOMContentLoaded", function(){
 						if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
 							if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
 								console.log("grecaptcha not defined");
-								save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+								runStripeThenSubmit();
 							} else {
 								grecaptcha.ready(function() {
 									grecaptcha.execute( formRecaptcha.siteKey, {action: 'submit'}).then( function( token ) {
 										form_data.append('g-recaptcha-response', token);
-										save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+										runStripeThenSubmit();
 									});
 								});
 							}
 						} else {
-							save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+							runStripeThenSubmit();
 						}
 					} else {
 						//recaptcha not enabled or configured
-						save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
+						runStripeThenSubmit();
 					}
 				} );
 			}
@@ -335,6 +374,11 @@ document.addEventListener("DOMContentLoaded", function(){
 			} else {
 				//Reset Form
 				gutena_forms.reset();
+
+				const stripeRoot = gutena_forms.querySelector( '[data-gutena-stripe-payment]' );
+				if ( stripeRoot?.gutenaStripe?.clear ) {
+					stripeRoot.gutenaStripe.clear();
+				}
 
 				gutena_forms.classList.add(
 					'display-success-message'

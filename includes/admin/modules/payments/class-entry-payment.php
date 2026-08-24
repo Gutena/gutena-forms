@@ -220,8 +220,8 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 			$rows = $wpdb->get_results(
 				"SELECT p.*, e.added_time AS entry_added_time
 				FROM {$this->store->table_gutenaforms_payments} p
-				INNER JOIN {$this->store->table_gutenaforms_entries} e ON e.entry_id = p.entry_id
-				WHERE e.trash = 0
+				LEFT JOIN {$this->store->table_gutenaforms_entries} e ON e.entry_id = p.entry_id
+				WHERE e.entry_id IS NULL OR e.trash = 0
 				ORDER BY p.added_time DESC",
 				ARRAY_A
 			);

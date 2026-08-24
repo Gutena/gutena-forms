@@ -1,11 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useLayoutEffect } from '@wordpress/element';
 import {
 	gfIsEmpty,
 	getInnerBlocksbyNameAttr,
 	slugToName,
 } from '../../shared/utils/helper';
+import { isStripeGatewayEnabled } from '../../shared/payments/stripe-field-utils';
 import {
 	InspectorControls,
 	__experimentalBlockVariationPicker,
@@ -752,7 +753,7 @@ export default function Edit( props ) {
 		'gutena/rating-field',
 	];
 
-	const ALLOWED_BLOCKS = [
+	const getFormAllowedBlocks = () => [
 		'core/columns',
 		'core/group',
 		'core/image',
@@ -767,10 +768,27 @@ export default function Edit( props ) {
 		'gutena/radio-field',
 		'gutena/checkbox-field',
 		'core/buttons',
+		'gutena/form-confirm-msg',
+		'gutena/form-error-msg',
+		...( isStripeGatewayEnabled() ? [ 'gutena/stripe-field' ] : [] ),
 		...( typeof gutenaFormsBlock !== 'undefined' && gutenaFormsBlock?.is_pro
 			? PRO_STANDALONE_BLOCK_NAMES
 			: [] ),
 	];
+
+	const ALLOWED_BLOCKS = getFormAllowedBlocks();
+
+	const { updateBlockListSettings } = useDispatch( blockEditorStore );
+
+	useLayoutEffect( () => {
+		if ( ! clientId ) {
+			return;
+		}
+
+		updateBlockListSettings( clientId, {
+			allowedBlocks: getFormAllowedBlocks(),
+		} );
+	}, [ clientId, updateBlockListSettings ] );
 
 	const blockProps = useBlockProps( {
 		className: formClasses,

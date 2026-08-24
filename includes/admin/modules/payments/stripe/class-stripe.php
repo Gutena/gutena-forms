@@ -114,6 +114,14 @@ if ( ! class_exists( 'Gutena_Forms_Stripe' ) && class_exists( 'Gutena_Forms_Paym
 
 					'webhook_slots_exceeded' => ! empty( $public['webhook_slots_exceeded'] ) || ! empty( $this->settings['webhook_slots_exceeded'] ),
 
+					'publishable_key_test'   => $this->settings['publishable_key_test'] ?? '',
+
+					'publishable_key_live'   => $this->settings['publishable_key_live'] ?? '',
+
+					'has_publishable_key_test' => ! empty( $public['has_publishable_key_test'] ),
+
+					'has_publishable_key_live' => ! empty( $public['has_publishable_key_live'] ),
+
 					'stripe_dashboard_url'   => 'https://dashboard.stripe.com/webhooks',
 
 				),
@@ -130,11 +138,29 @@ if ( ! class_exists( 'Gutena_Forms_Stripe' ) && class_exists( 'Gutena_Forms_Paym
 					$settings['connected'],
 					$settings['account_name'],
 					$settings['webhook_connected'],
-					$settings['webhook_slots_exceeded']
+					$settings['webhook_slots_exceeded'],
+					$settings['has_publishable_key_test'],
+					$settings['has_publishable_key_live'],
+					$settings['stripe_dashboard_url']
 				);
 			}
 
+			$previous_global = class_exists( 'Gutena_Forms_Stripe_Connect' )
+				? Gutena_Forms_Stripe_Connect::get_public_settings()
+				: array();
+
 			parent::save_settings( $settings );
+
+			if ( class_exists( 'Gutena_Forms_Settings_Migrator' ) ) {
+				$next_global = class_exists( 'Gutena_Forms_Stripe_Connect' )
+					? Gutena_Forms_Stripe_Connect::get_public_settings()
+					: array();
+				Gutena_Forms_Settings_Migrator::sync_global_module_to_forms(
+					'paymentStripe',
+					$previous_global,
+					$next_global
+				);
+			}
 
 			return true;
 		}

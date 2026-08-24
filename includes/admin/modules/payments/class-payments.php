@@ -26,6 +26,7 @@ if ( ! class_exists( 'Gutena_Forms_Payments' ) && class_exists( 'Gutena_Forms_Fo
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/payments/abstract-payment-gateway.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/payments/stripe/class-stripe-connect.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/payments/stripe/class-stripe-payment-service.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/payments/stripe/class-stripe-intent-service.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/payments/stripe/class-stripe.php';
 		}
 

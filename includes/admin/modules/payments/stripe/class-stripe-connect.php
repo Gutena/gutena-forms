@@ -175,8 +175,118 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Connect' ) ) :
 
 				'webhook_slots_exceeded' => ! empty( $stripe['webhook_slots_exceeded'] ),
 
+				'has_publishable_key_test' => ! empty( self::get_publishable_key( 'test' ) ),
+
+				'has_publishable_key_live' => ! empty( self::get_publishable_key( 'live' ) ),
+
 			);
 
+		}
+
+		/**
+		 * Stripe publishable key for frontend Elements (platform key for Connect).
+		 *
+		 * Define GUTENA_FORMS_STRIPE_PUBLISHABLE_KEY_TEST / _LIVE in wp-config.php,
+		 * or filter gutena_forms_stripe_publishable_key.
+		 *
+		 * @since 2.1.0
+		 * @param string $payment_mode test|live.
+		 * @return string
+		 */
+		public static function get_publishable_key( $payment_mode = 'test' ) {
+			$payment_mode = in_array( $payment_mode, array( 'live', 'test' ), true ) ? $payment_mode : 'test';
+
+			$settings = get_option( self::SETTINGS_OPTION, array() );
+			if ( is_array( $settings ) && ! empty( $settings[ self::GATEWAY_ID ] ) && is_array( $settings[ self::GATEWAY_ID ] ) ) {
+				$stored_key = $settings[ self::GATEWAY_ID ][ 'publishable_key_' . $payment_mode ] ?? $settings[ self::GATEWAY_ID ]['publishable_key'] ?? '';
+				if ( ! empty( $stored_key ) ) {
+					return self::sanitize_publishable_key( $stored_key );
+				}
+			}
+
+			$constant     = 'live' === $payment_mode
+				? 'GUTENA_FORMS_STRIPE_PUBLISHABLE_KEY_LIVE'
+				: 'GUTENA_FORMS_STRIPE_PUBLISHABLE_KEY_TEST';
+
+			$key = defined( $constant ) ? (string) constant( $constant ) : '';
+
+			/**
+			 * Filter Stripe publishable key used on the frontend.
+			 *
+			 * @since 2.1.0
+			 * @param string $key          Publishable key.
+			 * @param string $payment_mode Payment mode.
+			 */
+			return self::sanitize_publishable_key( apply_filters( 'gutena_forms_stripe_publishable_key', $key, $payment_mode ) );
+		}
+
+		/**
+		 * Whether the active publishable key comes from wp-config / filter (platform) vs site settings (connected account).
+		 *
+		 * @since 2.1.0
+		 * @param string $payment_mode test|live.
+		 * @return bool
+		 */
+		public static function uses_platform_publishable_key( $payment_mode = 'test' ) {
+			$payment_mode = in_array( $payment_mode, array( 'live', 'test' ), true ) ? $payment_mode : 'test';
+
+			$settings = get_option( self::SETTINGS_OPTION, array() );
+			if ( is_array( $settings ) && ! empty( $settings[ self::GATEWAY_ID ] ) && is_array( $settings[ self::GATEWAY_ID ] ) ) {
+				$stored_key = $settings[ self::GATEWAY_ID ][ 'publishable_key_' . $payment_mode ] ?? $settings[ self::GATEWAY_ID ]['publishable_key'] ?? '';
+				if ( ! empty( $stored_key ) ) {
+					return false;
+				}
+			}
+
+			return ! empty( self::get_publishable_key( $payment_mode ) );
+		}
+
+		/**
+		 * Stripe.js connected account header — only when using a platform publishable key.
+		 *
+		 * @since 2.1.0
+		 * @param string $payment_mode test|live.
+		 * @return string
+		 */
+		public static function get_stripe_js_account_id( $payment_mode = 'test' ) {
+			if ( ! self::uses_platform_publishable_key( $payment_mode ) ) {
+				return '';
+			}
+
+			return self::get_connected_account_id();
+		}
+
+		/**
+		 * @since 2.1.0
+		 * @param string $key Publishable key.
+		 * @return string
+		 */
+		public static function sanitize_publishable_key( $key ) {
+			$key = sanitize_text_field( (string) $key );
+			if ( '' === $key ) {
+				return '';
+			}
+
+			if ( 0 !== strpos( $key, 'pk_' ) ) {
+				return '';
+			}
+
+			return $key;
+		}
+
+		/**
+		 * Connected Stripe account ID for direct charges.
+		 *
+		 * @since 2.1.0
+		 * @return string
+		 */
+		public static function get_connected_account_id() {
+			$credentials = get_option( self::CREDENTIALS_OPTION, array() );
+			if ( ! is_array( $credentials ) || empty( $credentials[ self::GATEWAY_ID ]['account_id'] ) ) {
+				return '';
+			}
+
+			return sanitize_text_field( $credentials[ self::GATEWAY_ID ]['account_id'] );
 		}
 
 
@@ -455,6 +565,8 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Connect' ) ) :
 
 					'account_name'  => $account_name,
 
+					'publishable_key' => sanitize_text_field( $body['publishable_key'] ?? '' ),
+
 				)
 
 			);
@@ -512,6 +624,17 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Connect' ) ) :
 				)
 
 			);
+
+
+
+			if ( ! empty( $data['publishable_key'] ) ) {
+				$mode_key = 'publishable_key_' . ( in_array( $data['payment_mode'] ?? 'test', array( 'live', 'test' ), true ) ? $data['payment_mode'] : 'test' );
+				$this->update_gateway_settings(
+					array(
+						$mode_key => self::sanitize_publishable_key( $data['publishable_key'] ),
+					)
+				);
+			}
 
 
 

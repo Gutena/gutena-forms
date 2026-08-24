@@ -1,0 +1,169 @@
+.wp-block-gutena-stripe-field {
+	border: 1px dashed #dadada;
+	border-radius: 8px;
+	padding: 16px;
+
+	.gutena-forms-stripe-field__preview-title {
+		color: #111827;
+		font-size: 16px;
+		font-weight: 700;
+		margin: 0 0 8px;
+	}
+
+	.gutena-forms-stripe-field__preview-description {
+		color: #6e7376;
+		font-size: 13px;
+		line-height: 1.5;
+		margin: 0;
+	}
+
+	.gutena-forms-stripe-field__preview-connected {
+		.gutena-forms-stripe-field__preview-status {
+			color: #0da88c;
+			font-size: 13px;
+			font-weight: 600;
+			margin: 0 0 4px;
+		}
+	}
+
+	.gutena-forms-stripe-field__error {
+		color: #c51919;
+		font-size: 12px;
+		margin: 4px 0 12px;
+	}
+}
+
+.interface-complementary-area {
+	.gutena-forms__payment-mode,
+	.gutena-forms__currency-settings,
+	.gutena-forms__stripe-field-connection {
+		margin-bottom: 16px;
+	}
+
+	.gutena-forms__payment-mode__label,
+	.gutena-forms__currency-settings__label,
+	.gutena-forms__stripe-field-connection__label,
+	.gutena-forms-stripe-field__section-label {
+		color: #000;
+		font-size: 12px;
+		font-weight: 700;
+		margin: 0 0 8px;
+	}
+
+	.gutena-forms__payment-mode__help,
+	.gutena-forms__currency-settings__help,
+	.gutena-forms-stripe-field__help {
+		color: #6e7376;
+		font-size: 11px;
+		line-height: 1.4;
+		margin: 8px 0 0;
+	}
+
+	.gutena-forms__payment-mode__options {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.gutena-forms__payment-mode__option {
+		align-items: center;
+		background: #fff;
+		border: 1px solid #e2e2e2;
+		border-radius: 6px;
+		cursor: pointer;
+		display: flex;
+		justify-content: space-between;
+		padding: 10px 12px;
+		width: 100%;
+
+		&.is-active {
+			border-color: #0da88c;
+		}
+	}
+
+	.gutena-forms__payment-mode__radio {
+		border: 1px solid #c3c4c7;
+		border-radius: 50%;
+		height: 16px;
+		width: 16px;
+	}
+
+	.gutena-forms__payment-mode__option.is-active .gutena-forms__payment-mode__radio {
+		border-color: #0da88c;
+		box-shadow: inset 0 0 0 4px #0da88c;
+	}
+
+	.gutena-forms__currency-settings__select {
+		border: 1px solid #e2e2e2;
+		border-radius: 6px;
+		max-width: 100%;
+		padding: 8px 10px;
+		width: 100%;
+	}
+
+	.gutena-forms__stripe-connect__button {
+		background: #635bff;
+		border: 0;
+		border-radius: 6px;
+		color: #fff;
+		cursor: pointer;
+		font-size: 13px;
+		font-weight: 600;
+		padding: 10px 16px;
+		width: 100%;
+	}
+
+	.gutena-forms__stripe-field-connection__status {
+		align-items: center;
+		display: flex;
+		gap: 8px;
+		margin-bottom: 8px;
+	}
+
+	.gutena-forms__connection-status__check {
+		background: #0da88c;
+		border-radius: 50%;
+		display: inline-block;
+		height: 8px;
+		width: 8px;
+	}
+
+	.gutena-forms__webhook-error {
+		background: #fff5f5;
+		border: 1px solid #fecaca;
+		border-radius: 6px;
+		margin-top: 12px;
+		padding: 12px;
+
+		&__message {
+			color: #6e7376;
+			font-size: 11px;
+			line-height: 1.4;
+			margin: 0 0 8px;
+		}
+
+		&__actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		&__link,
+		&__retry {
+			font-size: 11px;
+		}
+
+		&__retry {
+			background: #0da88c;
+			border: 0;
+			border-radius: 4px;
+			color: #fff;
+			cursor: pointer;
+			padding: 6px 10px;
+		}
+	}
+
+	.gutena-forms-stripe-field__section {
+		margin-top: 16px;
+	}
+}

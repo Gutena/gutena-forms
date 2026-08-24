@@ -95,6 +95,48 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		}
 
 		/**
+		 * Get effective Stripe payment settings (global default or form override).
+		 *
+		 * @since 2.0.0
+		 * @param array $block_stripe Block paymentStripe attributes.
+		 * @return array
+		 */
+		public static function get_effective_payment_stripe( $block_stripe ) {
+			$global = class_exists( 'Gutena_Forms_Stripe_Connect' )
+				? Gutena_Forms_Stripe_Connect::get_public_settings()
+				: array();
+
+			$block_stripe = is_array( $block_stripe ) ? $block_stripe : array();
+			$use_global   = (
+				! isset( $block_stripe['defaultSettings'] )
+				|| false !== rest_sanitize_boolean( $block_stripe['defaultSettings'] )
+			);
+
+			if ( $use_global && ! empty( $global ) ) {
+				return array_merge(
+					array(
+						'enable'                 => false,
+						'payment_mode'           => 'test',
+						'currency'               => 'USD',
+						'currency_sign_position' => 'left',
+						'connected'              => false,
+						'account_name'           => '',
+						'webhook_connected'      => false,
+						'webhook_slots_exceeded' => false,
+					),
+					$global,
+					array( 'defaultSettings' => true )
+				);
+			}
+
+			return array_merge(
+				$global,
+				$block_stripe,
+				array( 'defaultSettings' => false )
+			);
+		}
+
+		/**
 		 * Get effective Cloudflare Turnstile settings (global default or form override).
 		 *
 		 * @since 1.8.0

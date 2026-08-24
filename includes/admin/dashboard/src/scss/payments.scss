@@ -294,6 +294,35 @@
       width: 475px;
     }
 
+    &__publishable-key {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      label {
+        color: #111827;
+        font-size: 12px;
+        font-weight: 600;
+      }
+    }
+
+    &__input {
+      border: 1px solid #d7dbe7;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 12px;
+      min-height: 36px;
+      padding: 8px 10px;
+      width: 100%;
+    }
+
+    &__help {
+      color: #6e7376;
+      font-size: 11px;
+      line-height: 1.4;
+      margin: 0;
+    }
+
     &__save {
       align-self: flex-start;
       background: #0da88c;

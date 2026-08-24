@@ -73,6 +73,8 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 
 			$this->validate_captcha();
 
+			$this->validate_stripe_payment();
+
 			$blog_title = get_bloginfo( 'name' );
 			$from_name  = empty( $this->schema['form_attrs']['emailFromName'] ) ? $blog_title : $this->schema['form_attrs']['emailFromName'];
 			$from_name  = sanitize_text_field( $from_name );
@@ -125,7 +127,21 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			foreach ( $_POST as $name_attr => $field_value ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 				$name_attr = sanitize_key( wp_unslash( $name_attr ) );
 
-				if ( empty( $field_schema[ $name_attr ] ) || ( ! empty( $field_schema[ $name_attr ]['fieldType'] ) && 'optin' === $field_schema[ $name_attr ]['fieldType'] ) ) {
+				if (
+					empty( $field_schema[ $name_attr ] ) ||
+					( ! empty( $field_schema[ $name_attr ]['fieldType'] ) && 'optin' === $field_schema[ $name_attr ]['fieldType'] )
+				) {
+					continue;
+				}
+
+				if (
+					! empty( $field_schema[ $name_attr ]['fieldType'] ) &&
+					'stripe' === $field_schema[ $name_attr ]['fieldType']
+				) {
+					continue;
+				}
+
+				if ( preg_match( '/_(payment_method|payment_intent|country)$/', $name_attr ) ) {
 					continue;
 				}
 
@@ -328,6 +344,29 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 					array(
 						'status'  => 'error',
 						'message' => __( 'Spam detected', 'gutena-forms' ),
+					)
+				);
+			}
+		}
+
+		/**
+		 * Validate Stripe payment when the form includes a payment field.
+		 *
+		 * @since 2.1.0
+		 * @return void
+		 */
+		private function validate_stripe_payment() {
+			if ( ! class_exists( 'Gutena_Forms_Stripe_Intent_Service' ) ) {
+				return;
+			}
+
+			$result = Gutena_Forms_Stripe_Intent_Service::get_instance()->validate_submission_payment( $this->id, $this->schema );
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json(
+					array(
+						'status'  => 'error',
+						'message' => $result->get_error_message(),
 					)
 				);
 			}

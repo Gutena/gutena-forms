@@ -280,6 +280,41 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 		}
 
 		/**
+		 * Update post content without breaking REST API JSON responses.
+		 *
+		 * Nested wp_update_post calls during block editor saves can corrupt the REST
+		 * response with "not a valid JSON response".
+		 *
+		 * @since 2.0.0
+		 * @param int    $post_id      Post ID.
+		 * @param string $post_content Post content.
+		 */
+		private static function update_post_content_safely( $post_id, $post_content ) {
+			$post_id = (int) $post_id;
+			if ( $post_id <= 0 || '' === $post_content ) {
+				return;
+			}
+
+			$update = static function () use ( $post_id, $post_content ) {
+				wp_update_post(
+					array(
+						'ID'           => $post_id,
+						'post_content' => $post_content,
+					),
+					false,
+					false
+				);
+			};
+
+			if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+				add_action( 'shutdown', $update, 0 );
+				return;
+			}
+
+			$update();
+		}
+
+		/**
 		 * Updating gutena post type
 		 *
 		 * @since 1.5.0
@@ -357,14 +392,7 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 					$new_post_content .= serialize_block( $block );
 				}
 
-				wp_update_post(
-						array(
-								'ID'           => $post_id,
-								'post_content' => $new_post_content,
-						),
-						false,
-						false
-				);
+				self::update_post_content_safely( $post_id, $new_post_content );
 
 				// Re-add the actions after update.
 				add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );
@@ -424,14 +452,7 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 							$new_content .= serialize_block( $block );
 						}
 
-						wp_update_post(
-								array(
-										'ID'           => $connected_post_id,
-										'post_content' => $new_content,
-								),
-								false,
-								false
-						);
+						self::update_post_content_safely( $connected_post_id, $new_content );
 					}
 				}
 

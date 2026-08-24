@@ -213,6 +213,16 @@
 					);
 				}
 
+				/**
+				 * Fires after a form entry and field values are saved.
+				 *
+				 * @param int    $entry_id      Entry ID.
+				 * @param array  $form_data     Submitted form data.
+				 * @param string $block_form_id Block form ID.
+				 * @param array  $fieldSchema   Field schema with entry_id and form_id.
+				 */
+				do_action( 'gutena_forms_after_entry_saved', $fieldSchema['entry_id'], $form_data, $block_form_id, $fieldSchema );
+
 				return true;
 			} 
 

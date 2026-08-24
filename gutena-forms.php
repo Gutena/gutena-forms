@@ -92,6 +92,113 @@ if ( ! function_exists( 'gutena_forms_get_form_schema_option' ) ) {
 	}
 }
 
+if ( ! function_exists( 'gutena_forms_is_stripe_gateway_enabled' ) ) :
+	/**
+	 * Whether Stripe is enabled in Payment Methods settings.
+	 *
+	 * @since 2.0.0
+	 * @return bool
+	 */
+	function gutena_forms_is_stripe_gateway_enabled() {
+		$payment_settings = get_option( 'gutena_forms__payment_settings', array() );
+
+		return is_array( $payment_settings ) && ! empty( $payment_settings['stripe']['enable'] );
+	}
+endif;
+
+if ( ! function_exists( 'gutena_forms_get_block_editor_config' ) ) :
+	/**
+	 * Shared block editor + frontend localized config for gutenaFormsBlock.
+	 *
+	 * @since 2.1.0
+	 * @return array
+	 */
+	function gutena_forms_get_block_editor_config() {
+		$grecaptcha = get_option( 'gutena_forms__recaptcha', array() );
+
+		$gutena_forms_messages = get_option( 'gutena_forms__form_validation_messages', array() );
+
+		$cloudflare_turnstile_defaults = get_option( 'gutena_forms__cloudflare', array() );
+
+		$payment_stripe_defaults = class_exists( 'Gutena_Forms_Stripe_Connect' )
+			? Gutena_Forms_Stripe_Connect::get_form_default_settings()
+			: array();
+
+		$stripe_gateway_enabled = gutena_forms_is_stripe_gateway_enabled();
+
+		$gutena_forms_messages = empty( $gutena_forms_messages ) ? array() : $gutena_forms_messages;
+		$gf_message            = array(
+			'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
+			'required_msg_optin'  => __( 'Please check this checkbox', 'gutena-forms' ),
+			'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
+			'required_msg_check'  => __( 'Please check an option', 'gutena-forms' ),
+			'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
+			'invalid_url_msg'     => __( 'Please enter a valid URL', 'gutena-forms' ),
+			'min_value_msg'       => __( 'Input value should be greater than', 'gutena-forms' ),
+			'max_value_msg'       => __( 'Input value should be less than', 'gutena-forms' ),
+		);
+
+		foreach ( $gf_message as $msg_key => $msg_value ) {
+			if ( ! empty( $gutena_forms_messages[ $msg_key ] ) ) {
+				$gf_message[ $msg_key ] = $gutena_forms_messages[ $msg_key ];
+			}
+		}
+
+		$gutena_forms_post_type = false;
+		$forms_available        = false;
+
+		if ( is_admin() ) {
+			if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$gutena_forms_post_type = true;
+			}
+
+			if ( isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$post_type = get_post_type( sanitize_text_field( wp_unslash( $_GET['post'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				if ( 'gutena_forms' === $post_type ) {
+					$gutena_forms_post_type = true;
+				}
+			}
+
+			$gutena_forms_forms = get_posts(
+				array(
+					'post_type'      => 'gutena_forms',
+					'post_status'    => array( 'publish', 'draft', 'private' ),
+					'posts_per_page' => 1,
+				)
+			);
+
+			if ( ! empty( $gutena_forms_forms ) && is_array( $gutena_forms_forms ) ) {
+				$forms_available = true;
+			}
+		}
+
+		return array_merge(
+			array(
+				'submit_action'                 => 'gutena_forms_submit',
+				'ajax_url'                      => admin_url( 'admin-ajax.php' ),
+				'nonce'                         => wp_create_nonce( 'gutena_Forms' ),
+				'grecaptcha'                    => ! empty( $grecaptcha )
+					? $grecaptcha
+					: array(
+						'enable' => false,
+						'type'   => 'v2',
+					),
+				'pricing_link'                  => 'https://gutenaforms.com/pricing/',
+				'cloudflare_turnstile_defaults' => is_array( $cloudflare_turnstile_defaults ) ? $cloudflare_turnstile_defaults : array(),
+				'is_pro'                        => is_gutena_forms_pro(),
+				'is_gutena_forms_post_type'     => $gutena_forms_post_type,
+				'forms_available'               => $forms_available,
+				'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
+				'payment_stripe'                => is_array( $payment_stripe_defaults ) ? $payment_stripe_defaults : array(),
+				'stripe_gateway_enabled'        => $stripe_gateway_enabled,
+				'rest_url'                      => rest_url( 'gutena-forms/v1/' ),
+				'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
+			),
+			$gf_message
+		);
+	}
+endif;
+
 if ( ! function_exists( 'gutena_forms__fs' ) ) :
 	/**
 	 * Initialize Freemius.
@@ -206,6 +313,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-existing-forms-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-pro-field-blocks.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-stripe-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-fields.php';
 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-handle-save-form.php';
@@ -224,6 +332,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 
 			add_action( 'init', array( $this, 'register_blocks_and_scripts' ) );
 			add_action( 'init', array( $this, 'register_blocks_styles' ) );
+			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_config' ), 1 );
 			add_action( 'template_redirect', array( $this, 'enqueue_recaptcha_scripts' ) );
 			add_filter( 'block_categories_all', array( $this, 'register_category' ), 10, 2 );
 			add_action( 'save_post', array( $this, 'save_gutena_forms_schema' ), 10, 3 );
@@ -541,91 +650,25 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			// Form Error Message Block.
 			register_block_type( __DIR__ . '/build/blocks/form-error-msg' );
 
-			// google recaptcha.
-			$grecaptcha = get_option( 'gutena_forms__recaptcha', array() );
-
-			// Form messages.
-			$gutena_forms_messages = get_option( 'gutena_forms__form_validation_messages', array() );
-
-			// cloudflare turnstile: global default settings (option gutena_forms__cloudflare).
-			$cloudflare_turnstile_defaults = get_option( 'gutena_forms__cloudflare', array() );
-
-			// Stripe payment defaults (no secrets; server-side credentials stay in gutena_forms__payment_credentials).
-			$payment_stripe_defaults = class_exists( 'Gutena_Forms_Stripe_Connect' )
-				? Gutena_Forms_Stripe_Connect::get_form_default_settings()
-				: array();
-
-			$gutena_forms_messages = empty( $gutena_forms_messages ) ? array() : $gutena_forms_messages;
-			$gf_message            = array(
-				'required_msg'        => __( 'Please fill in this field', 'gutena-forms' ),
-				'required_msg_optin'  => __( 'Please check this checkbox', 'gutena-forms' ),
-				'required_msg_select' => __( 'Please select an option', 'gutena-forms' ),
-				'required_msg_check'  => __( 'Please check an option', 'gutena-forms' ),
-				'invalid_email_msg'   => __( 'Please enter a valid email address', 'gutena-forms' ),
-				'invalid_url_msg'     => __( 'Please enter a valid URL', 'gutena-forms' ),
-				'min_value_msg'       => __( 'Input value should be greater than', 'gutena-forms' ),
-				'max_value_msg'       => __( 'Input value should be less than', 'gutena-forms' ),
-			);
-			// get saved messages by admin.
-			foreach ( $gf_message as $msg_key => $msg_value ) {
-				if ( ! empty( $gutena_forms_messages[ $msg_key ] ) ) {
-					$gf_message[ $msg_key ] = $gutena_forms_messages[ $msg_key ];
-				}
-			}
-
-			$gutena_forms_post_type = false;
-			$forms_available        = false;
-
-			if ( is_admin() ) {
-				if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-					$gutena_forms_post_type = true;
-				}
-
-				if ( isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-					$post_type = get_post_type( sanitize_text_field( wp_unslash( $_GET['post'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-					if ( 'gutena_forms' === $post_type ) {
-						$gutena_forms_post_type = true;
-					}
-				}
-
-				$gutena_forms_forms = get_posts(
-					array(
-						'post_type'      => 'gutena_forms',
-						'post_status'    => array( 'publish', 'draft', 'private' ),
-						'posts_per_page' => 1,
-					)
-				);
-
-				if ( ! empty( $gutena_forms_forms ) && is_array( $gutena_forms_forms ) ) {
-					$forms_available = true;
-				}
-			}
-
 			wp_localize_script(
 				'gutena-forms-script',
 				'gutenaFormsBlock',
-				array_merge(
-					array(
-						'submit_action'                 => 'gutena_forms_submit',
-						'ajax_url'                      => admin_url( 'admin-ajax.php' ),
-						'nonce'                         => wp_create_nonce( 'gutena_Forms' ),
-						'grecaptcha'                    => ! empty( $grecaptcha )
-							? $grecaptcha
-							: array(
-								'enable' => false,
-								'type'   => 'v2',
-							),
-						'pricing_link'                  => 'https://gutenaforms.com/pricing/',
-						'cloudflare_turnstile_defaults' => is_array( $cloudflare_turnstile_defaults ) ? $cloudflare_turnstile_defaults : array(),
-						'is_pro'                        => is_gutena_forms_pro(),
-						'is_gutena_forms_post_type'     => $gutena_forms_post_type,
-						'forms_available'               => $forms_available,
-						'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
-						'payment_stripe'                => is_array( $payment_stripe_defaults ) ? $payment_stripe_defaults : array(),
-						'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
-					),
-					$gf_message
-				)
+				gutena_forms_get_block_editor_config()
+			);
+		}
+
+		/**
+		 * Expose editor-only config (e.g. Stripe gateway toggle) to all block scripts.
+		 *
+		 * @since 2.0.0
+		 */
+		public function enqueue_block_editor_config() {
+			wp_add_inline_script(
+				'wp-blocks',
+				'window.gutenaFormsBlock = Object.assign( window.gutenaFormsBlock || {}, '
+				. wp_json_encode( gutena_forms_get_block_editor_config() )
+				. ' );',
+				'before'
 			);
 		}
 
