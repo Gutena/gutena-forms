@@ -33,6 +33,7 @@ export const SettingsTemplates = {
 
 import GutenaFormsForms from '../screens/gutena-forms-forms';
 import GutenaFormsEntries from '../screens/gutena-forms-entries';
+import GutenaFormsPayments from '../screens/gutena-forms-payments';
 
 /**
  * React components for main dashboard pages (forms list, entries list).
@@ -43,6 +44,7 @@ import GutenaFormsEntries from '../screens/gutena-forms-entries';
 export const PageTemplates = {
 	'forms': GutenaFormsForms,
 	'entries': GutenaFormsEntries,
+	'payments': GutenaFormsPayments,
 };
 
 import MCPConfigurationTemplate from "../components/mcp-configuration-template";

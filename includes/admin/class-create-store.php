@@ -32,6 +32,26 @@
 			add_action( 'gutena_forms_activation_begins', array( $this, 'create_tables' ) );
             //On activate tables.
 			add_action( 'gutena_forms_activation_end', array( $this, 'initialize_tables' ) );
+			add_action( 'admin_init', array( $this, 'maybe_upgrade_tables' ) );
+		}
+
+		public function maybe_upgrade_tables() {
+			if ( '1.0.0' === get_option( 'gutena_forms_payments_table_version', '' ) ) {
+				return;
+			}
+
+			global $wpdb;
+
+			if ( empty( $wpdb ) || ! $this->include_db_upgrade_file() || ! function_exists( 'dbDelta' ) ) {
+				return;
+			}
+
+			$this->create_table_gutenaforms_payments( $wpdb->get_charset_collate() );
+			update_option( 'gutena_forms_payments_table_version', '1.0.0' );
+
+			if ( class_exists( 'Gutena_Forms_Entry_Payment' ) ) {
+				Gutena_Forms_Entry_Payment::get_instance()->migrate_meta_to_table();
+			}
 		}
 
         //Initialize tables with existing gutena forms
@@ -84,6 +104,8 @@
             $this->create_table_gutenaforms_field_value( $charset_collate );
             //metadata related to form and form entries
             $this->create_table_gutenaforms_meta( $charset_collate );
+            //payment records linked to entries
+            $this->create_table_gutenaforms_payments( $charset_collate );
             
             //check if table created successfully
             $table_names =  array(
@@ -91,6 +113,7 @@
                 $this->table_gutenaforms_entries,
                 $this->table_gutenaforms_field_value,
                 $this->table_gutenaforms_meta,
+                $this->table_gutenaforms_payments,
             );
             $all_tables_craeted = true;
             foreach ( $table_names as $table_name ) {
@@ -233,6 +256,42 @@
                 KEY data_type (data_type)
                ) {$charset_collate};";    
             //Useful for creating new tables and updating existing tables to a new structure.
+            dbDelta( $main_sql_create );
+        }
+
+        /**
+         * Payment records linked to form entries.
+         */
+        private function create_table_gutenaforms_payments( $charset_collate ) {
+            global $wpdb;
+            $table_name = $this->table_gutenaforms_payments;
+            $main_sql_create = "CREATE TABLE {$table_name} (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                entry_id bigint(20) unsigned NOT NULL,
+                form_id bigint(20) unsigned NOT NULL DEFAULT '0',
+                gateway varchar(50) NOT NULL DEFAULT 'stripe',
+                external_payment_id varchar(191) NOT NULL DEFAULT '',
+                transaction_id varchar(191) NOT NULL DEFAULT '',
+                payment_type varchar(50) NOT NULL DEFAULT 'one_time',
+                payment_mode varchar(20) NOT NULL DEFAULT 'test',
+                payment_method varchar(100) NOT NULL DEFAULT '',
+                amount bigint(20) unsigned NOT NULL DEFAULT '0',
+                refunded_amount bigint(20) unsigned NOT NULL DEFAULT '0',
+                currency varchar(10) NOT NULL DEFAULT 'USD',
+                status varchar(50) NOT NULL DEFAULT 'pending',
+                customer_name varchar(255) NOT NULL DEFAULT '',
+                customer_email varchar(191) NOT NULL DEFAULT '',
+                transaction_date varchar(100) NOT NULL DEFAULT '',
+                received_on varchar(100) NOT NULL DEFAULT '',
+                stripe_dashboard_url text NULL,
+                metadata longtext NULL,
+                added_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                modified_time timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY  (id),
+                UNIQUE KEY entry_gateway (entry_id, gateway),
+                KEY form_id (form_id),
+                KEY status (status)
+               ) {$charset_collate};";
             dbDelta( $main_sql_create );
         }
 		

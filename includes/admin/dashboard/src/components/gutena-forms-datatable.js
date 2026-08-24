@@ -16,7 +16,7 @@ const DEFAULT_BULK_ACTION_OPTIONS = [
 	{ label: __( 'Delete', 'gutena-forms' ), value: 'delete' },
 ];
 
-const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren, customFilters, bulkActionOptions, name } ) => {
+const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren, customFilters, bulkActionOptions, name, hideBulkActions = false } ) => {
 	const [ numberOfRows, setNumberOfRows ] = useState( 10 );
 	const [ currentPage, setCurrentPage ] = useState( 1 );
 	const [ searchTerm, setSearchTerm ] = useState( '' );
@@ -190,30 +190,32 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 	};
 
 	return (
-		<div className={ 'gutena-forms__data-table-container' }>
+		<div className={ `gutena-forms__data-table-container${ hideBulkActions ? ' is-no-bulk-actions' : '' }` }>
 
 			<div className={ 'gutena-forms__datatable-header' }>
 
-				<div className={ 'gutena-forms__bulk-action-container' }>
+				{ ! hideBulkActions && (
+					<div className={ 'gutena-forms__bulk-action-container' }>
 
-					<div className={ 'display-inline-block' }>
-						<SelectControl
-							options={ bulkActionOptions && bulkActionOptions.length > 0 ? bulkActionOptions : DEFAULT_BULK_ACTION_OPTIONS }
-							value={ bulkAction }
-							onChange={ ( value ) => setBulkAction( value ) }
-						/>
+						<div className={ 'display-inline-block' }>
+							<SelectControl
+								options={ bulkActionOptions && bulkActionOptions.length > 0 ? bulkActionOptions : DEFAULT_BULK_ACTION_OPTIONS }
+								value={ bulkAction }
+								onChange={ ( value ) => setBulkAction( value ) }
+							/>
+						</div>
+
+						<div className={ 'display-inline-block' }>
+							<Button
+								className={ 'gutena-forms__primary-button' }
+								onClick={ handleBulkActions }
+							>{ __( 'Apply', 'gutena-forms' ) }</Button>
+						</div>
+
 					</div>
+				) }
 
-					<div className={ 'display-inline-block' }>
-						<Button
-							className={ 'gutena-forms__primary-button' }
-							onClick={ handleBulkActions }
-						>{ __( 'Apply', 'gutena-forms' ) }</Button>
-					</div>
-
-				</div>
-
-				<div>
+				<div className={ hideBulkActions ? 'gutena-forms__datatable-header__filters is-full-width' : undefined }>
 
 					{ customFilters && customFilters.components && customFilters.components.map( ( Component, key ) => {
 						return (

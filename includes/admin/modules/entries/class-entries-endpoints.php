@@ -219,6 +219,15 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Endpoints' ) ) :
 				$result['added_time'] = gmdate( 'F j, Y H:i A', strtotime( $result['added_time'] ) );
 			}
 
+			if ( class_exists( 'Gutena_Forms_Entry_Payment' ) ) {
+				$payment_summary = Gutena_Forms_Entry_Payment::get_instance()->get_public_details( absint( $entry_id ) );
+				$result['has_payment'] = ! empty( $payment_summary['has_payment'] );
+				if ( $result['has_payment'] ) {
+					$result['payment_gateway_label']  = $payment_summary['gateway_label'];
+					$result['payment_amount_formatted'] = $payment_summary['amount_formatted'];
+				}
+			}
+
 			return rest_ensure_response(
 				array(
 					'entry_details' => $result,

@@ -38,6 +38,14 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 		// Table to store data related to forms and form enteries table
 		public $table_gutenaforms_meta = 'gutenaforms_meta';
 
+		// Table to store payment records linked to entries
+		public $table_gutenaforms_payments = 'gutenaforms_payments';
+
+		/**
+		 * @var self|null
+		 */
+		private static $store_instance = null;
+
 		public function __construct() {
 			global $wpdb;
 			$this->table_gutenaforms             = $wpdb->prefix . '' . $this->table_gutenaforms;
@@ -45,6 +53,18 @@ if ( ! class_exists( 'Gutena_Forms_Store' ) && class_exists( 'Gutena_Forms_Admin
 			$this->table_gutenaforms_entries     = $wpdb->prefix . '' . $this->table_gutenaforms_entries;
 			$this->table_gutenaforms_field_value = $wpdb->prefix . '' . $this->table_gutenaforms_field_value;
 			$this->table_gutenaforms_meta        = $wpdb->prefix . '' . $this->table_gutenaforms_meta;
+			$this->table_gutenaforms_payments   = $wpdb->prefix . '' . $this->table_gutenaforms_payments;
+		}
+
+		/**
+		 * @return self
+		 */
+		public static function get_instance() {
+			if ( null === self::$store_instance ) {
+				self::$store_instance = new self();
+			}
+
+			return self::$store_instance;
 		}
 
 		public function include_db_upgrade_file() {

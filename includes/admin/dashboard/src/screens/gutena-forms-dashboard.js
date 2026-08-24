@@ -6,7 +6,7 @@ const GutenaFormsDashboard = ( { setActiveMenu } ) => {
 
     useEffect( () => {
         setActiveMenu( '/dashboard' );
-        activateLeftMenu( 1 );
+		activateLeftMenu( '#/settings/dashboard' );
     }, [] )
 
     return (

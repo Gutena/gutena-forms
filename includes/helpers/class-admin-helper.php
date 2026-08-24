@@ -50,6 +50,39 @@ if ( ! class_exists( 'Gutena_Forms_Admin_Helper' ) ) :
 			}
 		}
 
+		/**
+		 * Remove duplicate top-level menus created by hash-routed submenu slugs.
+		 *
+		 * @return void
+		 */
+		public static function remove_phantom_top_level_menus() {
+			global $menu;
+
+			if ( ! is_array( $menu ) ) {
+				return;
+			}
+
+			foreach ( $menu as $position => $menu_item ) {
+				if ( empty( $menu_item[2] ) ) {
+					continue;
+				}
+
+				$slug = (string) $menu_item[2];
+
+				if ( 'gutena-forms' === $slug ) {
+					continue;
+				}
+
+				if (
+					0 === strpos( $slug, 'admin.php?page=gutena-forms' ) ||
+					'admin.php?page=postman' === $slug ||
+					'gutena-forms-smtp' === $slug
+				) {
+					unset( $menu[ $position ] );
+				}
+			}
+		}
+
 		public static function is_admin( $check_permission = 'manage_options' ) {
 			if ( ! function_exists( 'wp_get_current_user' ) && file_exists( ABSPATH . 'wp-includes/pluggable.php' ) ) {
 				require_once ABSPATH . 'wp-includes/pluggable.php';

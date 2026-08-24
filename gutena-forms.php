@@ -115,11 +115,12 @@ if ( ! function_exists( 'gutena_forms__fs' ) ) :
 					'has_addons'     => true,
 					'has_paid_plans' => false,
 					'menu'           => array(
-						'slug'       => 'gutena-forms',
-						'contact'    => false,
-						'support'    => false,
-						'account'    => false,
-						'first-path' => 'admin.php?page=gutena-forms&pagetype=introduction',
+						'slug'           => 'gutena-forms',
+						'override_exact' => true,
+						'contact'        => false,
+						'support'        => false,
+						'account'        => false,
+						'first-path'     => 'admin.php?page=gutena-forms&pagetype=introduction',
 					),
 				)
 			);

@@ -12,6 +12,7 @@ import { __ } from '@wordpress/i18n';
 import {applyFilters, doAction} from "@wordpress/hooks";
 import { activateLeftMenu } from '../utils/functions';
 import EntriesLoading from "../skeletons/entries-loading";
+import GutenaFormsProBadge from '../components/gutena-forms-pro-badge';
 
 const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
@@ -32,7 +33,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 	const [ statuses, setStatuses ] = useState( [] );
 
 	useEffect( () => {
-		activateLeftMenu( 4 );
+		activateLeftMenu( '#/settings/entries' );
 		setActiveMenu( '/entries' );
 	}, [] )
 
@@ -230,6 +231,11 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 										value: 'First Value',
 									},
 									{
+										key: 'payment',
+										value: __( 'Payment', 'gutena-forms' ),
+										width: '140px',
+									},
+									{
 										'key': 'status',
 										'value': 'Status',
 										'width': '100px',
@@ -266,6 +272,24 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 															<span style={ { color: '#414A51', fontWeight: '700' } }>{ row.value[ Object.keys( row.value )[0] ].label }:</span> { row.value[ Object.keys( row.value )[0] ].value }
 														</div>
 													) }
+												</div>
+											);
+										},
+
+										payment: ( { row } ) => {
+											if ( ! row.has_payment ) {
+												return <span className="gutena-forms__entries-payment-cell is-empty">—</span>;
+											}
+
+											return (
+												<div className="gutena-forms__entries-payment-cell">
+													<span className="gutena-forms__entries-payment-cell__amount">
+														{ row.payment_amount_formatted }
+													</span>
+													<span className="gutena-forms__entries-payment-cell__meta">
+														{ row.payment_gateway_label }
+														{ row.is_subscription && ! hasPro && <GutenaFormsProBadge /> }
+													</span>
 												</div>
 											);
 										},

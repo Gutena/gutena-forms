@@ -41,16 +41,34 @@ export const gutenaFormsStrContains = ( haystack, needle ) => {
 	return haystack.indexOf( needle ) !== -1;
 }
 
-export const activateLeftMenu = ( $index ) => {
-	document.querySelectorAll( '#toplevel_page_gutena-forms > ul > li' )
-		.forEach( function ( e ) {
-			if ( e.classList.contains( 'current' ) ) {
-				e.classList.remove( 'current' );
-			}
-		} );
+export const activateLeftMenu = ( menuTarget ) => {
+	const items = document.querySelectorAll( '#toplevel_page_gutena-forms > ul > li' );
 
-	document.querySelectorAll( '#toplevel_page_gutena-forms > ul > li' )[ $index ].classList.add( 'current' );
-}
+	items.forEach( ( item ) => {
+		item.classList.remove( 'current' );
+	} );
+
+	if ( typeof menuTarget === 'number' ) {
+		items[ menuTarget ]?.classList.add( 'current' );
+		return;
+	}
+
+	const fragment = String( menuTarget ).replace( /^#/, '' );
+
+	items.forEach( ( item ) => {
+		const link = item.querySelector( 'a' );
+
+		if ( ! link ) {
+			return;
+		}
+
+		const href = decodeURIComponent( link.getAttribute( 'href' ) || '' );
+
+		if ( href.includes( fragment ) ) {
+			item.classList.add( 'current' );
+		}
+	} );
+};
 
 export const ucFirst = ( string ) => {
 	string = String( string );

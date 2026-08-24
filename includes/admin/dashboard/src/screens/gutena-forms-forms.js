@@ -19,7 +19,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 	const [ loading, setLoading ] = useState( true );
 
 	useEffect( () => {
-		activateLeftMenu( 2 );
+		activateLeftMenu( '#/settings/forms' );
 
 		setLoading( true );
 		gutenaFormsFetchAllForms()

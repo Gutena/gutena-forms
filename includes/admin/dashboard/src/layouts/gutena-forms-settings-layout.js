@@ -7,7 +7,7 @@ const GutenaFormsSettingsLayout = ( { showProPopupHandler, setActiveMenu } ) => 
 
 	useEffect( () => {
 		setActiveMenu( '/settings' );
-		activateLeftMenu( 5 );
+		activateLeftMenu( '#/settings/settings' );
 	}, [] );
 
 	return (

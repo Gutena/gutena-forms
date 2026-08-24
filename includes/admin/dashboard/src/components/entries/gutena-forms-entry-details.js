@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { gutenaFormsFetchEntryDetails } from '../../api/entries';
 
-const GutenaFormsEntryDetails = ( { entryId } ) => {
+const GutenaFormsEntryDetails = ( { entryId, payment, onViewPayment } ) => {
 
 	const [ entryDetails, setEntryDetails ] = useState( null );
 	const [ loading, setLoading ] = useState( true );
@@ -15,6 +15,8 @@ const GutenaFormsEntryDetails = ( { entryId } ) => {
 				setLoading( false );
 			} );
 	}, [ entryId ] );
+
+	const hasPayment = payment?.has_payment;
 
 	return (
 		<div className={ 'gutena-froms__entry-meta-box' }>
@@ -46,6 +48,22 @@ const GutenaFormsEntryDetails = ( { entryId } ) => {
 						<div className={ 'label' }>{ __( 'User', 'gutena-forms' ) }</div>
 						<div className={ 'value' }>{ entryDetails.user_name ? entryDetails.user_name : 'Unknown User' }</div>
 					</div>
+
+					{ hasPayment && (
+						<div className="gutena-forms__entry-data-row gutena-forms__entry-payment-summary-row">
+							<div className="label">{ payment.gateway_label || __( 'Payment', 'gutena-forms' ) }</div>
+							<div className="value gutena-forms__entry-payment-summary">
+								<span>{ payment.amount_formatted }</span>
+								<button
+									type="button"
+									className="gutena-forms__view-stripe-payment-btn"
+									onClick={ onViewPayment }
+								>
+									{ __( 'View Stripe Payment', 'gutena-forms' ) }
+								</button>
+							</div>
+						</div>
+					) }
 				</div>
 			) }
 		</div>

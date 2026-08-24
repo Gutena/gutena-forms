@@ -31,6 +31,13 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		private static $instance = null;
 
 		/**
+		 * Whether the primary admin menu has already been registered.
+		 *
+		 * @var bool
+		 */
+		private static $admin_menu_registered = false;
+
+		/**
 		 * Returns the instance of this class.
 		 *
 		 * @return Gutena_Forms_Admin
@@ -106,6 +113,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		 */
 		private function run() {
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
+			add_action( 'admin_menu', array( 'Gutena_Forms_Admin_Helper', 'remove_phantom_top_level_menus' ), 999 );
 			add_action( 'admin_init', array( $this, 'load_admin_classes' ) );
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts_admin' ) );
@@ -145,9 +153,15 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		 * Admin Menu
 		 */
 		public function register_admin_menu() {
+			if ( self::$admin_menu_registered ) {
+				return;
+			}
+
 			if ( ( ! has_filter( 'gutena_forms_check_user_access' ) && ! Gutena_Forms_Admin_Helper::is_admin() ) || ! class_exists( 'Gutena_Forms_Store' ) || ! apply_filters( 'gutena_forms_check_user_access', true, 'view_entries' ) ) {
 				return;
 			}
+
+			self::$admin_menu_registered = true;
 
 			$page_hook_suffix = add_menu_page(
 				__( 'Gutena Forms', 'gutena-forms' ),
@@ -189,6 +203,14 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 				__( 'Entries', 'gutena-forms' ),
 				'manage_options',
 				'admin.php?page=gutena-forms#/settings/entries'
+			);
+
+			add_submenu_page(
+				'gutena-forms',
+				__( 'Payment', 'gutena-forms' ),
+				__( 'Payment', 'gutena-forms' ),
+				'manage_options',
+				'admin.php?page=gutena-forms#/settings/payments'
 			);
 
 			add_submenu_page(

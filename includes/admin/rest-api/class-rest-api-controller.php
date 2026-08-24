@@ -174,6 +174,10 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'slug'  => '/entries',
 				),
 				array(
+					'title' => __( 'Payment', 'gutena-forms' ),
+					'slug'  => '/payments',
+				),
+				array(
 					'title' => __( 'Settings', 'gutena-forms' ),
 					'slug'  => '/settings/manage-status',
 				),

@@ -160,12 +160,20 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 * @return array|object|stdClass[]|null
 		 */
 		public function get_all( $form_id = 0 ) {
-			$sql = "SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data, e.entry_status AS status, m.metadata AS starred FROM %i e LEFT JOIN %i f ON e.form_id = f.form_id LEFT JOIN %i m ON e.entry_id = m.entry_id AND m.data_type = 'starred' WHERE e.trash = 0 ";
+			$sql = "SELECT e.entry_id, e.form_id, f.form_name, e.added_time, e.entry_data, e.entry_status AS status, m.metadata AS starred,
+				p.amount AS payment_amount, p.currency AS payment_currency, p.gateway AS payment_gateway, p.status AS payment_status,
+				p.payment_type AS payment_type, p.external_payment_id AS payment_id
+				FROM %i e
+				LEFT JOIN %i f ON e.form_id = f.form_id
+				LEFT JOIN %i m ON e.entry_id = m.entry_id AND m.data_type = 'starred'
+				LEFT JOIN %i p ON e.entry_id = p.entry_id
+				WHERE e.trash = 0 ";
 			$sql = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms_entries,
 				$this->store->table_gutenaforms,
-				$this->store->table_gutenaforms_meta
+				$this->store->table_gutenaforms_meta,
+				$this->store->table_gutenaforms_payments
 			);
 
 			if ( ! empty( $form_id ) ) {
@@ -184,15 +192,44 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 						$value = maybe_unserialize( $entry['entry_data'] );
 					}
 
-					return array(
-						'entry_id'    => absint( $entry['entry_id'] ),
-						'form_id'     => absint( $entry['form_id'] ),
-						'form_name'   => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
-						'datetime'    => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
-						'value'       => $value,
-						'first_value' => is_array( $value ) && isset( $value[ array_key_first( $value ) ]['value'] ) ? $value[ array_key_first( $value ) ]['value'] : '',
-						'status'      => ! empty( $entry['status'] ) ? $entry['status'] : 'unknown',
-						'starred'     => ! empty( $entry['starred'] ) && '1' == $entry['starred'],
+					$has_payment = array_key_exists( 'payment_gateway', $entry ) && null !== $entry['payment_gateway'] && '' !== $entry['payment_gateway'];
+					$payment_type = ! empty( $entry['payment_type'] ) ? sanitize_text_field( $entry['payment_type'] ) : 'one_time';
+					$payment_summary = array(
+						'has_payment' => $has_payment,
+					);
+
+					if ( $has_payment && class_exists( 'Gutena_Forms_Entry_Payment' ) ) {
+						$amount_cents = absint( $entry['payment_amount'] ?? 0 );
+						$currency     = sanitize_text_field( $entry['payment_currency'] ?? 'USD' );
+						$gateway      = sanitize_text_field( $entry['payment_gateway'] ?? 'stripe' );
+
+						$payment_summary = array_merge(
+							$payment_summary,
+							array(
+								'payment_id'           => sanitize_text_field( $entry['payment_id'] ?? '' ),
+								'payment_amount_formatted' => Gutena_Forms_Entry_Payment::format_amount( $amount_cents, $currency ),
+								'payment_gateway_label'    => 'stripe' === $gateway ? 'Stripe' : ucfirst( $gateway ),
+								'payment_status'           => sanitize_text_field( $entry['payment_status'] ?? 'pending' ),
+								'payment_status_label'     => Gutena_Forms_Entry_Payment::status_label( $entry['payment_status'] ?? 'pending' ),
+								'payment_type'             => $payment_type,
+								'payment_type_label'       => Gutena_Forms_Entry_Payment::payment_type_label( $payment_type ),
+								'is_subscription'          => 'subscription' === $payment_type,
+							)
+						);
+					}
+
+					return array_merge(
+						array(
+							'entry_id'    => absint( $entry['entry_id'] ),
+							'form_id'     => absint( $entry['form_id'] ),
+							'form_name'   => ! empty( $entry['form_name'] ) ? $entry['form_name'] : __( 'Unknown Form', 'gutena-forms' ),
+							'datetime'    => ! empty( $entry['added_time'] ) ? gmdate( 'Y-m-d h:i:s A', strtotime( $entry['added_time'] ) ) : '',
+							'value'       => $value,
+							'first_value' => is_array( $value ) && isset( $value[ array_key_first( $value ) ]['value'] ) ? $value[ array_key_first( $value ) ]['value'] : '',
+							'status'      => ! empty( $entry['status'] ) ? $entry['status'] : 'unknown',
+							'starred'     => ! empty( $entry['starred'] ) && '1' == $entry['starred'],
+						),
+						$payment_summary
 					);
 				},
 				$results

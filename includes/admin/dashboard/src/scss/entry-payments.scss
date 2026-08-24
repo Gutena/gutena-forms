@@ -1,0 +1,827 @@
+.gutena-froms#gutena-forms__root {
+  .gutena-forms__entry-screen {
+    .gutena-forms__entry-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 14px;
+      border-bottom: 1px solid #e2e2e2;
+    }
+
+    .gutena-forms__entry-tab {
+      background: transparent;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      color: #6e7376;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: -1px;
+      padding: 10px 16px;
+
+      &.is-active {
+        border-bottom-color: #0da88c;
+        color: #0da88c;
+      }
+    }
+
+    .gutena-forms__entry-payment-summary-row {
+      .gutena-forms__entry-payment-summary {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+      }
+    }
+
+    .gutena-forms__view-stripe-payment-btn {
+      background: #5539fd;
+      border: 1px solid #ddd8ff;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      flex-shrink: 0;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: normal;
+      min-height: 28px;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+
+    .gutena-forms__entry-payment-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .gutena-forms__entry-payment-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .gutena-forms__entry-payment-card {
+      margin-bottom: 0;
+
+      .heading {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0 0 12px;
+      }
+    }
+
+    .gutena-forms__entry-payment-form-link,
+    .gutena-forms__payment-stripe-link {
+      align-items: center;
+      color: #0da88c;
+      display: inline-flex;
+      font-size: 12px;
+      font-weight: 600;
+      gap: 4px;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .gutena-forms__entry-payment-method {
+      align-items: center;
+      display: inline-flex;
+      gap: 6px;
+
+      &__icon {
+        display: inline-flex;
+        flex-shrink: 0;
+        line-height: 0;
+      }
+    }
+
+    .gutena-forms__entry-payment-transaction-id {
+      font-family: monospace;
+      font-size: 11px;
+      word-break: break-all;
+    }
+
+    .gutena-forms__payment-mode-badge {
+      border-radius: 4px;
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.2;
+      padding: 3px 10px;
+      white-space: nowrap;
+
+      &.is-live {
+        background: #f0f6fc;
+        border: 1px solid #2271b1;
+        color: #2271b1;
+      }
+
+      &.is-test {
+        background: #fff8e1;
+        border: 1px solid #c4a035;
+        color: #856404;
+      }
+    }
+
+    .gutena-forms__entry-payment-section {
+      .heading {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0 0 12px;
+      }
+
+      &__header {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+
+        .heading {
+          margin: 0;
+        }
+      }
+    }
+
+    .gutena-forms__payment-stripe-link {
+      color: #0da88c;
+      font-size: 10px;
+      font-weight: 500;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .gutena-forms__entry-payment-table {
+      &__amount {
+        color: #2c3338;
+        font-weight: 700;
+      }
+    }
+
+    .gutena-forms__entry-payment-log-card {
+      .heading {
+        margin-bottom: 12px;
+      }
+    }
+
+    .gutena-forms__entry-payment-log-wrap {
+      border: 1px solid #f6f8fa;
+      border-radius: 4px;
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    .gutena-forms__entry-payment-log {
+      font-size: 11px;
+      min-width: 100%;
+      width: max-content;
+
+      &__head,
+      &__row {
+        align-items: center;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 110px 120px 80px 60px 72px 52px 78px;
+        min-height: 36px;
+        padding: 0 12px;
+      }
+
+      &__head {
+        background: #fafafa;
+        border-bottom: 1px solid #f6f8fa;
+        color: #6e7376;
+        font-size: 10px;
+        font-weight: 600;
+      }
+
+      &__row {
+        border-bottom: 1px solid #f6f8fa;
+        color: #2c3338;
+        font-size: 10px;
+        font-weight: 500;
+
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+
+      &__event {
+        color: #2c3338;
+        font-weight: 600;
+      }
+
+      &__transaction {
+        font-family: monospace;
+        font-size: 9px;
+        word-break: break-all;
+      }
+
+      &__gateway {
+        align-items: center;
+        display: inline-flex;
+        gap: 4px;
+      }
+
+      &__gateway-icon {
+        display: inline-flex;
+        flex-shrink: 0;
+        line-height: 0;
+      }
+
+      &__amount {
+        font-weight: 600;
+      }
+
+      .gutena-forms__payment-status {
+        border-radius: 4px;
+        display: inline-block;
+        font-size: 9px;
+        font-weight: 500;
+        padding: 2px 6px;
+        white-space: nowrap;
+
+        &.is-succeeded {
+          background: #ecfdf5;
+          color: #047857;
+        }
+
+        &.is-pending,
+        &.is-processing {
+          background: #fefce8;
+          color: #a16207;
+        }
+
+        &.is-failed {
+          background: #fef2f2;
+          color: #b91c1c;
+        }
+
+        &.is-refunded {
+          background: #f3f4f6;
+          color: #4b5563;
+        }
+      }
+
+      .gutena-forms__payment-mode-badge {
+        font-size: 8px;
+        padding: 2px 5px;
+      }
+    }
+
+    .gutena-forms__entry-payment-log-empty {
+      color: #6e7376;
+      font-size: 12px;
+      margin: 0;
+    }
+
+    .gutena-forms__entry-payment-table,
+    .gutena-forms__entry-payment-log {
+      border: 0;
+      border-radius: 0;
+      font-size: 12px;
+      overflow-x: visible;
+      width: 100%;
+
+      &__head,
+      &__row {
+        align-items: center;
+        display: grid;
+        gap: 8px;
+        min-height: 40px;
+        padding: 0 16px;
+      }
+
+      &__head {
+        background: #fafafa;
+        color: #6e7376;
+        font-weight: 600;
+      }
+
+      &__row {
+        border-top: 1px solid #f6f8fa;
+        color: #2c3338;
+      }
+    }
+
+    .gutena-forms__entry-payment-table {
+      border: 1px solid #f6f8fa;
+      border-radius: 4px;
+      overflow-x: auto;
+
+      &__head,
+      &__row {
+        grid-template-columns: 1fr 1fr 1.2fr 0.8fr;
+      }
+
+      &__head span:last-child,
+      &__row span:last-child {
+        justify-self: center;
+        text-align: center;
+      }
+    }
+
+    .gutena-forms__payment-status {
+      border-radius: 4px;
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+
+      &.is-succeeded {
+        background: #ecfdf5;
+        color: #047857;
+      }
+
+      &.is-pending,
+      &.is-processing {
+        background: #fefce8;
+        color: #a16207;
+      }
+
+      &.is-failed {
+        background: #fef2f2;
+        color: #b91c1c;
+      }
+
+      &.is-refunded {
+        background: #f3f4f6;
+        color: #4b5563;
+      }
+    }
+
+    .gutena-forms__payment-refund-btn {
+      align-items: center;
+      background: #f0f9f8;
+      border: 1px solid #0da88c;
+      border-radius: 4px;
+      color: #0da88c;
+      cursor: pointer;
+      display: inline-flex;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 500;
+      gap: 4px;
+      line-height: 1;
+      min-height: 24px;
+      padding: 4px 8px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+
+      svg {
+        flex-shrink: 0;
+      }
+
+      .gutena-forms__pro-badge {
+        margin-left: 2px;
+      }
+
+      &:hover:not(.is-disabled) {
+        background: #e6f7f4;
+        border-color: #0b967d;
+        color: #0b967d;
+      }
+
+      &:focus-visible:not(.is-disabled) {
+        box-shadow: 0 0 0 1px #0da88c;
+        outline: none;
+      }
+
+      &.is-disabled {
+        background: #fafafa;
+        border-color: #e2e2e2;
+        color: #9aa0a4;
+        cursor: not-allowed;
+        opacity: 1;
+      }
+    }
+
+    .gutena-forms__pro-badge {
+      background: linear-gradient(88.97deg, #ffd591 -2.54%, #d18618 161.93%);
+      border-radius: 3px;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 600;
+      padding: 1px 4px;
+    }
+  }
+
+  .gutena-forms__entry-payment-empty {
+    .heading {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .description {
+      color: #6e7376;
+      font-size: 12px;
+      margin: 0;
+    }
+  }
+
+  .gutena-forms__payments-screen {
+    .gutena-forms__page-title {
+      color: #2c3338;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 24px;
+    }
+
+    .gutena-forms__payments-screen-empty {
+      margin-top: 40px;
+    }
+
+    .gutena-forms__payments-onboarding {
+      margin-top: 0;
+    }
+
+    .gutena-forms__data-table-container.is-no-bulk-actions {
+      .gutena-forms__datatable-header {
+        justify-content: flex-end;
+
+        .gutena-forms__datatable-header__filters.is-full-width {
+          display: flex;
+          justify-content: flex-end;
+          width: 100%;
+        }
+      }
+    }
+
+    #gutena-forms__payments-table {
+      .gutena-forms__table-wrapper {
+        min-width: 1100px !important;
+      }
+    }
+
+    .gutena-forms__payments-table__entry-link {
+      color: #0da88c;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .gutena-forms__payments-table__payment-id {
+      color: #2c3338;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .gutena-forms__payments-table__form-name {
+      color: #2c3338;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .gutena-forms__payments-table__customer {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .gutena-forms__payments-table__customer-name {
+      color: #2c3338;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .gutena-forms__payments-table__customer-email {
+      color: #6e7376;
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .gutena-forms__payments-table__gateway {
+      align-items: center;
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .gutena-forms__payments-table__gateway-icon {
+      display: inline-flex;
+      flex-shrink: 0;
+      line-height: 0;
+
+      svg {
+        height: 20px;
+        width: 20px;
+      }
+    }
+
+    .gutena-forms__payments-table__amount {
+      color: #2c3338;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .gutena-forms__payments-table__date {
+      color: #6e7376;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .gutena-forms__payments-table__type {
+      align-items: center;
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .gutena-forms__payments-table__type-pill {
+      background: #f5f6f7;
+      border-radius: 4px;
+      color: #414a51;
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+
+    .gutena-forms__payments-table__action {
+      align-items: center;
+      display: inline-flex;
+
+      a,
+      button {
+        align-items: center;
+        display: inline-flex;
+        justify-content: center;
+        margin-right: 10px;
+        padding: 0;
+      }
+    }
+
+    .gutena-forms__payment-status {
+      border-radius: 4px;
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      white-space: nowrap;
+
+      &.is-succeeded {
+        background: #ecfdf5;
+        color: #047857;
+      }
+
+      &.is-pending,
+      &.is-processing {
+        background: #fefce8;
+        color: #a16207;
+      }
+
+      &.is-failed {
+        background: #fef2f2;
+        color: #b91c1c;
+      }
+
+      &.is-refunded {
+        background: #f3f4f6;
+        color: #4b5563;
+      }
+    }
+
+    .gutena-forms__pro-badge {
+      align-items: center;
+      background: linear-gradient(88.97deg, #ffd591 -2.54%, #d18618 161.93%);
+      border-radius: 3px;
+      color: #fff;
+      display: inline-flex;
+      font-size: 8px;
+      font-weight: 600;
+      gap: 2px;
+      padding: 1px 4px;
+    }
+
+    .gutena-forms__entry-payment-type-value {
+      align-items: center;
+      display: inline-flex;
+      gap: 6px;
+    }
+  }
+
+  .gutena-forms__entries-payment-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    &.is-empty {
+      color: #9aa0a4;
+    }
+
+    &__amount {
+      color: #2c3338;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    &__meta {
+      align-items: center;
+      color: #6e7376;
+      display: inline-flex;
+      font-size: 10px;
+      gap: 4px;
+    }
+  }
+}
+
+// Refund modal renders via WP Modal portal at body level.
+.gutena-forms__payment-refund-modal {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  max-width: 480px !important;
+  position: relative;
+  width: 100%;
+
+  .components-modal__header {
+    border-bottom: 0;
+    height: auto;
+    left: auto;
+    padding: 0;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: auto;
+    z-index: 2;
+
+    .components-modal__header-heading {
+      display: none;
+    }
+
+    .components-button.has-icon {
+      color: #6e7376;
+      height: 24px;
+      min-width: 24px;
+      padding: 0;
+      width: 24px;
+
+      svg {
+        height: 18px;
+        width: 18px;
+      }
+    }
+  }
+
+  .components-modal__content {
+    margin-top: 0 !important;
+    padding: 24px !important;
+  }
+}
+
+.gutena-forms__payment-refund-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.gutena-forms__payment-refund-modal__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 32px;
+}
+
+.gutena-forms__payment-refund-modal__title {
+  color: #2c3338;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.gutena-forms__payment-refund-modal__intro {
+  color: #6e7376;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.gutena-forms__payment-refund-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    color: #2c3338;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+}
+
+.gutena-forms__payment-refund-modal__input,
+.gutena-forms__payment-refund-modal__textarea {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: #2c3338;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  padding: 10px 12px;
+  width: 100%;
+
+  &::placeholder {
+    color: #9aa0a4;
+  }
+
+  &:focus {
+    border-color: #0da88c;
+    box-shadow: 0 0 0 1px #0da88c;
+    outline: none;
+  }
+}
+
+.gutena-forms__payment-refund-modal__textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.gutena-forms__payment-refund-modal__help {
+  color: #6e7376;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.gutena-forms__payment-refund-modal__notice {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  color: #047857;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+  padding: 12px 14px;
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+.gutena-forms__payment-refund-modal__error {
+  color: #e83737;
+  font-size: 12px;
+  margin: 0;
+}
+
+.gutena-forms__payment-refund-modal__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.gutena-forms__payment-refund-modal__cancel-btn {
+  background: #fff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  color: #6e7376 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  height: auto !important;
+  min-height: 36px !important;
+  padding: 8px 16px !important;
+
+  &:hover:not(:disabled) {
+    background: #fafafa !important;
+    border-color: #9aa0a4 !important;
+    color: #2c3338 !important;
+  }
+}
+
+.gutena-forms__payment-refund-modal__submit-btn {
+  background: #0da88c !important;
+  border: 1px solid #0da88c !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  height: auto !important;
+  min-height: 36px !important;
+  padding: 8px 16px !important;
+
+  &:hover:not(:disabled) {
+    background: #0b967d !important;
+    border-color: #0b967d !important;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}

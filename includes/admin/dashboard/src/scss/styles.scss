@@ -3,6 +3,7 @@
 @import "./responsive-styles";
 @import "./auto-responder";
 @import "./payments";
+@import "./entry-payments";
 
 .gutena-froms#gutena-forms__root {
 
@@ -33,7 +34,8 @@
   }
 
   .gutena-forms__forms-screen,
-  .gutena-forms__entries {
+  .gutena-forms__entries,
+  .gutena-forms__payments-screen {
     .gutena-forms__page-title {
       font-size: 24px;
     }
