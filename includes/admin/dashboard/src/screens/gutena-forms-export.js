@@ -185,6 +185,9 @@ const GutenaFormsExport = () => {
 				toast.success(
 					__( 'Entries exported successfully.', 'gutena-forms' )
 				);
+				// Reset the form after a successful export.
+				setEntriesFormId( '' );
+				setExportFormat( EXPORT_FORMAT_IDS[ 1 ] );
 			} )
 			.catch( ( error ) => {
 				toast.error(
@@ -213,6 +216,8 @@ const GutenaFormsExport = () => {
 				toast.success(
 					__( 'Forms exported successfully.', 'gutena-forms' )
 				);
+				// Reset the selection after a successful export.
+				setSelectedFormIds( [] );
 			} )
 			.catch( ( error ) => {
 				toast.error(
