@@ -1,0 +1,25 @@
+{
+	"name": "gutena/gutena-forms",
+	"description": "Gutena Forms - Contact Forms Block",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=7.4",
+		"shuchkin/simplexlsxgen": "^1.4",
+		"tecnickcom/tcpdf": "^6.7"
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"preferred-install": "dist",
+		"sort-packages": true
+	},
+	"scripts": {
+		"prune-tcpdf": "php scripts/prune-tcpdf-fonts.php",
+		"post-install-cmd": [
+			"@prune-tcpdf"
+		],
+		"post-update-cmd": [
+			"@prune-tcpdf"
+		]
+	}
+}

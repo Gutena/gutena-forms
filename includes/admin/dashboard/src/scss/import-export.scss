@@ -1,0 +1,514 @@
+.gutena-froms#gutena-forms__root {
+	.gutena-forms__import-export {
+		.gutena-forms__import-export-label {
+			display: block;
+			font-size: 14px;
+			font-weight: 700;
+			color: #000;
+			margin-bottom: 6px;
+			line-height: normal;
+		}
+
+		.gutena-forms__import-export-section-heading {
+			h3 {
+				margin: 0 0 4px;
+				font-size: 14px;
+				font-weight: 700;
+				color: #000;
+				line-height: normal;
+			}
+
+			p {
+				margin: 0;
+				font-size: 12px;
+				font-weight: 400;
+				color: #000;
+				line-height: normal;
+			}
+		}
+
+		.gutena-forms__import-export-action {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			align-self: flex-start;
+			width: auto;
+			max-width: 100%;
+			gap: 10px;
+			border: none;
+			box-shadow: none;
+			white-space: nowrap;
+			line-height: normal;
+			font-size: 12px;
+			font-weight: 700;
+			border-radius: 6px;
+			padding: 6px 10px;
+			height: auto;
+			min-height: 0;
+			cursor: pointer;
+
+			svg {
+				margin-right: 0;
+				flex-shrink: 0;
+			}
+
+			&.is-disabled,
+			&:disabled {
+				background: #c0c0c0 !important;
+				border-color: #c0c0c0 !important;
+				color: #fff !important;
+				opacity: 1;
+				cursor: not-allowed;
+			}
+		}
+	}
+
+	.gutena-forms__import {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 15px;
+		width: 100%;
+
+		.gutena-forms__import-file-field {
+			margin-bottom: 0;
+		}
+
+		.gutena-forms__import-file-row {
+			display: flex;
+			align-items: flex-start;
+			gap: 10px;
+		}
+
+		.gutena-forms__import-file-name {
+			flex: 0 0 384px;
+			max-width: 100%;
+			height: 35px;
+			box-sizing: border-box;
+			border: 1px solid #e2e2e2;
+			border-radius: 6px;
+			padding: 7px 15px;
+			font-size: 12px;
+			font-weight: 400;
+			color: #101010;
+			background: #fff;
+			display: flex;
+			align-items: center;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			line-height: normal;
+		}
+
+		.gutena-forms__import-choose-button {
+			height: 35px;
+			border: 1px solid #e2e2e2 !important;
+			border-radius: 6px !important;
+			background: #f0f0f1 !important;
+			color: #000 !important;
+			font-size: 12px !important;
+			font-weight: 700 !important;
+			padding: 7px 15px !important;
+			box-shadow: none !important;
+			line-height: normal !important;
+		}
+
+		.gutena-forms__import-file-input {
+			display: none;
+		}
+
+		.gutena-forms__import-error {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			max-width: 487px;
+			box-sizing: border-box;
+			background: #fff2f2;
+			border: 0.5px solid #d70404;
+			border-radius: 6px;
+			padding: 10px 15px;
+			margin-bottom: 15px;
+			font-size: 12px;
+			font-weight: 400;
+			color: #000;
+			line-height: normal;
+		}
+
+		.gutena-forms__import-error-icon {
+			display: inline-flex;
+			flex-shrink: 0;
+			width: 12px;
+			height: 12px;
+
+			svg {
+				width: 12px;
+				height: 12px;
+			}
+		}
+
+		.gutena-forms__import-pro-warning {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			max-width: 487px;
+			box-sizing: border-box;
+			background: #fff2f2;
+			border: 0.5px solid #d70404;
+			border-radius: 6px;
+			padding: 10px 15px;
+
+			.gutena-forms__import-pro-warning-body {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+
+			.gutena-forms__import-pro-warning-header {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+
+				p {
+					margin: 0;
+					flex: 1;
+					font-size: 12px;
+					font-weight: 400;
+					color: #000;
+					line-height: normal;
+				}
+			}
+
+			.gutena-forms__import-pro-warning-fields {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 5px;
+			}
+
+			.gutena-forms__import-pro-warning-field-tag {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				background: #fff;
+				border-radius: 4px;
+				padding: 4px 8px;
+				font-size: 12px;
+				font-weight: 500;
+				color: #000;
+				line-height: normal;
+				white-space: nowrap;
+			}
+
+			.gutena-forms__import-pro-warning-actions {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 10px;
+			}
+
+			.gutena-forms__import-pro-warning-actions-left {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.gutena-forms__import-pro-warning-upgrade {
+				height: auto;
+				min-height: 0;
+				border: 0.5px solid #0da88c !important;
+				border-radius: 4px !important;
+				background: #fff !important;
+				color: #0e826d !important;
+				font-size: 12px !important;
+				font-weight: 700 !important;
+				padding: 6px 10px !important;
+				box-shadow: none !important;
+				line-height: normal !important;
+				text-decoration: none;
+			}
+
+			.gutena-forms__import-pro-warning-proceed,
+			.gutena-forms__import-pro-warning-cancel {
+				border: 0;
+				background: transparent;
+				padding: 6px 0;
+				font-size: 12px;
+				font-weight: 700;
+				color: #000;
+				line-height: normal;
+				cursor: pointer;
+
+				&:disabled {
+					opacity: 0.6;
+					cursor: not-allowed;
+				}
+			}
+		}
+	}
+
+	.gutena-forms__export {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+		width: 100%;
+
+		.gutena-forms__export-content {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 20px;
+			width: 100%;
+		}
+
+		.gutena-forms__export-section {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 14px;
+			width: 100%;
+		}
+
+		.gutena-forms__export-divider {
+			height: 0.8px;
+			background: #d9d9d9;
+			width: 100%;
+			margin: 0;
+		}
+
+		.gutena-forms__export-options-block {
+			h4 {
+				margin: 0 0 10px;
+				font-size: 14px;
+				font-weight: 700;
+				color: #000;
+			}
+		}
+
+		.gutena-forms__export-radio-list {
+			.components-base-control {
+				margin-bottom: 0;
+			}
+
+			.components-radio-control__label {
+				font-size: 12px;
+				color: #000;
+			}
+
+			.components-radio-control__option {
+				margin-bottom: 6px;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+
+			.components-radio-control__input[type='radio']:checked {
+				background-color: #0da88c;
+				border-color: #0da88c;
+			}
+		}
+
+		.gutena-forms__export-checkbox-list,
+		.gutena-forms__export-select-all {
+			.components-base-control {
+				margin-bottom: 6px;
+			}
+
+			.components-checkbox-control__label {
+				font-size: 12px;
+				color: #000;
+			}
+
+			.components-checkbox-control__input-container {
+				margin-right: 10px;
+			}
+
+			input[type='checkbox']:checked {
+				background-color: #0da88c;
+				border-color: #0da88c;
+			}
+		}
+
+		.gutena-forms__export-dropdown-option {
+			input[type='checkbox'] {
+				appearance: none;
+				width: 16px;
+				height: 16px;
+				border: 1px solid #949494;
+				border-radius: 2px;
+				background-color: #fff;
+				margin: 0;
+				flex-shrink: 0;
+			}
+
+			input[type='checkbox']:checked {
+				background-color: #0da88c;
+				border-color: #0da88c;
+				background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E");
+				background-repeat: no-repeat;
+				background-position: center;
+				background-size: 14px 14px;
+			}
+		}
+
+		.gutena-forms__export-fields-grid {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			column-gap: 16px;
+			row-gap: 6px;
+			width: 100%;
+			max-width: 100%;
+
+			.gutena-forms__export-fields-status {
+				grid-column: 1 / -1;
+			}
+
+			.components-base-control {
+				margin-bottom: 0;
+				min-width: 0;
+			}
+
+			.components-base-control__field {
+				margin-bottom: 0;
+			}
+
+			.components-checkbox-control__label {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			@media (max-width: 1100px) {
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+			}
+
+			@media (max-width: 782px) {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+
+			@media (max-width: 480px) {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		.gutena-forms__export-fields-status {
+			margin: 0;
+			font-size: 12px;
+			color: #6b7280;
+		}
+
+		.gutena-forms__export-dropdown {
+			position: relative;
+			width: 100%;
+			max-width: 574px;
+		}
+
+		.gutena-forms__export-dropdown-trigger {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			box-sizing: border-box;
+			background: #fff;
+			border: 1px solid #e2e2e2;
+			border-radius: 6px;
+			padding: 10px 15px;
+			font-size: 12px;
+			color: #000;
+			cursor: pointer;
+			text-align: left;
+			min-height: 36px;
+		}
+
+		.gutena-forms__export-dropdown-chevron {
+			width: 0;
+			height: 0;
+			border-left: 4.5px solid transparent;
+			border-right: 4.5px solid transparent;
+			border-top: 4px solid #101010;
+			flex-shrink: 0;
+		}
+
+		.gutena-forms__export-dropdown-menu {
+			position: absolute;
+			z-index: 20;
+			top: calc(100% + 4px);
+			left: 0;
+			right: 0;
+			margin: 0;
+			padding: 6px 0;
+			list-style: none;
+			background: #fff;
+			border: 1px solid #e2e2e2;
+			border-radius: 6px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+			max-height: 220px;
+			overflow: auto;
+
+			li button,
+			.gutena-forms__export-dropdown-option {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				box-sizing: border-box;
+				padding: 8px 15px;
+				border: 0;
+				background: transparent;
+				font-size: 12px;
+				color: #000;
+				cursor: pointer;
+				text-align: left;
+			}
+
+			li button:hover,
+			.gutena-forms__export-dropdown-option:hover {
+				background: #f3f4f6;
+			}
+		}
+
+		.gutena-forms__export-dropdown-empty {
+			padding: 8px 15px;
+			font-size: 12px;
+			color: #6b7280;
+		}
+
+		.gutena-forms__export-tags {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 10px;
+			flex: 1;
+			min-width: 0;
+		}
+
+		.gutena-forms__export-placeholder {
+			color: #000;
+		}
+
+		.gutena-forms__export-tag {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			background: #e2e2e2;
+			border-radius: 3px;
+			padding: 4px 8px;
+			font-size: 12px;
+			font-weight: 500;
+			color: #000;
+		}
+
+		.gutena-forms__export-tag-remove {
+			border: 0;
+			background: transparent;
+			padding: 0;
+			margin: 0;
+			line-height: 1;
+			font-size: 12px;
+			cursor: pointer;
+			color: #000;
+		}
+	}
+}

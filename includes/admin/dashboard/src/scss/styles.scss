@@ -31,6 +31,17 @@
     fill: transparent;
   }
 
+  // WordPress CheckboxControl uses filled SVG checkmarks; restore after global svg reset.
+  svg.components-checkbox-control__checked,
+  svg.components-checkbox-control__indeterminate {
+    fill: #fff;
+  }
+
+  .components-checkbox-control:has(:disabled) svg.components-checkbox-control__checked,
+  .components-checkbox-control:has(:disabled) svg.components-checkbox-control__indeterminate {
+    fill: #8d8d8d;
+  }
+
   .gutena-forms__forms-screen,
   .gutena-forms__entries {
     .gutena-forms__page-title {

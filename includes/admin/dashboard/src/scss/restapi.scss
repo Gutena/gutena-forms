@@ -1,0 +1,73 @@
+/**
+ * Gutena Forms REST API settings screen styles.
+ *
+ * @since 2.1.0
+ * @package Gutena Forms
+ */
+
+.gutena-froms#gutena-forms__root {
+	.gutena-forms__rest-api-wrapper {
+		h6 {
+			color: #000;
+			font-size: 14px;
+			font-weight: 700;
+			margin: 20px 0 10px 0;
+		}
+
+		p {
+			margin-top: 0;
+		}
+
+		ul {
+			li {
+				color: #000;
+				font-size: 12px;
+				font-weight: 400;
+			}
+		}
+
+		.gutena-forms__endpoint-row {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 10px;
+		}
+
+		.gutena-forms__endpoint-url,
+		.gutena-forms__api-key {
+			background: #F3F4F6;
+			color: #4B5563;
+			border-radius: 5px;
+			padding: 8px 10px;
+			font-size: 12px;
+			word-break: break-all;
+		}
+
+		pre {
+			background: #F3F4F6;
+			color: #4B5563;
+			border-radius: 5px;
+			padding: 10px;
+			tab-size: 2;
+			position: relative;
+		}
+
+		.gutena-forms__copy-icon {
+			position: absolute;
+			top: 15px;
+			right: 15px;
+			width: 30px;
+			height: 30px;
+			background: #fff;
+			border-radius: 5px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
+		}
+
+		.gutena-forms__endpoint-row .gutena-forms__copy-icon {
+			position: static;
+		}
+	}
+}

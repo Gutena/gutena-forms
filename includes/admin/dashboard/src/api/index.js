@@ -200,6 +200,130 @@ export async function gutenaFormsFetchAllForms() {
 }
 
 /**
+ * Fetch form fields for a gutena_forms CPT post ID (Export Entries UI).
+ *
+ * @since 2.1.0
+ * @param {number|string} formId Form CPT post ID.
+ * @returns {Promise<Array<{id: string, label: string, type: string}>>} Field list.
+ */
+export async function gutenaFormsFetchFormFields( formId ) {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: addQueryArgs(
+			`${ GutenaFormsRestConfiguration.namespace }forms/fields`,
+			{
+				form_id: formId,
+			}
+		),
+	} );
+
+	if ( response.fields && Array.isArray( response.fields ) ) {
+		return response.fields;
+	}
+
+	throw new Error( 'Gutena Forms FetchFormFields Error' );
+}
+
+/**
+ * Export form entries as CSV, XLSX, or PDF.
+ *
+ * @since 2.1.0
+ * @param {{form_id: number|string, fields: string[], format: string}} payload Export options.
+ * @returns {Promise<{file: string, filename: string, mime: string}>} Base64 file payload.
+ */
+export async function gutenaFormsExportEntries( payload ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }entries/export`,
+		data: payload,
+	} );
+
+	if ( response && 'success' === response.status && response.file ) {
+		return response;
+	}
+
+	throw new Error(
+		response?.message || 'Gutena Forms ExportEntries Error'
+	);
+}
+
+/**
+ * Export selected forms (parent + child blocks) as JSON.
+ *
+ * @since 2.1.0
+ * @param {Array<number|string>} formIds Form CPT post IDs.
+ * @returns {Promise<{file: string, filename: string, mime: string}>} Base64 file payload.
+ */
+export async function gutenaFormsExportForms( formIds ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }forms/export`,
+		data: {
+			form_ids: formIds,
+		},
+	} );
+
+	if ( response && 'success' === response.status && response.file ) {
+		return response;
+	}
+
+	throw new Error(
+		response?.message || 'Gutena Forms ExportForms Error'
+	);
+}
+
+/**
+ * Import forms from a Gutena Forms export JSON payload.
+ *
+ * @since 2.1.0
+ * @param {Object} payload Parsed export JSON object.
+ * @returns {Promise<{imported: Array, count: number, message: string}>} Import result.
+ */
+export async function gutenaFormsImportForms( payload ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }forms/import`,
+		data: {
+			payload,
+		},
+	} );
+
+	if ( response && 'success' === response.status ) {
+		return response;
+	}
+
+	throw new Error(
+		response?.message || 'Gutena Forms ImportForms Error'
+	);
+}
+
+/**
+ * Trigger a browser download from a base64-encoded file.
+ *
+ * @since 2.1.0
+ * @param {string} base64   Base64 file contents.
+ * @param {string} filename Download filename.
+ * @param {string} mime     MIME type.
+ */
+export function gutenaFormsDownloadBase64File( base64, filename, mime ) {
+	const binary = window.atob( base64 );
+	const bytes = new Uint8Array( binary.length );
+	for ( let i = 0; i < binary.length; i++ ) {
+		bytes[ i ] = binary.charCodeAt( i );
+	}
+
+	const blob = new Blob( [ bytes ], { type: mime || 'application/octet-stream' } );
+	const url = window.URL.createObjectURL( blob );
+	const link = document.createElement( 'a' );
+	link.href = url;
+	link.download = filename || 'gutena-forms-export';
+	document.body.appendChild( link );
+	link.click();
+	link.remove();
+	window.URL.revokeObjectURL( url );
+}
+
+/**
  * Delete a single form via the Gutena Forms REST API.
  *
  * @since 1.7.0

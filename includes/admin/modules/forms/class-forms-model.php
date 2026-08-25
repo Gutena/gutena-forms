@@ -130,29 +130,67 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 		}
 
 		/**
-		 * Get list of published forms with title and block id (for search options).
+		 * Get exportable form fields for a gutena_forms CPT post ID.
 		 *
-		 * @since 1.7.0
-		 * @return array[] List of arrays with 'title' and 'id' (block id).
+		 * Resolves fields from saved schema + live post content.
+		 *
+		 * @since 2.1.0
+		 * @param int $post_id Form CPT post ID.
+		 * @return array[] List of fields with id, label, type. Empty array on failure.
 		 */
-		public function get_name_and_block_id() {
-			$forms = get_posts(
-				array(
-					'post_type'      => 'gutena_forms',
-					'post_status'    => array( 'publish' ),
-					'posts_per_page' => -1,
-				)
-			);
+		public function get_fields_by_post_id( $post_id ) {
+			$post_id = absint( $post_id );
+			if ( empty( $post_id ) || 'gutena_forms' !== get_post_type( $post_id ) ) {
+				return array();
+			}
 
-			return array_map(
-				function ( $form ) {
-					return array(
-						'title' => $form->post_title,
-						'id'    => get_post_meta( $form->ID, 'gutena_form_id', true ),
-					);
-				},
-				$forms
-			);
+			$block_form_id = get_post_meta( $post_id, 'gutena_form_id', true );
+			if ( empty( $block_form_id ) ) {
+				return array();
+			}
+
+			$block_form_id = sanitize_key( $block_form_id );
+			$schema        = function_exists( 'gutena_forms_get_form_schema_option' )
+				? gutena_forms_get_form_schema_option( $block_form_id, array() )
+				: array();
+
+			$stored_fields = ( ! empty( $schema['form_fields'] ) && is_array( $schema['form_fields'] ) )
+				? $schema['form_fields']
+				: array();
+
+			$form_fields = class_exists( 'Gutena_Forms_Helper' )
+				? Gutena_Forms_Helper::resolve_form_fields_schema( $block_form_id, $stored_fields )
+				: $stored_fields;
+
+			if ( empty( $form_fields ) || ! is_array( $form_fields ) ) {
+				return array();
+			}
+
+			$fields = array();
+			foreach ( $form_fields as $name_attr => $field ) {
+				if ( empty( $name_attr ) || ! is_array( $field ) ) {
+					continue;
+				}
+
+				$field_type = ! empty( $field['fieldType'] ) ? sanitize_key( $field['fieldType'] ) : 'text';
+
+				// Opt-in / consent fields are usually not useful in entry exports.
+				if ( 'optin' === $field_type ) {
+					continue;
+				}
+
+				$label = ! empty( $field['fieldName'] )
+					? sanitize_text_field( $field['fieldName'] )
+					: sanitize_text_field( str_ireplace( array( '_', '-' ), ' ', $name_attr ) );
+
+				$fields[] = array(
+					'id'    => sanitize_key( $name_attr ),
+					'label' => $label,
+					'type'  => $field_type,
+				);
+			}
+
+			return $fields;
 		}
 	}
 endif;
