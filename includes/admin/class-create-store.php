@@ -33,6 +33,7 @@
             //On activate tables.
 			add_action( 'gutena_forms_activation_end', array( $this, 'initialize_tables' ) );
 			add_action( 'admin_init', array( $this, 'maybe_upgrade_tables' ) );
+			add_action( 'init', array( $this, 'maybe_upgrade_tables' ), 5 );
 		}
 
 		public function maybe_upgrade_tables() {

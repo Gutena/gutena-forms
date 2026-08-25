@@ -223,6 +223,15 @@
 				 */
 				do_action( 'gutena_forms_after_entry_saved', $fieldSchema['entry_id'], $form_data, $block_form_id, $fieldSchema );
 
+				if ( class_exists( 'Gutena_Forms_Stripe_Intent_Service' ) ) {
+					Gutena_Forms_Stripe_Intent_Service::get_instance()->save_payment_for_entry(
+						absint( $fieldSchema['entry_id'] ),
+						$form_data,
+						$block_form_id,
+						$fieldSchema
+					);
+				}
+
 				return true;
 			} 
 

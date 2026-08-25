@@ -288,7 +288,9 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			}
 
 			$this->id     = sanitize_key( wp_unslash( $_POST['formid'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$this->schema = gutena_forms_get_form_schema_option( $this->id );
+			$this->schema = class_exists( 'Gutena_Forms_Helper' )
+				? Gutena_Forms_Helper::get_form_schema_record( $this->id )
+				: gutena_forms_get_form_schema_option( $this->id );
 
 			if ( empty( $this->schema ) || empty( $this->schema['form_attrs'] ) || empty( $this->schema['form_fields'] ) ) {
 				wp_send_json(
@@ -301,7 +303,8 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 
 			$this->schema['form_fields'] = Gutena_Forms_Helper::resolve_form_fields_schema(
 				$this->id,
-				$this->schema['form_fields']
+				$this->schema['form_fields'],
+				! empty( $this->schema['block_markup'] ) ? $this->schema['block_markup'] : ''
 			);
 		}
 

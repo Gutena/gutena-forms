@@ -49,7 +49,11 @@ const GutenaFormsEntryPaymentLog = ( { payment } ) => {
 						{ payment.logs.map( ( log, index ) => (
 							<div key={ index } className="gutena-forms__entry-payment-log__row">
 								<span className="gutena-forms__entry-payment-log__event">
-									{ log.event === 'payment_verification' ? __( 'Payment Verification', 'gutena-forms' ) : log.event }
+									{ log.event === 'payment_verification'
+										? __( 'Payment Verification', 'gutena-forms' )
+										: log.event === 'payment_failed'
+											? __( 'Payment Failed', 'gutena-forms' )
+											: log.event }
 								</span>
 								<span className="gutena-forms__entry-payment-log__transaction">{ log.transaction_id || '—' }</span>
 								<span className="gutena-forms__entry-payment-log__gateway">

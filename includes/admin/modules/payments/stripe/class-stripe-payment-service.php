@@ -131,6 +131,20 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Payment_Service' ) ) :
 				return absint( $object['metadata']['entry_id'] );
 			}
 
+			$transaction_id = '';
+			if ( ! empty( $object['id'] ) && is_string( $object['id'] ) && 0 === strpos( $object['id'], 'pi_' ) ) {
+				$transaction_id = sanitize_text_field( $object['id'] );
+			} elseif ( ! empty( $object['payment_intent'] ) ) {
+				$transaction_id = sanitize_text_field( $object['payment_intent'] );
+			}
+
+			if ( $transaction_id && class_exists( 'Gutena_Forms_Entry_Payment' ) ) {
+				$entry_id = Gutena_Forms_Entry_Payment::get_instance()->get_entry_id_by_transaction_id( $transaction_id );
+				if ( $entry_id ) {
+					return $entry_id;
+				}
+			}
+
 			if ( ! empty( $object['client_reference_id'] ) ) {
 				return absint( $object['client_reference_id'] );
 			}

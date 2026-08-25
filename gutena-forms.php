@@ -192,6 +192,7 @@ if ( ! function_exists( 'gutena_forms_get_block_editor_config' ) ) :
 				'payment_stripe'                => is_array( $payment_stripe_defaults ) ? $payment_stripe_defaults : array(),
 				'stripe_gateway_enabled'        => $stripe_gateway_enabled,
 				'rest_url'                      => rest_url( 'gutena-forms/v1/' ),
+				'rest_nonce'                    => wp_create_nonce( 'wp_rest' ),
 				'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
 			),
 			$gf_message

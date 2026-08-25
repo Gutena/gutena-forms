@@ -71,15 +71,22 @@ if ( ! class_exists( 'Gutena_Forms_Payments_Endpoints' ) ) :
 				$routes[] = array(
 					'route'    => 'payments/stripe/public-config',
 					'methods'  => $server::CREATABLE,
-					'auth'     => array( 'Gutena_Forms_Stripe_Intent_Service', 'verify_form_nonce' ),
+					'auth'     => false,
 					'callback' => array( $intent_service, 'rest_get_public_config' ),
 				);
 
 				$routes[] = array(
 					'route'    => 'payments/stripe/create-intent',
 					'methods'  => $server::CREATABLE,
-					'auth'     => array( 'Gutena_Forms_Stripe_Intent_Service', 'verify_form_nonce' ),
+					'auth'     => false,
 					'callback' => array( $intent_service, 'rest_create_payment_intent' ),
+				);
+
+				$routes[] = array(
+					'route'    => 'payments/stripe/log-attempt',
+					'methods'  => $server::CREATABLE,
+					'auth'     => false,
+					'callback' => array( $intent_service, 'rest_log_payment_attempt' ),
 				);
 			}
 

@@ -50,11 +50,19 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 		 * @since 1.9.1
 		 * @param string $form_id            Form ID.
 		 * @param array  $stored_form_fields Stored form field schema.
+		 * @param string $block_markup       Optional saved form block markup fallback.
 		 * @return array
 		 */
-		public static function resolve_form_fields_schema( $form_id, $stored_form_fields ) {
+		public static function resolve_form_fields_schema( $form_id, $stored_form_fields, $block_markup = '' ) {
 			$stored_form_fields = is_array( $stored_form_fields ) ? $stored_form_fields : array();
 			$parsed_form_fields = self::parse_form_fields_from_post( $form_id );
+
+			if ( ! empty( $block_markup ) ) {
+				$parsed_form_fields = array_merge(
+					self::parse_form_fields_from_markup( $block_markup, $form_id ),
+					$parsed_form_fields
+				);
+			}
 
 			if ( empty( $parsed_form_fields ) && empty( $stored_form_fields ) ) {
 				return $stored_form_fields;
@@ -87,7 +95,7 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 		 * @return array
 		 */
 		public static function parse_form_fields_from_post( $form_id ) {
-			$post_id = self::find_post_id_by_form_id( $form_id );
+			$post_id = self::find_post_id_containing_form_id( $form_id );
 			if ( empty( $post_id ) ) {
 				return array();
 			}
@@ -99,6 +107,118 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 
 			$form_fields = array();
 			self::walk_blocks_for_form_fields( parse_blocks( $post->post_content ), $form_id, $form_fields );
+
+			return $form_fields;
+		}
+
+		/**
+		 * Locate a post that contains a Gutena form block for the given form ID.
+		 *
+		 * @since 2.1.0
+		 * @param string $form_id Form ID.
+		 * @return int
+		 */
+		public static function find_post_id_containing_form_id( $form_id ) {
+			$form_id = sanitize_key( $form_id );
+			if ( '' === $form_id ) {
+				return 0;
+			}
+
+			$post_id = self::find_post_id_by_form_id( $form_id );
+			if ( $post_id ) {
+				return $post_id;
+			}
+
+			global $wpdb;
+
+			$like = '%' . $wpdb->esc_like( $form_id ) . '%';
+			$found = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT ID FROM {$wpdb->posts}
+					WHERE post_status IN ( 'publish', 'draft', 'private', 'pending' )
+					AND post_type NOT IN ( 'revision', 'attachment', 'nav_menu_item' )
+					AND post_content LIKE %s
+					ORDER BY post_modified DESC
+					LIMIT 1",
+					$like
+				)
+			);
+
+			return ! empty( $found ) ? (int) $found : 0;
+		}
+
+		/**
+		 * Load a form schema from options or the forms database table.
+		 *
+		 * @since 2.1.0
+		 * @param string $form_id Form ID.
+		 * @return array
+		 */
+		public static function get_form_schema_record( $form_id ) {
+			$form_id = sanitize_key( $form_id );
+			if ( '' === $form_id ) {
+				return array();
+			}
+
+			$schema = function_exists( 'gutena_forms_get_form_schema_option' )
+				? gutena_forms_get_form_schema_option( $form_id, false )
+				: false;
+
+			if ( is_array( $schema ) && ! empty( $schema['form_fields'] ) ) {
+				return $schema;
+			}
+
+			global $wpdb;
+
+			$table = $wpdb->prefix . 'gutenaforms';
+			$row   = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT form_schema FROM {$table} WHERE block_form_id = %s AND published = 1 LIMIT 1",
+					$form_id
+				)
+			);
+
+			if ( ! empty( $row->form_schema ) ) {
+				$db_schema = maybe_unserialize( $row->form_schema );
+				if ( is_array( $db_schema ) && ! empty( $db_schema ) ) {
+					if ( ! is_array( $schema ) ) {
+						return $db_schema;
+					}
+
+					return array_merge( $schema, $db_schema );
+				}
+			}
+
+			return is_array( $schema ) ? $schema : array();
+		}
+
+		/**
+		 * Parse form fields from serialized block markup.
+		 *
+		 * @since 2.1.0
+		 * @param string $markup  Serialized block content.
+		 * @param string $form_id Target form ID.
+		 * @return array
+		 */
+		public static function parse_form_fields_from_markup( $markup, $form_id ) {
+			if ( empty( $markup ) || ! function_exists( 'parse_blocks' ) ) {
+				return array();
+			}
+
+			return self::parse_form_fields_from_blocks( parse_blocks( $markup ), $form_id );
+		}
+
+		/**
+		 * Parse form fields from parsed block arrays.
+		 *
+		 * @since 2.1.0
+		 * @param array  $blocks  Parsed blocks.
+		 * @param string $form_id Target form ID.
+		 * @return array
+		 */
+		public static function parse_form_fields_from_blocks( $blocks, $form_id ) {
+			$form_fields = array();
+			self::walk_blocks_for_form_fields( $blocks, $form_id, $form_fields );
 
 			return $form_fields;
 		}
@@ -150,6 +270,9 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 				if ( $current_form_id === $target_form_id && ! empty( $block['blockName'] ) && ! empty( $block['attrs']['nameAttr'] ) && self::is_form_field_block( $block['blockName'] ) ) {
 					$attrs = self::merge_block_default_attributes( $block['blockName'], $block['attrs'] );
 					$attrs['blockName'] = $block['blockName'];
+					if ( 0 === strpos( $block['blockName'], 'gutena/' ) && preg_match( '/-field(-group)?$/', $block['blockName'] ) ) {
+						$attrs['fieldType'] = str_replace( '-field', '', str_replace( 'gutena/', '', preg_replace( '/-group$/', '', $block['blockName'] ) ) );
+					}
 					$form_fields[ $block['attrs']['nameAttr'] ] = $attrs;
 				}
 

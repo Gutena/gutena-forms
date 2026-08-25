@@ -6,6 +6,7 @@ export const STRIPE_COUNTRIES = [
 	{ value: 'AU', label: 'Australia' },
 	{ value: 'DE', label: 'Germany' },
 	{ value: 'FR', label: 'France' },
+	{ value: 'PK', label: 'Pakistan' },
 	{ value: 'IN', label: 'India' },
 	{ value: 'BD', label: 'Bangladesh' },
 	{ value: 'SG', label: 'Singapore' },

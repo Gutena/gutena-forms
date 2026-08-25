@@ -84,6 +84,32 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 		}
 
+		/**
+		 * Find an entry ID by Stripe PaymentIntent / transaction ID.
+		 *
+		 * @param string $transaction_id PaymentIntent or transaction ID.
+		 * @return int
+		 */
+		public function get_entry_id_by_transaction_id( $transaction_id ) {
+			global $wpdb;
+
+			$transaction_id = sanitize_text_field( $transaction_id );
+			if ( empty( $transaction_id ) ) {
+				return 0;
+			}
+
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$entry_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT entry_id FROM {$this->store->table_gutenaforms_payments} WHERE transaction_id = %s OR external_payment_id = %s LIMIT 1",
+					$transaction_id,
+					$transaction_id
+				)
+			);
+
+			return absint( $entry_id );
+		}
+
 
 
 		/**
@@ -105,6 +131,8 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 				return false;
 
 			}
+
+			$this->ensure_payments_table();
 
 
 
@@ -664,6 +692,27 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 			$existing = $this->get_table_row_by_entry_id( $entry_id );
 
+			$formats = array(
+				'%d', // entry_id
+				'%d', // form_id
+				'%s', // gateway
+				'%s', // external_payment_id
+				'%s', // transaction_id
+				'%s', // payment_type
+				'%s', // payment_mode
+				'%s', // payment_method
+				'%d', // amount
+				'%d', // refunded_amount
+				'%s', // currency
+				'%s', // status
+				'%s', // customer_name
+				'%s', // customer_email
+				'%s', // transaction_date
+				'%s', // received_on
+				'%s', // stripe_dashboard_url
+				'%s', // metadata
+			);
+
 
 
 			if ( $existing ) {
@@ -680,7 +729,7 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 					array( 'entry_id' => $entry_id ),
 
-					null,
+					$formats,
 
 					array( '%d' )
 
@@ -692,8 +741,19 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
-			return false !== $wpdb->insert( $this->store->table_gutenaforms_payments, $row );
+			return false !== $wpdb->insert( $this->store->table_gutenaforms_payments, $row, $formats );
 
+		}
+
+		/**
+		 * Ensure the payments table exists before writing payment rows.
+		 *
+		 * @return void
+		 */
+		private function ensure_payments_table() {
+			if ( class_exists( 'Gutena_Forms_Create_Store' ) ) {
+				Gutena_Forms_Create_Store::get_instance()->maybe_upgrade_tables();
+			}
 		}
 
 

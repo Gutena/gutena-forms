@@ -146,6 +146,26 @@ const GutenaFormsStripeSettings = () => {
 
 	const handleSave = () => {
 
+		const activePublishableKey = 'live' === paymentMode ? publishableKeyLive : publishableKeyTest;
+
+		if ( activePublishableKey && ! /^pk_(test|live)_[A-Za-z0-9]+$/.test( activePublishableKey.trim() ) ) {
+
+			toast.error(
+
+				__(
+
+					'Invalid publishable key. Use a key that starts with pk_test_ or pk_live_ (not sk_).',
+
+					'gutena-forms'
+
+				)
+
+			);
+
+			return;
+
+		}
+
 		gutenaFormsUpdateSettings( 'stripe', {
 
 			payment_mode: paymentMode,
@@ -358,7 +378,10 @@ const GutenaFormsStripeSettings = () => {
 
 						<p className="gutena-forms__stripe-settings__help">
 
-							{ __( 'Copy this from your connected Stripe account: Dashboard → Developers → API keys. Required for the payment form on the frontend.', 'gutena-forms' ) }
+							{ __(
+								'After connecting, open your connected Stripe account dashboard (Test mode) → Developers → API keys, and paste the Publishable key here. Do not use a secret key (sk_).',
+								'gutena-forms'
+							) }
 
 						</p>
 
