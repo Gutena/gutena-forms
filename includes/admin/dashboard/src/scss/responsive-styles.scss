@@ -44,7 +44,186 @@
 }
 
 @media ( max-width: 835px ) {
+	// Remove WP admin border/padding that interferes with sidebar
+	#wpcontent {
+		padding-left: 0 !important;
+		border-left: none !important;
+		outline: none !important;
+	}
+
+	#adminmenuback,
+	#adminmenuwrap {
+		z-index: 1 !important;
+	}
+
 	.gutena-froms#gutena-forms__root {
+		overflow-x: hidden;
+
+		// ── Settings layout: sidebar collapse/expand ──
+		.gutena-froms__settings-layout {
+
+			// Sidebar toggle button (fixed bottom-right hamburger)
+			.gutena-forms__settings-sidebar-toggle {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: fixed;
+				bottom: 20px;
+				right: 20px;
+				z-index: 100000001;
+				width: 44px;
+				height: 44px;
+				border-radius: 50%;
+				background: #0DA88C;
+				color: #FFFFFF;
+				border: none;
+				cursor: pointer;
+				box-shadow: 0 4px 12px rgba(13, 168, 140, 0.4);
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+				padding: 0;
+
+				&:hover {
+					transform: scale(1.05);
+					box-shadow: 0 6px 16px rgba(13, 168, 140, 0.5);
+				}
+
+				&:focus {
+					outline: none;
+					box-shadow: 0 0 0 3px rgba(13, 168, 140, 0.3);
+				}
+
+				svg {
+					transition: transform 0.25s ease;
+				}
+
+				&.is-open {
+					background: #E2E2E2;
+					color: #424D55;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+					svg {
+						transform: rotate(180deg);
+					}
+				}
+			}
+
+			// Overlay behind sidebar
+			.gutena-forms__settings-sidebar-overlay {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.5);
+				z-index: 100000000;
+				opacity: 0;
+				transition: opacity 0.25s ease;
+
+				&.is-open {
+					display: block;
+					opacity: 1;
+				}
+			}
+
+			// Sidebar wrapper: slides in from left
+			.gutena-forms__settings-sidebar-wrapper {
+				float: none;
+				position: fixed;
+				top: 32px;
+				left: 0;
+				width: 260px;
+				bottom: 0;
+				z-index: 100000000;
+				background: #ffffff;
+				transform: translateX(-100%);
+				transition: transform 0.25s ease;
+				overflow-y: auto;
+				box-shadow: none;
+				outline: none;
+				border: none;
+
+				.gutena-forms__left-menu-navigation {
+					width: 100%;
+					min-height: 100%;
+					border-right: none;
+
+					.gutena-forms__accordion-header {
+						width: 100%;
+
+						// icon + title stay on one line
+						> div:first-child {
+							display: flex;
+							align-items: center;
+							min-width: 0;
+							overflow: hidden;
+						}
+					}
+
+					.gutena-forms__accordion-items {
+						padding: 0 10px 0 18px;
+					}
+
+					.gutena-forms__accordion-item {
+						a {
+							width: auto;
+							padding: 0 6px;
+						}
+					}
+				}
+
+				&.is-open {
+					transform: translateX(0);
+					box-shadow: 4px 0 16px rgba(0, 0, 0, 0.1);
+				}
+			}
+
+			// Main content takes full width
+			.gutena-forms__main-content-container {
+				float: none;
+				width: 100%;
+
+				.gutena-forms__meta-box-container {
+					width: 100%;
+
+					h2 {
+						width: 100%;
+					}
+				}
+			}
+		}
+
+		.gutena-forms__page-layout-wrapper {
+			padding: 20px;
+		}
+
+		.gutena-forms__field-container {
+			.components-base-control__field {
+				width: 100%;
+			}
+		}
+
+		// Prevent horizontal overflow on main content
+		.gutena-forms__main-content-container {
+			overflow-x: hidden;
+			overflow-wrap: break-word;
+
+			.gutena-forms__container {
+				padding: 15px;
+				overflow-x: hidden;
+			}
+		}
+
+		.gutena-forms__page-title {
+			padding-right: 0;
+			word-break: break-word;
+		}
+
+		.gutena-forms__settings-meta-box-desc {
+			word-break: break-word;
+		}
+
+		// ── Header ──
 		.gutena-forms__header-container {
 			padding: 0 12px;
 
