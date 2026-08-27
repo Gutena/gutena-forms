@@ -259,6 +259,84 @@
 			max-width: 100%;
 		}
 
+		// ── Entries / Datatable responsive ──
+		.gutena-forms__data-table-container {
+			padding: 15px;
+
+			// Filter header: allow wrapping
+			.gutena-forms__datatable-header {
+				flex-wrap: wrap;
+				gap: 10px;
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			// Each filter item full width when wrapping
+			.display-inline-block {
+				display: block !important;
+				width: 100%;
+				margin-left: 0 !important;
+			}
+
+			// Bulk action row
+			.gutena-forms__bulk-action-container {
+				display: flex;
+				gap: 8px;
+				align-items: center;
+				flex-wrap: wrap;
+				width: 100%;
+			}
+
+			// Form filter select: full width
+			.components-select-control {
+				width: 100% !important;
+
+				select {
+					width: 100% !important;
+					height: 40px;
+				}
+			}
+
+			// Search boxes full width
+			.gutena-forms__search-box {
+				min-width: 0;
+				width: 100%;
+				margin-right: 0;
+
+				input {
+					width: 100% !important;
+				}
+			}
+		}
+
+		// ── Single entry page: stack columns ──
+		.gutena-forms__entry-screen {
+			.gutena-forms__entry-screen-container {
+				flex-direction: column;
+				gap: 14px;
+			}
+
+			.gutena-forms__col-70,
+			.gutena-forms__col-30 {
+				width: 100%;
+			}
+
+			// Entry data rows: stack label/value
+			.gutena-forms__entry-data {
+				.gutena-forms__entry-data-row {
+					flex-direction: column;
+					gap: 4px;
+					padding: 8px 12px;
+
+					.label,
+					.value {
+						width: 100%;
+						text-align: left;
+					}
+				}
+			}
+		}
+
 		// ── Header ──
 		.gutena-forms__header-container {
 			padding: 0 12px;
