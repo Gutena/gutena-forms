@@ -223,6 +223,42 @@
 			word-break: break-word;
 		}
 
+		// ── Integrations grid (free + pro) ──
+		.gutena-forms__integrations {
+			.gutena-forms__integration {
+				width: 100%;
+				margin-right: 0;
+				height: auto;
+				min-height: 120px;
+				box-sizing: border-box;
+			}
+		}
+
+		// ── Pro list wrapper (Status, Tags, User Access) ──
+		.gutena-forms__pro-wrapper {
+			.gutena-forms__pro-single-list-wrapper {
+				width: 100%;
+				flex-wrap: wrap;
+				gap: 8px;
+				box-sizing: border-box;
+			}
+		}
+
+		// ── User Access: stack profile and select on small screens ──
+		.gutena-forms__user-profile {
+			span {
+				display: block;
+				margin-left: 0;
+				margin-top: 2px;
+			}
+		}
+
+		// ── Select controls full width ──
+		.components-select-control__input,
+		.components-base-control__field {
+			max-width: 100%;
+		}
+
 		// ── Header ──
 		.gutena-forms__header-container {
 			padding: 0 12px;
@@ -315,6 +351,16 @@
 						margin-right: 0;
 					}
 				}
+			}
+		}
+
+		.gutena-forms__page-layout-wrapper {
+			padding: 12px;
+		}
+
+		.gutena-forms__main-content-container {
+			.gutena-forms__container {
+				padding: 10px;
 			}
 		}
 	}
