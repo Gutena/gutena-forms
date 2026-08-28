@@ -223,6 +223,120 @@
 			word-break: break-word;
 		}
 
+		// ── Integrations grid (free + pro) ──
+		.gutena-forms__integrations {
+			.gutena-forms__integration {
+				width: 100%;
+				margin-right: 0;
+				height: auto;
+				min-height: 120px;
+				box-sizing: border-box;
+			}
+		}
+
+		// ── Pro list wrapper (Status, Tags, User Access) ──
+		.gutena-forms__pro-wrapper {
+			.gutena-forms__pro-single-list-wrapper {
+				width: 100%;
+				flex-wrap: wrap;
+				gap: 8px;
+				box-sizing: border-box;
+			}
+		}
+
+		// ── User Access: stack profile and select on small screens ──
+		.gutena-forms__user-profile {
+			span {
+				display: block;
+				margin-left: 0;
+				margin-top: 2px;
+			}
+		}
+
+		// ── Select controls full width ──
+		.components-select-control__input,
+		.components-base-control__field {
+			max-width: 100%;
+		}
+
+		// ── Entries / Datatable responsive ──
+		.gutena-forms__data-table-container {
+			padding: 15px;
+
+			// Filter header: allow wrapping
+			.gutena-forms__datatable-header {
+				flex-wrap: wrap;
+				gap: 10px;
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			// Each filter item full width when wrapping
+			.display-inline-block {
+				display: block !important;
+				width: 100%;
+				margin-left: 0 !important;
+			}
+
+			// Bulk action row
+			.gutena-forms__bulk-action-container {
+				display: flex;
+				gap: 8px;
+				align-items: center;
+				flex-wrap: wrap;
+				width: 100%;
+			}
+
+			// Form filter select: full width
+			.components-select-control {
+				width: 100% !important;
+
+				select {
+					width: 100% !important;
+					height: 40px;
+				}
+			}
+
+			// Search boxes full width
+			.gutena-forms__search-box {
+				min-width: 0;
+				width: 100%;
+				margin-right: 0;
+
+				input {
+					width: 100% !important;
+				}
+			}
+		}
+
+		// ── Single entry page: stack columns ──
+		.gutena-forms__entry-screen {
+			.gutena-forms__entry-screen-container {
+				flex-direction: column;
+				gap: 14px;
+			}
+
+			.gutena-forms__col-70,
+			.gutena-forms__col-30 {
+				width: 100%;
+			}
+
+			// Entry data rows: stack label/value
+			.gutena-forms__entry-data {
+				.gutena-forms__entry-data-row {
+					flex-direction: column;
+					gap: 4px;
+					padding: 8px 12px;
+
+					.label,
+					.value {
+						width: 100%;
+						text-align: left;
+					}
+				}
+			}
+		}
+
 		// ── Header ──
 		.gutena-forms__header-container {
 			padding: 0 12px;
@@ -304,6 +418,39 @@
 	}
 }
 
+// Desktop: fix overflow on Settings pages (Manage Status, Manage Tags, User Access)
+@media ( min-width: 836px ) and ( max-width: 1100px ) {
+	.gutena-froms#gutena-forms__root {
+		.gutena-forms__settings-layout {
+			.gutena-forms__main-content-container {
+				.gutena-forms__settings-meta-box {
+					overflow: hidden;
+
+					.gutena-forms__pro-wrapper {
+						.gutena-forms__pro-single-list-wrapper {
+							.gutena-forms__user-profile {
+								min-width: 0;
+								overflow: hidden;
+
+								span {
+									display: block;
+									margin-left: 0;
+									margin-top: 2px;
+								}
+							}
+
+							.components-select-control {
+								min-width: 0;
+								max-width: 160px;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 // On very narrow screens, drop the upgrade button's icon margin so the
 // burger + logo + upgrade all fit comfortably.
 @media ( max-width: 420px ) {
@@ -315,6 +462,16 @@
 						margin-right: 0;
 					}
 				}
+			}
+		}
+
+		.gutena-forms__page-layout-wrapper {
+			padding: 12px;
+		}
+
+		.gutena-forms__main-content-container {
+			.gutena-forms__container {
+				padding: 10px;
 			}
 		}
 	}

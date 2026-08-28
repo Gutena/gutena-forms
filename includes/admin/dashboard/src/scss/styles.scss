@@ -244,6 +244,7 @@
 
 		.gutena-forms__main-content-container {
       width: calc( 100% - 210px - 20px );
+      overflow: hidden;
 
       .gutena-forms__container {
         padding: 20px;
@@ -264,9 +265,12 @@
 
       .gutena-forms__meta-box-container {
         width: 760px;
+        max-width: 100%;
+        overflow: hidden;
 
         h2 {
           width: 760px;
+          max-width: 100%;
           display: flex;
           justify-content: space-between;
 
@@ -300,6 +304,8 @@
         background: #ffffff;
         padding: 20px;
         position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
 
         .gutena-forms__settings-meta-box--overlay {
           position: absolute;
@@ -386,6 +392,7 @@
         width: 100%;
         height: 100%;
         position: relative;
+        overflow: hidden;
 
         .gutena-forms__pro-description {
           color: #424D55;
@@ -395,11 +402,13 @@
 
         .gutena-forms__pro-single-list-wrapper {
           display: flex;
-          width: 450px;
+          width: 100%;
           justify-content: space-between;
           align-items: center;
           padding: 10px 20px;
           margin-top: 10px;
+          box-sizing: border-box;
+          min-width: 0;
 
           border-radius: 4px;
           border-color: #cccccc;
@@ -422,21 +431,40 @@
           .gutena-forms__pro-single-list {
             display: flex;
             align-items: center;
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
 
             .gutena-forms__pro-single-list-title {
               color: #424D55;
               font-size: 12px;
               font-weight: 500;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              min-width: 0;
             }
 
             .gutena-forms__pro-single-list-icon {
+              flex-shrink: 0;
               svg {
                 margin: 0 15px -4px 0;
               }
             }
           }
 
+          .gutena-forms__pro-single-tag-delete-icon {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+          }
+
           .gutena-forms__user-profile {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
             span {
               display: inline-block;
               margin-left: 5px;
