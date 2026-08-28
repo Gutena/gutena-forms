@@ -1185,10 +1185,33 @@
       font-size: 12px;
       font-weight: 500;
       position: relative;
+      overflow: hidden;
 
       .heading {
         font-size: 14px;
         font-weight: 700;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .gutena-forms-pro__status-container {
+        display: block;
+        width: 100%;
+
+        .components-base-control {
+          display: block;
+          width: 100%;
+        }
+
+        .components-base-control__field {
+          display: block;
+          width: 100%;
+        }
+
+        select.components-select-control__input {
+          display: block;
+          width: 100%;
+        }
       }
 
       .gutena-forms__entry-data {
