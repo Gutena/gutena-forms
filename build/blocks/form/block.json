@@ -143,6 +143,14 @@
       "type": "string",
       "default": ""
     },
+    "emailNotifications": {
+      "type": "object",
+      "default": {
+        "enabled": false,
+        "notifications": [],
+        "defaultSettings": true
+      }
+    },
     "messages": {
       "type": "object",
       "default": {

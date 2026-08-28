@@ -193,6 +193,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		private function includes() {
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-helper.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-auto-responder-helper.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-email-notifications-helper.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-cpt.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
@@ -615,6 +616,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 						'is_gutena_forms_post_type'     => $gutena_forms_post_type,
 						'forms_available'               => $forms_available,
 						'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
+						'email_notifications_defaults'  => get_option( 'gutena_forms__email_notifications', array() ),
 						'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
 					),
 					$gf_message

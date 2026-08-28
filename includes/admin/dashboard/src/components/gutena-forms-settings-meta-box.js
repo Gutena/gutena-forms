@@ -310,7 +310,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	};
 
 	return (
-		<div className={ `gutena-forms__meta-box-container${ 'auto-responder' === id ? ' gutena-forms__auto-responder-settings' : '' }` } onClick={ showProPopup }>
+		<div className={ `gutena-forms__meta-box-container${ 'email-notifications' === id ? ' gutena-forms__auto-responder-settings' : '' }` } onClick={ showProPopup }>
 			<h2 className={ 'gutena-forms__page-title' }>
 				<div>
 					{ IconMap[ id ] && IconMap[ id ] } { title }
@@ -337,24 +337,17 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				dangerouslySetInnerHTML={ { __html: description } }
 			/>
 
-			{ 'auto-responder' === id && (
+			{ 'email-notifications' === id && (
 				<div className="gutena-forms__auto-responder-notice">
 					<span className="dashicons dashicons-info" aria-hidden="true" />
 					<p>
 						{ createInterpolateElement(
 							__(
-								'<strong>Note:</strong> Auto-responder settings apply to all forms when enabled. For custom settings per form, please contact our <a>support team</a>.',
+								'<strong>Note:</strong> These are default settings that apply to newly created forms. You can customize notifications per form in the block editor.',
 								'gutena-forms'
 							),
 							{
 								strong: <strong />,
-								a: (
-									<a
-										href="https://objectsws.atlassian.net/servicedesk/customer/portal/239"
-										target="_blank"
-										rel="noopener noreferrer"
-									/>
-								),
 							}
 						) }
 					</p>

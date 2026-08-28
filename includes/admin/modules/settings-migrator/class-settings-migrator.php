@@ -255,7 +255,7 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				return false;
 			}
 
-			foreach ( array( 'recaptcha', 'cloudflareTurnstile', 'honeypot', 'messages' ) as $module_key ) {
+			foreach ( array( 'recaptcha', 'cloudflareTurnstile', 'honeypot', 'messages', 'emailNotifications' ) as $module_key ) {
 				if ( ! empty( $attrs[ $module_key ] ) && is_array( $attrs[ $module_key ] ) ) {
 					return true;
 				}
@@ -546,6 +546,7 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				'cloudflareTurnstile' => get_option( 'gutena_forms__cloudflare', array() ),
 				'honeypot'            => get_option( 'gutena_forms__honeypot', array() ),
 				'messages'            => get_option( 'gutena_forms__form_validation_messages', array() ),
+				'emailNotifications'  => get_option( 'gutena_forms__email_notifications', array() ),
 			);
 		}
 
@@ -648,6 +649,9 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 						}
 					}
 					return false;
+
+				case 'emailNotifications':
+					return ! empty( $settings['subject'] ) || ! empty( $settings['send_to'] ) || ! empty( $settings['message'] );
 
 				default:
 					return ! empty( $settings );
@@ -837,6 +841,16 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				}
 			}
 
+			if ( ! empty( $attributes['emailNotifications'] ) && is_array( $attributes['emailNotifications'] ) ) {
+				if ( self::should_form_push_module_to_global( 'emailNotifications', $attributes['emailNotifications'], $only_if_empty ) ) {
+					update_option(
+						'gutena_forms__email_notifications',
+						self::sanitize_settings_for_option( $attributes['emailNotifications'] )
+					);
+					$seeded['modules'][] = 'emailNotifications';
+				}
+			}
+
 			if (
 				! empty( $attributes['settings']['integration'] )
 				&& is_array( $attributes['settings']['integration'] )
@@ -959,6 +973,7 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				'cloudflareTurnstile' => 'gutena_forms__cloudflare',
 				'honeypot'            => 'gutena_forms__honeypot',
 				'messages'            => 'gutena_forms__form_validation_messages',
+				'emailNotifications'  => 'gutena_forms__email_notifications',
 			);
 
 			return isset( $map[ $module_key ] ) ? $map[ $module_key ] : '';
@@ -976,6 +991,7 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				'cloudflareTurnstile' => 'gutena_forms__cloudflare',
 				'honeypot'            => 'gutena_forms__honeypot',
 				'messages'            => 'gutena_forms__form_validation_messages',
+				'emailNotifications'  => 'gutena_forms__email_notifications',
 			);
 
 			foreach ( $modules as $module_key => $option_name ) {

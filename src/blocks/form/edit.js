@@ -45,6 +45,7 @@ import GoogleRecaptchaSettings from './settings/google-recaptcha-settings';
 import CloudflareSettings from './settings/cloudflare-settings';
 import HoneypotSettings from './settings/honeypot-settings';
 import ValidationMessagesSettings from './settings/validation-messages-settings';
+import EmailNotificationsSettings from './settings/email-notifications-settings';
 /** Hook that retrieves the given setting for the block instance in use.
  * https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#usesetting
  */
@@ -177,6 +178,7 @@ export default function Edit( props ) {
 		adminEmailSubject,
 		emailNotifyAdmin,
 		emailNotifyUser,
+		emailNotifications,
 		messages = {},
 		formStyle,
 		style,
@@ -1238,107 +1240,10 @@ export default function Edit( props ) {
 							/>
 						</PanelRow>
 					</PanelBody>
-					<PanelBody title="Notification" initialOpen={ true }>
-						<TextControl
-							label={ __( 'From Name', 'gutena-forms' ) }
-							value={ emailFromName }
-							onChange={ ( emailFromName ) =>
-								setAttributes( { emailFromName } )
-							}
-						/>
-						<ToggleControl
-							label={ __( 'Admin notification', 'gutena-forms' ) }
-							help={
-								emailNotifyAdmin
-									? __(
-											'Toggle to stop email notification',
-											'gutena-forms'
-									  )
-									: __(
-											'Toggle to enable email notification after form submission',
-											'gutena-forms'
-									  )
-							}
-							checked={ emailNotifyAdmin }
-							onChange={ ( emailNotifyAdmin ) =>
-								setAttributes( { emailNotifyAdmin } )
-							}
-						/>
-						{ emailNotifyAdmin ? (
-							<>
-								<TextControl
-									label={ __( 'Email to', 'gutena-forms' ) }
-									value={ adminEmails }
-									onChange={ ( adminEmails ) =>
-										setAttributes( { adminEmails } )
-									}
-								/>
-
-								<TextControl
-									label={ __(
-										'Email subject',
-										'gutena-forms'
-									) }
-									value={ adminEmailSubject }
-									onChange={ ( adminEmailSubject ) =>
-										setAttributes( { adminEmailSubject } )
-									}
-								/>
-
-								<SelectControl
-									label={ __(
-										'Reply To Email',
-										'gutena-forms'
-									) }
-									value={ replyToEmail }
-									options={ getEmailFields() }
-									onChange={ ( replyToEmail ) =>
-										setAttributes( { replyToEmail } )
-									}
-									help={ __(
-										'Select email field for reply to address',
-										'gutena-forms'
-									) }
-									__nextHasNoMarginBottom
-								/>
-
-								<SelectControl
-									label={ __(
-										'Reply To Name ( First Name )',
-										'gutena-forms'
-									) }
-									value={ replyToName }
-									options={ getTextFields() }
-									onChange={ ( replyToName ) =>
-										setAttributes( { replyToName } )
-									}
-									help={ __(
-										'Select first or full name field for reply to address',
-										'gutena-forms'
-									) }
-									__nextHasNoMarginBottom
-								/>
-								<SelectControl
-									label={ __(
-										'Reply To Name ( Last Name )',
-										'gutena-forms'
-									) }
-									value={ replyToLastName }
-									options={ getTextFields() }
-									onChange={ ( replyToLastName ) =>
-										setAttributes( { replyToLastName } )
-									}
-									help={ __(
-										'Select last name field for reply to address',
-										'gutena-forms'
-									) }
-									__nextHasNoMarginBottom
-								/>
-							</>
-						) : (
-							''
-						) }
-					</PanelBody>
+					<EmailNotificationsSettings
+						emailNotifications={ emailNotifications }
+						setAttributes={ setAttributes }
+					/>
 					<PanelBody
 						title={ __( 'Confirmation', 'gutena-forms' ) }
 						initialOpen={ true }

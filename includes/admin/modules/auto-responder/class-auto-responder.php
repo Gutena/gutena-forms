@@ -139,5 +139,6 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 		}
 	}
 
-	Gutena_Forms_Auto_Responder::register_module();
+	// Module deregistered — replaced by email-notifications.
+	// Gutena_Forms_Auto_Responder::register_module();
 endif;

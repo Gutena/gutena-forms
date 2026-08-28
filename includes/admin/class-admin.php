@@ -84,6 +84,8 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/entries/class-entries.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/validation-messages/class-validation-messages.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/auto-responder/class-auto-responder.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/email-notifications/class-email-notifications.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/email-notifications/class-migration.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/integrations/class-inegrations.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/mcp/class-mcp.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/import/class-import.php';
@@ -109,6 +111,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		private function run() {
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
 			add_action( 'admin_init', array( $this, 'load_admin_classes' ) );
+			add_action( 'admin_init', array( $this, 'run_email_notifications_migration' ) );
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts_admin' ) );
 			add_action( 'current_screen', array( $this, 'redirect_when_old_screen' ) );
@@ -141,6 +144,15 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			Gutena_Forms_Admin_Helper::optimize_submenu();
 			Gutena_Forms_Admin_Helper::pricing_page_redirection();
 			Gutena_Forms_Admin_Helper::feature_request_redirection();
+		}
+
+		/**
+		 * Run email notifications migration from old auto-responder format.
+		 */
+		public function run_email_notifications_migration() {
+			if ( class_exists( 'Gutena_Forms_Email_Notifications_Migration' ) ) {
+				Gutena_Forms_Email_Notifications_Migration::run();
+			}
 		}
 
 		/**

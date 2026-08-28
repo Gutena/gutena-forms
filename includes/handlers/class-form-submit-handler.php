@@ -188,63 +188,74 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			do_action( 'gutena_forms_submitted_data', $form_submit_data['raw_data'], $this->id, $field_schema );
 			do_action( 'gutena_forms_submission', $form_submit_data, $this->schema );
 
-			if ( class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) {
+			// New email notifications system.
+			if ( class_exists( 'Gutena_Forms_Email_Notifications_Helper' ) ) {
+				Gutena_Forms_Email_Notifications_Helper::send_notifications( $form_submit_data, $this->schema, $field_schema );
+			}
+
+			// Backward compatibility: old auto-responder for forms without new emailNotifications attr.
+			if ( empty( $this->schema['form_attrs']['emailNotifications'] ) && class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) {
 				Gutena_Forms_Auto_Responder_Helper::send_auto_responder( $form_submit_data, $this->schema, $field_schema );
 			}
 
-			// If admin don't want to get Email notification.
-			if ( isset( $this->schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->schema['form_attrs']['emailNotifyAdmin'] || false === $this->schema['form_attrs']['emailNotifyAdmin'] || '0' === $this->schema['form_attrs']['emailNotifyAdmin'] ) ) {
-				wp_send_json(
-					array(
-						'status'  => 'Success',
-						'message' => __( 'success', 'gutena-forms' ),
-					)
+			// Backward compatibility: old admin notification for forms without new emailNotifications attr.
+			if ( empty( $this->schema['form_attrs']['emailNotifications'] ) ) {
+				// If admin don't want to get Email notification.
+				if ( isset( $this->schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->schema['form_attrs']['emailNotifyAdmin'] || false === $this->schema['form_attrs']['emailNotifyAdmin'] || '0' === $this->schema['form_attrs']['emailNotifyAdmin'] ) ) {
+					wp_send_json(
+						array(
+							'status'  => 'Success',
+							'message' => __( 'success', 'gutena-forms' ),
+						)
+					);
+				}
+
+				// Email headers.
+				$headers = array(
+					'Content-Type: text/html; charset=UTF-8',
+					'From: ' . esc_html( $from_name ) . ' <' . $admin_email . '>',
 				);
+				// Add reply to header.
+				if ( ! empty( $reply_to ) ) {
+					$headers[] = 'Reply-To: ' . esc_html( $reply_to_name ) . ' <' . $reply_to . '>';
+				}
+
+				// Apply filter for admin email notification.
+				$body = apply_filters( 'gutena_forms_submit_admin_notification', $body, $form_submit_data );
+
+				if ( ! is_gutena_forms_pro( false ) ) {
+					$body .= '<div style="background-color: #fffbeb; width: fit-content; margin-top: 50px; padding: 14px 15px 12px 15px; border-radius: 10px;" > <span style="font-size: 13px; line-height: 1; display: flex;" > <span style="margin-right: 5px;" > </span> <span style="margin-right: 3px;" ><strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong></span> ' . __( 'Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms' ) ) . '" style="color: #E35D3F; margin-left: 1rem;" target="_blank" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </a></strong></span></div>';
+				}
+
+				$body    = wpautop( $body, true );
+				$body    = $this->email_html_body( $body, $subject );
+				$subject = esc_html( $subject );
+				$res     = wp_mail( $to, $subject, $body, $headers );
+
+				if ( $res ) {
+					wp_send_json(
+						array(
+							'status'  => 'Success',
+							'message' => __( 'success', 'gutena-forms' ),
+						)
+					);
+				} else {
+					wp_send_json(
+						array(
+							'status'  => 'error',
+							'message' => __( 'Sorry! your form was submitted, but the email could not be sent. The site admin may need to review the email settings.', 'gutena-forms' ),
+							'details' => __( 'Failed to send email', 'gutena-forms' ),
+						)
+					);
+				}
 			}
 
-			// Email headers.
-			$headers = array(
-				'Content-Type: text/html; charset=UTF-8',
-				'From: ' . esc_html( $from_name ) . ' <' . $admin_email . '>',
+			wp_send_json(
+				array(
+					'status'  => 'Success',
+					'message' => __( 'success', 'gutena-forms' ),
+				)
 			);
-			// Add reply to header.
-			if ( ! empty( $reply_to ) ) {
-				$headers[] = 'Reply-To: ' . esc_html( $reply_to_name ) . ' <' . $reply_to . '>';
-			}
-
-			// Apply filter for admin email notification.
-			$body = apply_filters( 'gutena_forms_submit_admin_notification', $body, $form_submit_data );
-
-			if ( ! is_gutena_forms_pro( false ) ) {
-				/**
-				 * Fix something
-				 *
-				 * @link https://stackoverflow.com/questions/17602400/html-email-in-gmail-css-style-attribute-removed
-				 */
-				$body .= '<div style="background-color: #fffbeb; width: fit-content; margin-top: 50px; padding: 14px 15px 12px 15px; border-radius: 10px;" > <span style="font-size: 13px; line-height: 1; display: flex;" > <span style="margin-right: 5px;" > </span> <span style="margin-right: 3px;" ><strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong></span> ' . __( 'Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms' ) ) . '" style="color: #E35D3F; margin-left: 1rem;" target="_blank" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </a></strong></span></div>';
-			}
-
-			$body    = wpautop( $body, true );
-			$body    = $this->email_html_body( $body, $subject );
-			$subject = esc_html( $subject );
-			$res     = wp_mail( $to, $subject, $body, $headers );
-
-			if ( $res ) {
-				wp_send_json(
-					array(
-						'status'  => 'Success',
-						'message' => __( 'success', 'gutena-forms' ),
-					)
-				);
-			} else {
-				wp_send_json(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Sorry! your form was submitted, but the email could not be sent. The site admin may need to review the email settings.', 'gutena-forms' ),
-						'details' => __( 'Failed to send email', 'gutena-forms' ),
-					)
-				);
-			}
 		}
 
 		/**
