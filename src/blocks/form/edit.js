@@ -333,9 +333,7 @@ export default function Edit( props ) {
 						enable: gutenaFormsBlock.grecaptcha.enable,
 						type: gutenaFormsBlock.grecaptcha.type,
 						v2_site_key: gutenaFormsBlock.grecaptcha.v2_site_key,
-						v2_secret_key: gutenaFormsBlock.grecaptcha.v2_secret_key,
 						v3_site_key: gutenaFormsBlock.grecaptcha.v3_site_key,
-						v3_secret_key: gutenaFormsBlock.grecaptcha.v3_secret_key,
 						defaultSettings: true,
 					},
 				} );
@@ -343,12 +341,11 @@ export default function Edit( props ) {
 
 			if ( ! gfIsEmpty( cloudflareTurnstile ) && gfIsEmpty( cloudflareTurnstile.site_key ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock?.cloudflare_turnstile_defaults ) ) {
 				const cloudflare_turnstile_defaults = gutenaFormsBlock.cloudflare_turnstile_defaults;
-				if ( ! gfIsEmpty( cloudflare_turnstile_defaults.site_key ) && ! gfIsEmpty( cloudflare_turnstile_defaults.secret_key ) ) {
+				if ( ! gfIsEmpty( cloudflare_turnstile_defaults.site_key ) ) {
 					setAttributes( {
 						cloudflareTurnstile: {
 							enable: cloudflare_turnstile_defaults.enable,
 							site_key: cloudflare_turnstile_defaults.site_key,
-							secret_key: cloudflare_turnstile_defaults.secret_key,
 							defaultSettings: true,
 						},
 					} );
