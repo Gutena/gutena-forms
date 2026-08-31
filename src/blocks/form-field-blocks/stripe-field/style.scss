@@ -18,6 +18,52 @@
 		line-height: 1.5;
 	}
 
+	.gutena-forms-stripe-payment__plan-name {
+		margin: 0 0 4px;
+		color: var(--gf-stripe-text);
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.5;
+	}
+
+	.gutena-forms-stripe-payment__subscription-details {
+		margin: 0 0 12px;
+		padding: 12px 14px;
+		border: 1px solid var(--gf-stripe-border);
+		border-radius: var(--gf-stripe-radius);
+		background: #f8fafc;
+	}
+
+	.gutena-forms-stripe-payment__subscription-badge {
+		display: inline-block;
+		margin-bottom: 8px;
+		padding: 2px 8px;
+		border-radius: 999px;
+		background: #e8f5f1;
+		color: #0da88c;
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+	}
+
+	.gutena-forms-stripe-payment__subscription-summary {
+		margin: 0;
+		color: var(--gf-stripe-text);
+		font-size: 15px;
+		font-weight: 600;
+		line-height: 1.5;
+	}
+
+	.is-subscription-payment .gutena-forms-stripe-payment__subscription-notice {
+		margin-top: 12px;
+		padding-top: 12px;
+		border-top: 1px solid var(--gf-stripe-border);
+		color: var(--gf-stripe-muted);
+		font-size: 12px;
+		line-height: 1.5;
+	}
+
 	.gutena-forms-stripe-payment__panel {
 		display: flex;
 		flex-direction: column;

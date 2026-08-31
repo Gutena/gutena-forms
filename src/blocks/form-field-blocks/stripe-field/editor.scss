@@ -24,6 +24,19 @@
 			font-weight: 600;
 			margin: 0 0 4px;
 		}
+
+		.gutena-forms-stripe-field__preview-plan,
+		.gutena-forms-stripe-field__preview-summary {
+			color: #111827;
+			font-size: 13px;
+			font-weight: 600;
+			margin: 8px 0 0;
+		}
+
+		.gutena-forms-stripe-field__preview-summary {
+			color: #6e7376;
+			font-weight: 400;
+		}
 	}
 
 	.gutena-forms-stripe-field__error {

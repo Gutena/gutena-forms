@@ -13,6 +13,23 @@ const CURRENCY_SYMBOLS = {
 	CAD: '$',
 	INR: '₹',
 	BDT: '৳',
+	JPY: '¥',
+	BRL: 'R$',
+	MYR: 'RM',
+	SGD: '$',
+	HKD: '$',
+	NZD: '$',
+	MXN: '$',
+	TWD: '$',
+	CHF: 'CHF',
+	TRY: '₺',
+	THB: '฿',
+	ILS: '₪',
+	KRW: '₩',
+	AED: 'د.إ',
+	SAR: 'ر.س',
+	PLN: 'zł',
+	CZK: 'Kč',
 };
 
 /**
@@ -109,6 +126,13 @@ async function stripeRestRequest( restPath, body = {}, root = null ) {
 function updateAmountHint( root ) {
 	const hintEl = root.querySelector( '.gutena-forms-stripe-payment__amount-hint' );
 	if ( ! hintEl ) {
+		return;
+	}
+
+	const paymentType = root.getAttribute( 'data-payment-type' ) || 'one_time';
+
+	// Subscription summary is rendered server-side with billing interval and cycles.
+	if ( 'subscription' === paymentType ) {
 		return;
 	}
 
@@ -496,6 +520,10 @@ function collectStripeFieldConfig( root ) {
 		minimumAmount: parseFloat( root.getAttribute( 'data-minimum-amount' ) || '0' ),
 		customerEmailField: root.getAttribute( 'data-customer-email-field' ) || '',
 		customerNameField: root.getAttribute( 'data-customer-name-field' ) || '',
+		subscriptionPlanName: root.getAttribute( 'data-subscription-plan' ) || '',
+		billingInterval: root.getAttribute( 'data-billing-interval' ) || 'monthly',
+		billingCycles: root.getAttribute( 'data-billing-cycles' ) || 'never',
+		customBillingCycles: parseInt( root.getAttribute( 'data-custom-billing-cycles' ) || '1', 10 ),
 	};
 }
 

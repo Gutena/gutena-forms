@@ -100,14 +100,26 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Field_Block' ) ) :
 				? $payment_stripe['account_name']
 				: __( 'the merchant', 'gutena-forms' );
 
-			$amount_hint = $this->get_amount_hint( $currency, $amount_type, $fixed_amount );
+			$minimum_amount       = isset( $attributes['minimumAmount'] ) ? floatval( $attributes['minimumAmount'] ) : 0;
+			$subscription_plan    = ! empty( $attributes['subscriptionPlanName'] ) ? $attributes['subscriptionPlanName'] : '';
+			$billing_interval     = ! empty( $attributes['billingInterval'] ) ? sanitize_key( $attributes['billingInterval'] ) : 'monthly';
+			$billing_cycles       = ! empty( $attributes['billingCycles'] ) ? sanitize_key( $attributes['billingCycles'] ) : 'never';
+			$custom_billing_cycles = isset( $attributes['customBillingCycles'] ) ? absint( $attributes['customBillingCycles'] ) : 1;
+
+			$amount_hint = $this->get_amount_hint(
+				$currency,
+				$amount_type,
+				$fixed_amount,
+				$payment_type,
+				array(
+					'billingInterval'     => $billing_interval,
+					'billingCycles'       => $billing_cycles,
+					'customBillingCycles' => $custom_billing_cycles,
+				)
+			);
 			$show_subscription_notice = ( 'subscription' === $payment_type );
 			$subscription_notice      = $show_subscription_notice
-				? sprintf(
-					/* translators: %s: connected Stripe account name */
-					__( 'By subscribing, you authorise %s to charge you according to the terms until you cancel.', 'gutena-forms' ),
-					$account_name
-				)
+				? $this->get_subscription_authorization_notice( $account_name, $billing_cycles, $custom_billing_cycles )
 				: '';
 
 			$stripe_field_config = wp_json_encode(
@@ -119,16 +131,20 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Field_Block' ) ) :
 					'amountType'          => $amount_type,
 					'fixedAmount'         => $fixed_amount,
 					'variableAmountField' => $variable_field,
-					'minimumAmount'       => isset( $attributes['minimumAmount'] ) ? floatval( $attributes['minimumAmount'] ) : 0,
+					'minimumAmount'       => $minimum_amount,
 					'customerEmailField'  => $customer_email_field,
 					'customerNameField'   => $customer_name_field,
+					'subscriptionPlanName' => $subscription_plan,
+					'billingInterval'     => $billing_interval,
+					'billingCycles'       => $billing_cycles,
+					'customBillingCycles' => $custom_billing_cycles,
 				)
 			);
 
 			ob_start();
 			?>
 			<div
-				class="wp-block-gutena-field-group wp-block-gutena-stripe-field field-group-type-stripe standalone-stripe-field"
+				class="wp-block-gutena-field-group wp-block-gutena-stripe-field field-group-type-stripe standalone-stripe-field<?php echo 'subscription' === $payment_type ? ' is-subscription-payment' : ''; ?>"
 				data-stripe-field="<?php echo esc_attr( $field_id ); ?>"
 				data-gutena-stripe-payment="1"
 				data-stripe-field-id="<?php echo esc_attr( $field_id ); ?>"
@@ -140,7 +156,11 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Field_Block' ) ) :
 				data-payment-type="<?php echo esc_attr( $payment_type ); ?>"
 				data-amount-type="<?php echo esc_attr( $amount_type ); ?>"
 				data-fixed-amount="<?php echo esc_attr( $fixed_amount ); ?>"
-				data-minimum-amount="<?php echo esc_attr( isset( $attributes['minimumAmount'] ) ? floatval( $attributes['minimumAmount'] ) : 0 ); ?>"
+				data-minimum-amount="<?php echo esc_attr( $minimum_amount ); ?>"
+				data-subscription-plan="<?php echo esc_attr( $subscription_plan ); ?>"
+				data-billing-interval="<?php echo esc_attr( $billing_interval ); ?>"
+				data-billing-cycles="<?php echo esc_attr( $billing_cycles ); ?>"
+				data-custom-billing-cycles="<?php echo esc_attr( $custom_billing_cycles ); ?>"
 				data-variable-amount-field="<?php echo esc_attr( $variable_field ); ?>"
 				data-customer-email-field="<?php echo esc_attr( $customer_email_field ); ?>"
 				data-customer-name-field="<?php echo esc_attr( $customer_name_field ); ?>"
@@ -152,7 +172,17 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Field_Block' ) ) :
 					<?php echo esc_html( $field_name ); ?>
 				</label>
 
-				<p class="gutena-forms-stripe-payment__amount-hint"><?php echo esc_html( $amount_hint ); ?></p>
+				<?php if ( 'subscription' === $payment_type ) : ?>
+					<div class="gutena-forms-stripe-payment__subscription-details">
+						<span class="gutena-forms-stripe-payment__subscription-badge"><?php esc_html_e( 'Subscription', 'gutena-forms' ); ?></span>
+						<?php if ( '' !== $subscription_plan ) : ?>
+							<p class="gutena-forms-stripe-payment__plan-name"><?php echo esc_html( $subscription_plan ); ?></p>
+						<?php endif; ?>
+						<p class="gutena-forms-stripe-payment__amount-hint gutena-forms-stripe-payment__subscription-summary"><?php echo esc_html( $amount_hint ); ?></p>
+					</div>
+				<?php else : ?>
+					<p class="gutena-forms-stripe-payment__amount-hint"><?php echo esc_html( $amount_hint ); ?></p>
+				<?php endif; ?>
 
 				<div class="gutena-forms-stripe-payment__panel">
 					<?php echo self::render_payment_chrome(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -277,19 +307,126 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Field_Block' ) ) :
 		}
 
 		/**
+		 * Subscription authorization notice shown above the card fields.
+		 *
+		 * @param string $account_name          Connected Stripe account name.
+		 * @param string $billing_cycles        Billing cycles key.
+		 * @param int    $custom_billing_cycles Custom payment count.
+		 * @return string
+		 */
+		private function get_subscription_authorization_notice( $account_name, $billing_cycles, $custom_billing_cycles ) {
+			if ( 'never' === sanitize_key( $billing_cycles ) ) {
+				return sprintf(
+					/* translators: %s: connected Stripe account name */
+					__( 'By subscribing, you authorise %s to charge you according to the terms until you cancel.', 'gutena-forms' ),
+					$account_name
+				);
+			}
+
+			$payment_count = 0;
+			if ( in_array( $billing_cycles, array( '2', '3', '4', '5' ), true ) ) {
+				$payment_count = (int) $billing_cycles;
+			} elseif ( 'custom' === $billing_cycles ) {
+				$payment_count = max( 0, (int) $custom_billing_cycles );
+			}
+
+			if ( $payment_count > 0 ) {
+				return sprintf(
+					/* translators: 1: connected Stripe account name, 2: number of payments */
+					__( 'By subscribing, you authorise %1$s to charge you for %2$d scheduled payments according to the terms above.', 'gutena-forms' ),
+					$account_name,
+					$payment_count
+				);
+			}
+
+			return sprintf(
+				/* translators: %s: connected Stripe account name */
+				__( 'By subscribing, you authorise %s to charge you according to the terms above.', 'gutena-forms' ),
+				$account_name
+			);
+		}
+
+		/**
 		 * Initial amount hint text.
 		 *
 		 * @param string $currency     Currency code.
 		 * @param string $amount_type  fixed|variable.
 		 * @param float  $fixed_amount Fixed amount.
+		 * @param string $payment_type one_time|subscription.
+		 * @param array  $subscription Subscription settings.
 		 * @return string
 		 */
-		private function get_amount_hint( $currency, $amount_type, $fixed_amount ) {
+		private function get_amount_hint( $currency, $amount_type, $fixed_amount, $payment_type = 'one_time', $subscription = array() ) {
+			if ( 'subscription' === $payment_type ) {
+				return $this->format_subscription_summary(
+					$currency,
+					$fixed_amount,
+					$subscription['billingInterval'] ?? 'monthly',
+					$subscription['billingCycles'] ?? 'never',
+					$subscription['customBillingCycles'] ?? 1
+				);
+			}
+
 			if ( 'fixed' === $amount_type && $fixed_amount > 0 ) {
 				return $this->format_amount( $currency, $fixed_amount );
 			}
 
 			return __( 'Complete the form to view the amount.', 'gutena-forms' );
+		}
+
+		/**
+		 * Format subscription billing summary for frontend display.
+		 *
+		 * @param string $currency              Currency code.
+		 * @param float  $fixed_amount          Recurring amount.
+		 * @param string $billing_interval      Billing interval key.
+		 * @param string $billing_cycles        Billing cycles key.
+		 * @param int    $custom_billing_cycles Custom payment count.
+		 * @return string
+		 */
+		private function format_subscription_summary( $currency, $fixed_amount, $billing_interval, $billing_cycles, $custom_billing_cycles ) {
+			if ( $fixed_amount <= 0 ) {
+				return __( 'Complete the form to view the amount.', 'gutena-forms' );
+			}
+
+			$interval_phrases = array(
+				'daily'     => __( 'every day', 'gutena-forms' ),
+				'weekly'    => __( 'every week', 'gutena-forms' ),
+				'monthly'   => __( 'every month', 'gutena-forms' ),
+				'quarterly' => __( 'every 3 months', 'gutena-forms' ),
+				'yearly'    => __( 'every year', 'gutena-forms' ),
+			);
+
+			$amount_text      = $this->format_amount( $currency, $fixed_amount );
+			$interval_phrase  = $interval_phrases[ $billing_interval ] ?? $billing_interval;
+
+			if ( 'never' === $billing_cycles ) {
+				return sprintf(
+					/* translators: 1: formatted amount, 2: billing interval phrase */
+					__( '%1$s %2$s (until cancelled)', 'gutena-forms' ),
+					$amount_text,
+					$interval_phrase
+				);
+			}
+
+			$payment_count = 0;
+			if ( in_array( $billing_cycles, array( '2', '3', '4', '5' ), true ) ) {
+				$payment_count = (int) $billing_cycles;
+			} elseif ( 'custom' === $billing_cycles ) {
+				$payment_count = max( 0, (int) $custom_billing_cycles );
+			}
+
+			if ( $payment_count > 0 ) {
+				return sprintf(
+					/* translators: 1: formatted amount, 2: billing interval phrase, 3: number of payments */
+					__( '%1$s %2$s · %3$d payments', 'gutena-forms' ),
+					$amount_text,
+					$interval_phrase,
+					$payment_count
+				);
+			}
+
+			return $amount_text . ' ' . $interval_phrase;
 		}
 
 		/**
@@ -308,6 +445,23 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Field_Block' ) ) :
 				'CAD' => '$',
 				'INR' => '₹',
 				'BDT' => '৳',
+				'JPY' => '¥',
+				'BRL' => 'R$',
+				'MYR' => 'RM',
+				'SGD' => '$',
+				'HKD' => '$',
+				'NZD' => '$',
+				'MXN' => '$',
+				'TWD' => '$',
+				'CHF' => 'CHF',
+				'TRY' => '₺',
+				'THB' => '฿',
+				'ILS' => '₪',
+				'KRW' => '₩',
+				'AED' => 'د.إ',
+				'SAR' => 'ر.س',
+				'PLN' => 'zł',
+				'CZK' => 'Kč',
 			);
 
 			$symbol = isset( $symbols[ $currency ] ) ? $symbols[ $currency ] : $currency . ' ';

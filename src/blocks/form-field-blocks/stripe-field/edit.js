@@ -14,6 +14,7 @@ import PaymentModeToggle from '../../../shared/payments/payment-mode-toggle';
 import CurrencySelect from '../../../shared/payments/currency-select';
 import StripeConnectionPanel from '../../../shared/payments/stripe-connection-panel';
 import { fetchStripeSettings } from '../../../shared/payments/api';
+import { formatCurrencyAmount, formatSubscriptionSummary, isGutenaFormsPro } from '../../../shared/payments/subscription-summary';
 import { gfIsEmpty } from '../../../shared/utils/helper';
 import {
 	buildFormStripeOverride,
@@ -204,6 +205,29 @@ export default function Edit( { attributes, setAttributes, clientId, isSelected 
 	} );
 
 	const connected = !! effectiveStripe.connected;
+	const hasPro = isGutenaFormsPro();
+	const currency = effectiveStripe.currency || 'USD';
+
+	const handlePaymentTypeChange = ( value ) => {
+		if ( 'subscription' === value && ! hasPro ) {
+			return;
+		}
+		setAttributes( { paymentType: value } );
+	};
+
+	const subscriptionSummary = useMemo(
+		() =>
+			'subscription' === paymentType
+				? formatSubscriptionSummary( {
+					currency,
+					fixedAmount,
+					billingInterval,
+					billingCycles,
+					customBillingCycles,
+				} )
+				: '',
+		[ paymentType, currency, fixedAmount, billingInterval, billingCycles, customBillingCycles ]
+	);
 
 	if ( isStripeGatewayExplicitlyDisabled() ) {
 		return null;
@@ -248,10 +272,20 @@ export default function Edit( { attributes, setAttributes, clientId, isSelected 
 									selected={ paymentType }
 									options={ [
 										{ label: __( 'One-time', 'gutena-forms' ), value: 'one_time' },
-										{ label: __( 'Subscription', 'gutena-forms' ), value: 'subscription' },
+										{
+											label: hasPro
+												? __( 'Subscription', 'gutena-forms' )
+												: `${ __( 'Subscription', 'gutena-forms' ) } (${ __( 'Pro', 'gutena-forms' ) })`,
+											value: 'subscription',
+										},
 									] }
-									onChange={ ( value ) => setAttributes( { paymentType: value } ) }
+									onChange={ handlePaymentTypeChange }
 								/>
+								{ ! hasPro && (
+									<p className="gutena-forms-stripe-field__help">
+										{ __( 'Subscription payments are available in Gutena Forms Pro.', 'gutena-forms' ) }
+									</p>
+								) }
 							</div>
 
 							{ 'one_time' === paymentType && (
@@ -342,7 +376,7 @@ export default function Edit( { attributes, setAttributes, clientId, isSelected 
 								</>
 							) }
 
-							{ 'subscription' === paymentType && (
+							{ 'subscription' === paymentType && hasPro && (
 								<>
 									<TextControl
 										label={ __( 'Subscription Plan Name', 'gutena-forms' ) + ' *' }
@@ -354,6 +388,22 @@ export default function Edit( { attributes, setAttributes, clientId, isSelected 
 									<FieldError
 										show={ validationErrors.includes( 'subscription_plan_name' ) }
 										message={ __( 'Please enter a subscription plan name.', 'gutena-forms' ) }
+									/>
+
+									<TextControl
+										label={ __( 'Amount', 'gutena-forms' ) + ' *' }
+										type="number"
+										min="0"
+										step="0.01"
+										value={ fixedAmount }
+										onChange={ ( value ) =>
+											setAttributes( { fixedAmount: parseFloat( value ) || 0 } )
+										}
+										help={ __( 'Set the recurring amount charged for each billing cycle.', 'gutena-forms' ) }
+									/>
+									<FieldError
+										show={ validationErrors.includes( 'subscription_amount' ) }
+										message={ __( 'Please enter a subscription amount greater than zero.', 'gutena-forms' ) }
 									/>
 
 									<SelectControl
@@ -443,6 +493,21 @@ export default function Edit( { attributes, setAttributes, clientId, isSelected 
 						<p className="gutena-forms-stripe-field__preview-description">
 							{ __( 'Stripe account is connected. The payment field will appear when the form is published.', 'gutena-forms' ) }
 						</p>
+						{ 'subscription' === paymentType && hasPro && subscriptionPlanName && (
+							<p className="gutena-forms-stripe-field__preview-plan">
+								{ subscriptionPlanName }
+							</p>
+						) }
+						{ 'subscription' === paymentType && hasPro && subscriptionSummary && (
+							<p className="gutena-forms-stripe-field__preview-summary">
+								{ subscriptionSummary }
+							</p>
+						) }
+						{ 'one_time' === paymentType && 'fixed' === amountType && fixedAmount > 0 && (
+							<p className="gutena-forms-stripe-field__preview-summary">
+								{ formatCurrencyAmount( currency, fixedAmount ) }
+							</p>
+						) }
 					</div>
 				) : (
 					<p className="gutena-forms-stripe-field__preview-description">

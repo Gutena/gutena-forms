@@ -184,6 +184,107 @@ document.addEventListener("DOMContentLoaded", function(){
 		// function to handle turnstile success
 	}
 
+	const getStripeFieldConfig = ( stripeRoot ) => {
+		if ( isEmpty( stripeRoot ) ) {
+			return null;
+		}
+
+		const configInput = stripeRoot.querySelector( '.gutena-forms-stripe-payment__config-input' );
+		if ( ! isEmpty( configInput ) && configInput.value ) {
+			try {
+				const parsed = JSON.parse( configInput.value );
+				if ( parsed && 'object' === typeof parsed ) {
+					return parsed;
+				}
+			} catch ( error ) {
+				console.log( 'Unable to parse Stripe field config', error );
+			}
+		}
+
+		return {
+			paymentType: stripeRoot.getAttribute( 'data-payment-type' ) || 'one_time',
+			amountType: stripeRoot.getAttribute( 'data-amount-type' ) || 'fixed',
+			fixedAmount: parseFloat( stripeRoot.getAttribute( 'data-fixed-amount' ) || '0' ),
+			variableAmountField: stripeRoot.getAttribute( 'data-variable-amount-field' ) || '',
+			minimumAmount: parseFloat( stripeRoot.getAttribute( 'data-minimum-amount' ) || '0' ),
+			customerEmailField: stripeRoot.getAttribute( 'data-customer-email-field' ) || '',
+			customerNameField: stripeRoot.getAttribute( 'data-customer-name-field' ) || '',
+			subscriptionPlanName: stripeRoot.getAttribute( 'data-subscription-plan' ) || '',
+		};
+	};
+
+	const setStripeFieldError = ( stripeRoot, message ) => {
+		if ( isEmpty( stripeRoot ) ) {
+			return;
+		}
+
+		const errorEl = stripeRoot.querySelector( '.gutena-forms-stripe-payment__error' );
+		if ( ! isEmpty( errorEl ) ) {
+			errorEl.textContent = message || '';
+		}
+
+		stripeRoot.classList.toggle( 'display-error', !! message );
+	};
+
+	const validateStripePaymentField = ( gutena_forms ) => {
+		const stripeRoot = gutena_forms.querySelector( '[data-gutena-stripe-payment]' );
+		if ( isEmpty( stripeRoot ) ) {
+			return true;
+		}
+
+		const config = getStripeFieldConfig( stripeRoot );
+		if ( isEmpty( config ) ) {
+			return true;
+		}
+
+		let errorMessage = '';
+
+		if ( 'one_time' === config.paymentType ) {
+			if ( 'variable' === config.amountType ) {
+				if ( isEmpty( config.variableAmountField ) ) {
+					errorMessage = 'Please select a field for the variable payment amount.';
+				} else {
+					const sourceField = gutena_forms.querySelector( `[name="${ config.variableAmountField }"]` );
+					const rawValue = sourceField?.value ?? '';
+					const parsedAmount = parseFloat( rawValue );
+					const minimumAmount = parseFloat( config.minimumAmount ) || 0;
+
+					if ( isEmpty( rawValue ) || Number.isNaN( parsedAmount ) || parsedAmount <= 0 ) {
+						errorMessage = 'Please enter a valid payment amount.';
+					} else if ( minimumAmount > 0 && parsedAmount < minimumAmount ) {
+						errorMessage = `Payment amount must be at least ${ minimumAmount.toFixed( 2 ) }.`;
+					}
+				}
+			} else if ( ! config.fixedAmount || config.fixedAmount <= 0 ) {
+				errorMessage = 'Payment amount is not configured correctly.';
+			}
+
+			if ( ! errorMessage && isEmpty( config.customerEmailField ) ) {
+				errorMessage = 'Please select a customer email field for payment.';
+			}
+		}
+
+		if ( 'subscription' === config.paymentType ) {
+			if ( isEmpty( config.subscriptionPlanName ) ) {
+				errorMessage = 'Subscription plan name is required.';
+			} else if ( ! config.fixedAmount || config.fixedAmount <= 0 ) {
+				errorMessage = 'Subscription amount is not configured correctly.';
+			} else if ( isEmpty( config.customerEmailField ) ) {
+				errorMessage = 'Please select a customer email field for payment.';
+			} else if ( isEmpty( config.customerNameField ) ) {
+				errorMessage = 'Please select a customer name field for subscription payment.';
+			}
+		}
+
+		if ( errorMessage ) {
+			setStripeFieldError( stripeRoot, errorMessage );
+			return false;
+		}
+
+		setStripeFieldError( stripeRoot, '' );
+		return true;
+	};
+
 	const form_sumbit = () => {
 		let submitButton = document.querySelectorAll(
 			'.wp-block-gutena-forms .gutena-forms-submit-button'
@@ -227,6 +328,11 @@ document.addEventListener("DOMContentLoaded", function(){
 							}
 							formCheck = false;
 						}
+					}
+
+					if ( formCheck && false === validateStripePaymentField( gutena_forms ) ) {
+						formCheck = false;
+						error_field = gutena_forms.querySelector( '[data-gutena-stripe-payment]' ) || error_field;
 					}
 
 					//exit and scroll to error field

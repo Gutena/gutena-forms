@@ -2,8 +2,8 @@ import { __ } from '@wordpress/i18n';
 
 const PaymentModeToggle = ( { value = 'test', onChange, disabled = false } ) => {
 	const modes = [
-		{ id: 'live', label: __( 'Live Mode', 'gutena-forms' ) },
 		{ id: 'test', label: __( 'Test Mode', 'gutena-forms' ) },
+		{ id: 'live', label: __( 'Production (Live) Mode', 'gutena-forms' ) },
 	];
 
 	return (

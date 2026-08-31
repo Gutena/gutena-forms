@@ -213,6 +213,10 @@ export const validateStripeFieldAttributes = ( attributes, formClientId ) => {
 	}
 
 	if ( 'subscription' === attributes.paymentType ) {
+		const fixedAmount = Number( attributes.fixedAmount );
+		if ( ! fixedAmount || fixedAmount <= 0 ) {
+			errors.push( 'subscription_amount' );
+		}
 		if ( gfIsEmpty( attributes.customerEmailField ) ) {
 			errors.push( 'customer_email_field' );
 		}

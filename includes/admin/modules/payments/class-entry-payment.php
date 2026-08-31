@@ -271,6 +271,7 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 			foreach ( $rows as $row ) {
 
 				$payment = $this->row_to_payment_array( $row );
+				$payment = $this->maybe_backfill_payment_type( $payment, absint( $row['entry_id'] ) );
 
 				$items[] = $this->format_list_item( $payment, absint( $row['entry_id'] ), $row['entry_added_time'] ?? '' );
 
@@ -311,6 +312,8 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 				);
 
 			}
+
+			$payment = $this->maybe_backfill_payment_type( $payment, absint( $entry_id ) );
 
 
 
@@ -759,6 +762,95 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 
 		/**
+		 * Resolve stored payment type from row data and metadata.
+		 *
+		 * @param array $row      Database row.
+		 * @param array $metadata Decoded metadata.
+		 * @return string
+		 */
+		private function resolve_stored_payment_type( $row, $metadata ) {
+			$payment_type = sanitize_text_field( $row['payment_type'] ?? 'one_time' );
+
+			if ( 'subscription' === $payment_type ) {
+				return $payment_type;
+			}
+
+			if ( ! empty( $metadata['payment_type'] ) && 'subscription' === sanitize_key( $metadata['payment_type'] ) ) {
+				return 'subscription';
+			}
+
+			if ( ! empty( $metadata['subscription_id'] ) ) {
+				return 'subscription';
+			}
+
+			return $payment_type;
+		}
+
+		/**
+		 * Backfill legacy rows that were saved with the wrong payment type.
+		 *
+		 * @param array $payment  Payment payload.
+		 * @param int   $entry_id Entry ID.
+		 * @return array
+		 */
+		private function maybe_backfill_payment_type( $payment, $entry_id ) {
+			if ( ! is_array( $payment ) ) {
+				return $payment;
+			}
+
+			$entry_id = absint( $entry_id );
+			$type     = sanitize_text_field( $payment['payment_type'] ?? 'one_time' );
+
+			if ( 'subscription' === $type || ! empty( $payment['subscription_id'] ) ) {
+				if ( 'subscription' !== $type && ! empty( $payment['subscription_id'] ) ) {
+					$payment['payment_type'] = 'subscription';
+				}
+
+				return $payment;
+			}
+
+			$payment_id = sanitize_text_field( $payment['payment_id'] ?? $payment['transaction_id'] ?? '' );
+			if ( empty( $payment_id ) || ! class_exists( 'Gutena_Forms_Stripe_Intent_Service' ) ) {
+				return $payment;
+			}
+
+			$intent = Gutena_Forms_Stripe_Intent_Service::get_instance()->retrieve_payment_intent( $payment_id );
+			if ( is_wp_error( $intent ) || ! is_array( $intent ) ) {
+				return $payment;
+			}
+
+			$resolved = 'one_time';
+			if ( ! empty( $intent['metadata']['payment_type'] ) && 'subscription' === sanitize_key( $intent['metadata']['payment_type'] ) ) {
+				$resolved = 'subscription';
+			} elseif ( ! empty( $intent['metadata']['subscription_id'] ) || ! empty( $intent['invoice'] ) ) {
+				$resolved = 'subscription';
+			}
+
+			if ( 'subscription' !== $resolved ) {
+				return $payment;
+			}
+
+			$payment['payment_type'] = 'subscription';
+			$payment['subscription_id'] = sanitize_text_field( $intent['metadata']['subscription_id'] ?? '' );
+			if ( empty( $payment['subscription_plan_name'] ) && ! empty( $intent['metadata']['subscription_plan_name'] ) ) {
+				$payment['subscription_plan_name'] = sanitize_text_field( $intent['metadata']['subscription_plan_name'] );
+			}
+
+			if ( $entry_id ) {
+				$this->update_for_entry(
+					$entry_id,
+					array(
+						'payment_type'           => 'subscription',
+						'subscription_id'        => $payment['subscription_id'],
+						'subscription_plan_name' => sanitize_text_field( $payment['subscription_plan_name'] ?? '' ),
+					)
+				);
+			}
+
+			return $payment;
+		}
+
+		/**
 
 		 * @param array $row Database row.
 
@@ -800,7 +892,7 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 					'payment_method'       => sanitize_text_field( $row['payment_method'] ?? 'Stripe' ),
 
-					'payment_type'         => sanitize_text_field( $row['payment_type'] ?? 'one_time' ),
+					'payment_type'         => $this->resolve_stored_payment_type( $row, $metadata ),
 
 					'transaction_id'       => sanitize_text_field( $row['transaction_id'] ?? '' ),
 
@@ -892,9 +984,15 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 					array(
 
-						'logs'      => $logs,
+						'logs'                   => $logs,
 
-						'form_name' => sanitize_text_field( $payment['form_name'] ?? '' ),
+						'form_name'              => sanitize_text_field( $payment['form_name'] ?? '' ),
+
+						'payment_type'           => sanitize_text_field( $payment['payment_type'] ?? 'one_time' ),
+
+						'subscription_id'        => sanitize_text_field( $payment['subscription_id'] ?? '' ),
+
+						'subscription_plan_name' => sanitize_text_field( $payment['subscription_plan_name'] ?? '' ),
 
 					)
 
