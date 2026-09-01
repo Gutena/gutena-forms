@@ -1,18 +1,8 @@
 import { Icon } from '@wordpress/components';
-import stripeBlockIcon from './icon.png';
+import { CardIcon } from '../../../shared/payments/card-icon';
 
-const StripeFieldIcon = () => (
-	<Icon
-		icon={ () => (
-			<img
-				src={ stripeBlockIcon }
-				alt=""
-				width={ 24 }
-				height={ 24 }
-				style={ { display: 'block', borderRadius: '50%' } }
-			/>
-		) }
-	/>
+const stripeFieldBlockIcon = () => (
+	<Icon icon={ () => <CardIcon size={ 32 } color="#0DA88C" /> } />
 );
 
-export default StripeFieldIcon;
+export default stripeFieldBlockIcon;

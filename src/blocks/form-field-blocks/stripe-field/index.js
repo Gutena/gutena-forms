@@ -23,6 +23,8 @@ addFilter(
 			return settings;
 		}
 
+		settings.icon = Icon;
+
 		if ( ! isStripeGatewayEnabled() ) {
 			settings.supports = {
 				...settings.supports,

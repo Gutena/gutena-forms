@@ -1,8 +1,3 @@
-const StripeIcon = ( { size = 28 } ) => (
-	<svg width={ size } height={ size } viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-		<rect width="28" height="28" rx="14" fill="#635BFF" />
-		<path d="M13.17 11.36C13.17 10.55 13.86 10.2 15.01 10.2C16.64 10.2 18.48 10.68 20.13 11.58V7.46C18.34 6.68 16.55 6.36 14.76 6.36C11.05 6.36 8.74 8.12 8.74 11.52C8.74 16.58 15.36 15.78 15.36 17.98C15.36 18.94 14.48 19.3 13.24 19.3C11.45 19.3 9.36 18.66 7.55 17.62V21.8C9.58 22.72 11.62 23.18 13.66 23.18C17.52 23.18 20.02 21.48 20.02 18.02C20.02 12.68 13.17 13.62 13.17 11.36Z" fill="white" />
-	</svg>
-);
+import StripeIcon from '../../../../../src/shared/payments/stripe-icon';
 
 export default StripeIcon;

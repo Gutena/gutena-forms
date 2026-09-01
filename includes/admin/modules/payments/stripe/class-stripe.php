@@ -114,10 +114,6 @@ if ( ! class_exists( 'Gutena_Forms_Stripe' ) && class_exists( 'Gutena_Forms_Paym
 
 					'webhook_slots_exceeded' => ! empty( $public['webhook_slots_exceeded'] ) || ! empty( $this->settings['webhook_slots_exceeded'] ),
 
-					'publishable_key_test'   => $this->settings['publishable_key_test'] ?? '',
-
-					'publishable_key_live'   => $this->settings['publishable_key_live'] ?? '',
-
 					'has_publishable_key_test' => ! empty( $public['has_publishable_key_test'] ),
 
 					'has_publishable_key_live' => ! empty( $public['has_publishable_key_live'] ),
@@ -141,7 +137,9 @@ if ( ! class_exists( 'Gutena_Forms_Stripe' ) && class_exists( 'Gutena_Forms_Paym
 					$settings['webhook_slots_exceeded'],
 					$settings['has_publishable_key_test'],
 					$settings['has_publishable_key_live'],
-					$settings['stripe_dashboard_url']
+					$settings['stripe_dashboard_url'],
+					$settings['publishable_key_test'],
+					$settings['publishable_key_live']
 				);
 			}
 

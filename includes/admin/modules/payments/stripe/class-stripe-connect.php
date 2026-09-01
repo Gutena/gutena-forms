@@ -598,7 +598,7 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Connect' ) ) :
 
 					'account_name'  => $account_name,
 
-					'publishable_key' => sanitize_text_field( $body['publishable_key'] ?? '' ),
+					'publishable_key' => sanitize_text_field( $body['stripe_publishable_key'] ?? $body['publishable_key'] ?? '' ),
 
 				)
 
@@ -621,46 +621,35 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Connect' ) ) :
 		 */
 
 		private function complete_connection( $data ) {
+			$payment_mode    = in_array( $data['payment_mode'] ?? 'test', array( 'live', 'test' ), true ) ? $data['payment_mode'] : 'test';
+			$publishable_key = self::sanitize_publishable_key( $data['publishable_key'] ?? '' );
 
 			$this->store_credentials(
-
 				array(
-
 					'account_id'    => $data['account_id'],
-
 					'access_token'  => $data['access_token'],
-
 					'refresh_token' => $data['refresh_token'],
-
-					'payment_mode'  => $data['payment_mode'],
-
+					'payment_mode'  => $payment_mode,
 				)
-
 			);
 
-
-
-			$this->update_gateway_settings(
-
-				array(
-
-					'connected'              => true,
-
-					'account_name'           => $data['account_name'] ? $data['account_name'] : __( 'Stripe Account', 'gutena-forms' ),
-
-					'payment_mode'           => $data['payment_mode'],
-
-					'webhook_connected'      => false,
-
-					'webhook_slots_exceeded' => false,
-
-				)
-
+			$settings_update = array(
+				'connected'              => true,
+				'account_name'           => $data['account_name'] ? $data['account_name'] : __( 'Stripe Account', 'gutena-forms' ),
+				'payment_mode'           => $payment_mode,
+				'webhook_connected'      => false,
+				'webhook_slots_exceeded' => false,
 			);
 
+			if ( ! empty( $publishable_key ) ) {
+				$settings_update[ 'publishable_key_' . $payment_mode ] = $publishable_key;
+			}
+
+			$this->update_gateway_settings( $settings_update );
 
 
-			// Direct charges require the connected account publishable key from its dashboard — not the OAuth middleware key.
+
+			// Publishable key is stored automatically from middleware OAuth pickup.
 
 			$webhook_result = $this->create_webhook();
 
@@ -694,10 +683,17 @@ if ( ! class_exists( 'Gutena_Forms_Stripe_Connect' ) ) :
 
 			delete_option( 'gutena_forms_stripe_oauth_state' );
 
-			$this->set_connect_notice(
-				'success',
-				__( 'Your Stripe account has been connected. Add the connected account publishable key (pk_test_… or pk_live_…) under Payment → Stripe to enable the payment form.', 'gutena-forms' )
-			);
+			if ( ! empty( $publishable_key ) ) {
+				$this->set_connect_notice(
+					'success',
+					__( 'Your Stripe account has been connected successfully.', 'gutena-forms' )
+				);
+			} else {
+				$this->set_connect_notice(
+					'error',
+					__( 'Stripe connected, but the publishable key was not returned. Please disconnect and connect again.', 'gutena-forms' )
+				);
+			}
 
 			$this->redirect_to_stripe_settings();
 

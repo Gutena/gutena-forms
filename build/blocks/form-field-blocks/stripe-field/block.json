@@ -8,7 +8,9 @@
     "gutena/forms"
   ],
   "category": "gutena",
-  "icon": "money-alt",
+  "icon": {
+    "src": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" fill=\"none\"><rect x=\"1\" y=\"3.5\" width=\"14\" height=\"9\" rx=\"1.5\" stroke=\"#0DA88C\" stroke-width=\"1.25\"/><path d=\"M1 6.5H15\" stroke=\"#0DA88C\" stroke-width=\"1.25\"/></svg>"
+  },
   "description": "Collect payments with Stripe. Configure your Stripe account and payment settings for this form.",
   "keywords": [
     "stripe",

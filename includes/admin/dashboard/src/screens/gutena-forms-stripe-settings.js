@@ -54,10 +54,6 @@ const GutenaFormsStripeSettings = () => {
 
 	const [ stripeDashboardUrl, setStripeDashboardUrl ] = useState( 'https://dashboard.stripe.com/webhooks' );
 
-	const [ publishableKeyTest, setPublishableKeyTest ] = useState( '' );
-
-	const [ publishableKeyLive, setPublishableKeyLive ] = useState( '' );
-
 
 
 	const applySettingsValues = ( values ) => {
@@ -81,10 +77,6 @@ const GutenaFormsStripeSettings = () => {
 			setStripeDashboardUrl( values.stripe_dashboard_url );
 
 		}
-
-		setPublishableKeyTest( values.publishable_key_test || '' );
-
-		setPublishableKeyLive( values.publishable_key_live || '' );
 
 	};
 
@@ -146,26 +138,6 @@ const GutenaFormsStripeSettings = () => {
 
 	const handleSave = () => {
 
-		const activePublishableKey = 'live' === paymentMode ? publishableKeyLive : publishableKeyTest;
-
-		if ( activePublishableKey && ! /^pk_(test|live)_[A-Za-z0-9]+$/.test( activePublishableKey.trim() ) ) {
-
-			toast.error(
-
-				__(
-
-					'Invalid publishable key. Use a key that starts with pk_test_ or pk_live_ (not sk_).',
-
-					'gutena-forms'
-
-				)
-
-			);
-
-			return;
-
-		}
-
 		gutenaFormsUpdateSettings( 'stripe', {
 
 			payment_mode: paymentMode,
@@ -173,10 +145,6 @@ const GutenaFormsStripeSettings = () => {
 			currency,
 
 			currency_sign_position: currencySignPosition,
-
-			publishable_key_test: publishableKeyTest,
-
-			publishable_key_live: publishableKeyLive,
 
 		} ).then( () => {
 
@@ -331,61 +299,6 @@ const GutenaFormsStripeSettings = () => {
 						onChange={ setCurrencySignPosition }
 
 					/>
-
-					<div className="gutena-forms__stripe-settings__publishable-key">
-
-						<label htmlFor="gutena-forms-stripe-publishable-key">
-
-							{ 'live' === paymentMode
-
-								? __( 'Publishable key (Live)', 'gutena-forms' )
-
-								: __( 'Publishable key (Test)', 'gutena-forms' ) }
-
-						</label>
-
-						<input
-
-							id="gutena-forms-stripe-publishable-key"
-
-							type="text"
-
-							className="gutena-forms__stripe-settings__input"
-
-							placeholder="pk_test_..."
-
-							value={ 'live' === paymentMode ? publishableKeyLive : publishableKeyTest }
-
-							onChange={ ( event ) => {
-
-								if ( 'live' === paymentMode ) {
-
-									setPublishableKeyLive( event.target.value );
-
-									return;
-
-								}
-
-								setPublishableKeyTest( event.target.value );
-
-							} }
-
-							autoComplete="off"
-
-							spellCheck={ false }
-
-						/>
-
-						<p className="gutena-forms__stripe-settings__help">
-
-							{ __(
-								'After connecting, open your connected Stripe account dashboard (Test mode) → Developers → API keys, and paste the Publishable key here. Do not use a secret key (sk_).',
-								'gutena-forms'
-							) }
-
-						</p>
-
-					</div>
 
 					{ connected ? (
 

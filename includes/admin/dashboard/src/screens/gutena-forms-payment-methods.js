@@ -6,8 +6,10 @@ import { fetchAllPaymentGateways, togglePaymentGateway } from '../api/payments';
 import PaymentSettingsCard from '../components/payments/payment-settings-card';
 import StripeIcon from '../icons/stripe';
 
+const StripePaymentCardIcon = () => <StripeIcon size={ 28 } />;
+
 const IconMap = {
-	stripe: StripeIcon,
+	stripe: StripePaymentCardIcon,
 };
 
 const GutenaFormsPaymentMethods = () => {

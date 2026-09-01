@@ -2,11 +2,10 @@
  * Shared card-tab + Link banner chrome for Stripe payment field markup.
  */
 
-const TabCardIcon = () => (
-	<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-		<rect x="1" y="3.5" width="14" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.25" />
-		<path d="M1 6.5H15" stroke="currentColor" strokeWidth="1.25" />
-	</svg>
+import { CardIcon } from '../../../shared/payments/card-icon';
+
+export const TabCardIcon = ( { size = 16, color = 'currentColor' } ) => (
+	<CardIcon size={ size } color={ color } />
 );
 
 const LinkLockIcon = () => (
