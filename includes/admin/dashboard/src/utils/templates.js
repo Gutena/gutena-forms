@@ -11,6 +11,7 @@ import GutenaFormsUserAccess from '../screens/gutena-forms-user-access';
 import GutenaFormsIntegrations from '../screens/gutena-forms-integrations'
 import GutenaFormsPaymentMethods from '../screens/gutena-forms-payment-methods';
 import GutenaFormsStripeSettings from '../screens/gutena-forms-stripe-settings';
+import GutenaFormsSquareSettings from '../screens/gutena-forms-square-settings';
 import { applyFilters } from '@wordpress/hooks';
 import GutenaFormsMcp from "../screens/gutena-forms-mcp";
 
@@ -27,6 +28,7 @@ export const SettingsTemplates = {
 	'integrations': GutenaFormsIntegrations,
 	'payment-methods': GutenaFormsPaymentMethods,
 	'stripe-settings': GutenaFormsStripeSettings,
+	'square-settings': GutenaFormsSquareSettings,
 	'mcp': GutenaFormsMcp,
 	...applyFilters( 'gutena-forms.components', {} )
 };

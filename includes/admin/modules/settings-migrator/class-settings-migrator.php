@@ -547,6 +547,7 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				'honeypot'            => get_option( 'gutena_forms__honeypot', array() ),
 				'messages'            => get_option( 'gutena_forms__form_validation_messages', array() ),
 				'paymentStripe'       => self::get_payment_stripe_global_settings(),
+				'paymentSquare'       => self::get_payment_square_global_settings(),
 			);
 		}
 
@@ -581,6 +582,69 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 			$current = isset( $all['stripe'] ) && is_array( $all['stripe'] ) ? $all['stripe'] : array();
 			$all['stripe'] = array_merge( $current, self::sanitize_payment_stripe_settings( $settings ) );
 			update_option( 'gutena_forms__payment_settings', $all );
+		}
+
+		/**
+		 * Square settings slice from gutena_forms__payment_settings.
+		 *
+		 * @since 2.1.0
+		 * @return array
+		 */
+		public static function get_payment_square_global_settings() {
+			$all = get_option( 'gutena_forms__payment_settings', array() );
+			if ( ! is_array( $all ) || empty( $all['square'] ) || ! is_array( $all['square'] ) ) {
+				return array();
+			}
+
+			return self::sanitize_payment_square_settings( $all['square'] );
+		}
+
+		/**
+		 * Persist Square public settings into the payment settings option.
+		 *
+		 * @since 2.1.0
+		 * @param array $settings Square settings slice.
+		 * @return void
+		 */
+		public static function update_payment_square_global_settings( $settings ) {
+			$all = get_option( 'gutena_forms__payment_settings', array() );
+			if ( ! is_array( $all ) ) {
+				$all = array();
+			}
+
+			$current = isset( $all['square'] ) && is_array( $all['square'] ) ? $all['square'] : array();
+			$all['square'] = array_merge( $current, self::sanitize_payment_square_settings( $settings ) );
+			update_option( 'gutena_forms__payment_settings', $all );
+		}
+
+		/**
+		 * Sanitize Square settings stored on forms or globally.
+		 *
+		 * @since 2.1.0
+		 * @param array $settings Raw settings.
+		 * @return array
+		 */
+		public static function sanitize_payment_square_settings( $settings ) {
+			$settings = self::sanitize_settings_for_option( is_array( $settings ) ? $settings : array() );
+
+			$payment_mode = in_array( $settings['payment_mode'] ?? 'test', array( 'live', 'test' ), true )
+				? $settings['payment_mode']
+				: 'test';
+
+			$locations = class_exists( 'Gutena_Forms_Square_Connect' )
+				? Gutena_Forms_Square_Connect::sanitize_locations( $settings['business_locations'] ?? array() )
+				: array();
+
+			return array(
+				'enable'             => ! empty( $settings['enable'] ),
+				'payment_mode'       => $payment_mode,
+				'connected'          => ! empty( $settings['connected'] ),
+				'account_name'       => sanitize_text_field( $settings['account_name'] ?? '' ),
+				'merchant_currency'  => sanitize_text_field( $settings['merchant_currency'] ?? '' ),
+				'location_id'        => sanitize_text_field( $settings['location_id'] ?? '' ),
+				'business_locations' => $locations,
+				'currency'           => sanitize_text_field( $settings['currency'] ?? $settings['merchant_currency'] ?? 'USD' ),
+			);
 		}
 
 		/**
@@ -626,6 +690,13 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				return ! self::is_module_settings_meaningful(
 					$module_key,
 					self::get_payment_stripe_global_settings()
+				);
+			}
+
+			if ( 'paymentSquare' === $module_key ) {
+				return ! self::is_module_settings_meaningful(
+					$module_key,
+					self::get_payment_square_global_settings()
 				);
 			}
 
@@ -729,6 +800,18 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 						return true;
 					}
 					if ( ! empty( $settings['currency'] ) && 'USD' !== $settings['currency'] ) {
+						return true;
+					}
+					return false;
+
+				case 'paymentSquare':
+					if ( ! empty( $settings['connected'] ) || ! empty( $settings['enable'] ) ) {
+						return true;
+					}
+					if ( ! empty( $settings['payment_mode'] ) && 'test' !== $settings['payment_mode'] ) {
+						return true;
+					}
+					if ( ! empty( $settings['location_id'] ) ) {
 						return true;
 					}
 					return false;
@@ -847,6 +930,13 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 					continue;
 				}
 
+				if ( 'paymentSquare' === $module_key ) {
+					$prev = isset( $previous_modules[ $module_key ] ) ? $previous_modules[ $module_key ] : array();
+					$next = self::get_payment_square_global_settings();
+					self::sync_global_module_to_forms( $module_key, $prev, $next );
+					continue;
+				}
+
 				$option_name = self::global_option_name_for_module( $module_key );
 				if ( '' === $option_name ) {
 					continue;
@@ -934,6 +1024,15 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 						self::sanitize_payment_stripe_settings( $attributes['paymentStripe'] )
 					);
 					$seeded['modules'][] = 'paymentStripe';
+				}
+			}
+
+			if ( ! empty( $attributes['paymentSquare'] ) && is_array( $attributes['paymentSquare'] ) ) {
+				if ( self::should_form_push_module_to_global( 'paymentSquare', $attributes['paymentSquare'], $only_if_empty ) ) {
+					self::update_payment_square_global_settings(
+						self::sanitize_payment_square_settings( $attributes['paymentSquare'] )
+					);
+					$seeded['modules'][] = 'paymentSquare';
 				}
 			}
 
@@ -1077,11 +1176,22 @@ if ( ! class_exists( 'Gutena_Forms_Settings_Migrator' ) ) :
 				'honeypot'            => 'gutena_forms__honeypot',
 				'messages'            => 'gutena_forms__form_validation_messages',
 				'paymentStripe'       => 'gutena_forms__payment_settings',
+				'paymentSquare'       => 'gutena_forms__payment_settings',
 			);
 
 			foreach ( $modules as $module_key => $option_name ) {
 				if ( 'paymentStripe' === $module_key ) {
 					$next = self::get_payment_stripe_global_settings();
+					if ( empty( $next ) ) {
+						continue;
+					}
+					$prev = isset( $previous_globals[ $module_key ] ) ? $previous_globals[ $module_key ] : array();
+					self::sync_global_module_to_forms( $module_key, $prev, $next, false );
+					continue;
+				}
+
+				if ( 'paymentSquare' === $module_key ) {
+					$next = self::get_payment_square_global_settings();
 					if ( empty( $next ) ) {
 						continue;
 					}

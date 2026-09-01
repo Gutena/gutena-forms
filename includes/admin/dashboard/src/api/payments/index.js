@@ -80,6 +80,49 @@ export async function fetchStripeConnectNotice() {
 	return response.notice || null;
 }
 
+export async function squareConnect( paymentMode = 'test' ) {
+	const response = await apiFetch( {
+		path: `${ namespace }payments/square/connect`,
+		method: 'POST',
+		data: { payment_mode: paymentMode },
+	} );
+
+	if ( response.success && response.redirect_url ) {
+		return response;
+	}
+
+	throw new Error( response.message || 'Connection failed. Please try again.' );
+}
+
+export async function squareDisconnect() {
+	const response = await apiFetch( {
+		path: `${ namespace }payments/square/disconnect`,
+		method: 'POST',
+	} );
+
+	if ( response.success ) {
+		return response;
+	}
+
+	throw new Error( response.message || 'Failed to disconnect Square.' );
+}
+
+export async function fetchSquareConnectNotice() {
+	const response = await apiFetch( {
+		path: `${ namespace }payments/square/connect-notice`,
+	} );
+
+	return response.notice || null;
+}
+
+export async function fetchSquareConnectionStatus() {
+	const response = await apiFetch( {
+		path: `${ namespace }payments/square/status`,
+	} );
+
+	return response || null;
+}
+
 export async function fetchAllPaymentEntries() {
 	const response = await apiFetch( {
 		path: `${ namespace }payments/entries/get-all`,

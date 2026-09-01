@@ -301,7 +301,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		onClick();
 	}
 
-	const isCustomTemplateScreen = [ 'stripe-settings', 'payment-methods' ].includes( template );
+	const isCustomTemplateScreen = [ 'stripe-settings', 'square-settings', 'payment-methods' ].includes( template );
 
 	const IconMap = {
 		'active-campaign': <Activecampaign />,

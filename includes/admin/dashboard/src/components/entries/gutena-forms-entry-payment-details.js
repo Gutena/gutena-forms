@@ -41,6 +41,11 @@ const GutenaFormsEntryPaymentDetails = ( {
 
 	const statusClass = `gutena-forms__payment-status is-${ payment.status }`;
 	const gatewayLabel = payment.gateway_label || payment.payment_method || __( 'Stripe', 'gutena-forms' );
+	const gatewayDashboardUrl = payment.gateway_dashboard_url || payment.stripe_dashboard_url || '';
+	const gatewayDashboardLabel =
+		'square' === payment.gateway
+			? __( 'View in Square', 'gutena-forms' )
+			: __( 'View in Stripe', 'gutena-forms' );
 
 	return (
 		<div className="gutena-forms__entry-payment-details">
@@ -74,14 +79,14 @@ const GutenaFormsEntryPaymentDetails = ( {
 				<div className="gutena-froms__entry-meta-box gutena-forms__entry-payment-card">
 					<div className="gutena-forms__entry-payment-section__header">
 						<h3 className="heading">{ __( 'Payment Information', 'gutena-forms' ) }</h3>
-						{ payment.stripe_dashboard_url && (
+						{ gatewayDashboardUrl && (
 							<a
 								className="gutena-forms__payment-stripe-link"
-								href={ payment.stripe_dashboard_url }
+								href={ gatewayDashboardUrl }
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								{ __( 'View in Stripe', 'gutena-forms' ) }
+								{ gatewayDashboardLabel }
 								<ExternalLink />
 							</a>
 						) }

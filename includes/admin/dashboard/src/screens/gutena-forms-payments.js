@@ -10,6 +10,7 @@ import { gutenaFormsDeleteEntry } from '../api/entries';
 import Eye from '../icons/eye';
 import { Bin } from '../icons/bin';
 import StripeIcon from '../icons/stripe';
+import SquareIcon from '../icons/square';
 import EntriesLoading from '../skeletons/entries-loading';
 import { activateLeftMenu } from '../utils/functions';
 import GutenaFormsProBadge from '../components/gutena-forms-pro-badge';
@@ -158,6 +159,11 @@ const GutenaFormsPayments = ( { setActiveMenu } ) => {
 									{ 'stripe' === row.gateway && (
 										<span className="gutena-forms__payments-table__gateway-icon">
 											<StripeIcon />
+										</span>
+									) }
+									{ 'square' === row.gateway && (
+										<span className="gutena-forms__payments-table__gateway-icon">
+											<SquareIcon size={ 16 } />
 										</span>
 									) }
 									<span>{ row.gateway_label || __( 'Stripe', 'gutena-forms' ) }</span>

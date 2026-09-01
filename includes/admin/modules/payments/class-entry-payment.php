@@ -315,8 +315,6 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 			$payment = $this->maybe_backfill_payment_type( $payment, absint( $entry_id ) );
 
-
-
 			$form_id   = isset( $payment['form_id'] ) ? absint( $payment['form_id'] ) : 0;
 
 			$form_name = isset( $payment['form_name'] ) ? sanitize_text_field( $payment['form_name'] ) : '';
@@ -338,16 +336,28 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 			$currency     = sanitize_text_field( $payment['currency'] ?? 'USD' );
 
 			$payment_type = sanitize_text_field( $payment['payment_type'] ?? 'one_time' );
+			$gateway      = sanitize_text_field( $payment['gateway'] ?? 'stripe' );
+			$dashboard_url = esc_url_raw(
+				$payment['gateway_dashboard_url']
+					?? $payment['square_dashboard_url']
+					?? $payment['stripe_dashboard_url']
+					?? ''
+			);
 
-
+			if ( '' === $dashboard_url && class_exists( 'Gutena_Forms_Square_Payment_Service' ) && 'square' === $gateway ) {
+				$dashboard_url = Gutena_Forms_Square_Payment_Service::get_dashboard_url(
+					sanitize_text_field( $payment['transaction_id'] ?? $payment['payment_id'] ?? '' ),
+					sanitize_text_field( $payment['payment_mode'] ?? 'test' )
+				);
+			}
 
 			return array(
 
 				'has_payment'          => true,
 
-				'gateway'              => sanitize_text_field( $payment['gateway'] ?? 'stripe' ),
+				'gateway'              => $gateway,
 
-				'gateway_label'        => sanitize_text_field( $payment['gateway_label'] ?? 'Stripe' ),
+				'gateway_label'        => self::gateway_label( $gateway, $payment['gateway_label'] ?? '' ),
 
 				'payment_id'           => sanitize_text_field( $payment['payment_id'] ?? '' ),
 
@@ -382,6 +392,8 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 				'transaction_date'     => sanitize_text_field( $payment['transaction_date'] ?? '' ),
 
 				'stripe_dashboard_url' => esc_url_raw( $payment['stripe_dashboard_url'] ?? '' ),
+
+				'gateway_dashboard_url' => $dashboard_url,
 
 				'form_id'              => $form_id,
 
@@ -589,12 +601,64 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 				'processing' => __( 'Processing', 'gutena-forms' ),
 
+				'completed'  => __( 'Succeeded', 'gutena-forms' ),
+
+				'approved'   => __( 'Succeeded', 'gutena-forms' ),
+
+				'canceled'   => __( 'Canceled', 'gutena-forms' ),
+
 			);
 
 
 
 			return $labels[ $status ] ?? ucfirst( sanitize_text_field( $status ) );
 
+		}
+
+
+
+		/**
+		 * Human-readable gateway label.
+		 *
+		 * @param string $gateway Gateway slug.
+		 * @param string $fallback Stored label.
+		 * @return string
+		 */
+		public static function gateway_label( $gateway, $fallback = '' ) {
+			if ( '' !== $fallback ) {
+				return sanitize_text_field( $fallback );
+			}
+
+			$labels = array(
+				'stripe' => 'Stripe',
+				'square' => 'Square',
+			);
+
+			return $labels[ $gateway ] ?? ucfirst( sanitize_text_field( $gateway ) );
+
+		}
+
+
+
+		/**
+		 * Normalize Square payment status keys for Gutena records.
+		 *
+		 * @param string $status Square or internal status.
+		 * @return string
+		 */
+		public static function normalize_square_status( $status ) {
+			$status = strtolower( sanitize_text_field( $status ) );
+
+			$map = array(
+				'completed' => 'succeeded',
+				'approved'  => 'succeeded',
+				'pending'   => 'pending',
+				'failed'    => 'failed',
+				'canceled'  => 'failed',
+				'refunded'  => 'refunded',
+			);
+
+			return $map[ $status ] ?? $status;
 		}
 
 
@@ -884,7 +948,7 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 					'gateway'              => sanitize_text_field( $row['gateway'] ?? 'stripe' ),
 
-					'gateway_label'        => 'stripe' === ( $row['gateway'] ?? 'stripe' ) ? 'Stripe' : ucfirst( sanitize_text_field( $row['gateway'] ?? '' ) ),
+					'gateway_label'        => self::gateway_label( $row['gateway'] ?? 'stripe', $metadata['gateway_label'] ?? '' ),
 
 					'payment_id'           => sanitize_text_field( $row['external_payment_id'] ?? '' ),
 
@@ -913,6 +977,13 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 					'received_on'          => sanitize_text_field( $row['received_on'] ?? '' ),
 
 					'stripe_dashboard_url' => esc_url_raw( $row['stripe_dashboard_url'] ?? '' ),
+
+					'gateway_dashboard_url' => esc_url_raw(
+						$metadata['gateway_dashboard_url']
+							?? $metadata['square_dashboard_url']
+							?? $row['stripe_dashboard_url']
+							?? ''
+					),
 
 					'form_id'              => absint( $row['form_id'] ?? 0 ),
 
@@ -981,21 +1052,20 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 				'stripe_dashboard_url' => esc_url_raw( $payment['stripe_dashboard_url'] ?? '' ),
 
 				'metadata'             => wp_json_encode(
-
 					array(
-
 						'logs'                   => $logs,
-
 						'form_name'              => sanitize_text_field( $payment['form_name'] ?? '' ),
-
 						'payment_type'           => sanitize_text_field( $payment['payment_type'] ?? 'one_time' ),
-
 						'subscription_id'        => sanitize_text_field( $payment['subscription_id'] ?? '' ),
-
 						'subscription_plan_name' => sanitize_text_field( $payment['subscription_plan_name'] ?? '' ),
-
+						'gateway_dashboard_url'  => esc_url_raw(
+							$payment['gateway_dashboard_url']
+								?? $payment['square_dashboard_url']
+								?? $payment['stripe_dashboard_url']
+								?? ''
+						),
+						'refund_notes'           => sanitize_text_field( $payment['refund_notes'] ?? '' ),
 					)
-
 				),
 
 			);

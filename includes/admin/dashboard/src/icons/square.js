@@ -1,7 +1,9 @@
-const SquareIcon = ( { size = 18 } ) => (
-	<svg width={ size } height={ size } viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-		<rect width="18" height="18" rx="4" fill="#000000" />
-		<path d="M4.5 9.75C4.5 7.67893 6.17893 6 8.25 6H9.75C11.8211 6 13.5 7.67893 13.5 9.75V10.5C13.5 11.3284 12.8284 12 12 12H6C5.17157 12 4.5 11.3284 4.5 10.5V9.75Z" fill="white" />
+const SquareIcon = ( { size = 28 } ) => (
+	<svg width={ size } height={ size } viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		<circle cx="14" cy="14" r="14" fill="#272727" />
+		<rect x="7" y="7" width="14" height="14" rx="2" fill="#FFFFFF" />
+		<rect x="9" y="9" width="10" height="10" rx="1" fill="#272727" />
+		<rect x="11.5" y="11.5" width="5" height="5" rx="1" fill="#FFFFFF" />
 	</svg>
 );
 

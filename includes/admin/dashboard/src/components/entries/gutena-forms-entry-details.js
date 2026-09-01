@@ -17,6 +17,11 @@ const GutenaFormsEntryDetails = ( { entryId, payment, onViewPayment } ) => {
 	}, [ entryId ] );
 
 	const hasPayment = payment?.has_payment;
+	const gatewayLabel = payment?.gateway_label || __( 'Payment', 'gutena-forms' );
+	const viewPaymentLabel =
+		'square' === payment?.gateway
+			? __( 'View Square Payment', 'gutena-forms' )
+			: __( 'View Stripe Payment', 'gutena-forms' );
 
 	return (
 		<div className={ 'gutena-froms__entry-meta-box' }>
@@ -51,7 +56,7 @@ const GutenaFormsEntryDetails = ( { entryId, payment, onViewPayment } ) => {
 
 					{ hasPayment && (
 						<div className="gutena-forms__entry-data-row gutena-forms__entry-payment-summary-row">
-							<div className="label">{ payment.gateway_label || __( 'Payment', 'gutena-forms' ) }</div>
+							<div className="label">{ gatewayLabel }</div>
 							<div className="value gutena-forms__entry-payment-summary">
 								<span>{ payment.amount_formatted }</span>
 								<button
@@ -59,7 +64,7 @@ const GutenaFormsEntryDetails = ( { entryId, payment, onViewPayment } ) => {
 									className="gutena-forms__view-stripe-payment-btn"
 									onClick={ onViewPayment }
 								>
-									{ __( 'View Stripe Payment', 'gutena-forms' ) }
+									{ viewPaymentLabel }
 								</button>
 							</div>
 						</div>

@@ -53,7 +53,9 @@ const GutenaFormsEntryPaymentLog = ( { payment } ) => {
 										? __( 'Payment Verification', 'gutena-forms' )
 										: log.event === 'payment_failed'
 											? __( 'Payment Failed', 'gutena-forms' )
-											: log.event }
+											: log.event === 'refund'
+												? __( 'Refund', 'gutena-forms' )
+												: log.event }
 								</span>
 								<span className="gutena-forms__entry-payment-log__transaction">{ log.transaction_id || '—' }</span>
 								<span className="gutena-forms__entry-payment-log__gateway">

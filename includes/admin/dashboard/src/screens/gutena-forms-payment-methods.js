@@ -5,11 +5,14 @@ import { toast } from 'react-toastify';
 import { fetchAllPaymentGateways, togglePaymentGateway } from '../api/payments';
 import PaymentSettingsCard from '../components/payments/payment-settings-card';
 import StripeIcon from '../icons/stripe';
+import SquareIcon from '../icons/square';
 
 const StripePaymentCardIcon = () => <StripeIcon size={ 28 } />;
+const SquarePaymentCardIcon = () => <SquareIcon size={ 28 } />;
 
 const IconMap = {
 	stripe: StripePaymentCardIcon,
+	square: SquarePaymentCardIcon,
 };
 
 const GutenaFormsPaymentMethods = () => {

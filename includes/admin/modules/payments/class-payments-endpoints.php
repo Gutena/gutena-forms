@@ -65,6 +65,34 @@ if ( ! class_exists( 'Gutena_Forms_Payments_Endpoints' ) ) :
 				'callback' => array( $this, 'stripe_connect_notice' ),
 			);
 
+			$routes[] = array(
+				'route'    => 'payments/square/connect',
+				'methods'  => $server::CREATABLE,
+				'auth'     => true,
+				'callback' => array( $this, 'square_connect' ),
+			);
+
+			$routes[] = array(
+				'route'    => 'payments/square/disconnect',
+				'methods'  => $server::CREATABLE,
+				'auth'     => true,
+				'callback' => array( $this, 'square_disconnect' ),
+			);
+
+			$routes[] = array(
+				'route'    => 'payments/square/connect-notice',
+				'methods'  => $server::READABLE,
+				'auth'     => true,
+				'callback' => array( $this, 'square_connect_notice' ),
+			);
+
+			$routes[] = array(
+				'route'    => 'payments/square/status',
+				'methods'  => $server::READABLE,
+				'auth'     => true,
+				'callback' => array( $this, 'square_connection_status' ),
+			);
+
 			if ( class_exists( 'Gutena_Forms_Stripe_Intent_Service' ) ) {
 				$intent_service = Gutena_Forms_Stripe_Intent_Service::get_instance();
 
@@ -102,6 +130,14 @@ if ( ! class_exists( 'Gutena_Forms_Payments_Endpoints' ) ) :
 				'methods'  => $server::READABLE,
 				'auth'     => true,
 				'callback' => array( $this, 'get_all_payment_entries' ),
+			);
+
+			$routes[] = array(
+				'route'    => 'entry/payment/refund',
+				'methods'  => $server::CREATABLE,
+				'auth'     => true,
+				'is-pro'   => true,
+				'callback' => array( $this, 'refund_entry_payment' ),
 			);
 
 			return $routes;
@@ -267,6 +303,101 @@ if ( ! class_exists( 'Gutena_Forms_Payments_Endpoints' ) ) :
 			);
 		}
 
+		public function square_connect( $request ) {
+			if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) {
+				return rest_ensure_response(
+					array(
+						'success' => false,
+						'message' => __( 'Square connection is unavailable.', 'gutena-forms' ),
+					)
+				);
+			}
+
+			$payment_mode = sanitize_key( (string) $request->get_param( 'payment_mode' ) );
+			$connect      = Gutena_Forms_Square_Connect::get_instance();
+			$url          = $connect->get_connect_url( $payment_mode );
+
+			if ( is_wp_error( $url ) ) {
+				return rest_ensure_response(
+					array(
+						'success' => false,
+						'message' => $url->get_error_message(),
+					)
+				);
+			}
+
+			return rest_ensure_response(
+				array(
+					'success'      => true,
+					'redirect_url' => esc_url_raw( $url ),
+				)
+			);
+		}
+
+		public function square_disconnect( $request ) {
+			unset( $request );
+
+			if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) {
+				return rest_ensure_response(
+					array(
+						'success' => false,
+						'message' => __( 'Square connection is unavailable.', 'gutena-forms' ),
+					)
+				);
+			}
+
+			Gutena_Forms_Square_Connect::get_instance()->disconnect();
+
+			return rest_ensure_response(
+				array(
+					'success' => true,
+					'message' => __( 'Square account disconnected.', 'gutena-forms' ),
+				)
+			);
+		}
+
+		public function square_connect_notice( $request ) {
+			unset( $request );
+
+			if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) {
+				return rest_ensure_response( array( 'notice' => null ) );
+			}
+
+			$notice = Gutena_Forms_Square_Connect::consume_connect_notice();
+
+			return rest_ensure_response(
+				array(
+					'notice' => $notice,
+				)
+			);
+		}
+
+		public function square_connection_status( $request ) {
+			unset( $request );
+
+			if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) {
+				return rest_ensure_response(
+					array(
+						'connected' => false,
+					)
+				);
+			}
+
+			$public = Gutena_Forms_Square_Connect::get_public_settings();
+
+			return rest_ensure_response(
+				array(
+					'connected'              => ! empty( $public['connected'] ),
+					'payment_mode'           => $public['payment_mode'] ?? 'test',
+					'connected_payment_mode' => $public['connected_payment_mode'] ?? ( $public['payment_mode'] ?? 'test' ),
+					'account_name'           => $public['account_name'] ?? '',
+					'merchant_currency'      => $public['merchant_currency'] ?? '',
+					'location_id'            => $public['location_id'] ?? '',
+					'business_locations'     => $public['business_locations'] ?? array(),
+				)
+			);
+		}
+
 		public function get_entry_payment( $request ) {
 			if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) {
 				return rest_ensure_response(
@@ -314,6 +445,87 @@ if ( ! class_exists( 'Gutena_Forms_Payments_Endpoints' ) ) :
 					'payments' => Gutena_Forms_Entry_Payment::get_instance()->get_all_list_items(),
 				)
 			);
+		}
+
+		/**
+		 * Refund an entry payment (Stripe or Square).
+		 *
+		 * @param WP_REST_Request $request Request.
+		 * @return WP_REST_Response
+		 */
+		public function refund_entry_payment( $request ) {
+			if ( ! function_exists( 'is_gutena_forms_pro' ) || ! is_gutena_forms_pro() ) {
+				return rest_ensure_response(
+					array(
+						'success' => false,
+						'message' => __( 'Refunds require Gutena Forms Pro.', 'gutena-forms' ),
+					),
+					403
+				);
+			}
+
+			$entry_id = absint( $request->get_param( 'id' ) );
+			$amount   = absint( $request->get_param( 'amount' ) );
+			$notes    = sanitize_textarea_field( (string) $request->get_param( 'notes' ) );
+
+			if ( ! $entry_id || ! $amount ) {
+				return rest_ensure_response(
+					array(
+						'success' => false,
+						'message' => __( 'Invalid refund request.', 'gutena-forms' ),
+					),
+					400
+				);
+			}
+
+			if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) {
+				return rest_ensure_response(
+					array(
+						'success' => false,
+						'message' => __( 'Payment module unavailable.', 'gutena-forms' ),
+					),
+					500
+				);
+			}
+
+			$payment = Gutena_Forms_Entry_Payment::get_instance()->get_by_entry_id( $entry_id );
+			$gateway = is_array( $payment ) ? sanitize_key( $payment['gateway'] ?? 'stripe' ) : 'stripe';
+
+			if ( 'square' === $gateway ) {
+				if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) {
+					return rest_ensure_response(
+						array(
+							'success' => false,
+							'message' => __( 'Square refunds are unavailable.', 'gutena-forms' ),
+						),
+						500
+					);
+				}
+
+				$result = Gutena_Forms_Square_Payment_Service::get_instance()->refund_entry_payment( $entry_id, $amount, $notes );
+			} elseif ( class_exists( 'Gutena_Forms_Stripe_Payment_Service' ) ) {
+				$result = Gutena_Forms_Stripe_Payment_Service::get_instance()->refund_entry_payment( $entry_id, $amount, $notes );
+			} else {
+				return rest_ensure_response(
+					array(
+						'success' => false,
+						'message' => __( 'Payment gateway is unavailable.', 'gutena-forms' ),
+					),
+					500
+				);
+			}
+
+			if ( is_wp_error( $result ) ) {
+				return rest_ensure_response(
+					array(
+						'success' => false,
+						'message' => $result->get_error_message(),
+					),
+					400
+				);
+			}
+
+			return rest_ensure_response( $result );
 		}
 
 		public static function get_instance() {
