@@ -447,11 +447,15 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 			$payment_mode  = $this->resolve_payment_mode_from_request();
 
 			if ( '' === $access_token ) {
-				$this->fail_oauth_connection( $this->get_oauth_error_message() );
+				$this->fail_oauth_connection(
+					__( 'Square did not return an access token. Try connecting again from Gutena Forms (do not refresh the callback page).', 'gutena-forms' )
+				);
 			}
 
 			if ( ! $this->should_accept_oauth_tokens( $access_token, $payment_mode ) ) {
-				$this->fail_oauth_connection( $this->get_oauth_error_message() );
+				$this->fail_oauth_connection(
+					__( 'Square connection could not be verified. Check that Gutena Form credentials exist in the middleware, then try again.', 'gutena-forms' )
+				);
 			}
 
 			$verified_mode = $this->resolve_verified_payment_mode( $access_token, $payment_mode );
@@ -466,8 +470,8 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 			$this->complete_connection(
 				array(
 					'merchant_id'        => $merchant_id,
-					'access_token'       => sanitize_text_field( $access_token ),
-					'refresh_token'      => sanitize_text_field( $refresh_token ),
+					'access_token'       => trim( (string) $access_token ),
+					'refresh_token'      => trim( (string) $refresh_token ),
 					'payment_mode'       => $payment_mode,
 					'account_name'       => $merchant_details['account_name'],
 					'merchant_currency'  => $merchant_details['merchant_currency'],
@@ -759,8 +763,8 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 
 			$all[ self::GATEWAY_ID ] = array(
 				'merchant_id'   => sanitize_text_field( $credentials['merchant_id'] ?? '' ),
-				'access_token'  => sanitize_text_field( $credentials['access_token'] ?? '' ),
-				'refresh_token' => sanitize_text_field( $credentials['refresh_token'] ?? '' ),
+				'access_token'  => trim( (string) ( $credentials['access_token'] ?? '' ) ),
+				'refresh_token' => trim( (string) ( $credentials['refresh_token'] ?? '' ) ),
 				'payment_mode'  => in_array( $credentials['payment_mode'] ?? 'test', array( 'live', 'test' ), true )
 					? $credentials['payment_mode']
 					: 'test',
