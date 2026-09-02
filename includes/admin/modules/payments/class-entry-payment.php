@@ -316,15 +316,17 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 			$payment = $this->maybe_backfill_payment_type( $payment, absint( $entry_id ) );
 
 			$form_id   = isset( $payment['form_id'] ) ? absint( $payment['form_id'] ) : 0;
-
 			$form_name = isset( $payment['form_name'] ) ? sanitize_text_field( $payment['form_name'] ) : '';
 
+			if ( ( ! $form_name || 0 === strpos( $form_name, 'gutena_forms_id_' ) ) && $form_id ) {
+				$model_name = Gutena_Forms_Forms_Model::get_instance()->get_name_by_id( $form_id );
+				if ( ! empty( $model_name ) && 0 !== strpos( $model_name, 'gutena_forms_id_' ) ) {
+					$form_name = $model_name;
+				}
+			}
 
-
-			if ( ! $form_name && $form_id ) {
-
-				$form_name = Gutena_Forms_Forms_Model::get_instance()->get_name_by_id( $form_id );
-
+			if ( ! $form_name || 0 === strpos( $form_name, 'gutena_forms_id_' ) ) {
+				$form_name = __( 'Contact Form', 'gutena-forms' );
 			}
 
 
@@ -1102,10 +1104,15 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 
 
 
-			if ( ! $form_name && $form_id ) {
+			if ( ( ! $form_name || 0 === strpos( $form_name, 'gutena_forms_id_' ) ) && $form_id ) {
+				$model_name = Gutena_Forms_Forms_Model::get_instance()->get_name_by_id( $form_id );
+				if ( ! empty( $model_name ) && 0 !== strpos( $model_name, 'gutena_forms_id_' ) ) {
+					$form_name = $model_name;
+				}
+			}
 
-				$form_name = Gutena_Forms_Forms_Model::get_instance()->get_name_by_id( $form_id );
-
+			if ( ! $form_name || 0 === strpos( $form_name, 'gutena_forms_id_' ) ) {
+				$form_name = __( 'Contact Form', 'gutena-forms' );
 			}
 
 

@@ -7,6 +7,7 @@ import {
 	slugToName,
 } from '../../shared/utils/helper';
 import { isStripeGatewayEnabled } from '../../shared/payments/stripe-field-utils';
+import { isSquareGatewayEnabled } from '../../shared/payments/square-field-utils';
 import {
 	InspectorControls,
 	__experimentalBlockVariationPicker,
@@ -185,6 +186,7 @@ export default function Edit( props ) {
 		cloudflareTurnstile,
 		honeypot,
 		paymentStripe,
+		paymentSquare,
 	} = attributes;
 
 	const { getClientIdsOfDescendants, getBlock } =
@@ -381,6 +383,25 @@ export default function Edit( props ) {
 						account_name: payment_stripe_defaults.account_name || '',
 						webhook_connected: payment_stripe_defaults.webhook_connected || false,
 						webhook_slots_exceeded: payment_stripe_defaults.webhook_slots_exceeded || false,
+						defaultSettings: true,
+					},
+				} );
+			}
+
+			if ( ! gfIsEmpty( paymentSquare ) && ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.payment_square ) ) {
+				const payment_square_defaults = gutenaFormsBlock.payment_square;
+				setAttributes( {
+					paymentSquare: {
+						enable: payment_square_defaults.enable,
+						payment_mode: payment_square_defaults.payment_mode || 'test',
+						connected: payment_square_defaults.connected || false,
+						connected_payment_mode: payment_square_defaults.connected_payment_mode || payment_square_defaults.payment_mode || 'test',
+						account_name: payment_square_defaults.account_name || '',
+						merchant_currency: payment_square_defaults.merchant_currency || '',
+						location_id: payment_square_defaults.location_id || '',
+						business_locations: Array.isArray( payment_square_defaults.business_locations )
+							? payment_square_defaults.business_locations
+							: [],
 						defaultSettings: true,
 					},
 				} );
@@ -771,6 +792,7 @@ export default function Edit( props ) {
 		'gutena/form-confirm-msg',
 		'gutena/form-error-msg',
 		...( isStripeGatewayEnabled() ? [ 'gutena/stripe-field' ] : [] ),
+		...( isSquareGatewayEnabled() ? [ 'gutena/square-field' ] : [] ),
 		...( typeof gutenaFormsBlock !== 'undefined' && gutenaFormsBlock?.is_pro
 			? PRO_STANDALONE_BLOCK_NAMES
 			: [] ),

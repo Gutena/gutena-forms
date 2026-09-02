@@ -145,6 +145,39 @@
 			 */
 			//step1: check if schema existing 
 			$fom_schema_row = $this->get_form_details( $block_form_id );
+
+			if ( empty( $fom_schema_row ) ) {
+				// Fallback 1: check table without published restriction
+				$all_rows = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT * FROM {$this->table_gutenaforms} WHERE block_form_id = %s LIMIT 1",
+						sanitize_key( $block_form_id )
+					)
+				);
+				if ( ! empty( $all_rows ) && ! empty( $all_rows[0]->form_id ) ) {
+					$fom_schema_row = $all_rows[0];
+				} else {
+					// Fallback 2: look up schema from option and auto-insert form row
+					$schema_opt = class_exists( 'Gutena_Forms_Helper' )
+						? Gutena_Forms_Helper::get_form_schema_record( $block_form_id )
+						: ( function_exists( 'gutena_forms_get_form_schema_option' ) ? gutena_forms_get_form_schema_option( $block_form_id, false ) : false );
+					if ( ! empty( $schema_opt ) ) {
+						$this->save_new_form( $block_form_id, $schema_opt );
+						$fom_schema_row = $this->get_form_details( $block_form_id );
+						if ( empty( $fom_schema_row ) ) {
+							$all_rows = $wpdb->get_results(
+								$wpdb->prepare(
+									"SELECT * FROM {$this->table_gutenaforms} WHERE block_form_id = %s LIMIT 1",
+									sanitize_key( $block_form_id )
+								)
+							);
+							if ( ! empty( $all_rows ) && ! empty( $all_rows[0]->form_id ) ) {
+								$fom_schema_row = $all_rows[0];
+							}
+						}
+					}
+				}
+			}
 			
 			if ( ! empty( $fom_schema_row ) ) {
 				
@@ -225,6 +258,15 @@
 
 				if ( class_exists( 'Gutena_Forms_Stripe_Intent_Service' ) ) {
 					Gutena_Forms_Stripe_Intent_Service::get_instance()->save_payment_for_entry(
+						absint( $fieldSchema['entry_id'] ),
+						$form_data,
+						$block_form_id,
+						$fieldSchema
+					);
+				}
+
+				if ( class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) {
+					Gutena_Forms_Square_Payment_Service::get_instance()->save_payment_for_entry(
 						absint( $fieldSchema['entry_id'] ),
 						$form_data,
 						$block_form_id,

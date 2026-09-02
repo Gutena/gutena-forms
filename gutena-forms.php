@@ -106,6 +106,20 @@ if ( ! function_exists( 'gutena_forms_is_stripe_gateway_enabled' ) ) :
 	}
 endif;
 
+if ( ! function_exists( 'gutena_forms_is_square_gateway_enabled' ) ) :
+	/**
+	 * Whether Square is enabled in Payment Methods settings.
+	 *
+	 * @since 2.1.0
+	 * @return bool
+	 */
+	function gutena_forms_is_square_gateway_enabled() {
+		$payment_settings = get_option( 'gutena_forms__payment_settings', array() );
+
+		return is_array( $payment_settings ) && ! empty( $payment_settings['square']['enable'] );
+	}
+endif;
+
 if ( ! function_exists( 'gutena_forms_get_block_editor_config' ) ) :
 	/**
 	 * Shared block editor + frontend localized config for gutenaFormsBlock.
@@ -124,7 +138,12 @@ if ( ! function_exists( 'gutena_forms_get_block_editor_config' ) ) :
 			? Gutena_Forms_Stripe_Connect::get_form_default_settings()
 			: array();
 
+		$payment_square_defaults = class_exists( 'Gutena_Forms_Square_Connect' )
+			? Gutena_Forms_Square_Connect::get_form_default_settings()
+			: array();
+
 		$stripe_gateway_enabled = gutena_forms_is_stripe_gateway_enabled();
+		$square_gateway_enabled = gutena_forms_is_square_gateway_enabled();
 
 		$gutena_forms_messages = empty( $gutena_forms_messages ) ? array() : $gutena_forms_messages;
 		$gf_message            = array(
@@ -190,7 +209,9 @@ if ( ! function_exists( 'gutena_forms_get_block_editor_config' ) ) :
 				'forms_available'               => $forms_available,
 				'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
 				'payment_stripe'                => is_array( $payment_stripe_defaults ) ? $payment_stripe_defaults : array(),
+				'payment_square'                => is_array( $payment_square_defaults ) ? $payment_square_defaults : array(),
 				'stripe_gateway_enabled'        => $stripe_gateway_enabled,
+				'square_gateway_enabled'        => $square_gateway_enabled,
 				'rest_url'                      => rest_url( 'gutena-forms/v1/' ),
 				'rest_nonce'                    => wp_create_nonce( 'wp_rest' ),
 				'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
@@ -315,6 +336,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-pro-field-blocks.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-stripe-field-block.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-square-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-fields.php';
 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-handle-save-form.php';

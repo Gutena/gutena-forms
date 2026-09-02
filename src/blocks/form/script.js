@@ -285,6 +285,100 @@ document.addEventListener("DOMContentLoaded", function(){
 		return true;
 	};
 
+	const getSquareFieldConfig = ( squareRoot ) => {
+		if ( isEmpty( squareRoot ) ) {
+			return null;
+		}
+
+		const configInput = squareRoot.querySelector( '.gutena-forms-square-payment__config-input' );
+		if ( ! isEmpty( configInput ) && configInput.value ) {
+			try {
+				const parsed = JSON.parse( configInput.value );
+				if ( parsed && 'object' === typeof parsed ) {
+					return parsed;
+				}
+			} catch ( error ) {
+				console.log( 'Unable to parse Square field config', error );
+			}
+		}
+
+		return {
+			paymentType: squareRoot.getAttribute( 'data-square-payment-type' ) || 'one_time',
+			amountType: squareRoot.getAttribute( 'data-square-amount-type' ) || 'fixed',
+			fixedAmount: parseFloat( squareRoot.getAttribute( 'data-square-fixed-amount' ) || '0' ),
+			variableAmountField: squareRoot.getAttribute( 'data-square-variable-amount-field' ) || '',
+			minimumAmount: parseFloat( squareRoot.getAttribute( 'data-square-minimum-amount' ) || '0' ),
+			customerEmailField: squareRoot.getAttribute( 'data-square-customer-email-field' ) || '',
+			customerNameField: squareRoot.getAttribute( 'data-square-customer-name-field' ) || '',
+			subscriptionPlanName: squareRoot.getAttribute( 'data-square-subscription-plan' ) || '',
+		};
+	};
+
+	const setSquareFieldError = ( squareRoot, message ) => {
+		if ( isEmpty( squareRoot ) ) {
+			return;
+		}
+
+		const errorEl = squareRoot.querySelector( '.gutena-forms-square-payment__error' );
+		if ( ! isEmpty( errorEl ) ) {
+			errorEl.textContent = message || '';
+			errorEl.style.display = message ? 'block' : 'none';
+		}
+
+		squareRoot.classList.toggle( 'display-error', !! message );
+	};
+
+	const validateSquarePaymentField = ( gutena_forms ) => {
+		const squareRoot = gutena_forms.querySelector( '.wp-block-gutena-square-field' );
+		if ( isEmpty( squareRoot ) ) {
+			return true;
+		}
+
+		const config = getSquareFieldConfig( squareRoot );
+		if ( isEmpty( config ) ) {
+			return true;
+		}
+
+		let errorMessage = '';
+
+		if ( 'one_time' === config.paymentType ) {
+			if ( 'variable' === config.amountType ) {
+				if ( isEmpty( config.variableAmountField ) ) {
+					errorMessage = 'Please select a field for the variable payment amount.';
+				} else {
+					const sourceField = gutena_forms.querySelector( `[name="${ config.variableAmountField }"]` );
+					const rawValue = sourceField?.value ?? '';
+					const parsedAmount = parseFloat( rawValue );
+					const minimumAmount = parseFloat( config.minimumAmount ) || 0;
+
+					if ( isEmpty( rawValue ) || Number.isNaN( parsedAmount ) || parsedAmount <= 0 ) {
+						errorMessage = 'Please enter a valid payment amount.';
+					} else if ( minimumAmount > 0 && parsedAmount < minimumAmount ) {
+						errorMessage = `Payment amount must be at least ${ minimumAmount.toFixed( 2 ) }.`;
+					}
+				}
+			} else if ( ! config.fixedAmount || config.fixedAmount <= 0 ) {
+				errorMessage = 'Payment amount is not configured correctly.';
+			}
+		}
+
+		if ( 'subscription' === config.paymentType ) {
+			if ( isEmpty( config.subscriptionPlanName ) ) {
+				errorMessage = 'Subscription plan name is required.';
+			} else if ( ! config.fixedAmount || config.fixedAmount <= 0 ) {
+				errorMessage = 'Subscription amount is not configured correctly.';
+			}
+		}
+
+		if ( errorMessage ) {
+			setSquareFieldError( squareRoot, errorMessage );
+			return false;
+		}
+
+		setSquareFieldError( squareRoot, '' );
+		return true;
+	};
+
 	const form_sumbit = () => {
 		let submitButton = document.querySelectorAll(
 			'.wp-block-gutena-forms .gutena-forms-submit-button'
@@ -335,6 +429,11 @@ document.addEventListener("DOMContentLoaded", function(){
 						error_field = gutena_forms.querySelector( '[data-gutena-stripe-payment]' ) || error_field;
 					}
 
+					if ( formCheck && false === validateSquarePaymentField( gutena_forms ) ) {
+						formCheck = false;
+						error_field = gutena_forms.querySelector( '.wp-block-gutena-square-field' ) || error_field;
+					}
+
 					//exit and scroll to error field
 					if ( false === formCheck ) {
 						//Show error message at the form bottom
@@ -374,7 +473,7 @@ document.addEventListener("DOMContentLoaded", function(){
 						save_gutena_forms( gutena_forms, form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml );
 					};
 
-					const runStripeThenSubmit = () => {
+					const runPaymentThenSubmit = () => {
 						if (
 							'undefined' !== typeof window.gutenaFormsStripe &&
 							window.gutenaFormsStripe.hasPaymentField( gutena_forms ) &&
@@ -407,6 +506,38 @@ document.addEventListener("DOMContentLoaded", function(){
 							return;
 						}
 
+						if (
+							'undefined' !== typeof window.gutenaFormsSquare &&
+							window.gutenaFormsSquare.hasPaymentField( gutena_forms ) &&
+							'function' === typeof window.gutenaFormsSquare.processBeforeSubmit
+						) {
+							window.gutenaFormsSquare
+								.processBeforeSubmit( gutena_forms, form_data )
+								.then( submitForm )
+								.catch( ( squareError ) => {
+									submitButton[ i ].disabled = false;
+									submitBtnLink.innerHTML = submitBtnLinkHtml;
+									gutena_forms.classList.remove( 'form-progress' );
+									gutena_forms.classList.add( 'display-error-message' );
+
+									const squareRoot = gutena_forms.querySelector( '.wp-block-gutena-square-field' );
+									if ( squareRoot ) {
+										squareRoot.scrollIntoView( { behavior: 'smooth' } );
+									}
+
+									const errorMsgElement = gutena_forms.querySelector(
+										'.wp-block-gutena-form-error-msg .gutena-forms-error-text'
+									);
+									if ( ! isEmpty( errorMsgElement ) && 0 !== errorMsgElement.length ) {
+										errorMsgElement.innerHTML =
+											squareError?.message || 'Payment could not be processed. Please try again.';
+									}
+
+									console.log( 'Square payment error', squareError );
+								} );
+							return;
+						}
+
 						submitForm();
 					};
 
@@ -419,21 +550,21 @@ document.addEventListener("DOMContentLoaded", function(){
 						if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
 							if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
 								console.log("grecaptcha not defined");
-								runStripeThenSubmit();
+								runPaymentThenSubmit();
 							} else {
 								grecaptcha.ready(function() {
 									grecaptcha.execute( formRecaptcha.siteKey, {action: 'submit'}).then( function( token ) {
 										form_data.append('g-recaptcha-response', token);
-										runStripeThenSubmit();
+										runPaymentThenSubmit();
 									});
 								});
 							}
 						} else {
-							runStripeThenSubmit();
+							runPaymentThenSubmit();
 						}
 					} else {
 						//recaptcha not enabled or configured
-						runStripeThenSubmit();
+						runPaymentThenSubmit();
 					}
 				} );
 			}
@@ -484,6 +615,11 @@ document.addEventListener("DOMContentLoaded", function(){
 				const stripeRoot = gutena_forms.querySelector( '[data-gutena-stripe-payment]' );
 				if ( stripeRoot?.gutenaStripe?.clear ) {
 					stripeRoot.gutenaStripe.clear();
+				}
+
+				const squareRoot = gutena_forms.querySelector( '.wp-block-gutena-square-field' );
+				if ( squareRoot?.gutenaSquare?.clear ) {
+					squareRoot.gutenaSquare.clear();
 				}
 
 				gutena_forms.classList.add(

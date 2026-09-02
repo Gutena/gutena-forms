@@ -4,28 +4,25 @@ import domReady from '@wordpress/dom-ready';
 import { select } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import {
-	formHasPaymentField,
-	getFormClientId,
-	isStripeGatewayEnabled,
-} from '../../../shared/payments/stripe-field-utils';
+import { formHasPaymentField, getFormClientId } from '../../../shared/payments/stripe-field-utils';
+import { isSquareGatewayEnabled } from '../../../shared/payments/square-field-utils';
 import Edit from './edit';
 import Save from './save';
 import Icon from './icon';
 import metadata from './block.json';
 import './editor.scss';
-import './style.scss';
+
 addFilter(
 	'blocks.registerBlockType',
-	'gutena-forms/stripe-field-inserter',
+	'gutena-forms/square-field-inserter',
 	( settings, name ) => {
-		if ( 'gutena/stripe-field' !== name ) {
+		if ( 'gutena/square-field' !== name ) {
 			return settings;
 		}
 
 		settings.icon = Icon;
 
-		if ( ! isStripeGatewayEnabled() ) {
+		if ( ! isSquareGatewayEnabled() ) {
 			settings.supports = {
 				...settings.supports,
 				inserter: false,
@@ -47,28 +44,27 @@ domReady( () => {
 		return;
 	}
 
-	// Clear any stale save lock from the removed editor validation plugin.
-	wp.data.dispatch( 'core/editor' )?.unlockPostSaving?.( 'gutena-stripe-field-validation' );
+	wp.data.dispatch( 'core/editor' )?.unlockPostSaving?.( 'gutena-square-field-validation' );
 
 	const editPostDispatch = wp.data.dispatch( 'core/edit-post' );
 
-	if ( isStripeGatewayEnabled() ) {
-		editPostDispatch?.showBlockTypes?.( [ 'gutena/stripe-field' ] );
+	if ( isSquareGatewayEnabled() ) {
+		editPostDispatch?.showBlockTypes?.( [ 'gutena/square-field' ] );
 		return;
 	}
 
-	editPostDispatch?.hideBlockTypes?.( [ 'gutena/stripe-field' ] );
+	editPostDispatch?.hideBlockTypes?.( [ 'gutena/square-field' ] );
 } );
 
 addFilter(
 	'blockEditor.__experimentalCanInsertBlockType',
-	'gutena-forms/limit-stripe-field',
+	'gutena-forms/limit-square-field',
 	( canInsert, blockType, rootClientId ) => {
-		if ( 'gutena/stripe-field' !== blockType.name || ! canInsert ) {
+		if ( 'gutena/square-field' !== blockType.name || ! canInsert ) {
 			return canInsert;
 		}
 
-		if ( ! isStripeGatewayEnabled() ) {
+		if ( ! isSquareGatewayEnabled() ) {
 			return false;
 		}
 

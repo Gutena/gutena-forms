@@ -137,6 +137,48 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		}
 
 		/**
+		 * Get effective Square payment settings (global default or form override).
+		 *
+		 * @since 2.1.0
+		 * @param array $block_square Block paymentSquare attributes.
+		 * @return array
+		 */
+		public static function get_effective_payment_square( $block_square ) {
+			$global = class_exists( 'Gutena_Forms_Square_Connect' )
+				? Gutena_Forms_Square_Connect::get_public_settings()
+				: array();
+
+			$block_square = is_array( $block_square ) ? $block_square : array();
+			$use_global   = (
+				! isset( $block_square['defaultSettings'] )
+				|| false !== rest_sanitize_boolean( $block_square['defaultSettings'] )
+			);
+
+			if ( $use_global && ! empty( $global ) ) {
+				return array_merge(
+					array(
+						'enable'                 => false,
+						'payment_mode'           => 'test',
+						'connected'              => false,
+						'connected_payment_mode' => 'test',
+						'account_name'           => '',
+						'merchant_currency'      => '',
+						'location_id'            => '',
+						'business_locations'     => array(),
+					),
+					$global,
+					array( 'defaultSettings' => true )
+				);
+			}
+
+			return array_merge(
+				$global,
+				$block_square,
+				array( 'defaultSettings' => false )
+			);
+		}
+
+		/**
 		 * Get effective Cloudflare Turnstile settings (global default or form override).
 		 *
 		 * @since 1.8.0

@@ -1,0 +1,83 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "gutena/square-field",
+	"version": "1.0.0",
+	"title": "Square Payment",
+	"parent": [ "gutena/forms" ],
+	"category": "gutena",
+	"icon": {
+		"src": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\"><rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"2\" stroke=\"#272727\" stroke-width=\"1.5\"/><rect x=\"7\" y=\"7\" width=\"10\" height=\"10\" rx=\"1.5\" stroke=\"#272727\" stroke-width=\"1.5\"/></svg>"
+	},
+	"description": "Allows accepting credit card information to make payments via Square payment gateway.",
+	"keywords": [ "square", "payment", "credit card", "gutena forms" ],
+	"attributes": {
+		"nameAttr": {
+			"type": "string",
+			"default": "square_payment"
+		},
+		"fieldName": {
+			"type": "string",
+			"default": "Credit Card"
+		},
+		"paymentType": {
+			"type": "string",
+			"default": "one_time"
+		},
+		"amountType": {
+			"type": "string",
+			"default": "fixed"
+		},
+		"fixedAmount": {
+			"type": "number",
+			"default": 0
+		},
+		"variableAmountField": {
+			"type": "string",
+			"default": ""
+		},
+		"minimumAmount": {
+			"type": "number",
+			"default": 0
+		},
+		"customerEmailField": {
+			"type": "string",
+			"default": ""
+		},
+		"customerNameField": {
+			"type": "string",
+			"default": ""
+		},
+		"subscriptionPlanName": {
+			"type": "string",
+			"default": ""
+		},
+		"billingInterval": {
+			"type": "string",
+			"default": "monthly"
+		},
+		"billingCycles": {
+			"type": "string",
+			"default": "never"
+		},
+		"customBillingCycles": {
+			"type": "number",
+			"default": 1
+		}
+	},
+	"supports": {
+		"inserter": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"usesContext": [ "gutena-forms/formID" ],
+	"textdomain": "gutena-forms",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

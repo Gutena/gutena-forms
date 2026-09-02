@@ -210,6 +210,20 @@
         "webhook_slots_exceeded": false,
         "defaultSettings": true
       }
+    },
+    "paymentSquare": {
+      "type": "object",
+      "default": {
+        "enable": false,
+        "payment_mode": "test",
+        "connected": false,
+        "connected_payment_mode": "test",
+        "account_name": "",
+        "merchant_currency": "",
+        "location_id": "",
+        "business_locations": [],
+        "defaultSettings": true
+      }
     }
   },
   "providesContext": {

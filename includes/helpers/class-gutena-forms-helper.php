@@ -149,6 +149,18 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 
 		/**
 		 * Load a form schema from options or the forms database table.
+		 * Alias of get_form_schema_record.
+		 *
+		 * @since 2.1.0
+		 * @param string $form_id Form ID.
+		 * @return array
+		 */
+		public static function get_form_schema( $form_id ) {
+			return self::get_form_schema_record( $form_id );
+		}
+
+		/**
+		 * Load a form schema from options or the forms database table.
 		 *
 		 * @since 2.1.0
 		 * @param string $form_id Form ID.

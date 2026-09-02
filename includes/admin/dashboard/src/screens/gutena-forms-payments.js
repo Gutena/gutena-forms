@@ -75,11 +75,6 @@ const GutenaFormsPayments = ( { setActiveMenu } ) => {
 							width: '100px',
 						},
 						{
-							key: 'payment_id',
-							value: __( 'Payment ID', 'gutena-forms' ),
-							width: '130px',
-						},
-						{
 							key: 'form_name',
 							value: __( 'Form Name', 'gutena-forms' ),
 							width: '150px',
@@ -130,11 +125,6 @@ const GutenaFormsPayments = ( { setActiveMenu } ) => {
 								>
 									{ __( 'Entry', 'gutena-forms' ) } #{ row.entry_id }
 								</Link>
-							),
-							payment_id: ( { row } ) => (
-								<div className="gutena-forms__payments-table__payment-id">
-									{ row.payment_id || `#${ row.entry_id }` }
-								</div>
 							),
 							form_name: ( { row } ) => (
 								<div className="gutena-forms__payments-table__form-name">{ row.form_name }</div>

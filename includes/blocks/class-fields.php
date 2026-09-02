@@ -66,11 +66,18 @@ if ( ! class_exists( 'Gutena_Forms_Fields' ) ) :
 						'render_callback' => array( Gutena_Forms_Stripe_Field_Block::get_instance(), 'render_block' ),
 					),
 				),
+				array(
+					'name' => 'square',
+					'args' => array(
+						'render_callback' => array( Gutena_Forms_Square_Field_Block::get_instance(), 'render_block' ),
+					),
+				),
 			);
 			
 			add_filter( 'gutena_forms__register_form_fields', array( $this, 'register_fields' ) );
 			add_filter( 'gutena_forms_map_block_field_schema', array( $this, 'map_block_field_schema' ), 10, 3 );
 			add_filter( 'register_block_type_args', array( $this, 'filter_stripe_field_block_args' ), 10, 2 );
+			add_filter( 'register_block_type_args', array( $this, 'filter_square_field_block_args' ), 10, 2 );
 		}
 
 		/**
@@ -87,6 +94,32 @@ if ( ! class_exists( 'Gutena_Forms_Fields' ) ) :
 			}
 
 			if ( gutena_forms_is_stripe_gateway_enabled() ) {
+				return $args;
+			}
+
+			if ( ! isset( $args['supports'] ) || ! is_array( $args['supports'] ) ) {
+				$args['supports'] = array();
+			}
+
+			$args['supports']['inserter'] = false;
+
+			return $args;
+		}
+
+		/**
+		 * Hide Square field from inserter when the gateway toggle is off.
+		 *
+		 * @since 2.1.0
+		 * @param array  $args       Block registration args.
+		 * @param string $block_type Block name.
+		 * @return array
+		 */
+		public function filter_square_field_block_args( $args, $block_type ) {
+			if ( 'gutena/square-field' !== $block_type ) {
+				return $args;
+			}
+
+			if ( gutena_forms_is_square_gateway_enabled() ) {
 				return $args;
 			}
 

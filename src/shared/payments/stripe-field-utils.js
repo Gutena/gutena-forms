@@ -32,6 +32,20 @@ export const getFormBlocks = ( formClientId ) => {
 	return select( blockEditorStore ).getBlock( formClientId );
 };
 
+const PAYMENT_FIELD_BLOCK_NAMES = [ 'gutena/stripe-field', 'gutena/square-field' ];
+
+export const formHasPaymentField = ( formClientId, excludeClientId = '' ) => {
+	const formBlock = getFormBlocks( formClientId );
+	if ( gfIsEmpty( formBlock ) ) {
+		return false;
+	}
+
+	return PAYMENT_FIELD_BLOCK_NAMES.some( ( blockName ) => {
+		const paymentFields = getInnerBlocksbyNameAttr( formBlock.innerBlocks, blockName );
+		return paymentFields.some( ( block ) => block.clientId !== excludeClientId );
+	} );
+};
+
 export const formHasStripeField = ( formClientId, excludeClientId = '' ) => {
 	const formBlock = getFormBlocks( formClientId );
 	if ( gfIsEmpty( formBlock ) ) {

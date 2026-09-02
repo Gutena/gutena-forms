@@ -312,6 +312,79 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 			return $all[ self::GATEWAY_ID ];
 		}
 
+		/**
+		 * Get public Square application ID for frontend Web Payments SDK.
+		 *
+		 * @param string $payment_mode test|live.
+		 * @return string
+		 */
+		public static function get_application_id( $payment_mode = 'test' ) {
+			$payment_mode = in_array( $payment_mode, array( 'live', 'test' ), true ) ? $payment_mode : 'test';
+			$credentials  = self::get_stored_credentials();
+			$settings     = get_option( self::SETTINGS_OPTION, array() );
+			$square_set   = ( is_array( $settings ) && ! empty( $settings[ self::GATEWAY_ID ] ) && is_array( $settings[ self::GATEWAY_ID ] ) )
+				? $settings[ self::GATEWAY_ID ]
+				: array();
+
+			// 1. Direct mode-specific credential.
+			if ( ! empty( $credentials[ 'application_id_' . $payment_mode ] ) ) {
+				return sanitize_text_field( $credentials[ 'application_id_' . $payment_mode ] );
+			}
+
+			// 2. Stored credential application ID if environment matches.
+			if ( ! empty( $credentials['application_id'] ) ) {
+				$app_id         = sanitize_text_field( $credentials['application_id'] );
+				$is_sandbox_app = ( 0 === strpos( $app_id, 'sandbox-' ) );
+				if ( ( 'test' === $payment_mode && $is_sandbox_app ) || ( 'live' === $payment_mode && ! $is_sandbox_app ) ) {
+					return $app_id;
+				}
+			}
+
+			if ( ! empty( $credentials['appid'] ) ) {
+				$app_id         = sanitize_text_field( $credentials['appid'] );
+				$is_sandbox_app = ( 0 === strpos( $app_id, 'sandbox-' ) );
+				if ( ( 'test' === $payment_mode && $is_sandbox_app ) || ( 'live' === $payment_mode && ! $is_sandbox_app ) ) {
+					return $app_id;
+				}
+			}
+
+			// 3. Defined constant.
+			if ( defined( 'GUTENA_FORMS_SQUARE_APPLICATION_ID' ) ) {
+				return (string) GUTENA_FORMS_SQUARE_APPLICATION_ID;
+			}
+
+			// 4. Settings override.
+			if ( ! empty( $square_set[ 'application_id_' . $payment_mode ] ) ) {
+				return sanitize_text_field( $square_set[ 'application_id_' . $payment_mode ] );
+			}
+			if ( ! empty( $square_set['application_id'] ) ) {
+				return sanitize_text_field( $square_set['application_id'] );
+			}
+
+			// 5. Query local database table wp_aems_credentials.
+			global $wpdb;
+			if ( ! empty( $wpdb ) ) {
+				$table = $wpdb->prefix . 'aems_credentials';
+				$env   = 'test' === $payment_mode ? 'sandbox' : 'live';
+				$row   = $wpdb->get_row(
+					$wpdb->prepare(
+						"SELECT application_id FROM {$table} WHERE (app_name = %s OR app_name = 'WP_PAYMENT_FORMS_SQUARE_APP' OR app_name = 'WP_EASY_PAY_SQUARE_APP' OR app_name = 'API Experts') AND environment = %s ORDER BY (app_name = %s) DESC LIMIT 1",
+						self::get_app_name(),
+						$env,
+						self::get_app_name()
+					),
+					ARRAY_A
+				);
+				if ( ! empty( $row['application_id'] ) ) {
+					return sanitize_text_field( $row['application_id'] );
+				}
+			}
+
+			return ( 'test' === $payment_mode )
+				? (string) apply_filters( 'gutena_forms_square_sandbox_app_id', 'sandbox-sq0idb-SARJoHOnaA-CyA1hIw0QKA' )
+				: (string) apply_filters( 'gutena_forms_square_live_app_id', 'sq0idp-k0r5c0MNIBIkTd5pXmV-tg' );
+		}
+
 		public static function get_public_settings() {
 			$settings    = get_option( self::SETTINGS_OPTION, array() );
 			$credentials = self::get_stored_credentials();
@@ -352,6 +425,7 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 				'merchant_currency'      => sanitize_text_field( $square['merchant_currency'] ?? '' ),
 				'location_id'            => sanitize_text_field( $square['location_id'] ?? '' ),
 				'business_locations'     => $locations,
+				'application_id'         => self::get_application_id( $connected_payment_mode ),
 			);
 		}
 
@@ -368,6 +442,33 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 				: array();
 
 			return ! empty( $square['connected'] );
+		}
+
+		/**
+		 * Defaults for form-level Square settings in the block editor.
+		 *
+		 * @since 2.1.0
+		 * @return array
+		 */
+		public static function get_form_default_settings() {
+			$public = self::get_public_settings();
+
+			if ( empty( $public ) ) {
+				$public = array(
+					'enable'                 => false,
+					'payment_mode'           => 'test',
+					'connected'              => false,
+					'connected_payment_mode' => 'test',
+					'account_name'           => '',
+					'merchant_currency'      => '',
+					'location_id'            => '',
+					'business_locations'     => array(),
+				);
+			}
+
+			$public['defaultSettings'] = true;
+
+			return $public;
 		}
 
 		/**
@@ -445,6 +546,13 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 			$refresh_token = $this->get_request_param( 'refresh_token' );
 			$merchant_id   = sanitize_text_field( $this->get_request_param( 'merchant_id' ) );
 			$payment_mode  = $this->resolve_payment_mode_from_request();
+			$appid         = sanitize_text_field( $this->get_request_param( 'appid' ) );
+			if ( empty( $appid ) ) {
+				$appid = sanitize_text_field( $this->get_request_param( 'application_id' ) );
+			}
+			if ( empty( $appid ) ) {
+				$appid = self::get_application_id( $payment_mode );
+			}
 
 			if ( '' === $access_token ) {
 				$this->fail_oauth_connection(
@@ -473,6 +581,8 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 					'access_token'       => trim( (string) $access_token ),
 					'refresh_token'      => trim( (string) $refresh_token ),
 					'payment_mode'       => $payment_mode,
+					'application_id'     => $appid,
+					'appid'              => $appid,
 					'account_name'       => $merchant_details['account_name'],
 					'merchant_currency'  => $merchant_details['merchant_currency'],
 					'business_locations' => $merchant_details['business_locations'],
@@ -521,6 +631,25 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 				$updates['currency']          = $details['merchant_currency'];
 			}
 
+			$loc_id            = ! empty( $square['location_id'] ) ? $square['location_id'] : ( $locations[0]['id'] ?? '' );
+			$discovered_app_id = $this->fetch_application_id_from_square( $access_token, $payment_mode, $loc_id );
+
+			if ( ! empty( $discovered_app_id ) ) {
+				$credentials['application_id']                   = $discovered_app_id;
+				$credentials['appid']                            = $discovered_app_id;
+				$credentials[ 'application_id_' . $payment_mode ] = $discovered_app_id;
+				$this->store_credentials( $credentials );
+				$updates['application_id'] = $discovered_app_id;
+			} elseif ( empty( $credentials['application_id'] ) ) {
+				$app_id = self::get_application_id( $payment_mode );
+				if ( ! empty( $app_id ) ) {
+					$credentials['application_id']                   = $app_id;
+					$credentials['appid']                            = $app_id;
+					$credentials[ 'application_id_' . $payment_mode ] = $app_id;
+					$this->store_credentials( $credentials );
+				}
+			}
+
 			if ( empty( $square['business_locations'] ) && ! empty( $locations ) ) {
 				$updates['business_locations'] = $locations;
 			}
@@ -532,23 +661,94 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 			$this->update_gateway_settings( $updates );
 		}
 
+		/**
+		 * Discover the exact Square Application ID for the given credentials.
+		 *
+		 * @param string $access_token OAuth access token.
+		 * @param string $payment_mode test|live.
+		 * @param string $location_id  Business location ID.
+		 * @return string
+		 */
+		public function fetch_application_id_from_square( $access_token, $payment_mode = 'test', $location_id = '' ) {
+			if ( empty( $access_token ) ) {
+				return '';
+			}
+
+			if ( 'test' === $payment_mode && ! empty( $location_id ) ) {
+				$api_base = 'https://connect.squareupsandbox.com';
+				$response = wp_remote_post(
+					$api_base . '/v2/payments',
+					array(
+						'timeout' => 15,
+						'headers' => array(
+							'Authorization'  => 'Bearer ' . $access_token,
+							'Square-Version' => '2024-01-18',
+							'Content-Type'   => 'application/json',
+						),
+						'body'    => wp_json_encode(
+							array(
+								'source_id'       => 'cnon:card-nonce-ok',
+								'idempotency_key' => wp_generate_uuid4(),
+								'amount_money'    => array(
+									'amount'   => 1,
+									'currency' => 'USD',
+								),
+								'location_id'     => $location_id,
+								'autocomplete'    => false,
+							)
+						),
+					)
+				);
+
+				if ( ! is_wp_error( $response ) ) {
+					$body = json_decode( wp_remote_retrieve_body( $response ), true );
+					if ( ! empty( $body['payment']['application_details']['application_id'] ) ) {
+						$app_id = sanitize_text_field( $body['payment']['application_details']['application_id'] );
+						if ( ! empty( $body['payment']['id'] ) ) {
+							wp_remote_post(
+								$api_base . '/v2/payments/' . $body['payment']['id'] . '/cancel',
+								array(
+									'timeout' => 10,
+									'headers' => array(
+										'Authorization'  => 'Bearer ' . $access_token,
+										'Square-Version' => '2024-01-18',
+										'Content-Type'   => 'application/json',
+									),
+								)
+							);
+						}
+						return $app_id;
+					}
+				}
+			}
+
+			return '';
+		}
+
 		private function complete_connection( $data ) {
 			$payment_mode      = in_array( $data['payment_mode'] ?? 'test', array( 'live', 'test' ), true ) ? $data['payment_mode'] : 'test';
 			$locations         = self::sanitize_locations( $data['business_locations'] ?? array() );
 			$default_location  = ! empty( $locations[0]['id'] ) ? $locations[0]['id'] : '';
 			$merchant_currency = sanitize_text_field( $data['merchant_currency'] ?? '' );
+			$app_id            = sanitize_text_field( $data['application_id'] ?? $data['appid'] ?? '' );
+			if ( empty( $app_id ) ) {
+				$app_id = self::get_application_id( $payment_mode );
+			}
 
 			$this->store_credentials(
 				array(
-					'merchant_id'   => $data['merchant_id'],
-					'access_token'  => $data['access_token'],
-					'refresh_token' => $data['refresh_token'],
-					'payment_mode'  => $payment_mode,
+					'merchant_id'    => $data['merchant_id'],
+					'access_token'   => $data['access_token'],
+					'refresh_token'  => $data['refresh_token'],
+					'payment_mode'   => $payment_mode,
+					'application_id' => $app_id,
+					'appid'          => $app_id,
 				)
 			);
 
 			$this->update_gateway_settings(
 				array(
+					'enable'             => true,
 					'connected'          => true,
 					'account_name'       => $data['account_name'] ? $data['account_name'] : __( 'Square Account', 'gutena-forms' ),
 					'payment_mode'       => $payment_mode,
@@ -556,6 +756,7 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 					'business_locations' => $locations,
 					'location_id'        => $default_location,
 					'currency'           => $merchant_currency ? $merchant_currency : 'USD',
+					'application_id'     => $app_id,
 				)
 			);
 
@@ -761,13 +962,23 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 				$all = array();
 			}
 
+			$payment_mode = in_array( $credentials['payment_mode'] ?? 'test', array( 'live', 'test' ), true )
+				? $credentials['payment_mode']
+				: 'test';
+
+			$app_id = sanitize_text_field( $credentials['application_id'] ?? $credentials['appid'] ?? '' );
+			if ( empty( $app_id ) ) {
+				$app_id = self::get_application_id( $payment_mode );
+			}
+
 			$all[ self::GATEWAY_ID ] = array(
-				'merchant_id'   => sanitize_text_field( $credentials['merchant_id'] ?? '' ),
-				'access_token'  => trim( (string) ( $credentials['access_token'] ?? '' ) ),
-				'refresh_token' => trim( (string) ( $credentials['refresh_token'] ?? '' ) ),
-				'payment_mode'  => in_array( $credentials['payment_mode'] ?? 'test', array( 'live', 'test' ), true )
-					? $credentials['payment_mode']
-					: 'test',
+				'merchant_id'                    => sanitize_text_field( $credentials['merchant_id'] ?? '' ),
+				'access_token'                   => trim( (string) ( $credentials['access_token'] ?? '' ) ),
+				'refresh_token'                  => trim( (string) ( $credentials['refresh_token'] ?? '' ) ),
+				'payment_mode'                   => $payment_mode,
+				'application_id'                 => $app_id,
+				'appid'                          => $app_id,
+				'application_id_' . $payment_mode => $app_id,
 			);
 
 			update_option( self::CREDENTIALS_OPTION, $all, false );

@@ -1,0 +1,187 @@
+.wp-block-gutena-square-field {
+	--gf-square-border: #e6e6e6;
+	--gf-square-text: #30313d;
+	--gf-square-muted: #6d6e78;
+	--gf-square-primary: #0570de;
+	--gf-square-radius: 5px;
+	--gf-square-panel-radius: 8px;
+
+	margin-bottom: 20px;
+
+	.gutena-forms-square-payment__heading {
+		display: block;
+		margin-bottom: 4px;
+		color: var(--gf-square-text);
+		font-size: 14px;
+		font-weight: 500;
+	}
+
+	.gutena-forms-square-payment__amount-hint {
+		margin: 0 0 12px;
+		color: var(--gf-square-muted);
+		font-size: 13px;
+		line-height: 1.5;
+	}
+
+	.gutena-forms-square-payment__plan-name {
+		margin: 0 0 4px;
+		color: var(--gf-square-text);
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.5;
+	}
+
+	.gutena-forms-square-payment__subscription-details {
+		margin: 0 0 12px;
+		padding: 12px 14px;
+		border: 1px solid var(--gf-square-border);
+		border-radius: var(--gf-square-radius);
+		background: #f8fafc;
+	}
+
+	.gutena-forms-square-payment__subscription-badge {
+		display: inline-block;
+		margin-bottom: 8px;
+		padding: 2px 8px;
+		border-radius: 999px;
+		background: #e8f5f1;
+		color: #0da88c;
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+	}
+
+	.gutena-forms-square-payment__subscription-summary {
+		margin: 0;
+		color: var(--gf-square-text);
+		font-size: 15px;
+		font-weight: 600;
+		line-height: 1.5;
+	}
+
+	.gutena-forms-square-payment__panel {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		overflow: hidden;
+		border: 1px solid var(--gf-square-border);
+		border-radius: var(--gf-square-panel-radius);
+		background: #fff;
+		box-sizing: border-box;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
+	}
+
+	.gutena-forms-square-payment__tabs {
+		display: flex;
+		border-bottom: 1px solid var(--gf-square-border);
+		background: #fff;
+	}
+
+	.gutena-forms-square-payment__tab {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		min-height: 48px;
+		padding: 0 16px;
+		border: none;
+		border-bottom: 2px solid var(--gf-square-primary);
+		margin-bottom: -1px;
+		background: transparent;
+		color: var(--gf-square-primary);
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 1;
+	}
+
+	.gutena-forms-square-payment__tab-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.gutena-forms-square-payment__fields {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		padding: 16px;
+	}
+
+	.gutena-forms-square-payment__header-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 8px;
+	}
+
+	.gutena-forms-square-payment__label {
+		display: block;
+		margin: 0;
+		color: var(--gf-square-text);
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 1.4;
+	}
+
+	.gutena-forms-square-payment__brand-icons {
+		display: flex;
+		align-items: center;
+		gap: 3px;
+	}
+
+	.gutena-forms-square-payment__brand-icon {
+		display: inline-flex;
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 16px;
+		overflow: hidden;
+		border-radius: 2px;
+		box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
+
+		svg {
+			display: block;
+			width: 24px;
+			height: 16px;
+		}
+	}
+
+	.gutena-forms-square-payment__container {
+		min-height: 90px;
+		padding: 12px;
+		border: 1px solid var(--gf-square-border);
+		border-radius: var(--gf-square-radius);
+		background: #fff;
+		box-sizing: border-box;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+		&:focus-within {
+			border-color: var(--gf-square-primary);
+			box-shadow: 0 0 0 1px var(--gf-square-primary);
+		}
+
+		iframe {
+			display: block;
+			width: 100% !important;
+		}
+	}
+
+	.gutena-forms-square-payment__subscription-notice {
+		margin: 0;
+		color: var(--gf-square-muted);
+		font-size: 12px;
+		line-height: 1.5;
+	}
+
+	.gutena-forms-square-payment__error {
+		margin: 6px 0 0;
+		color: #df1b41;
+		font-size: 13px;
+		display: none;
+	}
+
+	&.display-error .gutena-forms-square-payment__container {
+		border-color: #df1b41;
+	}
+}
