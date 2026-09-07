@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		};
 	};
 
-	//enqueue recaptcha if not enqueued 
+	//enqueue recaptcha if not enqueued
 	const check_and_load_grecaptcha = () => {
 		if ( 'undefined' === typeof gutenaFormsBlock || isEmpty( gutenaFormsBlock.grecaptcha ) ) {
 			return;
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	/**
 	 * Check and load Cloudflare Turnstile
 	 * Fallback for Cloudflare Turnstile
-	 * 
+	 *
 	 * @since 1.3.0
 	 */
 	const check_and_load_cloudflare_turnstile = () => {
@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	};
 
-	const save_gutena_forms = ( gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml ) => { 
+	const save_gutena_forms = ( gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml ) => {
 		fetch( gutenaFormsBlock.ajax_url, {
 			method: 'POST',
 			credentials: 'same-origin', // <-- make sure to include credentials
@@ -442,16 +442,16 @@ document.addEventListener("DOMContentLoaded", function(){
 		} else {
 			customMessages = {};
 		}
-		
+
 		let input_value = '';
 		let is_required = hasClass( form_field, 'required-field' );
-		
-		//get field group 
+
+		//get field group
 		let field_group = getParents(
 			form_field,
 			'.wp-block-gutena-field-group'
 		);
-		
+
 		//return false if field group not exists
 		if ( isEmpty( field_group ) ) {
 			console.log( 'field_group not defined' );
@@ -459,12 +459,12 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 
 		field_group = field_group[0];
-		
+
 		let isCheckboxOrRadio =  hasClass( form_field, 'checkbox-field' ) || hasClass( form_field, 'radio-field' ) || hasClass( form_field, 'optin-field' );
 
 		if ( isCheckboxOrRadio ) {
 			let	checkboxRadioHtml =	form_field.querySelectorAll('input');
-			
+
 			if ( isEmpty( checkboxRadioHtml ) ) {
 				console.log( 'checkboxRadioHtml not defined' );
 				return false;
@@ -625,14 +625,14 @@ document.addEventListener("DOMContentLoaded", function(){
 			for ( let i = 0; i < rangeField.length; i++ ) {
 				//show initially
 				show_range_value( rangeField[ i ].parentNode, rangeField[ i ].value );
-				
+
 				//show on change
 				rangeField[ i ].addEventListener( 'input', function () {
 					show_range_value( this.parentNode, this.value );
 				} );
 			}
 		}
-	}	
+	}
 
 	window.gutenaFormsValidation = {
 		isEmpty,

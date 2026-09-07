@@ -489,12 +489,13 @@
 		100% { transform: translate(24px, 0); }
 	}
 
-	//Form Submit messages
-	&:not(.display-success-message) .wp-block-gutena-form-confirm-msg:not(.block-editor-block-list__block) {
+	//Form Submit messages — target <form> only so a demoted wrapper <div>
+	//(from demote_nested_form_wrapper for existing-forms) does not re-hide them.
+	@at-root form#{&}:not(.display-success-message) .wp-block-gutena-form-confirm-msg:not(.block-editor-block-list__block) {
 		display: none;
 	}
 
-	&:not(.display-error-message) .wp-block-gutena-form-error-msg:not(.block-editor-block-list__block) {
+	@at-root form#{&}:not(.display-error-message) .wp-block-gutena-form-error-msg:not(.block-editor-block-list__block) {
 		display: none;
 	}
 
