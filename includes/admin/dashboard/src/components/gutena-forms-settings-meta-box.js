@@ -8,6 +8,8 @@ import GutenaFormsTextField from './fields/gutena-forms-text-field';
 import GutenaFormsTextareaField from './fields/gutena-forms-textarea-field';
 import GutenaFormsMergeTagsField from './fields/gutena-forms-merge-tags-field';
 import GutenaFormsRadioGroup from './fields/gutena-forms-radio-group';
+import GutenaFormsSelectField from './fields/gutena-forms-select-field';
+import GutenaFormsRichTextField from './fields/gutena-forms-rich-text-field';
 import { gutenaFormsUpdateSettings } from "../api";
 import { toast } from 'react-toastify';
 import { __ } from '@wordpress/i18n';
@@ -124,6 +126,26 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		}
 
 		return true;
+	}
+
+	/**
+	 * Generic conditional visibility: attrs.visible_when holds one or more
+	 * { field, equals } conditions (all must match) evaluated against the
+	 * current field values.
+	 */
+	const isFieldVisible = ( field ) => {
+		const conditions = field?.attrs?.visible_when;
+		if ( ! conditions || ( Array.isArray( conditions ) && 0 === conditions.length ) ) {
+			return true;
+		}
+
+		const list = Array.isArray( conditions ) ? conditions : [ conditions ];
+		return list.every( ( condition ) => {
+			if ( ! condition || ! condition.field ) {
+				return true;
+			}
+			return String( fieldValue?.[ condition.field ] ?? '' ) === String( condition.equals ?? '' );
+		} );
 	}
 
 	const handleSubmit = () => {
@@ -270,6 +292,34 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				)
 				break;
 
+			case 'select':
+				fieldElement = (
+					<GutenaFormsSelectField
+						id={ field.id }
+						label={ field.label }
+						desc={ field.desc }
+						value={ fieldValue[ field.id ] }
+						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						options={ field.attrs?.options }
+						disabled={ isDisabled }
+					/>
+				);
+				break;
+
+			case 'rich-text':
+				fieldElement = (
+					<GutenaFormsRichTextField
+						id={ field.id }
+						label={ field.label }
+						desc={ field.desc }
+						value={ fieldValue[ field.id ] }
+						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+						attrs={ field.attrs || {} }
+						disabled={ isDisabled }
+					/>
+				);
+				break;
+
 			case 'field-template':
 				const FieldTemplate = FieldTemplates[ field.name ];
 				fieldElement = (
@@ -355,17 +405,21 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 			) }
 
 			<div className={ 'gutena-forms__settings-meta-box' }>
-				{ ! template && ! loading && settings && settings.map( ( field ) => {
-					if ( field.type !== 'merge-tags' && ! shouldRenderField( field.id ) ) {
-						return null;
-					}
+			{ ! template && ! loading && settings && settings.map( ( field ) => {
+				if ( field.type !== 'merge-tags' && ! shouldRenderField( field.id ) ) {
+					return null;
+				}
 
-					return (
-						<div key={ field.id }>
-							{ renderSettingsField( field ) }
-						</div>
-					);
-				} ) }
+				if ( ! isFieldVisible( field ) ) {
+					return null;
+				}
+
+				return (
+					<div key={ field.id }>
+						{ renderSettingsField( field ) }
+					</div>
+				);
+			} ) }
 				{
 					template && ScreenTemplate && (
 						<ScreenTemplate />

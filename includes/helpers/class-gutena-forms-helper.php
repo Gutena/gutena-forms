@@ -213,6 +213,10 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 								)
 							)
 						);
+					} elseif ( ( 'successMessage' === $key || 'errorMessage' === $key ) && function_exists( 'wp_kses' ) ) {
+						// Form Confirmation messages are rich text HTML; keep them
+						// through schema saves instead of stripping tags.
+						$array_to_sanitize[ $key ] = wp_kses( $value, wp_kses_allowed_html( 'post' ) );
 					} else {
 						$array_to_sanitize[ $key ] = true === $textarea_sanitize ? sanitize_textarea_field( $value ) : sanitize_text_field( $value );
 					}

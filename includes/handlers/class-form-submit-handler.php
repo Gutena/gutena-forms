@@ -202,12 +202,7 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			if ( empty( $this->schema['form_attrs']['emailNotifications'] ) ) {
 				// If admin don't want to get Email notification.
 				if ( isset( $this->schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->schema['form_attrs']['emailNotifyAdmin'] || false === $this->schema['form_attrs']['emailNotifyAdmin'] || '0' === $this->schema['form_attrs']['emailNotifyAdmin'] ) ) {
-					wp_send_json(
-						array(
-							'status'  => 'Success',
-							'message' => __( 'success', 'gutena-forms' ),
-						)
-					);
+					$this->send_success_response( $form_submit_data );
 				}
 
 				// Email headers.
@@ -233,29 +228,68 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				$res     = wp_mail( $to, $subject, $body, $headers );
 
 				if ( $res ) {
-					wp_send_json(
-						array(
-							'status'  => 'Success',
-							'message' => __( 'success', 'gutena-forms' ),
-						)
-					);
+					$this->send_success_response( $form_submit_data );
 				} else {
-					wp_send_json(
+					$this->send_error_response(
+						__( 'Sorry! your form was submitted, but the email could not be sent. The site admin may need to review the email settings.', 'gutena-forms' ),
 						array(
-							'status'  => 'error',
-							'message' => __( 'Sorry! your form was submitted, but the email could not be sent. The site admin may need to review the email settings.', 'gutena-forms' ),
 							'details' => __( 'Failed to send email', 'gutena-forms' ),
 						)
 					);
 				}
 			}
 
-			wp_send_json(
-				array(
-					'status'  => 'Success',
-					'message' => __( 'success', 'gutena-forms' ),
-				)
+			$this->send_success_response( $form_submit_data );
+		}
+
+		/**
+		 * Send success response including the Form Confirmation payload
+		 * when the feature is enabled for the submitted form.
+		 *
+		 * @since 2.4.0
+		 * @param array $form_submit_data Form submission data.
+		 */
+		private function send_success_response( $form_submit_data ) {
+			$response = array(
+				'status'  => 'Success',
+				'message' => __( 'success', 'gutena-forms' ),
 			);
+
+			if ( class_exists( 'Gutena_Forms_Form_Confirmation_Helper' ) ) {
+				$confirmation = Gutena_Forms_Form_Confirmation_Helper::get_confirmation_payload( $form_submit_data, $this->schema );
+				if ( ! empty( $confirmation ) ) {
+					$response['confirmation'] = $confirmation;
+				}
+			}
+
+			wp_send_json( $response );
+		}
+
+		/**
+		 * Send error response including the configured Form Confirmation
+		 * error message when the feature is enabled for the submitted form.
+		 *
+		 * @since 2.4.0
+		 * @param string $message Error message.
+		 * @param array  $extra   Extra response keys.
+		 */
+		private function send_error_response( $message, $extra = array() ) {
+			$response = array_merge(
+				array(
+					'status'  => 'error',
+					'message' => $message,
+				),
+				is_array( $extra ) ? $extra : array()
+			);
+
+			if ( class_exists( 'Gutena_Forms_Form_Confirmation_Helper' ) ) {
+				$confirmation_error = Gutena_Forms_Form_Confirmation_Helper::get_confirmation_error_message( $this->schema );
+				if ( '' !== $confirmation_error ) {
+					$response['confirmation_error_message'] = $confirmation_error;
+				}
+			}
+
+			wp_send_json( $response );
 		}
 
 		/**
@@ -274,24 +308,14 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 		 */
 		private function validate_form_id_and_scehma() {
 			if ( empty( $_POST['formid'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-				wp_send_json(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Missing form identity', 'gutena-forms' ),
-					)
-				);
+				$this->send_error_response( __( 'Missing form identity', 'gutena-forms' ) );
 			}
 
 			$this->id     = sanitize_key( wp_unslash( $_POST['formid'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->schema = gutena_forms_get_form_schema_option( $this->id );
 
 			if ( empty( $this->schema ) || empty( $this->schema['form_attrs'] ) || empty( $this->schema['form_fields'] ) ) {
-				wp_send_json(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Missing form details', 'gutena-forms' ),
-					)
-				);
+				$this->send_error_response( __( 'Missing form details', 'gutena-forms' ) );
 			}
 
 			$this->schema['form_fields'] = Gutena_Forms_Helper::resolve_form_fields_schema(
@@ -316,31 +340,20 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			$this->schema['form_attrs']['honeypot']            = $use_global ? get_option( 'gutena_forms__honeypot', array() ) : $this->schema['form_attrs']['honeypot'];
 
 			if ( ! empty( $this->schema['form_attrs']['recaptcha'] ) && ! empty( $this->schema['form_attrs']['recaptcha']['enable'] ) && ! $this->recaptcha_verify() ) {
-				wp_send_json(
+				$this->send_error_response(
+					__( 'Invalid reCAPTCHA', 'gutena-forms' ),
 					array(
-						'status'          => 'error',
-						'message'         => __( 'Invalid reCAPTCHA', 'gutena-forms' ),
 						'recaptcha_error' => isset( $_POST['recaptcha_error'] ) ? sanitize_text_field( $_POST['recaptcha_error'] ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 					)
 				);
 			}
 
 			if ( ! empty( $this->schema['form_attrs']['cloudflareTurnstile'] ) && ! empty( $this->schema['form_attrs']['cloudflareTurnstile']['enable'] ) && ! $this->cloudflare_turnstile_verify() ) {
-				wp_send_json(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Invalid Cloudflare Turnstile', 'gutena-forms' ),
-					)
-				);
+				$this->send_error_response( __( 'Invalid Cloudflare Turnstile', 'gutena-forms' ) );
 			}
 
 			if ( ! empty( $this->schema['form_attrs']['honeypot'] ) && ! empty( $this->schema['form_attrs']['honeypot']['enable'] ) && ! $this->honeypot_verify() ) {
-				wp_send_json(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Spam detected', 'gutena-forms' ),
-					)
-				);
+				$this->send_error_response( __( 'Spam detected', 'gutena-forms' ) );
 			}
 		}
 

@@ -504,11 +504,32 @@
 		.wp-block-buttons {
 			visibility: hidden;
     		height: 0;
-			-webkit-transition: height 2s;
-			transition: height 2s;
+    		-webkit-transition: height 2s;
+    		transition: height 2s;
 		}
 	}
 
+}
+
+/**
+ * Form Confirmation (Form Confirmation settings) message styles.
+ * The confirmation message is injected into the confirm message container
+ * after a successful submission.
+ */
+.wp-block-gutena-forms .wp-block-gutena-form-confirm-msg {
+	.gutena-forms-confirmation-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 56px;
+		height: 56px;
+		border-radius: 50%;
+		background-color: #E6F5F1;
+		color: #0DA88C;
+		font-size: 30px;
+		font-weight: 700;
+		line-height: 1;
+	}
 }
 
 /**

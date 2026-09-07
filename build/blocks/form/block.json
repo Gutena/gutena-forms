@@ -151,6 +151,20 @@
         "defaultSettings": true
       }
     },
+    "formConfirmation": {
+      "type": "object",
+      "default": {
+        "enabled": false,
+        "type": "success",
+        "successMessage": "",
+        "errorMessage": "",
+        "afterSubmit": "hide",
+        "redirectType": "page",
+        "redirectPage": 0,
+        "redirectUrl": "",
+        "defaultSettings": true
+      }
+    },
     "messages": {
       "type": "object",
       "default": {
@@ -207,7 +221,8 @@
     }
   },
   "providesContext": {
-    "gutena-forms/formID": "formID"
+    "gutena-forms/formID": "formID",
+    "gutena-forms/formConfirmation": "formConfirmation"
   },
   "supports": {
     "__experimentalSettings": true,

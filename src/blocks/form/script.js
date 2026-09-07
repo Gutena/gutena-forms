@@ -295,6 +295,76 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	};
 
+	// Find or create the confirmation message container inside the form.
+	const get_confirmation_message_container = ( gutena_forms ) => {
+		let container = gutena_forms.querySelector(
+			'.wp-block-gutena-form-confirm-msg'
+		);
+		if ( isEmpty( container ) ) {
+			container = document.createElement( 'div' );
+			container.className = 'wp-block-gutena-form-confirm-msg';
+			gutena_forms.insertBefore( container, gutena_forms.firstChild );
+		}
+		return container;
+	};
+
+	// Find or create the error message element inside the form.
+	const get_error_message_element = ( gutena_forms ) => {
+		let errorMsgElement = gutena_forms.querySelector(
+			'.wp-block-gutena-form-error-msg .gutena-forms-error-text'
+		);
+		if ( isEmpty( errorMsgElement ) ) {
+			const errorContainer = document.createElement( 'div' );
+			errorContainer.className = 'wp-block-gutena-form-error-msg';
+			const errorText = document.createElement( 'p' );
+			errorText.className = 'gutena-forms-error-text';
+			errorContainer.appendChild( errorText );
+			gutena_forms.insertBefore( errorContainer, gutena_forms.firstChild );
+			errorMsgElement = errorText;
+		}
+		return errorMsgElement;
+	};
+
+	/**
+	 * Apply Form Confirmation behavior after a successful submission.
+	 * Handles Success Message (hide/reset form) and Redirect with a safe
+	 * success message fallback when the redirect target is unusable.
+	 */
+	const apply_form_confirmation = ( gutena_forms, confirmation ) => {
+		if ( isEmpty( confirmation ) ) {
+			return;
+		}
+
+		// Redirect to the validated URL.
+		if (
+			'redirect' === confirmation.type &&
+			! isEmpty( confirmation.redirect_url )
+		) {
+			gutena_forms.reset();
+			window.location.href = confirmation.redirect_url;
+			return;
+		}
+
+		// Success message: replaces the confirmation message content.
+		if ( ! isEmpty( confirmation.message ) ) {
+			const container = get_confirmation_message_container(
+				gutena_forms
+			);
+			container.innerHTML = confirmation.message;
+		}
+		gutena_forms.classList.add( 'display-success-message' );
+
+		if ( 'reset' === confirmation.after_submit ) {
+			// Reset Form: clear field values, keep the form visible.
+			gutena_forms.reset();
+			gutena_forms.classList.remove( 'hide-form-now' );
+		} else {
+			// Hide Form: hide the form fields after successful submission.
+			gutena_forms.reset();
+			gutena_forms.classList.add( 'hide-form-now' );
+		}
+	};
+
 	const save_gutena_forms = ( gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml ) => { 
 		fetch( gutenaFormsBlock.ajax_url, {
 			method: 'POST',
@@ -314,24 +384,26 @@ document.addEventListener("DOMContentLoaded", function(){
 					'display-error-message'
 				);
 
-				//Get form error message block first paragraph
-				let errorMsgElement =
-					gutena_forms.querySelector(
-						'.wp-block-gutena-form-error-msg .gutena-forms-error-text'
-					);
+				//Get form error message element (created when missing)
+				const errorMsgElement = get_error_message_element(
+					gutena_forms
+				);
 
-				//check if element is exist
-				if (
-					isEmpty( errorMsgElement ) ||
-					0 === errorMsgElement.length
-				) {
-					console.log( 'errorMsgElement not found' );
+				//Configured Form Confirmation error message wins when set.
+				if ( ! isEmpty( response.confirmation_error_message ) ) {
+					errorMsgElement.innerHTML =
+						response.confirmation_error_message;
+				} else {
+					errorMsgElement.innerHTML = response.message;
 				}
 
-				//Insert message
-				errorMsgElement.innerHTML = response.message;
-
 				console.log( 'Form Message', response );
+			} else if (
+				! isEmpty( response ) &&
+				! isEmpty( response.confirmation )
+			) {
+				//Form Confirmation enabled: new confirmation flow.
+				apply_form_confirmation( gutena_forms, response.confirmation );
 			} else {
 				//Reset Form
 				gutena_forms.reset();

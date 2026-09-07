@@ -8,6 +8,7 @@
 	"category": "gutena",
 	"icon": "feedback",
 	"description": "Form Confirmation Message. It will show after form submission.",
+	"usesContext": [ "gutena-forms/formConfirmation" ],
 	"attributes": {
 		"description": {
 			"type": "string",

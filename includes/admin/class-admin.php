@@ -86,6 +86,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/auto-responder/class-auto-responder.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/email-notifications/class-email-notifications.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/email-notifications/class-migration.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/form-confirmation/class-form-confirmation.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/integrations/class-inegrations.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/mcp/class-mcp.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/import/class-import.php';
@@ -264,6 +265,10 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			}
 
 			wp_enqueue_script( 'gutena-forms-dashboard' );
+
+			if ( function_exists( 'wp_enqueue_editor' ) ) {
+				wp_enqueue_editor();
+			}
 
 			$gutena_forms_admin = include plugin_dir_path( __FILE__ ) . 'localize/array-gutena-forms-admin.php';
 			wp_localize_script( 'gutena-forms-dashboard', 'gutenaFormsAdmin', $gutena_forms_admin );

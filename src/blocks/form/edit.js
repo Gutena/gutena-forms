@@ -46,6 +46,7 @@ import CloudflareSettings from './settings/cloudflare-settings';
 import HoneypotSettings from './settings/honeypot-settings';
 import ValidationMessagesSettings from './settings/validation-messages-settings';
 import EmailNotificationsSettings from './settings/email-notifications-settings';
+import FormConfirmationSettings from './settings/form-confirmation-settings';
 /** Hook that retrieves the given setting for the block instance in use.
  * https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#usesetting
  */
@@ -179,6 +180,7 @@ export default function Edit( props ) {
 		emailNotifyAdmin,
 		emailNotifyUser,
 		emailNotifications,
+		formConfirmation,
 		messages = {},
 		formStyle,
 		style,
@@ -1240,86 +1242,14 @@ export default function Edit( props ) {
 							/>
 						</PanelRow>
 					</PanelBody>
-					<EmailNotificationsSettings
-						emailNotifications={ emailNotifications }
-						setAttributes={ setAttributes }
-					/>
-					<PanelBody
-						title={ __( 'Confirmation', 'gutena-forms' ) }
-						initialOpen={ true }
-					>
-						<PanelRow>
-							<SelectControl
-								label="Action"
-								value={ afterSubmitAction }
-								options={ [
-									{
-										label: __( 'Message', 'gutena-forms' ),
-										value: 'message',
-									},
-									{
-										label: __(
-											'Send to URL',
-											'gutena-forms'
-										),
-										value: 'redirect_url',
-									},
-								] }
-								onChange={ ( afterSubmitAction ) =>
-									setAttributes( { afterSubmitAction } )
-								}
-								help={ __(
-									'Confirmation and error message are available for edit at the bottom of the form',
-									'gutena-forms'
-								) }
-								__nextHasNoMarginBottom
-							/>
-						</PanelRow>
-						{ 'redirect_url' === afterSubmitAction ? (
-							<PanelRow>
-								<TextControl
-									type="url"
-									label={ __(
-										'Send to URL',
-										'gutena-forms'
-									) }
-									value={ redirectUrl }
-									onChange={ ( redirectUrl ) =>
-										setAttributes( { redirectUrl } )
-									}
-								/>
-							</PanelRow>
-						) : (
-							''
-						) }
-						{ 'message' === afterSubmitAction ? (
-							<PanelRow>
-								<ToggleControl
-									label={ __(
-										'Hide form after submission',
-										'gutena-forms'
-									) }
-									help={
-										afterSubmitHide
-											? __(
-													'Toggle to not hide form',
-													'gutena-forms'
-											  )
-											: __(
-													'Toggle to hide form',
-													'gutena-forms'
-											  )
-									}
-									checked={ afterSubmitHide }
-									onChange={ ( afterSubmitHide ) =>
-										setAttributes( { afterSubmitHide } )
-									}
-								/>
-							</PanelRow>
-						) : (
-							''
-						) }
-					</PanelBody>
+				<EmailNotificationsSettings
+					emailNotifications={ emailNotifications }
+					setAttributes={ setAttributes }
+				/>
+			<FormConfirmationSettings
+					formConfirmation={ formConfirmation }
+					setAttributes={ setAttributes }
+				/>
 
 				<ValidationMessagesSettings
 					setAttributes={ setAttributes }

@@ -59,6 +59,19 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 					'render_callback' => array( $this, 'render_block' ),
 				)
 			);
+			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_editor_assets' ) );
+		}
+
+		/**
+		 * Enqueue WordPress editor assets for the block editor.
+		 *
+		 * @since 1.6.0
+		 */
+		public function enqueue_editor_assets() {
+			if ( function_exists( 'wp_enqueue_editor' ) ) {
+				wp_enqueue_editor();
+			}
+			wp_enqueue_style( 'wp-editor' );
 		}
 
 		/**

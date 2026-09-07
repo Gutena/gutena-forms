@@ -245,6 +245,10 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 							'title' => __( 'Email Notifications', 'gutena-forms' ),
 							'slug'  => 'email-notifications',
 						),
+						array(
+							'title' => __( 'Form Confirmation', 'gutena-forms' ),
+							'slug'  => 'form-confirmation',
+						),
 					),
 				),
 				array(
