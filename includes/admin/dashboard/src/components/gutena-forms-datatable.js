@@ -42,7 +42,16 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 				let startDate = new Date( selectedDates[0] );
 				let endDate = new Date( selectedDates[1] );
 
-				return current >= startDate && current <= endDate;
+				if ( isNaN( current.getTime() ) ) {
+					return false;
+				}
+
+				// Make endDate inclusive by extending to the start of the next day.
+				// Without this, entries at any time after midnight on the selected
+				// end date would fail the <= comparison (midnight < 1:00 AM, etc.).
+				endDate.setDate( endDate.getDate() + 1 );
+
+				return current >= startDate && current < endDate;
 			} );
 		}
 
