@@ -225,10 +225,13 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 			$custom_cycles    = isset( $square_field['customBillingCycles'] ) ? absint( $square_field['customBillingCycles'] ) : 0;
 
 			$phase = array(
-				'cadence'               => $cadence,
-				'recurring_price_money' => array(
-					'amount'   => (int) $amount_cents,
-					'currency' => $currency,
+				'cadence' => $cadence,
+				'pricing' => array(
+					'type'        => 'STATIC',
+					'price_money' => array(
+						'amount'   => (int) $amount_cents,
+						'currency' => $currency,
+					),
 				),
 			);
 			if ( 'custom' === $billing_cycles && $custom_cycles > 0 ) {
