@@ -347,10 +347,11 @@ if ( ! class_exists( 'Gutena_Forms_Entry_Payment' ) ) :
 			);
 
 			if ( '' === $dashboard_url && class_exists( 'Gutena_Forms_Square_Payment_Service' ) && 'square' === $gateway ) {
-				$dashboard_url = Gutena_Forms_Square_Payment_Service::get_dashboard_url(
-					sanitize_text_field( $payment['transaction_id'] ?? $payment['payment_id'] ?? '' ),
-					sanitize_text_field( $payment['payment_mode'] ?? 'test' )
-				);
+				$tx_id = sanitize_text_field( $payment['transaction_id'] ?? $payment['payment_id'] ?? '' );
+				$mode  = sanitize_text_field( $payment['payment_mode'] ?? 'test' );
+				$dashboard_url = 'subscription' === $payment_type
+					? Gutena_Forms_Square_Payment_Service::get_subscription_dashboard_url( $tx_id, $mode )
+					: Gutena_Forms_Square_Payment_Service::get_dashboard_url( $tx_id, $mode );
 			}
 
 			return array(

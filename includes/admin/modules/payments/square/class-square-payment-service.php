@@ -34,6 +34,304 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 		}
 
 		/**
+		 * Execute a Square API request with automatic token renewal on HTTP 401.
+		 *
+		 * @param string     $url          Full API endpoint URL.
+		 * @param string     $method       HTTP method.
+		 * @param array|null $body         Request body.
+		 * @param string     $access_token OAuth access token.
+		 * @param string     $payment_mode test|live.
+		 * @return array|WP_Error
+		 */
+		public function square_api_request( $url, $method = 'GET', $body = null, $access_token = '', $payment_mode = 'test' ) {
+			if ( empty( $access_token ) ) {
+				$credentials  = $this->get_square_credentials( $payment_mode );
+				$access_token = sanitize_text_field( $credentials['access_token'] ?? '' );
+			}
+
+			if ( empty( $access_token ) ) {
+				return new WP_Error( 'square_no_token', __( 'Square access token is missing.', 'gutena-forms' ) );
+			}
+
+			$args = array(
+				'method'  => strtoupper( $method ),
+				'timeout' => 30,
+				'headers' => array(
+					'Authorization'  => 'Bearer ' . $access_token,
+					'Square-Version' => self::SQUARE_API_VERSION,
+					'Content-Type'   => 'application/json',
+				),
+			);
+
+			if ( ! is_null( $body ) ) {
+				$args['body'] = is_array( $body ) ? wp_json_encode( $body ) : $body;
+			}
+
+			$response = wp_remote_request( $url, $args );
+
+			if ( is_wp_error( $response ) ) {
+				return $response;
+			}
+
+			$code          = (int) wp_remote_retrieve_response_code( $response );
+			$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+			// Auto renew token on 401 and retry once
+			if ( 401 === $code && class_exists( 'Gutena_Forms_Square_Connect' ) ) {
+				$renewed = Gutena_Forms_Square_Connect::get_instance()->renew_access_token();
+				if ( ! is_wp_error( $renewed ) && ! empty( $renewed['access_token'] ) ) {
+					$access_token                      = sanitize_text_field( $renewed['access_token'] );
+					$args['headers']['Authorization'] = 'Bearer ' . $access_token;
+					$response                          = wp_remote_request( $url, $args );
+					if ( ! is_wp_error( $response ) ) {
+						$code          = (int) wp_remote_retrieve_response_code( $response );
+						$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
+					}
+				}
+			}
+
+			if ( $code < 200 || $code >= 300 ) {
+				$error_msg = __( 'Square request failed.', 'gutena-forms' );
+				if ( is_array( $response_body ) && ! empty( $response_body['errors'][0]['detail'] ) ) {
+					$error_msg = sanitize_text_field( $response_body['errors'][0]['detail'] );
+				} elseif ( is_array( $response_body ) && ! empty( $response_body['errors'][0]['code'] ) ) {
+					$error_msg = sanitize_text_field( $response_body['errors'][0]['code'] );
+				}
+
+				return new WP_Error( 'square_api_error', $error_msg, array( 'status' => $code, 'body' => $response_body ) );
+			}
+
+			return is_array( $response_body ) ? $response_body : array();
+		}
+
+		/**
+		 * Map form billing interval to Square subscription cadence.
+		 *
+		 * @param string $interval Billing interval key.
+		 * @return string Square cadence string.
+		 */
+		public static function map_billing_interval_to_square_cadence( $interval ) {
+			$map = array(
+				'daily'          => 'DAILY',
+				'weekly'         => 'WEEKLY',
+				'biweekly'       => 'EVERY_TWO_WEEKS',
+				'every_2_weeks'  => 'EVERY_TWO_WEEKS',
+				'monthly'        => 'MONTHLY',
+				'every_2_months' => 'EVERY_TWO_MONTHS',
+				'quarterly'      => 'QUARTERLY',
+				'every_3_months' => 'QUARTERLY',
+				'every_4_months' => 'EVERY_FOUR_MONTHS',
+				'every_6_months' => 'EVERY_SIX_MONTHS',
+				'semi_annually'  => 'EVERY_SIX_MONTHS',
+				'yearly'         => 'ANNUAL',
+				'annual'         => 'ANNUAL',
+				'every_2_years'  => 'EVERY_TWO_YEARS',
+			);
+
+			return $map[ sanitize_key( $interval ) ] ?? 'MONTHLY';
+		}
+
+		/**
+		 * Create Customer, Card on File, Catalog Plan, and Subscription in Square.
+		 *
+		 * @param string $api_base         Square API base URL.
+		 * @param string $access_token     Square access token.
+		 * @param string $location_id      Square location ID.
+		 * @param string $currency         Currency code.
+		 * @param int    $amount_cents     Recurring amount in cents.
+		 * @param string $payment_token    Card payment token nonce.
+		 * @param array  $square_field     Square field config.
+		 * @param array  $customer_details Customer details.
+		 * @param string $form_name        Form display name.
+		 * @param string $form_id          Form ID.
+		 * @param string $payment_mode     test|live.
+		 * @return array|WP_Error
+		 */
+		private function create_square_subscription( $api_base, $access_token, $location_id, $currency, $amount_cents, $payment_token, $square_field, $customer_details, $form_name, $form_id, $payment_mode = 'test' ) {
+			$plan_name = sanitize_text_field( $square_field['subscriptionPlanName'] ?? '' );
+			if ( empty( $plan_name ) ) {
+				return new WP_Error( 'subscription_plan_required', __( 'Subscription plan name is required.', 'gutena-forms' ) );
+			}
+
+			$customer_email = sanitize_email( $customer_details['customer_email'] ?? '' );
+			if ( empty( $customer_email ) ) {
+				return new WP_Error( 'customer_email_required', __( 'Customer email is required for subscription payments.', 'gutena-forms' ) );
+			}
+
+			// 1. Create / Retrieve Square Customer
+			$customer_name_parts = explode( ' ', trim( $customer_details['customer_name'] ?? '' ), 2 );
+			$given_name          = sanitize_text_field( $customer_name_parts[0] ?? '' );
+			$family_name         = sanitize_text_field( $customer_name_parts[1] ?? '' );
+
+			$customer_body = array(
+				'idempotency_key' => wp_generate_uuid4(),
+				'given_name'      => $given_name ? $given_name : 'Customer',
+				'email_address'   => $customer_email,
+				'note'            => sprintf( 'Gutena Forms: %s (Form ID: %s)', sanitize_text_field( $form_name ), sanitize_text_field( $form_id ) ),
+			);
+			if ( ! empty( $family_name ) ) {
+				$customer_body['family_name'] = $family_name;
+			}
+
+			$customer_response = $this->square_api_request(
+				$api_base . '/v2/customers',
+				'POST',
+				$customer_body,
+				$access_token,
+				$payment_mode
+			);
+
+			if ( is_wp_error( $customer_response ) ) {
+				return $customer_response;
+			}
+
+			$customer_id = sanitize_text_field( $customer_response['customer']['id'] ?? '' );
+			if ( empty( $customer_id ) ) {
+				return new WP_Error( 'square_customer_failed', __( 'Unable to create Square customer for subscription.', 'gutena-forms' ) );
+			}
+
+			// 2. Create Card on File for Customer
+			$card_body = array(
+				'idempotency_key' => wp_generate_uuid4(),
+				'source_id'       => $payment_token,
+				'card'            => array(
+					'customer_id'     => $customer_id,
+					'cardholder_name' => sanitize_text_field( $customer_details['customer_name'] ?? '' ),
+				),
+			);
+
+			$card_response = $this->square_api_request(
+				$api_base . '/v2/cards',
+				'POST',
+				$card_body,
+				$access_token,
+				$payment_mode
+			);
+
+			if ( is_wp_error( $card_response ) ) {
+				return $card_response;
+			}
+
+			$card_id = sanitize_text_field( $card_response['card']['id'] ?? '' );
+			if ( empty( $card_id ) ) {
+				return new WP_Error( 'square_card_failed', __( 'Unable to save card on file for subscription.', 'gutena-forms' ) );
+			}
+			$card_details = $card_response['card'] ?? array();
+
+			// 3. Create Subscription Plan in Catalog
+			$billing_interval = sanitize_key( $square_field['billingInterval'] ?? 'monthly' );
+			$cadence          = self::map_billing_interval_to_square_cadence( $billing_interval );
+			$billing_cycles   = sanitize_key( $square_field['billingCycles'] ?? 'never' );
+			$custom_cycles    = isset( $square_field['customBillingCycles'] ) ? absint( $square_field['customBillingCycles'] ) : 0;
+
+			$phase = array(
+				'cadence'               => $cadence,
+				'recurring_price_money' => array(
+					'amount'   => (int) $amount_cents,
+					'currency' => $currency,
+				),
+			);
+			if ( 'custom' === $billing_cycles && $custom_cycles > 0 ) {
+				$phase['periods'] = $custom_cycles;
+			}
+
+			$plan_body = array(
+				'idempotency_key' => wp_generate_uuid4(),
+				'object'          => array(
+					'type'                   => 'SUBSCRIPTION_PLAN',
+					'id'                     => '#plan_' . wp_generate_uuid4(),
+					'subscription_plan_data' => array(
+						'name'   => sanitize_text_field( $plan_name ),
+						'phases' => array( $phase ),
+					),
+				),
+			);
+
+			$plan_response = $this->square_api_request(
+				$api_base . '/v2/catalog/object',
+				'POST',
+				$plan_body,
+				$access_token,
+				$payment_mode
+			);
+
+			if ( is_wp_error( $plan_response ) ) {
+				return $plan_response;
+			}
+
+			$plan_variation_id = '';
+			if ( ! empty( $plan_response['catalog_object']['subscription_plan_data']['subscription_plan_variations'][0]['id'] ) ) {
+				$plan_variation_id = sanitize_text_field( $plan_response['catalog_object']['subscription_plan_data']['subscription_plan_variations'][0]['id'] );
+			} elseif ( ! empty( $plan_response['catalog_object']['id'] ) ) {
+				$plan_id = sanitize_text_field( $plan_response['catalog_object']['id'] );
+				// Create explicit variation for this plan.
+				$variation_body = array(
+					'idempotency_key' => wp_generate_uuid4(),
+					'object'          => array(
+						'type'                             => 'SUBSCRIPTION_PLAN_VARIATION',
+						'id'                               => '#variation_' . wp_generate_uuid4(),
+						'subscription_plan_variation_data' => array(
+							'name'                 => sanitize_text_field( $plan_name ),
+							'phases'               => array( $phase ),
+							'subscription_plan_id' => $plan_id,
+						),
+					),
+				);
+				$var_response = $this->square_api_request(
+					$api_base . '/v2/catalog/object',
+					'POST',
+					$variation_body,
+					$access_token,
+					$payment_mode
+				);
+				if ( ! is_wp_error( $var_response ) && ! empty( $var_response['catalog_object']['id'] ) ) {
+					$plan_variation_id = sanitize_text_field( $var_response['catalog_object']['id'] );
+				} else {
+					$plan_variation_id = $plan_id;
+				}
+			}
+
+			if ( empty( $plan_variation_id ) ) {
+				return new WP_Error( 'square_plan_failed', __( 'Unable to create subscription plan in Square.', 'gutena-forms' ) );
+			}
+
+			// 4. Create Subscription
+			$subscription_body = array(
+				'idempotency_key'   => wp_generate_uuid4(),
+				'location_id'       => $location_id,
+				'plan_variation_id' => $plan_variation_id,
+				'customer_id'       => $customer_id,
+				'card_id'           => $card_id,
+				'source_id'         => $card_id,
+				'timezone'          => wp_timezone_string() ? wp_timezone_string() : 'UTC',
+			);
+
+			$sub_response = $this->square_api_request(
+				$api_base . '/v2/subscriptions',
+				'POST',
+				$subscription_body,
+				$access_token,
+				$payment_mode
+			);
+
+			if ( is_wp_error( $sub_response ) ) {
+				return $sub_response;
+			}
+
+			$subscription_obj = $sub_response['subscription'] ?? array();
+			if ( empty( $subscription_obj['id'] ) ) {
+				return new WP_Error( 'square_subscription_failed', __( 'Unable to create Square subscription.', 'gutena-forms' ) );
+			}
+
+			return array(
+				'subscription'      => $subscription_obj,
+				'customer'          => $customer_response['customer'] ?? array(),
+				'card'              => $card_details,
+				'plan_variation_id' => $plan_variation_id,
+			);
+		}
+
+		/**
 		 * Validate and process Square payment on form submission.
 		 *
 		 * @param string $form_id Form ID.
@@ -99,7 +397,7 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				return new WP_Error( 'square_no_location', __( 'Square business location is not selected. Please select a location in Square settings.', 'gutena-forms' ) );
 			}
 
-			$currency     = strtoupper( sanitize_text_field( $form_square['merchant_currency'] ?? '' ) );
+			$currency = strtoupper( sanitize_text_field( $form_square['merchant_currency'] ?? '' ) );
 			if ( empty( $currency ) && class_exists( 'Gutena_Forms_Square_Connect' ) ) {
 				$global_square = Gutena_Forms_Square_Connect::get_public_settings();
 				$currency      = strtoupper( sanitize_text_field( $global_square['merchant_currency'] ?? 'USD' ) );
@@ -108,16 +406,58 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				$currency = 'USD';
 			}
 
-			$field_values = $this->get_posted_field_values();
-			$amount_cents = $this->calculate_amount_cents( $square_field, $field_values, $currency );
+			$field_values     = $this->get_posted_field_values();
+			$amount_cents     = $this->calculate_amount_cents( $square_field, $field_values, $currency );
+			$customer_details = $this->resolve_customer_details( $square_field, $field_values );
+			$form_name        = $this->resolve_form_name( $form_id, $schema );
+			$payment_type     = sanitize_key( $square_field['paymentType'] ?? 'one_time' );
+			$api_base         = self::get_api_base_url( $payment_mode );
 
 			if ( $amount_cents <= 0 ) {
 				return new WP_Error( 'invalid_amount', __( 'Payment amount must be greater than zero.', 'gutena-forms' ) );
 			}
 
-			$customer_details = $this->resolve_customer_details( $square_field, $field_values );
-			$form_name        = $this->resolve_form_name( $form_id, $schema );
+			// Handle Subscription Payment (Pro feature)
+			if ( 'subscription' === $payment_type ) {
+				if ( ! function_exists( 'is_gutena_forms_pro' ) || ! is_gutena_forms_pro() ) {
+					return new WP_Error( 'subscription_requires_pro', __( 'Square subscription payments require Gutena Forms Pro.', 'gutena-forms' ) );
+				}
 
+				$sub_result = $this->create_square_subscription(
+					$api_base,
+					$access_token,
+					$location_id,
+					$currency,
+					$amount_cents,
+					$payment_token,
+					$square_field,
+					$customer_details,
+					$form_name,
+					$form_id,
+					$payment_mode
+				);
+
+				if ( is_wp_error( $sub_result ) ) {
+					return $sub_result;
+				}
+
+				self::$current_payment_context = array(
+					'form_id'          => $form_id,
+					'form_name'        => $form_name,
+					'square_field'     => $square_field,
+					'payment_obj'      => $sub_result['subscription'],
+					'card_details'     => $sub_result['card'],
+					'payment_mode'     => $payment_mode,
+					'amount_cents'     => $amount_cents,
+					'currency'         => $currency,
+					'customer_details' => $customer_details,
+					'is_subscription'  => true,
+				);
+
+				return true;
+			}
+
+			// Handle One-Time Payment
 			$body = array(
 				'source_id'       => $payment_token,
 				'idempotency_key' => wp_generate_uuid4(),
@@ -134,39 +474,23 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				$body['buyer_email_address'] = $customer_details['customer_email'];
 			}
 
-			$api_base = self::get_api_base_url( $payment_mode );
-			$response = wp_remote_post(
+			$response = $this->square_api_request(
 				$api_base . '/v2/payments',
-				array(
-					'timeout' => 25,
-					'headers' => array(
-						'Authorization'  => 'Bearer ' . $access_token,
-						'Square-Version' => self::SQUARE_API_VERSION,
-						'Content-Type'   => 'application/json',
-					),
-					'body'    => wp_json_encode( $body ),
-				)
+				'POST',
+				$body,
+				$access_token,
+				$payment_mode
 			);
 
 			if ( is_wp_error( $response ) ) {
-				return new WP_Error( 'square_api_error', $response->get_error_message() );
+				return $response;
 			}
 
-			$code          = (int) wp_remote_retrieve_response_code( $response );
-			$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
-
-			if ( $code < 200 || $code >= 300 || empty( $response_body['payment'] ) ) {
-				$error_msg = __( 'Payment failed. Please check your card information and try again.', 'gutena-forms' );
-				if ( ! empty( $response_body['errors'][0]['detail'] ) ) {
-					$error_msg = sanitize_text_field( $response_body['errors'][0]['detail'] );
-				} elseif ( ! empty( $response_body['errors'][0]['code'] ) ) {
-					$error_msg = sanitize_text_field( $response_body['errors'][0]['code'] );
-				}
-
-				return new WP_Error( 'square_charge_failed', $error_msg );
+			if ( empty( $response['payment'] ) ) {
+				return new WP_Error( 'square_charge_failed', __( 'Payment failed. Please check your card information and try again.', 'gutena-forms' ) );
 			}
 
-			$payment_obj = $response_body['payment'];
+			$payment_obj = $response['payment'];
 
 			self::$current_payment_context = array(
 				'form_id'          => $form_id,
@@ -177,6 +501,7 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				'amount_cents'     => $amount_cents,
 				'currency'         => $currency,
 				'customer_details' => $customer_details,
+				'is_subscription'  => false,
 			);
 
 			return true;
@@ -218,13 +543,17 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 			$currency          = $context['currency'];
 			$customer_details  = $context['customer_details'];
 			$payment_id        = sanitize_text_field( $payment_obj['id'] );
-			$square_status     = sanitize_text_field( $payment_obj['status'] ?? 'COMPLETED' );
-			$normalized_status = Gutena_Forms_Entry_Payment::normalize_square_status( $square_status );
+			$is_subscription   = ! empty( $context['is_subscription'] ) || 'subscription' === ( $square_field['paymentType'] ?? '' );
+
+			$normalized_status = $is_subscription
+				? ( in_array( strtoupper( $payment_obj['status'] ?? '' ), array( 'ACTIVE', 'COMPLETED' ), true ) || 'succeeded' === ( $payment_obj['status'] ?? '' ) ? 'succeeded' : Gutena_Forms_Entry_Payment::normalize_square_status( $payment_obj['status'] ?? 'succeeded' ) )
+				: Gutena_Forms_Entry_Payment::normalize_square_status( $payment_obj['status'] ?? 'COMPLETED' );
+
 			if ( '' === $normalized_status ) {
 				$normalized_status = 'succeeded';
 			}
 
-			$card       = $payment_obj['card_details']['card'] ?? array();
+			$card       = ! empty( $context['card_details'] ) ? $context['card_details'] : ( $payment_obj['card_details']['card'] ?? array() );
 			$card_brand = sanitize_text_field( $card['card_brand'] ?? '' );
 			$last4      = sanitize_text_field( $card['last_4'] ?? '' );
 			$exp_month  = absint( $card['exp_month'] ?? 0 );
@@ -249,7 +578,10 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				$form_name = __( 'Contact Form', 'gutena-forms' );
 			}
 
-			$payment_type = sanitize_key( $square_field['paymentType'] ?? 'one_time' );
+			$payment_type  = $is_subscription ? 'subscription' : 'one_time';
+			$dashboard_url = $is_subscription
+				? self::get_subscription_dashboard_url( $payment_id, $payment_mode )
+				: self::get_dashboard_url( $payment_id, $payment_mode );
 
 			$payment_record = array(
 				'entry_id'               => $entry_id,
@@ -271,8 +603,8 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 					'exp_month'  => $exp_month,
 					'exp_year'   => $exp_year,
 				),
-				'square_dashboard_url'   => self::get_dashboard_url( $payment_id, $payment_mode ),
-				'gateway_dashboard_url'  => self::get_dashboard_url( $payment_id, $payment_mode ),
+				'square_dashboard_url'   => $dashboard_url,
+				'gateway_dashboard_url'  => $dashboard_url,
 				'raw_response'           => $payment_obj,
 				'added_time'             => current_time( 'mysql' ),
 			);
@@ -282,11 +614,11 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 			Gutena_Forms_Entry_Payment::get_instance()->append_log(
 				$entry_id,
 				array(
-					'event'          => 'payment_authorized',
+					'event'          => $is_subscription ? 'subscription_created' : 'payment_authorized',
 					'transaction_id' => $payment_id,
 					'gateway'        => 'square',
 					'amount'         => Gutena_Forms_Entry_Payment::format_amount( $amount_cents, $currency ),
-					'status'         => Gutena_Forms_Entry_Payment::status_label( $normalized_status ),
+					'status'         => $is_subscription ? __( 'Active', 'gutena-forms' ) : Gutena_Forms_Entry_Payment::status_label( $normalized_status ),
 					'user_id'        => get_current_user_id(),
 					'mode'           => $payment_mode,
 					'created_at'     => gmdate( 'Y-m-d H:i:s' ),
@@ -508,6 +840,8 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 
 			if ( isset( $obj['payment'] ) && is_array( $obj['payment'] ) ) {
 				$obj = $obj['payment'];
+			} elseif ( isset( $obj['subscription'] ) && is_array( $obj['subscription'] ) ) {
+				$obj = $obj['subscription'];
 			}
 
 			if ( isset( $obj['refund'] ) && is_array( $obj['refund'] ) ) {
@@ -792,6 +1126,26 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				: 'https://squareupsandbox.com';
 
 			return esc_url_raw( $host . '/dashboard/sales/transactions/' . rawurlencode( $payment_id ) );
+		}
+
+		/**
+		 * Build Square dashboard URL for a subscription.
+		 *
+		 * @param string $subscription_id Square subscription ID.
+		 * @param string $payment_mode    test|live.
+		 * @return string
+		 */
+		public static function get_subscription_dashboard_url( $subscription_id, $payment_mode = 'test' ) {
+			$subscription_id = sanitize_text_field( $subscription_id );
+			if ( '' === $subscription_id ) {
+				return '';
+			}
+
+			$host = 'live' === $payment_mode
+				? 'https://squareup.com'
+				: 'https://squareupsandbox.com';
+
+			return esc_url_raw( $host . '/dashboard/subscriptions/' . rawurlencode( $subscription_id ) );
 		}
 
 		/**
