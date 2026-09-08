@@ -235,14 +235,26 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				$phase['periods'] = $custom_cycles;
 			}
 
+			$client_plan_id = '#plan_' . wp_generate_uuid4();
+			$client_var_id  = '#var_' . wp_generate_uuid4();
+
 			$plan_body = array(
 				'idempotency_key' => wp_generate_uuid4(),
 				'object'          => array(
 					'type'                   => 'SUBSCRIPTION_PLAN',
-					'id'                     => '#plan_' . wp_generate_uuid4(),
+					'id'                     => $client_plan_id,
 					'subscription_plan_data' => array(
-						'name'   => sanitize_text_field( $plan_name ),
-						'phases' => array( $phase ),
+						'name'                         => sanitize_text_field( $plan_name ),
+						'subscription_plan_variations' => array(
+							array(
+								'type'                             => 'SUBSCRIPTION_PLAN_VARIATION',
+								'id'                               => $client_var_id,
+								'subscription_plan_variation_data' => array(
+									'name'   => sanitize_text_field( $plan_name ),
+									'phases' => array( $phase ),
+								),
+							),
+						),
 					),
 				),
 			);
@@ -260,11 +272,35 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 			}
 
 			$plan_variation_id = '';
+
+			// 1. Extract from catalog_object variations.
 			if ( ! empty( $plan_response['catalog_object']['subscription_plan_data']['subscription_plan_variations'][0]['id'] ) ) {
 				$plan_variation_id = sanitize_text_field( $plan_response['catalog_object']['subscription_plan_data']['subscription_plan_variations'][0]['id'] );
-			} elseif ( ! empty( $plan_response['catalog_object']['id'] ) ) {
-				$plan_id = sanitize_text_field( $plan_response['catalog_object']['id'] );
-				// Create explicit variation for this plan.
+			}
+
+			// 2. Extract from id_mappings.
+			if ( empty( $plan_variation_id ) && ! empty( $plan_response['id_mappings'] ) && is_array( $plan_response['id_mappings'] ) ) {
+				foreach ( $plan_response['id_mappings'] as $mapping ) {
+					if ( isset( $mapping['client_object_id'] ) && $client_var_id === $mapping['client_object_id'] && ! empty( $mapping['object_id'] ) ) {
+						$plan_variation_id = sanitize_text_field( $mapping['object_id'] );
+						break;
+					}
+				}
+			}
+
+			// 3. Extract from related_objects.
+			if ( empty( $plan_variation_id ) && ! empty( $plan_response['related_objects'] ) && is_array( $plan_response['related_objects'] ) ) {
+				foreach ( $plan_response['related_objects'] as $related ) {
+					if ( isset( $related['type'] ) && 'SUBSCRIPTION_PLAN_VARIATION' === $related['type'] && ! empty( $related['id'] ) ) {
+						$plan_variation_id = sanitize_text_field( $related['id'] );
+						break;
+					}
+				}
+			}
+
+			// 4. Fallback: If not found in response, create explicit SUBSCRIPTION_PLAN_VARIATION linked to plan ID.
+			if ( empty( $plan_variation_id ) && ! empty( $plan_response['catalog_object']['id'] ) ) {
+				$plan_id        = sanitize_text_field( $plan_response['catalog_object']['id'] );
 				$variation_body = array(
 					'idempotency_key' => wp_generate_uuid4(),
 					'object'          => array(
@@ -277,6 +313,7 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 						),
 					),
 				);
+
 				$var_response = $this->square_api_request(
 					$api_base . '/v2/catalog/object',
 					'POST',
@@ -284,15 +321,14 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 					$access_token,
 					$payment_mode
 				);
+
 				if ( ! is_wp_error( $var_response ) && ! empty( $var_response['catalog_object']['id'] ) ) {
 					$plan_variation_id = sanitize_text_field( $var_response['catalog_object']['id'] );
-				} else {
-					$plan_variation_id = $plan_id;
 				}
 			}
 
 			if ( empty( $plan_variation_id ) ) {
-				return new WP_Error( 'square_plan_failed', __( 'Unable to create subscription plan in Square.', 'gutena-forms' ) );
+				return new WP_Error( 'square_plan_failed', __( 'Unable to create subscription plan variation in Square.', 'gutena-forms' ) );
 			}
 
 			// 4. Create Subscription
