@@ -25,7 +25,7 @@ if ( ! class_exists( 'Gutena_Forms_Square_Connect' ) ) :
 		const PLUG = 'gutena-forms';
 
 		/** @var string Square OAuth scopes (space-separated). */
-		const OAUTH_SCOPES = 'MERCHANT_PROFILE_READ PAYMENTS_READ PAYMENTS_WRITE ORDERS_READ ORDERS_WRITE';
+		const OAUTH_SCOPES = 'MERCHANT_PROFILE_READ PAYMENTS_READ PAYMENTS_WRITE ORDERS_READ ORDERS_WRITE CUSTOMERS_READ CUSTOMERS_WRITE ITEMS_READ ITEMS_WRITE SUBSCRIPTIONS_READ SUBSCRIPTIONS_WRITE';
 
 		/** @var string Square API version header. */
 		const SQUARE_API_VERSION = '2024-01-18';
