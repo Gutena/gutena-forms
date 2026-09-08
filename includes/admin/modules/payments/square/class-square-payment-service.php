@@ -652,7 +652,11 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 			}
 
 			$credentials = $this->get_square_credentials( $payment['payment_mode'] ?? 'test' );
-			if ( empty( $credentials['access_token'] ) ) {
+			if ( empty( $credentials['access_token'] ) && class_exists( 'Gutena_Forms_Square_Connect' ) ) {
+				$credentials = Gutena_Forms_Square_Connect::get_stored_credentials();
+			}
+			$access_token = sanitize_text_field( $credentials['access_token'] ?? '' );
+			if ( empty( $access_token ) ) {
 				return new WP_Error( 'square_not_connected', __( 'Square is not connected.', 'gutena-forms' ) );
 			}
 
@@ -682,7 +686,7 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				array(
 					'timeout' => 20,
 					'headers' => array(
-						'Authorization'  => 'Bearer ' . $credentials['access_token'],
+						'Authorization'  => 'Bearer ' . $access_token,
 						'Square-Version' => self::SQUARE_API_VERSION,
 						'Content-Type'   => 'application/json',
 					),
@@ -694,8 +698,32 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				return $response;
 			}
 
-			$code         = (int) wp_remote_retrieve_response_code( $response );
+			$code          = (int) wp_remote_retrieve_response_code( $response );
 			$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+			// If access token expired, try renewing and retry once.
+			if ( 401 === $code && class_exists( 'Gutena_Forms_Square_Connect' ) ) {
+				$renewed = Gutena_Forms_Square_Connect::get_instance()->renew_access_token();
+				if ( ! is_wp_error( $renewed ) && ! empty( $renewed['access_token'] ) ) {
+					$access_token = sanitize_text_field( $renewed['access_token'] );
+					$response     = wp_remote_post(
+						$base . '/v2/refunds',
+						array(
+							'timeout' => 20,
+							'headers' => array(
+								'Authorization'  => 'Bearer ' . $access_token,
+								'Square-Version' => self::SQUARE_API_VERSION,
+								'Content-Type'   => 'application/json',
+							),
+							'body'    => wp_json_encode( $body ),
+						)
+					);
+					if ( ! is_wp_error( $response ) ) {
+						$code          = (int) wp_remote_retrieve_response_code( $response );
+						$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
+					}
+				}
+			}
 
 			if ( $code < 200 || $code >= 300 ) {
 				$message = __( 'Refund failed. Please try again.', 'gutena-forms' );
@@ -834,6 +862,13 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 		 */
 		private function get_square_credentials( $payment_mode = 'test' ) {
 			unset( $payment_mode );
+
+			if ( class_exists( 'Gutena_Forms_Square_Connect' ) ) {
+				$creds = Gutena_Forms_Square_Connect::get_stored_credentials();
+				if ( ! empty( $creds['access_token'] ) ) {
+					return $creds;
+				}
+			}
 
 			$all = get_option( 'gutena_forms__payment_credentials', array() );
 			if ( ! is_array( $all ) || empty( $all['square'] ) || ! is_array( $all['square'] ) ) {
