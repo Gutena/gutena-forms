@@ -302,9 +302,12 @@ if ( ! class_exists( 'Gutena_Forms_Square_Payment_Service' ) ) :
 				'plan_variation_id' => $plan_variation_id,
 				'customer_id'       => $customer_id,
 				'card_id'           => $card_id,
-				'source_id'         => $card_id,
-				'timezone'          => wp_timezone_string() ? wp_timezone_string() : 'UTC',
 			);
+
+			$tz = wp_timezone_string();
+			if ( ! empty( $tz ) && false === strpos( $tz, '+' ) && false === strpos( $tz, '-' ) ) {
+				$subscription_body['timezone'] = $tz;
+			}
 
 			$sub_response = $this->square_api_request(
 				$api_base . '/v2/subscriptions',
