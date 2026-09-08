@@ -11,6 +11,7 @@ import Save from './save';
 import Icon from './icon';
 import metadata from './block.json';
 import './editor.scss';
+import './style.scss';
 
 addFilter(
 	'blocks.registerBlockType',
