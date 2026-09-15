@@ -217,6 +217,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 						<Button
 							className={ 'gutena-forms__primary-button' }
 							onClick={ handleBulkActions }
+							disabled={ 'bulk_actions' === bulkAction || ! selectedData.length }
 						>{ __( 'Apply', 'gutena-forms' ) }</Button>
 					</div>
 
@@ -279,6 +280,7 @@ const GutenaFormsDatatable = ( { headers, data, handleBulkAction, tableChildren,
 								setSearchTerm( '' );
 								setSelectedDates( '' );
 							} }
+							disabled={ ! searchTerm && 2 !== selectedDates.length }
 						>{ __( 'Reset', 'gutena-forms' ) }</Button>
 					</div>
 

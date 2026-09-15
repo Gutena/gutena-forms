@@ -198,13 +198,40 @@
 
   // Primary button styles
   .gutena-forms__primary-button {
-    padding: 6px 10px;
+    padding: 8px 16px;
     height: auto;
     border-radius: 4px;
     background: #0DA88C;
     color: #FFF;
+    font-family: 'Satoshi', sans-serif;
     font-size: 14px;
     font-weight: 700;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: #0E826D;
+    }
+
+    &:active {
+      background: #0DA88C;
+    }
+
+    &:focus-visible {
+      background: #0DA88C;
+      outline: 2px solid #0E826D;
+      outline-offset: 0;
+    }
+
+    &:disabled,
+    &[disabled] {
+      background: #E2E2E2;
+      color: #ABABAD;
+      cursor: not-allowed;
+      outline: none;
+    }
 
     svg {
       margin-right: 10px;
@@ -380,10 +407,37 @@
             border-radius: 4px;
             background: #0DA88C;
             color: #FFF;
-            font-size: 12px;
+            font-family: 'Satoshi', sans-serif;
+            font-size: 14px;
             font-weight: 700;
             height: auto;
-            padding: 6px 10px;
+            padding: 8px 16px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+
+            &:hover {
+              background: #0E826D;
+            }
+
+            &:active {
+              background: #0DA88C;
+            }
+
+            &:focus-visible {
+              background: #0DA88C;
+              outline: 2px solid #0E826D;
+              outline-offset: 0;
+            }
+
+            &:disabled,
+            &[disabled] {
+              background: #E2E2E2;
+              color: #ABABAD;
+              cursor: not-allowed;
+              outline: none;
+            }
           }
         }
       }
@@ -1363,8 +1417,36 @@
       border-radius: 4px;
       background: #0DA88C;
       color: #FFF;
+      font-family: 'Satoshi', sans-serif;
       font-size: 14px;
       font-weight: 700;
+      border: none;
+      padding: 8px 16px;
+      outline: none;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+
+      &:hover {
+        background: #0E826D;
+      }
+
+      &:active {
+        background: #0DA88C;
+      }
+
+      &:focus-visible {
+        background: #0DA88C;
+        outline: 2px solid #0E826D;
+        outline-offset: 0;
+      }
+
+      &:disabled,
+      &[disabled] {
+        background: #E2E2E2;
+        color: #ABABAD;
+        cursor: not-allowed;
+        outline: none;
+      }
     }
 
     &.secondary {
