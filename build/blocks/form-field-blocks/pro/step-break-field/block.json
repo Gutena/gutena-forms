@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/step-break-field",
+  "version": "1.0.0",
+  "title": "Step Break",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena-pro",
+  "icon": "clock",
+  "description": "Break the form in steps.",
+  "textdomain": "gutena-forms-pro",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style.css",
+  "supports": {}
+}

@@ -12,6 +12,7 @@ if ( ! gutenaFormsBlock.is_pro ) {
 			'editor-block-list-item-gutena-hidden-field',
 			'editor-block-list-item-gutena-password-field',
 			'editor-block-list-item-gutena-rating-field',
+			'editor-block-list-item-gutena-step-break-field',
 		];
 
 		elements.forEach( element => {

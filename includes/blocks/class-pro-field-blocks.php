@@ -79,6 +79,11 @@ if ( ! class_exists( 'Gutena_Forms_Pro_Field_Blocks' ) ) :
 					'name'  => 'gutena/url-field',
 					'dir'   => 'url-field',
 				),
+				array(
+					'title' => 'Step Break',
+					'name'  => 'gutena/step-break-field',
+					'dir'   => 'step-break-field',
+				),
 			);
 
 			usort(
