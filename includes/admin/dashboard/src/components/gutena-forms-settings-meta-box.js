@@ -26,6 +26,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	const [ initialFieldValue, setInitialFieldValue ] = useState( {} );
 	const [ loading, setLoading ] = useState( true );
 	const [ saving, setSaving ] = useState( false );
+	const [ hasChange, setHasChange ] = useState( false );
 	const [ template, setTemplate ] = useState( false );
 	const [ activeMergeField, setActiveMergeField ] = useState( 'subject' );
 	const pendingMergeCursor = useRef( null );
@@ -86,6 +87,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		[ items ] );
 
 	const handleFieldChange = ( id, newValue ) => {
+		setHasChange( true );
 		setFieldValue( ( prevValue ) => ( {
 			...prevValue,
 			[ id ]: newValue,
@@ -129,21 +131,18 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		return true;
 	}
 
-	const handleSubmit = () => {
+const handleSubmit = () => {
 		setSaving( true );
 		gutenaFormsUpdateSettings( settings_id, fieldValue )
 			.then( () => {
 				setInitialFieldValue( fieldValue );
+				setHasChange( false );
 				toast.success(
 					__( 'Settings updated successfully.', 'gutena-forms' )
 				);
 			} )
 			.finally( () => setSaving( false ) );
 	};
-
-	const hasChange = Object.keys( fieldValue ).some(
-		( key ) => fieldValue[ key ] !== initialFieldValue[ key ]
-	);
 
 	const getFieldDisabledState = ( field ) => {
 		if ( ! field || 'toggle' === field.type || 'submit' === field.type ) {

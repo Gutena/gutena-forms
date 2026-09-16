@@ -1,6 +1,6 @@
 
 
-const GutenaFormsTable = ( { children, headers, data, name } ) => {
+const GutenaFormsTable = ( { children, headers, data, name, emptyMessage } ) => {
 
 	return (
 		<div className={ 'gutena-forms__table' } id={ `gutena-forms__${ name }-table` }>
@@ -34,7 +34,7 @@ const GutenaFormsTable = ( { children, headers, data, name } ) => {
 
 				<tbody>
 				{
-					data && data.map( ( row, index ) => {
+					data && data.length > 0 ? data.map( ( row, index ) => {
 
 						return (
 							<tr
@@ -57,7 +57,13 @@ const GutenaFormsTable = ( { children, headers, data, name } ) => {
 								} ) }
 							</tr>
 						);
-					} )
+					} ) : (
+						<tr>
+							<td colSpan={ headers.length } className={ 'gutena-forms__table-empty-state' }>
+								{ emptyMessage || 'No records found.' }
+							</td>
+						</tr>
+					)
 				}
 				</tbody>
 

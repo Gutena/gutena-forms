@@ -128,6 +128,7 @@ const GutenaFormsFormEntries = ( { showProPopupHandler } ) => {
 						<>
 							<GutenaFormsDatatable
 								name={ 'form-entries' }
+								emptyMessage={ __( 'No entries available', 'gutena-forms' ) }
 								data={ tableData }
 								headers={ tableHeaders }
 								handleBulkAction={ handleBulkAction }
