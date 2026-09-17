@@ -29,34 +29,25 @@ const GutenaFormsRadioGroup = ( { id, desc, label, value, options, onChange, dis
                     className={ 'gutena-forms__radio-group-options' }
                 >
                     { Object.keys( options ).map( ( optionKey, index ) => {
-                        const isSelected = selectedValue === optionKey;
                         return (
                             <div
                                 key={ index }
-                                className={
-                                    'gutena-forms__radio-option' +
-                                    ( isSelected ? ' is-selected' : '' )
-                                }
+                                className={ 'gutena-forms__radio-option' }
                             >
-                                <span className="gutena-forms__radio-dot">
-                                    { isSelected && (
-                                        <span className="gutena-forms__radio-dot-inner" />
-                                    ) }
-                                </span>
-                                <label
-                                    className={ 'gutena-forms__radio-option-label' }
-                                    htmlFor={ `${ id }-${ optionKey }` }
-                                >{ options[ optionKey ] }</label>
                                 <input
                                     className={ 'gutena-forms__radio-option-input' }
                                     type="radio"
-                                    id={ `${ id }-${ optionKey }` }
+                                    id={ optionKey }
                                     name={ id }
                                     value={ optionKey }
-                                    checked={ isSelected }
+                                    checked={ selectedValue === optionKey }
                                     onChange={ ( e ) => handleChange( e.target.value ) }
                                     disabled={ disabled }
                                 />
+                                <label
+                                    className={ 'gutena-forms__radio-option-label' }
+                                    htmlFor={ optionKey }
+                                >{ options[ optionKey ] }</label>
                             </div>
                         );
                     } ) }
