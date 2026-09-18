@@ -1,7 +1,7 @@
 === Gutena Forms – Contact Form, Survey Form, Feedback Form, Booking Form, and Custom Form Builder ===
 Contributors:      wpexpertsio
 Tags:              contact form, custom form, forms, form builder, WordPress form plugin
-Tested up to:      7.0
+Tested up to:      7.1
 Stable tag:        2.2.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -122,6 +122,8 @@ Gutena Forms Pro gives you everything you need to manage advanced form workflows
 
   * **Password Field**: Securely collect passwords with a masked input field.
 
+  * **Step Break**: Create multi-step forms to organize long forms into separate steps.
+
 * Database entries
 
 * Entry management dashboard
@@ -143,6 +145,8 @@ Gutena Forms Pro gives you everything you need to manage advanced form workflows
   * **Brevo**
   * **Mailchimp**
   * **Active Campaign**
+  * **Google Sheet** — **Coming Soon**
+  * **Zapier** — **Coming Soon**
 
 * Priority support
 
@@ -240,6 +244,12 @@ Organize, filter, and control your form submissions with precision. You can cate
 ✅ **Reason 12: Connect Any AI Client with Gutena Forms via MCP**
 
 You can securely connect your forms to AI tools like Claude, Cursor, ChatGPT, and other MCP-compatible clients via the Model Context Protocol (MCP) Server. This integration allows your AI assistants to read WordPress form lists, submissions, and entry details. Perfect for automating reports, analyzing submissions, or building AI-powered workflows without leaving WordPress.
+
+✅ **Reason 13: Create Multi-Step Forms**
+
+Break long forms into smaller, easier-to-follow steps with the Step Break field in Gutena Forms Pro. Add Step Break fields wherever you want a new step to begin, then customize step titles, progress indicators, and navigation buttons.
+Multi-step forms are useful for registration forms, booking forms, surveys, applications, and other forms that need several sections. Users can move between steps with Next and Back buttons instead of seeing every field at once.
+
 
 
 
@@ -351,6 +361,10 @@ In the Pro version, you can add Entry Notes to any submission to track customer 
 
 Yes, Gutena Forms Pro includes a File Upload field that allows users to upload documents, images, or other files through your forms.
 
+= Can I create multi-step forms with Gutena Forms? =
+
+Yes. Gutena Forms Pro lets you create multi-step forms using the Step Break field. Add Step Break fields to divide a long form into separate steps, then customize step titles, progress indicators, and Next and Back button labels.
+
 = Can I get email notifications after each form submission? =
 
 Gutena Forms sends instant email notifications to the admin and lets you customize the sender details, subject, and reply-to fields.
@@ -408,8 +422,12 @@ Please report security bugs found in the source code of the undefined plugin thr
 
 
 == Changelog ==
-= 2.2.0 - =
-
+= 2.2.0 - Sep 15, 2026 =
+* Fix - Resolved PHP notice related to load_textdomain on the frontend.
+* Fix - Resolved Google reCAPTCHA secret key exposure on frontend scripts.
+* Fix - Fixed submission entries date filtering issue (Today, Yesterday, Date Range).
+* Fix - Fixed form submission notice placement and button alignment on multi-step forms.
+* Compatibility - Tested and verified compatibility with WordPress 7.1.
 
 = 2.1.0 - Aug 13, 2026 =
 * New – Added Auto Responder feature.
