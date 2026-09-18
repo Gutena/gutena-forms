@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto Responder admin settings module.
+ * Global email notification defaults admin settings module.
  *
  * @package Gutena Forms
  */
@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Forms_Forms_Settings' ) ) :
 	/**
-	 * Global auto-responder settings for confirmation emails.
+	 * Global email notification defaults for newly created forms.
 	 */
 	class Gutena_Forms_Auto_Responder extends Gutena_Forms_Forms_Settings {
 
@@ -33,7 +33,9 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 		public function __construct() {
 			// Raw option only — avoid __() via get_defaults() before init (WP 6.7+ notice).
 			$settings       = get_option( Gutena_Forms_Auto_Responder_Helper::OPTION_NAME, array() );
-			$this->settings = is_array( $settings ) ? $settings : array();
+			$this->settings = Gutena_Forms_Auto_Responder_Helper::normalize_legacy_settings(
+				is_array( $settings ) ? $settings : array()
+			);
 		}
 
 		/**
@@ -65,6 +67,21 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 		}
 
 		/**
+		 * Resolve a stored setting value with defaults.
+		 *
+		 * @param string $key Setting key.
+		 * @param array  $defaults Default values.
+		 * @return mixed
+		 */
+		private function get_setting_value( $key, $defaults ) {
+			if ( isset( $this->settings[ $key ] ) && '' !== $this->settings[ $key ] ) {
+				return $this->settings[ $key ];
+			}
+
+			return $defaults[ $key ] ?? '';
+		}
+
+		/**
 		 * Settings definition for dashboard UI.
 		 *
 		 * @return array
@@ -75,25 +92,38 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 
 			return array(
 				'id'          => 'auto-responder',
-				'title'       => __( 'Auto Responder', 'gutena-forms' ),
-				'description' => __( 'Enable automated email responses using customizable templates and merge tags.', 'gutena-forms' ),
+				'title'       => __( 'Email Notifications', 'gutena-forms' ),
+				'description' => __( 'Configure default settings that apply to newly created forms.', 'gutena-forms' ),
 				'fields'      => array(
 					array(
-						'id'      => 'enable',
-						'type'    => 'toggle',
-						'name'    => __( 'Enable Auto-Responder', 'gutena-forms' ),
-						'desc'    => __( 'Send an automatic reply to users who submit the form.', 'gutena-forms' ),
-						'default' => false,
-						'value'   => ! empty( $this->settings['enable'] ),
+						'id'    => 'send_email_to',
+						'type'  => 'email',
+						'name'  => __( 'Send Email To', 'gutena-forms' ),
+						'value' => $this->get_setting_value( 'send_email_to', $defaults ),
+						'attrs' => array(
+							'required' => true,
+							'multiple' => true,
+						),
 					),
 					array(
 						'id'    => 'subject',
 						'type'  => 'text',
 						'name'  => __( 'Subject', 'gutena-forms' ),
-						'value' => empty( $this->settings['subject'] ) ? $defaults['subject'] : $this->settings['subject'],
+						'value' => $this->get_setting_value( 'subject', $defaults ),
 						'attrs' => array(
+							'required'        => true,
 							'merge_tag_field' => true,
 							'placeholder'     => $defaults['subject'],
+						),
+					),
+					array(
+						'id'    => 'message',
+						'type'  => 'html-editor',
+						'name'  => __( 'Email Message', 'gutena-forms' ),
+						'value' => $this->get_setting_value( 'message', $defaults ),
+						'attrs' => array(
+							'merge_tag_field' => true,
+							'placeholder'     => $defaults['message'],
 						),
 					),
 					array(
@@ -105,14 +135,51 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						),
 					),
 					array(
-						'id'    => 'message',
-						'type'  => 'textarea',
-						'name'  => __( 'Message', 'gutena-forms' ),
-						'value' => empty( $this->settings['message'] ) ? $defaults['message'] : $this->settings['message'],
+						'id'    => 'from_name',
+						'type'  => 'text',
+						'name'  => __( 'From Name', 'gutena-forms' ),
+						'value' => $this->get_setting_value( 'from_name', $defaults ),
 						'attrs' => array(
 							'merge_tag_field' => true,
-							'placeholder'     => $defaults['message'],
-							'rows'            => 6,
+							'placeholder'     => $defaults['from_name'],
+						),
+					),
+					array(
+						'id'    => 'from_email',
+						'type'  => 'email',
+						'name'  => __( 'From Email', 'gutena-forms' ),
+						'value' => $this->get_setting_value( 'from_email', $defaults ),
+						'attrs' => array(
+							'allow_merge_tags' => true,
+							'merge_tags'       => Gutena_Forms_Auto_Responder_Helper::get_from_email_merge_tags(),
+							'merge_tag_field'  => true,
+						),
+					),
+					array(
+						'id'    => 'cc',
+						'type'  => 'email',
+						'name'  => __( 'CC', 'gutena-forms' ),
+						'value' => $this->get_setting_value( 'cc', $defaults ),
+						'attrs' => array(
+							'multiple' => true,
+						),
+					),
+					array(
+						'id'    => 'bcc',
+						'type'  => 'email',
+						'name'  => __( 'BCC', 'gutena-forms' ),
+						'value' => $this->get_setting_value( 'bcc', $defaults ),
+						'attrs' => array(
+							'multiple' => true,
+						),
+					),
+					array(
+						'id'    => 'reply_to',
+						'type'  => 'email',
+						'name'  => __( 'Reply To', 'gutena-forms' ),
+						'value' => $this->get_setting_value( 'reply_to', $defaults ),
+						'attrs' => array(
+							'multiple' => true,
 						),
 					),
 					array(
@@ -131,6 +198,11 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 		 * @return bool
 		 */
 		public function save_settings( $settings ) {
+			$validation = Gutena_Forms_Auto_Responder_Helper::validate_settings( $settings );
+			if ( is_wp_error( $validation ) ) {
+				return false;
+			}
+
 			$sanitized = Gutena_Forms_Auto_Responder_Helper::sanitize_settings( $settings );
 			update_option( Gutena_Forms_Auto_Responder_Helper::OPTION_NAME, $sanitized );
 			$this->settings = $sanitized;

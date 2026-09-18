@@ -136,8 +136,31 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		 * @return string
 		 */
 		public function render_block( $attributes, $content ) {
-			// No changes if attributes is empty.
-			if ( empty( $attributes ) || empty( $attributes['adminEmails'] ) ) {
+			if ( empty( $attributes ) ) {
+				return $content;
+			}
+
+			if ( class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) {
+				$confirmation_config = Gutena_Forms_Confirmation_Helper::get_frontend_config( $attributes );
+				if ( ! empty( $confirmation_config ) ) {
+					$confirmation_json = wp_json_encode( $confirmation_config );
+					$form_attrs        = ' data-form-confirmation="' . esc_attr( $confirmation_json ) . '"';
+
+					if ( ! empty( $attributes['formName'] ) ) {
+						$form_attrs .= ' data-form-name="' . esc_attr( $attributes['formName'] ) . '"';
+					}
+
+					$content = preg_replace(
+						'/' . preg_quote( '>', '/' ) . '/',
+						$form_attrs . '>',
+						$content,
+						1
+					);
+				}
+			}
+
+			// No changes if admin emails are empty.
+			if ( empty( $attributes['adminEmails'] ) ) {
 				return $content;
 			}
 

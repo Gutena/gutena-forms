@@ -1,0 +1,420 @@
+@import "../../../shared/scss/notification-message-field";
+@import "../../../shared/scss/confirmation-option-cards";
+
+$gf-fc-primary: #0da88c;
+$gf-fc-primary-dark: #0c9b81;
+$gf-fc-heading: #1e1e1e;
+$gf-fc-body: #6e7376;
+$gf-fc-border: #dedede;
+$gf-fc-border-light: #e2e2e2;
+$gf-fc-danger: #d70404;
+
+.gutena-forms-form-confirmation-panel {
+	.components-panel__body-title {
+		font-weight: 600;
+	}
+
+	.gutena-forms-form-confirmation-panel__content {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.gutena-forms-form-confirmation-panel__toggle {
+		.components-base-control__field {
+			align-items: center;
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 0;
+		}
+
+		.components-toggle-control__label {
+			color: $gf-fc-heading;
+			font-size: 11px;
+			font-weight: 600;
+			line-height: 20px;
+			margin: 0;
+		}
+
+		.components-form-toggle.is-checked .components-form-toggle__track {
+			background-color: var(
+				--wp-components-color-accent,
+				var(--wp-admin-theme-color, #3858e9)
+			);
+		}
+	}
+
+	.gutena-forms-form-confirmation-panel__configure.components-button {
+		align-items: center;
+		align-self: stretch;
+		border: 0.5px solid $gf-fc-heading;
+		border-radius: 6px;
+		box-shadow: none;
+		color: $gf-fc-heading;
+		display: inline-flex;
+		font-size: 10px;
+		font-weight: 700;
+		gap: 10px;
+		height: 35px;
+		justify-content: center;
+		line-height: 1.5;
+		min-height: 35px;
+		padding: 10px 15px;
+		width: 100%;
+
+		svg {
+			height: 12px;
+			width: 14px;
+		}
+
+		&:hover,
+		&:focus {
+			border-color: $gf-fc-heading;
+			color: $gf-fc-heading;
+		}
+	}
+}
+
+.gutena-forms-form-confirmation-modal {
+	inset: 0;
+	position: fixed;
+	z-index: 100000;
+
+	&__overlay {
+		background: rgba(0, 0, 0, 0.35);
+		border: none;
+		cursor: default;
+		inset: 0;
+		padding: 0;
+		position: absolute;
+	}
+
+	&__dialog {
+		background: #fff;
+		border-radius: 10px;
+		box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+		display: flex;
+		flex-direction: column;
+		left: 50%;
+		max-height: calc(100vh - 64px);
+		overflow: hidden;
+		position: absolute;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		width: min(700px, calc(100% - 32px));
+	}
+
+	&__header {
+		align-items: flex-start;
+		display: flex;
+		flex-shrink: 0;
+		gap: 12px;
+		justify-content: space-between;
+		padding: 20px 20px 0;
+	}
+
+	&__title {
+		color: $gf-fc-heading;
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	&__close.components-button {
+		color: $gf-fc-heading;
+		flex-shrink: 0;
+		height: 24px;
+		margin: 0;
+		min-width: 24px;
+		padding: 0;
+	}
+
+	&__body {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		gap: 20px;
+		min-height: 0;
+		overflow-x: hidden;
+		overflow-y: auto;
+		padding: 20px;
+		scrollbar-color: #c3c4c7 transparent;
+		scrollbar-width: thin;
+
+		&::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: #c3c4c7;
+			border-radius: 8px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
+	}
+
+	&__section {
+		margin: 0;
+		width: 100%;
+	}
+
+	&__footer {
+		border-top: none;
+		display: flex;
+		flex-shrink: 0;
+		gap: 10px;
+		justify-content: flex-end;
+		padding: 0 20px 20px;
+	}
+
+	&__cancel.components-button {
+		background: #fff;
+		border: 1px solid $gf-fc-border;
+		border-radius: 4px;
+		box-shadow: none;
+		color: $gf-fc-heading;
+		font-size: 14px;
+		font-weight: 500;
+		height: auto;
+		line-height: 1;
+		min-height: 0;
+		padding: 10px 12px;
+
+		&:hover,
+		&:focus {
+			background: #fff;
+			border-color: $gf-fc-border;
+			color: $gf-fc-heading;
+		}
+	}
+
+	&__save.components-button.is-primary {
+		background: $gf-fc-primary;
+		border-radius: 4px;
+		box-shadow: none;
+		font-size: 14px;
+		font-weight: 700;
+		height: auto;
+		line-height: 1;
+		min-height: 0;
+		padding: 10px 30px;
+
+		&:hover,
+		&:focus {
+			background: $gf-fc-primary-dark;
+		}
+	}
+
+	.components-base-control__label {
+		color: $gf-fc-heading;
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 1.2;
+		margin-bottom: 8px;
+	}
+
+	.components-base-control__field {
+		margin-bottom: 0;
+	}
+
+	.components-select-control__input,
+	.components-text-control__input {
+		background: #fff;
+		border: 1px solid $gf-fc-border-light;
+		border-radius: 4px;
+		box-shadow: none;
+		color: $gf-fc-heading;
+		font-size: 12px;
+		height: 35px;
+		min-height: 35px;
+		padding: 7px 15px;
+
+		&:focus {
+			border-color: var(
+				--wp-components-color-accent,
+				var(--wp-admin-theme-color, #2271b1)
+			);
+			box-shadow: 0 0 0 1px
+				var(
+					--wp-components-color-accent,
+					var(--wp-admin-theme-color, #2271b1)
+				);
+			outline: 2px solid transparent;
+		}
+	}
+
+	.components-base-control__help {
+		color: $gf-fc-body;
+		font-size: 11px;
+		margin-top: 6px;
+	}
+}
+
+.gutena-forms-form-confirmation-message-field {
+	&__header {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		justify-content: space-between;
+		margin-bottom: 6px;
+	}
+
+	&__label {
+		color: $gf-fc-heading;
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	&__toolbar {
+		align-items: center;
+		display: flex;
+		flex-shrink: 0;
+		flex-wrap: wrap;
+		gap: 5px;
+	}
+
+	&__mode {
+		background: transparent;
+		border: 1px solid #e9e9e9;
+		border-radius: 5px;
+		color: $gf-fc-heading;
+		cursor: pointer;
+		font-size: 11px;
+		font-weight: 500;
+		line-height: 1.2;
+		padding: 5px 9px;
+
+		&.is-active {
+			background: #efefef;
+		}
+
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.6;
+		}
+	}
+
+	&__editor {
+		border: 1px solid $gf-fc-border-light;
+		border-radius: 6px;
+		overflow: hidden;
+	}
+
+	&__rich-toolbar {
+		align-items: center;
+		background: #f8f8f8;
+		border-bottom: 1px solid $gf-fc-border-light;
+		color: $gf-fc-heading;
+		display: flex;
+		font-size: 10px;
+		font-weight: 500;
+		gap: 4px;
+		min-height: 24px;
+		padding: 5px 10px;
+	}
+
+	&__textarea {
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+		color: $gf-fc-heading;
+		display: block;
+		font-size: 12px;
+		line-height: 1.5;
+		min-height: 90px;
+		padding: 10px;
+		resize: vertical;
+		width: 100%;
+
+		&:focus {
+			border: none;
+			box-shadow: none;
+			outline: none;
+		}
+
+		&.is-code {
+			font-family: Consolas, Monaco, monospace;
+			font-size: 11px;
+		}
+
+		&:disabled {
+			background: #f5f6f7;
+			cursor: not-allowed;
+		}
+	}
+
+	&.is-disabled {
+		opacity: 0.6;
+		pointer-events: none;
+	}
+}
+
+.gutena-forms-form-confirmation-modal__url-error {
+	.components-base-control__help {
+		color: $gf-fc-danger;
+	}
+}
+
+.gutena-forms-form-confirmation-radio-group {
+	&__label {
+		color: $gf-fc-heading;
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0 0 8px;
+	}
+
+	&.is-card {
+		.gutena-forms-form-confirmation-radio-group__label {
+			font-size: 12px;
+			font-weight: 500;
+			margin-bottom: 10px;
+		}
+	}
+
+	&.is-inline {
+		.gutena-forms-form-confirmation-radio-group__options {
+			align-items: center;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 40px;
+			padding: 6px 0;
+		}
+
+		.gutena-forms-form-confirmation-radio-group__option {
+			align-items: center;
+			color: $gf-fc-heading;
+			display: inline-flex;
+			font-size: 12px;
+			font-weight: 500;
+			gap: 10px;
+			margin: 0;
+
+			input {
+				accent-color: $gf-fc-primary;
+				height: 14px;
+				margin: 0;
+				width: 14px;
+			}
+		}
+	}
+}
+
+@media (max-width: 782px) {
+	.gutena-forms-form-confirmation-modal {
+		&__dialog {
+			max-height: calc(100vh - 32px);
+		}
+	}
+
+	.gutena-forms-form-confirmation-message-field__header {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+}

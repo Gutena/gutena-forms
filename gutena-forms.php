@@ -193,6 +193,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		private function includes() {
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-helper.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-auto-responder-helper.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-confirmation-helper.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-notification-helper.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-cpt.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
@@ -233,6 +235,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
 			add_action( 'admin_notices', array( $this, 'maybe_show_update_pro_notice' ) );
 			add_action( 'admin_init', array( $this, 'register_pro_plugin_row_notice' ) );
+			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_email_assets' ) );
 
 			$this->load_dashboard();
 		}
@@ -616,6 +619,15 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 						'forms_available'               => $forms_available,
 						'honeypot'                      => get_option( 'gutena_forms__honeypot', array() ),
 						'legacyHiddenBlocks'            => gutena_forms_get_legacy_hidden_block_names(),
+						'email_notifications_defaults'    => class_exists( 'Gutena_Forms_Auto_Responder_Helper' )
+							? Gutena_Forms_Auto_Responder_Helper::get_form_defaults_for_editor()
+							: array(),
+						'form_confirmation_defaults'      => class_exists( 'Gutena_Forms_Confirmation_Helper' )
+							? Gutena_Forms_Confirmation_Helper::get_form_defaults_for_editor()
+							: array(),
+						'site_name'                       => get_bloginfo( 'name' ),
+						'site_url'                        => get_site_url(),
+						'admin_email'                     => sanitize_email( get_option( 'admin_email' ) ),
 					),
 					$gf_message
 				)
@@ -747,6 +759,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 						',
 					)
 				);
+			}
+		}
+
+		/**
+		 * Enqueue the WordPress classic editor for email message fields in the block editor.
+		 *
+		 * @since 1.9.2
+		 */
+		public function enqueue_block_editor_email_assets() {
+			if ( is_admin() && function_exists( 'wp_enqueue_editor' ) ) {
+				wp_enqueue_editor();
 			}
 		}
 

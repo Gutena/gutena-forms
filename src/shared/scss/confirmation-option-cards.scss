@@ -1,0 +1,69 @@
+$gf-option-primary: #0da88c;
+$gf-option-heading: #1e1e1e;
+$gf-option-border: #e2e2e2;
+$gf-option-selected-bg: #f5fffd;
+$gf-option-muted-border: #a7aaad;
+
+.gutena-forms__option-cards {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+
+	&__option {
+		align-items: center;
+		background: #fff;
+		border: 1px solid $gf-option-border;
+		border-radius: 6px;
+		color: $gf-option-heading;
+		cursor: pointer;
+		display: inline-flex;
+		font-size: 10px;
+		font-weight: 500;
+		gap: 10px;
+		justify-content: space-between;
+		line-height: normal;
+		min-height: 28px;
+		min-width: 141px;
+		padding: 7px 15px;
+		transition: background-color 0.15s ease, border-color 0.15s ease;
+
+		&:hover:not(:disabled) {
+			border-color: #cfcfcf;
+		}
+
+		&.is-selected {
+			background: $gf-option-selected-bg;
+			border-color: $gf-option-primary;
+		}
+
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.6;
+		}
+	}
+
+	&__indicator {
+		border: 1px solid $gf-option-muted-border;
+		border-radius: 50%;
+		flex-shrink: 0;
+		height: 12px;
+		position: relative;
+		width: 12px;
+
+		&.is-selected {
+			border-color: $gf-option-primary;
+
+			&::after {
+				background: $gf-option-primary;
+				border-radius: 50%;
+				content: "";
+				height: 6px;
+				left: 50%;
+				position: absolute;
+				top: 50%;
+				transform: translate(-50%, -50%);
+				width: 6px;
+			}
+		}
+	}
+}

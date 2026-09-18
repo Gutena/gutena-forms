@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto Responder helper: merge tags and user confirmation emails.
+ * Email notifications helper: merge tags and notification email utilities.
  *
  * @package Gutena Forms
  */
@@ -9,12 +9,12 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 	/**
-	 * Auto Responder helper class.
+	 * Email notifications helper class.
 	 */
 	class Gutena_Forms_Auto_Responder_Helper {
 
 		/**
-		 * Option name for global auto-responder settings.
+		 * Option name for global email notification defaults.
 		 */
 		const OPTION_NAME = 'gutena_forms__auto_responder';
 
@@ -25,14 +25,20 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 		 */
 		public static function get_defaults() {
 			return array(
-				'enable'  => false,
-				'subject' => __( 'Thankyou for your submission', 'gutena-forms' ),
-				'message' => __( "Thankyou for your submission!\n\nDear {Name},\n\nThank you for contacting us through our contact form. We have received your message and will get back to you as soon as possible.", 'gutena-forms' ),
+				'send_email_to' => sanitize_email( get_option( 'admin_email' ) ),
+				'subject'       => __( 'Thankyou for your submission', 'gutena-forms' ),
+				'message'       => __( "Thankyou for your submission!\n\nDear {Name},\n\nThank you for contacting us through our contact form. We have received your message and will get back to you as soon as possible.", 'gutena-forms' ),
+				'from_name'     => get_bloginfo( 'name' ),
+				'from_email'    => '',
+				'cc'            => '',
+				'bcc'           => '',
+				'reply_to'      => '',
+				'enable'        => false,
 			);
 		}
 
 		/**
-		 * Get saved auto-responder settings merged with defaults.
+		 * Get saved settings merged with defaults.
 		 *
 		 * @return array
 		 */
@@ -42,17 +48,39 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 				$settings = array();
 			}
 
+			$settings = self::normalize_legacy_settings( $settings );
+
 			return wp_parse_args( $settings, self::get_defaults() );
 		}
 
 		/**
-		 * Whether auto-responder is enabled.
+		 * Whether legacy auto-responder sending is enabled.
 		 *
 		 * @return bool
 		 */
 		public static function is_enabled() {
 			$settings = self::get_settings();
 			return ! empty( $settings['enable'] );
+		}
+
+		/**
+		 * Email notification defaults for newly created forms (block editor).
+		 *
+		 * @return array
+		 */
+		public static function get_form_defaults_for_editor() {
+			$settings = self::get_settings();
+
+			return array(
+				'send_email_to' => $settings['send_email_to'],
+				'subject'       => $settings['subject'],
+				'message'       => $settings['message'],
+				'from_name'     => $settings['from_name'],
+				'from_email'    => $settings['from_email'],
+				'cc'            => $settings['cc'],
+				'bcc'           => $settings['bcc'],
+				'reply_to'      => $settings['reply_to'],
+			);
 		}
 
 		/**
@@ -68,6 +96,140 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 				'{form-title}',
 				'{admin_email}',
 			);
+		}
+
+		/**
+		 * Merge tags allowed in From Email.
+		 *
+		 * @return array
+		 */
+		public static function get_from_email_merge_tags() {
+			return array(
+				'{admin_email}',
+			);
+		}
+
+		/**
+		 * Normalize legacy option shape to the current settings structure.
+		 *
+		 * @param array $settings Raw stored settings.
+		 * @return array
+		 */
+		public static function normalize_legacy_settings( $settings ) {
+			if ( ! is_array( $settings ) ) {
+				return array();
+			}
+
+			if ( empty( $settings['send_email_to'] ) ) {
+				$admin_email = sanitize_email( get_option( 'admin_email' ) );
+				if ( $admin_email ) {
+					$settings['send_email_to'] = $admin_email;
+				}
+			}
+
+			return $settings;
+		}
+
+		/**
+		 * Validate settings payload before save.
+		 *
+		 * @param array $settings Raw settings.
+		 * @return true|WP_Error
+		 */
+		public static function validate_settings( $settings ) {
+			$settings = is_array( $settings ) ? $settings : array();
+
+			$send_email_to = trim( (string) ( $settings['send_email_to'] ?? '' ) );
+			if ( '' === $send_email_to || '' === self::sanitize_email_list( $send_email_to ) ) {
+				return new WP_Error(
+					'gutena_forms_missing_send_email_to',
+					__( 'Send Email To is required.', 'gutena-forms' )
+				);
+			}
+
+			if ( empty( trim( (string) ( $settings['subject'] ?? '' ) ) ) ) {
+				return new WP_Error(
+					'gutena_forms_missing_subject',
+					__( 'Subject is required.', 'gutena-forms' )
+				);
+			}
+
+			return true;
+		}
+
+		/**
+		 * Whether a From Email value is valid (plain email or supported merge tag).
+		 *
+		 * @param string $email From Email value.
+		 * @return bool
+		 */
+		public static function is_valid_from_email_value( $email ) {
+			$email = trim( (string) $email );
+
+			if ( '' === $email ) {
+				return true;
+			}
+
+			if ( is_email( $email ) ) {
+				return true;
+			}
+
+			return in_array( $email, self::get_from_email_merge_tags(), true );
+		}
+
+		/**
+		 * Resolve From Email at send time with admin email fallback.
+		 *
+		 * @param string $from_email Saved From Email value.
+		 * @param array  $form_submit_data Optional submission data for merge tags.
+		 * @param array  $schema Optional form schema for merge tags.
+		 * @return string
+		 */
+		public static function resolve_from_email( $from_email, $form_submit_data = array(), $schema = array() ) {
+			$from_email = trim( (string) $from_email );
+
+			if ( '' !== $from_email ) {
+				if ( is_email( $from_email ) ) {
+					return sanitize_email( $from_email );
+				}
+
+				if ( in_array( $from_email, self::get_from_email_merge_tags(), true ) ) {
+					$resolved = self::replace_merge_tags( $from_email, $form_submit_data, $schema );
+					$resolved = sanitize_email( $resolved );
+					if ( is_email( $resolved ) ) {
+						return $resolved;
+					}
+				}
+			}
+
+			return sanitize_email( get_option( 'admin_email' ) );
+		}
+
+		/**
+		 * Sanitize comma-separated email list.
+		 *
+		 * @param string $value Raw email list.
+		 * @return string
+		 */
+		public static function sanitize_email_list( $value ) {
+			$value = trim( (string) $value );
+			if ( '' === $value ) {
+				return '';
+			}
+
+			$parts   = array_map( 'trim', explode( ',', $value ) );
+			$emails  = array();
+			foreach ( $parts as $part ) {
+				if ( '' === $part ) {
+					continue;
+				}
+				$email = sanitize_email( $part );
+				if ( is_email( $email ) ) {
+					$emails[] = $email;
+				}
+			}
+
+			return implode( ', ', array_unique( $emails ) );
 		}
 
 		/**
@@ -286,7 +448,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 
 			$body = apply_filters( 'gutena_forms_submit_user_notification', $body, $form_submit_data, $settings );
 
-			$html_body = self::email_html_body( $body, $subject );
+			$html_body = self::wrap_email_html_body( $body, $subject );
 
 			return wp_mail( $to, $subject, $html_body, $headers );
 		}
@@ -298,7 +460,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 		 * @param string $subject Email subject.
 		 * @return string
 		 */
-		private static function email_html_body( $body, $subject ) {
+		public static function wrap_email_html_body( $body, $subject ) {
 			$lang = function_exists( 'get_language_attributes' ) ? get_language_attributes( 'html' ) : 'lang="en"';
 
 			return '
@@ -325,11 +487,26 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 		 */
 		public static function sanitize_settings( $settings ) {
 			$settings = is_array( $settings ) ? $settings : array();
+			$existing = get_option( self::OPTION_NAME, array() );
+			if ( ! is_array( $existing ) ) {
+				$existing = array();
+			}
+
+			$message = isset( $settings['message'] ) ? (string) $settings['message'] : '';
+			if ( '' !== trim( $message ) && false === strpos( $message, '<' ) ) {
+				$message = wpautop( $message );
+			}
 
 			return array(
-				'enable'  => ! empty( $settings['enable'] ),
-				'subject' => isset( $settings['subject'] ) ? sanitize_text_field( $settings['subject'] ) : '',
-				'message' => isset( $settings['message'] ) ? sanitize_textarea_field( $settings['message'] ) : '',
+				'send_email_to' => self::sanitize_email_list( $settings['send_email_to'] ?? '' ),
+				'subject'       => isset( $settings['subject'] ) ? sanitize_text_field( $settings['subject'] ) : '',
+				'message'       => wp_kses_post( $message ),
+				'from_name'     => isset( $settings['from_name'] ) ? sanitize_text_field( $settings['from_name'] ) : '',
+				'from_email'    => isset( $settings['from_email'] ) ? sanitize_text_field( $settings['from_email'] ) : '',
+				'cc'            => self::sanitize_email_list( $settings['cc'] ?? '' ),
+				'bcc'           => self::sanitize_email_list( $settings['bcc'] ?? '' ),
+				'reply_to'      => self::sanitize_email_list( $settings['reply_to'] ?? '' ),
+				'enable'        => ! empty( $existing['enable'] ),
 			);
 		}
 	}
