@@ -9,7 +9,7 @@
 	],
 	"category": "gutena-pro",
 	"icon": "clock",
-	"description": "Break the form in steps.",
+	"description": "Split long forms into clear, manageable and easy-to-follow steps",
 	"textdomain": "gutena-forms-pro",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
