@@ -325,12 +325,11 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				break;
 
 			case 'html-editor': {
-				const mergeTagsField = settings?.find(
-					( item ) => 'merge-tags' === item.type
-				);
-				const messageTagItems = buildTagItemsFromTags(
-					mergeTagsField?.attrs?.tags || []
-				);
+				const editorMergeTags = field.attrs?.merge_tags;
+				const resolvedTagItems = editorMergeTags && editorMergeTags.length
+					? editorMergeTags
+					: ( settings?.find( ( item ) => 'merge-tags' === item.type )?.attrs?.tags || [] );
+				const messageTagItems = buildTagItemsFromTags( resolvedTagItems );
 
 				fieldElement = (
 					<GutenaFormsHtmlEditorField

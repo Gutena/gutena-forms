@@ -349,6 +349,36 @@ $gf-fc-danger: #d70404;
 		}
 	}
 
+	&__contenteditable {
+		color: $gf-fc-heading;
+		font-size: 12px;
+		line-height: 1.5;
+		min-height: 200px;
+		outline: none;
+		padding: 10px;
+
+		&:empty::before {
+			color: $gf-fc-body;
+			content: attr(aria-label);
+			pointer-events: none;
+		}
+
+		&:focus {
+			outline: none;
+		}
+
+		a {
+			color: $gf-fc-primary;
+			text-decoration: underline;
+		}
+
+		ul,
+		ol {
+			margin: 0;
+			padding-left: 20px;
+		}
+	}
+
 	&.is-disabled {
 		opacity: 0.6;
 		pointer-events: none;

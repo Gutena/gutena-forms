@@ -124,14 +124,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'attrs' => array(
 							'merge_tag_field' => true,
 							'placeholder'     => $defaults['message'],
-						),
-					),
-					array(
-						'id'    => 'merge_tags',
-						'type'  => 'merge-tags',
-						'name'  => __( 'Merge Tags', 'gutena-forms' ),
-						'attrs' => array(
-							'tags' => $merge_tags,
+							'merge_tags'      => $merge_tags,
 						),
 					),
 					array(
