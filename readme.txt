@@ -2,7 +2,7 @@
 Contributors:      wpexpertsio
 Tags:              contact form, custom form, forms, form builder, WordPress form plugin
 Tested up to:      7.1
-Stable tag:        2.2.0
+Stable tag:        2.1.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -422,7 +422,7 @@ Please report security bugs found in the source code of the undefined plugin thr
 
 
 == Changelog ==
-= 2.2.0 - Sep 15, 2026 =
+= 2.1.1 - Sep 15, 2026 =
 * Fix - Resolved PHP notice related to load_textdomain on the frontend.
 * Fix - Resolved Google reCAPTCHA secret key exposure on frontend scripts.
 * Fix - Fixed submission entries date filtering issue (Today, Yesterday, Date Range).
