@@ -1,3 +1,12 @@
+import {
+	getFormConfirmationConfig,
+	handleConfirmationError,
+	handleConfirmationSuccess,
+	handleLegacyConfirmationError,
+	handleLegacyConfirmationSuccess,
+	isFormConfirmationEnabled,
+} from './form-confirmation-frontend';
+
 document.addEventListener("DOMContentLoaded", function(){
 	const ready = () => {
 		sync_hide_form_after_submit_from_embedded();
@@ -306,38 +315,46 @@ document.addEventListener("DOMContentLoaded", function(){
 			submitButton.disabled = false;
 			submitBtnLink.innerHTML = submitBtnLinkHtml;
 			gutena_forms.classList.remove( 'form-progress' );
+
+			const confirmationConfig = getFormConfirmationConfig( gutena_forms );
+			const useFormConfirmation = isFormConfirmationEnabled(
+				confirmationConfig
+			);
+
 			if (
 				! isEmpty( response ) &&
 				'error' === response.status
 			) {
-				gutena_forms.classList.add(
-					'display-error-message'
-				);
-
-				//Get form error message block first paragraph
-				let errorMsgElement =
-					gutena_forms.querySelector(
-						'.wp-block-gutena-form-error-msg .gutena-forms-error-text'
+				if ( useFormConfirmation ) {
+					handleConfirmationError(
+						gutena_forms,
+						form_data,
+						confirmationConfig
 					);
-
-				//check if element is exist
-				if (
-					isEmpty( errorMsgElement ) ||
-					0 === errorMsgElement.length
-				) {
-					console.log( 'errorMsgElement not found' );
+				} else {
+					handleLegacyConfirmationError( gutena_forms, response );
 				}
-
-				//Insert message
-				errorMsgElement.innerHTML = response.message;
-
-				console.log( 'Form Message', response );
+			} else if ( useFormConfirmation ) {
+				handleConfirmationSuccess(
+					gutena_forms,
+					form_data,
+					confirmationConfig
+				);
 			} else {
-				//Reset Form
-				gutena_forms.reset();
+				handleLegacyConfirmationSuccess( gutena_forms );
+			}
+		} )
+		.catch( () => {
+			submitButton.disabled = false;
+			submitBtnLink.innerHTML = submitBtnLinkHtml;
+			gutena_forms.classList.remove( 'form-progress' );
 
-				gutena_forms.classList.add(
-					'display-success-message'
+			const confirmationConfig = getFormConfirmationConfig( gutena_forms );
+			if ( isFormConfirmationEnabled( confirmationConfig ) ) {
+				handleConfirmationError(
+					gutena_forms,
+					form_data,
+					confirmationConfig
 				);
 
 				gutena_forms.dispatchEvent(

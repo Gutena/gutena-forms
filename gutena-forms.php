@@ -4,7 +4,7 @@
  * Description:       Gutena Forms is the easiest way to create forms inside the WordPress block editor. Our plugin does not use jQuery and is lightweight, so you can rest assured that it won’t slow down your website. Instead, it allows you to quickly and easily create custom forms right inside the block editor.
  * Requires at least: 6.5
  * Requires PHP:      5.6
- * Version:           2.1.1
+ * Version:           2.3.0
  * Author:            Gutena Forms
  * Author URI:        https://gutenaforms.com
  * License:           GPL-2.0-or-later
@@ -41,7 +41,7 @@ if ( ! defined( 'GUTENA_FORMS_PLUGIN_URL' ) ) {
  * Plugin version.
  */
 if ( ! defined( 'GUTENA_FORMS_VERSION' ) ) {
-	define( 'GUTENA_FORMS_VERSION', '2.1.1' );
+	define( 'GUTENA_FORMS_VERSION', '2.3.0' );
 }
 
 /**
@@ -193,6 +193,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 		private function includes() {
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-helper.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-auto-responder-helper.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-confirmation-helper.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/helpers/class-gutena-forms-notification-helper.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-cpt.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/email-report/email-reports.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/class-gutena-migration.php';
@@ -233,6 +235,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			add_filter( 'gutena_forms__register_fields', array( $this, 'register_fields' ) );
 			add_action( 'admin_notices', array( $this, 'maybe_show_update_pro_notice' ) );
 			add_action( 'admin_init', array( $this, 'register_pro_plugin_row_notice' ) );
+			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_email_assets' ) );
 
 			$this->load_dashboard();
 		}
@@ -770,6 +773,17 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 						',
 					)
 				);
+			}
+		}
+
+		/**
+		 * Enqueue the WordPress classic editor for email message fields in the block editor.
+		 *
+		 * @since 1.9.2
+		 */
+		public function enqueue_block_editor_email_assets() {
+			if ( is_admin() && function_exists( 'wp_enqueue_editor' ) ) {
+				wp_enqueue_editor();
 			}
 		}
 

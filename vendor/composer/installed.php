@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => 'gutena/gutena-forms',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'cdb25fc0d36c0e1e4a298dabb0c1b3933fe50a88',
+        'type' => 'wordpress-plugin',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        'gutena/gutena-forms' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'cdb25fc0d36c0e1e4a298dabb0c1b3933fe50a88',
+            'type' => 'wordpress-plugin',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'shuchkin/simplexlsxgen' => array(
+            'pretty_version' => '1.5.17',
+            'version' => '1.5.17.0',
+            'reference' => '162a4a9b929611d69dbd6f1a7f42af483a87b537',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../shuchkin/simplexlsxgen',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'tecnickcom/tcpdf' => array(
+            'pretty_version' => '6.11.3',
+            'version' => '6.11.3.0',
+            'reference' => 'b18f6119161019916c5bb07cb8da5205ae5c1b63',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../tecnickcom/tcpdf',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);

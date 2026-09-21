@@ -77,19 +77,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			$from_name  = empty( $this->schema['form_attrs']['emailFromName'] ) ? $blog_title : $this->schema['form_attrs']['emailFromName'];
 			$from_name  = sanitize_text_field( $from_name );
 
-			$admin_email = sanitize_email( get_option( 'admin_email' ) );
-
-			// Email To.
-			$to = empty( $this->schema['form_attrs']['adminEmails'] ) ? $admin_email : $this->schema['form_attrs']['adminEmails'];
-
-			if ( ! is_array( $to ) ) {
-				$to = explode( ',', $to );
-			}
-
-			foreach ( $to as $key => $to_email ) {
-				$to[ $key ] = sanitize_email( wp_unslash( $to_email ) );
-			}
-
 			$reply_to = empty( $this->schema['form_attrs']['replyToEmail'] ) ? '' : $this->schema['form_attrs']['replyToEmail'];
 
 			$reply_to = ( empty( $reply_to ) || empty( $_POST[ $reply_to ] ) ) ? '' : sanitize_email( wp_unslash( $_POST[ $reply_to ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -115,9 +102,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 			);
 
 			$reply_to_name = $reply_to_name . ' ' . $reply_to_lname;
-
-			// Email Subject.
-			$subject = sanitize_text_field( empty( $this->schema['form_attrs']['adminEmailSubject'] ) ? __( 'Form received', 'gutena-forms' ) . '- ' . $blog_title : $this->schema['form_attrs']['adminEmailSubject'] );
 
 			$field_schema = $this->schema['form_fields'];
 			$body         = '';
@@ -192,59 +176,21 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 				Gutena_Forms_Auto_Responder_Helper::send_auto_responder( $form_submit_data, $this->schema, $field_schema );
 			}
 
-			// If admin don't want to get Email notification.
-			if ( isset( $this->schema['form_attrs']['emailNotifyAdmin'] ) && ( '' === $this->schema['form_attrs']['emailNotifyAdmin'] || false === $this->schema['form_attrs']['emailNotifyAdmin'] || '0' === $this->schema['form_attrs']['emailNotifyAdmin'] ) ) {
-				wp_send_json(
-					array(
-						'status'  => 'Success',
-						'message' => __( 'success', 'gutena-forms' ),
-					)
+			if ( class_exists( 'Gutena_Forms_Notification_Helper' ) ) {
+				Gutena_Forms_Notification_Helper::send_form_notifications(
+					$form_submit_data,
+					$this->schema,
+					$field_schema,
+					$body
 				);
 			}
 
-			// Email headers.
-			$headers = array(
-				'Content-Type: text/html; charset=UTF-8',
-				'From: ' . esc_html( $from_name ) . ' <' . $admin_email . '>',
+			wp_send_json(
+				array(
+					'status'  => 'Success',
+					'message' => __( 'success', 'gutena-forms' ),
+				)
 			);
-			// Add reply to header.
-			if ( ! empty( $reply_to ) ) {
-				$headers[] = 'Reply-To: ' . esc_html( $reply_to_name ) . ' <' . $reply_to . '>';
-			}
-
-			// Apply filter for admin email notification.
-			$body = apply_filters( 'gutena_forms_submit_admin_notification', $body, $form_submit_data );
-
-			if ( ! is_gutena_forms_pro( false ) ) {
-				/**
-				 * Fix something
-				 *
-				 * @link https://stackoverflow.com/questions/17602400/html-email-in-gmail-css-style-attribute-removed
-				 */
-				$body .= '<div style="background-color: #fffbeb; width: fit-content; margin-top: 50px; padding: 14px 15px 12px 15px; border-radius: 10px;" > <span style="font-size: 13px; line-height: 1; display: flex;" > <span style="margin-right: 5px;" > </span> <span style="margin-right: 3px;" ><strong>' . __( 'Exciting News!', 'gutena-forms' ) . ' </strong></span> ' . __( 'Now, you can view and manage all your form submissions right from the Gutena Forms Dashboard.', 'gutena-forms' ) . '<strong><a href="' . esc_url( admin_url( 'admin.php?page=gutena-forms' ) ) . '" style="color: #E35D3F; margin-left: 1rem;" target="_blank" > ' . __( 'See all Entries', 'gutena-forms' ) . ' </a></strong></span></div>';
-			}
-
-			$body    = wpautop( $body, true );
-			$body    = $this->email_html_body( $body, $subject );
-			$subject = esc_html( $subject );
-			$res     = wp_mail( $to, $subject, $body, $headers );
-
-			if ( $res ) {
-				wp_send_json(
-					array(
-						'status'  => 'Success',
-						'message' => __( 'success', 'gutena-forms' ),
-					)
-				);
-			} else {
-				wp_send_json(
-					array(
-						'status'  => 'error',
-						'message' => __( 'Sorry! your form was submitted, but the email could not be sent. The site admin may need to review the email settings.', 'gutena-forms' ),
-						'details' => __( 'Failed to send email', 'gutena-forms' ),
-					)
-				);
-			}
 		}
 
 		/**
@@ -349,33 +295,6 @@ if ( ! class_exists( 'Gutena_Forms_Submit_Form_Handler' ) ) :
 
 			$result = rest_sanitize_boolean( $module_settings['defaultSettings'] );
 			return $result;
-		}
-
-		/**
-		 * Wrap email body in HTML structure
-		 *
-		 * @since 1.6.0
-		 * @param string $body Email body.
-		 * @param string $subject Email subject.
-		 *
-		 * @return string
-		 */
-		private function email_html_body( $body, $subject ) {
-			$lang = function_exists( 'get_language_attributes' ) ? get_language_attributes( 'html' ) : 'lang="en"';
-			return '
-			<!DOCTYPE html>
-			<html ' . $lang . '>
-				<head>
-				<meta http-equiv="X-UA-Compatible" content="IE=edge">
-				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1">
-				<title>' . $subject . '</title>
-				</head>
-				<body style="margin:0;padding:0;background:#ffffff;">
-				' . $body . '
-				</body>
-			</html>
-			';
 		}
 
 		/**

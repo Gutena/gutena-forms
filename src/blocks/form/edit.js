@@ -47,6 +47,17 @@ import CloudflareSettings from './settings/cloudflare-settings';
 import HoneypotSettings from './settings/honeypot-settings';
 import ValidationMessagesSettings from './settings/validation-messages-settings';
 import NotificationSettings from './settings/notification-settings';
+import {
+	buildFormConfirmationFromDefaults,
+	hasExistingFormConfirmationSettings,
+} from './settings/form-confirmation-utils';
+import EmailNotificationsSettings from './settings/email-notifications-settings';
+import FormConfirmationSettings from './settings/form-confirmation-settings';
+import {
+	buildTextFieldOptions,
+	collectFormFields,
+} from './settings/email-notifications-form-fields';
+
 /** Hook that retrieves the given setting for the block instance in use.
  * https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#usesetting
  */
@@ -179,7 +190,9 @@ export default function Edit( props ) {
 		adminEmailSubject,
 		emailNotifyAdmin,
 		emailNotifyUser,
+		adminEmailTemplate,
 		messages = {},
+		settings = {},
 		formStyle,
 		style,
 		recaptcha,
@@ -189,6 +202,14 @@ export default function Edit( props ) {
 
 	const { getClientIdsOfDescendants, getBlock } =
 		useSelect( blockEditorStore );
+
+	const innerBlocks = useSelect(
+		( select ) => select( blockEditorStore ).getBlock( clientId )?.innerBlocks || [],
+		[ clientId ]
+	);
+
+	const formFields = collectFormFields( innerBlocks );
+	const textFieldOptions = buildTextFieldOptions( innerBlocks );
 
 	/**
 	 * Returns an array of font family names from a given object.
@@ -382,6 +403,44 @@ export default function Edit( props ) {
 					initMessages[ k ] = gutenaFormsBlock?.[ k ] || '';
 				} );
 				setAttributes( { messages: initMessages } );
+			}
+
+			if ( ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.email_notifications_defaults ) ) {
+				const emailDefaults = gutenaFormsBlock.email_notifications_defaults;
+				const nextSettings = { ...settings };
+				nextSettings.emailNotifications = {
+					from_email: emailDefaults.from_email || '',
+					cc: emailDefaults.cc || '',
+					bcc: emailDefaults.bcc || '',
+					reply_to: emailDefaults.reply_to || '',
+				};
+
+				setAttributes( {
+					adminEmails: emailDefaults.send_email_to || '',
+					adminEmailSubject: emailDefaults.subject || '',
+					adminEmailTemplate: emailDefaults.message || '',
+					emailFromName: emailDefaults.from_name || '',
+					settings: nextSettings,
+				} );
+			}
+
+			if (
+				! gfIsEmpty( gutenaFormsBlock ) &&
+				! gfIsEmpty( gutenaFormsBlock.form_confirmation_defaults ) &&
+				! hasExistingFormConfirmationSettings( settings )
+			) {
+				const confirmationDefaults =
+					gutenaFormsBlock.form_confirmation_defaults;
+				const formConfirmation = buildFormConfirmationFromDefaults(
+					confirmationDefaults
+				);
+
+				setAttributes( {
+					settings: {
+						...settings,
+						formConfirmation,
+					},
+				} );
 			}
 		}
 		//set replyToEmailID
@@ -1243,100 +1302,33 @@ export default function Edit( props ) {
 							/>
 						</PanelRow>
 					</PanelBody>
-
-					<NotificationSettings
-						settings={ {
-							emailFromName: emailFromName,
-							emailNotifyAdmin: emailNotifyAdmin,
-							adminEmails: adminEmails,
-							adminEmailSubject: adminEmailSubject,
-							replyToEmail: replyToEmail,
-							replyToName: replyToName,
-							replyToLastName: replyToLastName,
+					<EmailNotificationsSettings
+						settings={ settings }
+						setAttributes={ setAttributes }
+						legacyAttrs={ {
+							formID,
+							emailNotifyAdmin,
+							adminEmails,
+							adminEmailSubject,
+							adminEmailTemplate,
+							emailFromName,
+							replyToName,
+							replyToLastName,
 						} }
-						methods={ {
-							setAttributes: setAttributes,
-							getEmailFields: getEmailFields,
-							getTextFields: getTextFields,
-						} }
+						formFields={ formFields }
+						textFieldOptions={ textFieldOptions }
 					/>
-
-					<PanelBody
-						title={ __( 'Confirmation', 'gutena-forms' ) }
-						initialOpen={ true }
-					>
-						<PanelRow>
-							<SelectControl
-								label="Action"
-								value={ afterSubmitAction }
-								options={ [
-									{
-										label: __( 'Message', 'gutena-forms' ),
-										value: 'message',
-									},
-									{
-										label: __(
-											'Send to URL',
-											'gutena-forms'
-										),
-										value: 'redirect_url',
-									},
-								] }
-								onChange={ ( afterSubmitAction ) =>
-									setAttributes( { afterSubmitAction } )
-								}
-								help={ __(
-									'Confirmation and error message are available for edit at the bottom of the form',
-									'gutena-forms'
-								) }
-								__nextHasNoMarginBottom
-							/>
-						</PanelRow>
-						{ 'redirect_url' === afterSubmitAction ? (
-							<PanelRow>
-								<TextControl
-									type="url"
-									label={ __(
-										'Send to URL',
-										'gutena-forms'
-									) }
-									value={ redirectUrl }
-									onChange={ ( redirectUrl ) =>
-										setAttributes( { redirectUrl } )
-									}
-								/>
-							</PanelRow>
-						) : (
-							''
-						) }
-						{ 'message' === afterSubmitAction ? (
-							<PanelRow>
-								<ToggleControl
-									label={ __(
-										'Hide form after submission',
-										'gutena-forms'
-									) }
-									help={
-										afterSubmitHide
-											? __(
-													'Toggle to not hide form',
-													'gutena-forms'
-											  )
-											: __(
-													'Toggle to hide form',
-													'gutena-forms'
-											  )
-									}
-									checked={ afterSubmitHide }
-									onChange={ ( afterSubmitHide ) =>
-										setAttributes( { afterSubmitHide } )
-									}
-								/>
-							</PanelRow>
-						) : (
-							''
-						) }
-					</PanelBody>
+					<FormConfirmationSettings
+						settings={ settings }
+						setAttributes={ setAttributes }
+						legacyAttrs={ {
+							formID,
+							afterSubmitAction,
+							afterSubmitHide,
+							redirectUrl,
+						} }
+						formFields={ formFields }
+					/>
 
 				<ValidationMessagesSettings
 					setAttributes={ setAttributes }
