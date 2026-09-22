@@ -170,6 +170,10 @@ if ( ! class_exists( 'Gutena_Forms_Rest_API_Controller' ) ) :
 					'slug'  => '/forms',
 				),
 				array(
+					'title' => __( 'Template Library', 'gutena-forms' ),
+					'slug'  => '/templates',
+				),
+				array(
 					'title' => __( 'Entries', 'gutena-forms' ),
 					'slug'  => '/entries',
 				),

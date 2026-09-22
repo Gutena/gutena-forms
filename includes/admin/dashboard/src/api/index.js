@@ -354,4 +354,109 @@ export async function gutenaFormsFetchEntriesFiltered( { formId, tag, status } =
 	throw new Error( 'Gutena Forms FetchEntriesFiltered Error' );
 }
 
+/**
+ * Fetch template library categories with counts.
+ *
+ * @since 2.2.0
+ * @returns {Promise<Array>} Category list.
+ */
+export async function gutenaFormsFetchTemplateCategories() {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: `${ GutenaFormsRestConfiguration.namespace }templates/categories`,
+	} );
+
+	if ( response.categories ) {
+		return response.categories;
+	}
+
+	throw new Error( 'Gutena Forms FetchTemplateCategories Error' );
+}
+
+/**
+ * Fetch templates with optional search, category filter, and pagination.
+ *
+ * @since 2.2.0
+ * @param {Object} params Query parameters.
+ * @param {string} [params.category] Category slug.
+ * @param {string} [params.search] Search string.
+ * @param {number} [params.page] Page number.
+ * @param {number} [params.per_page] Items per page.
+ * @returns {Promise<{templates: Array, category_counts: Object, pagination: Object}>}
+ */
+export async function gutenaFormsFetchTemplates( { category = '', search = '', page = 1, per_page = 20 } = {} ) {
+	const query = {
+		page,
+		per_page,
+	};
+
+	if ( category ) {
+		query.category = category;
+	}
+
+	if ( search ) {
+		query.search = search;
+	}
+
+	const response = await apiFetch( {
+		method: 'GET',
+		path: addQueryArgs( `${ GutenaFormsRestConfiguration.namespace }templates/get-all`, query ),
+	} );
+
+	if ( response.templates ) {
+		return {
+			templates: response.templates,
+			category_counts: response.category_counts || {},
+			pagination: response.pagination || {},
+		};
+	}
+
+	throw new Error( 'Gutena Forms FetchTemplates Error' );
+}
+
+/**
+ * Fetch a single template by ID.
+ *
+ * @since 2.2.0
+ * @param {string} templateId Template identifier.
+ * @returns {Promise<Object>} Template detail.
+ */
+export async function gutenaFormsFetchTemplate( templateId ) {
+	const response = await apiFetch( {
+		method: 'GET',
+		path: `${ GutenaFormsRestConfiguration.namespace }templates/${ templateId }`,
+	} );
+
+	if ( response.template ) {
+		return response.template;
+	}
+
+	throw new Error( 'Gutena Forms FetchTemplate Error' );
+}
+
+/**
+ * Create a form from a registered template ID.
+ *
+ * @since 2.2.0
+ * @param {string} templateId Registered template identifier.
+ * @param {string} [formName] Optional custom form name.
+ * @returns {Promise<Object>} Created form data including edit_url.
+ */
+export async function gutenaFormsCreateFromTemplate( templateId, formName = '' ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }templates/create-from-template`,
+		data: {
+			template_id: templateId,
+			form_name: formName,
+		},
+	} );
+
+	if ( response.form ) {
+		return response.form;
+	}
+
+	throw new Error( 'Gutena Forms CreateFromTemplate Error' );
+}
+
 export { gutenaFormsDeleteEntry, deleteMultipleEntries } from './entries';

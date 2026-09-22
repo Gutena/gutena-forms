@@ -1,9 +1,11 @@
-import {Routes, Route, useParams} from 'react-router';
+import { Routes, Route } from 'react-router';
 import GutenaFormsSettingsLayout from '../layouts/gutena-forms-settings-layout';
 import GutenaFormsPageLayout from '../layouts/gutena-forms-page-layout';
 import GutenaFormsDashboard from './gutena-forms-dashboard';
 import GuennaFormsKnowledgeBase from './gutena-forms-knowledge-base';
-import { applyFilters } from '@wordpress/hooks';
+import GutenaFormsTemplateLibrary from './gutena-forms-template-library';
+import GutenaFormsTemplateFormReady from './gutena-forms-template-form-ready';
+import { PREVIEW_RETURN_LIBRARY } from '../utils/template-library-constants';
 
 const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 
@@ -26,6 +28,21 @@ const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 			<Route
 				path={ '/settings/knowledge-base' }
 				element={ <GuennaFormsKnowledgeBase
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
+			/>
+			<Route
+				path={ '/settings/templates' }
+				element={ <GutenaFormsTemplateLibrary
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+					previewReturnContext={ PREVIEW_RETURN_LIBRARY }
+				/> }
+			/>
+			<Route
+				path={ '/settings/templates/form-ready/:templateId' }
+				element={ <GutenaFormsTemplateFormReady
 					showProPopupHandler={ showProPopupHandler }
 					setActiveMenu={ setActiveMenu }
 				/> }

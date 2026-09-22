@@ -107,6 +107,15 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 					{/* Create Button */}
 					<div className={ 'gutena-forms__empty-state-actions' }>
 						<Button
+							as={ Link }
+							to="/settings/templates"
+							className="gutena-forms-choose-template-button"
+							variant="secondary"
+							onClick={ () => setActiveMenu( '/templates' ) }
+						>
+							{ __( 'Choose a Template', 'gutena-forms' ) }
+						</Button>
+						<Button
 							href={ 'post-new.php?post_type=gutena_forms' }
 							className="gutena-forms-create-first-form-button"
 							variant="primary"
@@ -140,7 +149,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 	};
 
 	return (
-		<div>
+		<div className="gutena-forms__forms-screen">
 			{ loading ? (
 				<FormsLoading />
 			) : (
@@ -148,15 +157,34 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 					<div className={ '' }>
 						<h2 className={ 'gutena-forms__page-title' }>
 							{ __( 'Gutena Forms', 'gutena-forms' ) }
-							<Button
-								href={ 'post-new.php?post_type=gutena_forms' }
-								className="gutena-forms-add-new-form-button"
-								variant="primary"
-							>
-								<Plus />
-								{ __( 'Add New Form', 'gutena-forms' ) }
-							</Button>
+							<span className="gutena-forms__page-title-actions">
+								<Button
+									as={ Link }
+									to="/settings/templates"
+									className="gutena-forms-choose-template-button"
+									variant="secondary"
+									onClick={ () => setActiveMenu( '/templates' ) }
+								>
+									{ __( 'Choose a Template', 'gutena-forms' ) }
+								</Button>
+								<Button
+									href={ 'post-new.php?post_type=gutena_forms' }
+									className="gutena-forms-add-new-form-button"
+									variant="primary"
+								>
+									<Plus />
+									{ __( 'Add New Form', 'gutena-forms' ) }
+								</Button>
+							</span>
 						</h2>
+						<p className="gutena-forms-template-library-link">
+							<Link
+								to="/settings/templates"
+								onClick={ () => setActiveMenu( '/templates' ) }
+							>
+								{ __( 'Template Library', 'gutena-forms' ) }
+							</Link>
+						</p>
 					</div>
 
 					<div>
