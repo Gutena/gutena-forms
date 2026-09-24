@@ -4,6 +4,7 @@ import { Plus } from '../icons/plus';
 import NoFormBanner from '../icons/NoFormBanner';
 import GutenaFormsYouTubeModal from '../components/gutena-forms-youtube-modal';
 import { Link } from 'react-router';
+import { NEW_FORM_PATH } from '../utils/template-library-constants';
 import GutenaFormsDataTable from '../components/gutena-forms-datatable'
 import Edit from '../icons/edit';
 import Eye from '../icons/eye';
@@ -116,7 +117,8 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 							{ __( 'Choose a Template', 'gutena-forms' ) }
 						</Button>
 						<Button
-							href={ 'post-new.php?post_type=gutena_forms' }
+							as={ Link }
+							to={ NEW_FORM_PATH }
 							className="gutena-forms-create-first-form-button"
 							variant="primary"
 						>
@@ -168,7 +170,8 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 									{ __( 'Choose a Template', 'gutena-forms' ) }
 								</Button>
 								<Button
-									href={ 'post-new.php?post_type=gutena_forms' }
+									as={ Link }
+									to={ NEW_FORM_PATH }
 									className="gutena-forms-add-new-form-button"
 									variant="primary"
 								>

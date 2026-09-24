@@ -170,7 +170,28 @@ if ( ! class_exists( 'Gutena_Forms_Form_Templates_Endpoints' ) ) :
 		 * @return WP_REST_Response|WP_Error
 		 */
 		public function create_from_template( $request ) {
-			$template_id = sanitize_key( wp_unslash( $request->get_param( 'template_id' ) ) );
+			$json_params = $request->get_json_params();
+			$template_id = '';
+			$form_name   = '';
+
+			if ( is_array( $json_params ) ) {
+				if ( isset( $json_params['template_id'] ) ) {
+					$template_id = sanitize_key( wp_unslash( (string) $json_params['template_id'] ) );
+				}
+
+				if ( isset( $json_params['form_name'] ) && is_string( $json_params['form_name'] ) ) {
+					$form_name = $json_params['form_name'];
+				}
+			}
+
+			if ( '' === $template_id ) {
+				$template_id = sanitize_key( wp_unslash( (string) $request->get_param( 'template_id' ) ) );
+			}
+
+			if ( '' === $form_name ) {
+				$param_form_name = $request->get_param( 'form_name' );
+				$form_name       = is_string( $param_form_name ) ? $param_form_name : '';
+			}
 
 			if ( '' === $template_id ) {
 				return new WP_Error(
@@ -180,9 +201,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Templates_Endpoints' ) ) :
 				);
 			}
 
-			$form_name = $request->get_param( 'form_name' );
-			$form_name = is_string( $form_name ) ? $form_name : '';
-			$result    = $this->service->create_form_from_template( $template_id, $form_name );
+			$result = $this->service->create_form_from_template( $template_id, $form_name );
 
 			if ( is_wp_error( $result ) ) {
 				return $result;

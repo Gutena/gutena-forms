@@ -67,6 +67,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Templates' ) ) :
 
 			require_once $base_path . 'abstract-class-form-template.php';
 			require_once $base_path . 'class-form-template-fields.php';
+			require_once $base_path . 'class-form-template-field-renderer.php';
 			require_once $base_path . 'class-form-template-registry.php';
 			require_once $base_path . 'class-form-template-builder.php';
 			require_once $base_path . 'class-form-template-service.php';

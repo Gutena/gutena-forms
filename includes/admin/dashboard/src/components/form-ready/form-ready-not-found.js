@@ -1,8 +1,13 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { Link } from 'react-router';
+import { TEMPLATE_LIBRARY_PATH } from '../../utils/template-library-constants';
 
-const FormReadyNotFound = ( { onBack } ) => (
+const FormReadyNotFound = ( {
+	libraryPath = TEMPLATE_LIBRARY_PATH,
+	backLabel = __( 'Back to Template Library', 'gutena-forms' ),
+	onBack,
+} ) => (
 	<div className="gutena-forms-form-ready__not-found" role="alert">
 		<h1>{ __( 'Template not found', 'gutena-forms' ) }</h1>
 		<p>
@@ -10,12 +15,12 @@ const FormReadyNotFound = ( { onBack } ) => (
 		</p>
 		<Button
 			as={ Link }
-			to="/settings/templates"
+			to={ libraryPath }
 			variant="primary"
 			className="gutena-forms-form-ready__back-button"
 			onClick={ onBack }
 		>
-			{ __( 'Back to Template Library', 'gutena-forms' ) }
+			{ backLabel }
 		</Button>
 	</div>
 );

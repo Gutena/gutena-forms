@@ -36,8 +36,17 @@ export const COMING_SOON_LABEL = __( 'Coming soon', 'gutena-forms' );
 /** Free plan badge label. */
 export const FREE_LABEL = __( 'Free', 'gutena-forms' );
 
+/** Route path for the New Form creation screen. */
+export const NEW_FORM_PATH = '/settings/new-form';
+
+/** Route path for the standalone Template Library screen. */
+export const TEMPLATE_LIBRARY_PATH = '/settings/templates';
+
 /** Preview return context: template library list. */
 export const PREVIEW_RETURN_LIBRARY = 'library';
+
+/** Preview return context: new form creation screen. */
+export const PREVIEW_RETURN_NEW_FORM = 'new-form';
 
 /** Preview return context: form ready screen. */
 export const PREVIEW_RETURN_FORM_READY = 'form-ready';

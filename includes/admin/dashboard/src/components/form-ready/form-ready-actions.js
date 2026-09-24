@@ -11,6 +11,7 @@ const FormReadyActions = ( {
 	canUse,
 	canPreview = true,
 	proRequired,
+	libraryPath = '/settings/templates',
 } ) => (
 	<div className="gutena-forms-form-ready__actions">
 		{ canPreview && (
@@ -25,7 +26,7 @@ const FormReadyActions = ( {
 
 		<Button
 			as={ Link }
-			to="/settings/templates"
+			to={ libraryPath }
 			variant="secondary"
 			className="gutena-forms-form-ready__action-change"
 		>

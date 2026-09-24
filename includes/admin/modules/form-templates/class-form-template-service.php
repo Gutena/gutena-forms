@@ -187,10 +187,12 @@ if ( ! class_exists( 'Gutena_Forms_Form_Template_Service' ) ) :
 				$form_name = __( 'Contact Form', 'gutena-forms' );
 			}
 
-			$block_form_id = Gutena_Forms_Form_Template_Builder::generate_form_id();
-			$form_block    = Gutena_Forms_Form_Template_Builder::build_form_block( $template, $block_form_id, $form_name );
+			$this->ensure_template_blocks_registered();
 
-			if ( null === $form_block || ! function_exists( 'serialize_block' ) ) {
+			$block_form_id   = Gutena_Forms_Form_Template_Builder::generate_form_id();
+			$post_content    = Gutena_Forms_Form_Template_Builder::serialize_form_block( $template, $block_form_id, $form_name );
+
+			if ( null === $post_content || '' === $post_content ) {
 				return new WP_Error(
 					'gutena_forms_template_build_failed',
 					__( 'Unable to create a form from this template.', 'gutena-forms' ),
@@ -198,15 +200,27 @@ if ( ! class_exists( 'Gutena_Forms_Form_Template_Service' ) ) :
 				);
 			}
 
+			$kses_removed = false;
+
+			// Form field blocks require form/input markup that wp_kses_post strips for non-unfiltered users.
+			if ( function_exists( 'kses_remove_filters' ) ) {
+				kses_remove_filters();
+				$kses_removed = true;
+			}
+
 			$post_id = wp_insert_post(
 				array(
 					'post_type'    => 'gutena_forms',
 					'post_title'   => $form_name,
 					'post_status'  => 'draft',
-					'post_content' => wp_slash( serialize_block( $form_block ) ),
+					'post_content' => wp_slash( $post_content ),
 				),
 				true
 			);
+
+			if ( $kses_removed && function_exists( 'kses_init_filters' ) ) {
+				kses_init_filters();
+			}
 
 			if ( is_wp_error( $post_id ) ) {
 				return new WP_Error(
@@ -221,6 +235,8 @@ if ( ! class_exists( 'Gutena_Forms_Form_Template_Service' ) ) :
 
 			update_post_meta( $post_id, 'gutena_form_id', $block_form_id );
 
+			$this->persist_form_schema( $post_id );
+
 			return array(
 				'form' => array(
 					'id'       => (int) $post_id,
@@ -229,6 +245,51 @@ if ( ! class_exists( 'Gutena_Forms_Form_Template_Service' ) ) :
 					'edit_url' => admin_url( 'post.php?post=' . absint( $post_id ) . '&action=edit' ),
 				),
 			);
+		}
+
+		/**
+		 * Ensure Gutena field blocks are registered before building template content.
+		 *
+		 * @since 2.2.0
+		 */
+		private function ensure_template_blocks_registered() {
+			if ( ! function_exists( 'WP_Block_Type_Registry' ) ) {
+				return;
+			}
+
+			$registry = WP_Block_Type_Registry::get_instance();
+
+			if ( $registry->is_registered( 'gutena/text-field' ) ) {
+				return;
+			}
+
+			if ( class_exists( 'Gutena_Forms' ) ) {
+				$plugin = Gutena_Forms::get_instance();
+
+				if ( method_exists( $plugin, 'register_blocks_and_scripts' ) ) {
+					$plugin->register_blocks_and_scripts();
+				}
+			}
+		}
+
+		/**
+		 * Persist the form schema after creating a template-based form post.
+		 *
+		 * @since 2.2.0
+		 * @param int $post_id Created form post ID.
+		 */
+		private function persist_form_schema( $post_id ) {
+			$post = get_post( $post_id );
+
+			if ( ! $post || ! class_exists( 'Gutena_Forms' ) ) {
+				return;
+			}
+
+			$plugin = Gutena_Forms::get_instance();
+
+			if ( method_exists( $plugin, 'save_gutena_forms_schema' ) ) {
+				$plugin->save_gutena_forms_schema( $post_id, $post, false );
+			}
 		}
 
 		/**

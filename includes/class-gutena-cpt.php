@@ -286,7 +286,7 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 		 * @param int|string $post_id Post ID.
 		 * @param WP_Post    $post Post object.
 		 */
-		public function updating_gutena_post_type( $post_id, $post ) {
+		public function updating_gutena_post_type( $post_id, $post, $update = true ) {
 			// Prevent recursion.
 			if ( self::$updating_connected_posts ) {
 				return;
@@ -334,8 +334,9 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 				}
 			}
 
-			// Post title must always be form name - update it every time when form block exists.
-			if ( $form_block && ! empty( $form_name ) ) {
+			// Sync formName attribute with the post title on updates only.
+			// Re-serializing on initial insert can strip static field HTML when KSES ran on save.
+			if ( $form_block && ! empty( $form_name ) && $update ) {
 				// Prevent infinite loop by removing actions before updating.
 				self::$updating_connected_posts = true;
 
@@ -357,6 +358,13 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 					$new_post_content .= serialize_block( $block );
 				}
 
+				$kses_removed = false;
+
+				if ( function_exists( 'kses_remove_filters' ) ) {
+					kses_remove_filters();
+					$kses_removed = true;
+				}
+
 				wp_update_post(
 						array(
 								'ID'           => $post_id,
@@ -365,6 +373,10 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 						false,
 						false
 				);
+
+				if ( $kses_removed && function_exists( 'kses_init_filters' ) ) {
+					kses_init_filters();
+				}
 
 				// Re-add the actions after update.
 				add_action( 'save_post', array( $this, 'save_post' ), -1, 3 );

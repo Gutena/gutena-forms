@@ -5,7 +5,12 @@ import GutenaFormsDashboard from './gutena-forms-dashboard';
 import GuennaFormsKnowledgeBase from './gutena-forms-knowledge-base';
 import GutenaFormsTemplateLibrary from './gutena-forms-template-library';
 import GutenaFormsTemplateFormReady from './gutena-forms-template-form-ready';
-import { PREVIEW_RETURN_LIBRARY } from '../utils/template-library-constants';
+import GutenaFormsNewForm from './gutena-forms-new-form';
+import {
+	NEW_FORM_PATH,
+	PREVIEW_RETURN_LIBRARY,
+	TEMPLATE_LIBRARY_PATH,
+} from '../utils/template-library-constants';
 
 const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 
@@ -33,7 +38,22 @@ const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 				/> }
 			/>
 			<Route
-				path={ '/settings/templates' }
+				path={ NEW_FORM_PATH }
+				element={ <GutenaFormsNewForm
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+				/> }
+			/>
+			<Route
+				path={ `${ NEW_FORM_PATH }/form-ready/:templateId` }
+				element={ <GutenaFormsTemplateFormReady
+					showProPopupHandler={ showProPopupHandler }
+					setActiveMenu={ setActiveMenu }
+					libraryPath={ NEW_FORM_PATH }
+				/> }
+			/>
+			<Route
+				path={ TEMPLATE_LIBRARY_PATH }
 				element={ <GutenaFormsTemplateLibrary
 					showProPopupHandler={ showProPopupHandler }
 					setActiveMenu={ setActiveMenu }
@@ -41,10 +61,11 @@ const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 				/> }
 			/>
 			<Route
-				path={ '/settings/templates/form-ready/:templateId' }
+				path={ `${ TEMPLATE_LIBRARY_PATH }/form-ready/:templateId` }
 				element={ <GutenaFormsTemplateFormReady
 					showProPopupHandler={ showProPopupHandler }
 					setActiveMenu={ setActiveMenu }
+					libraryPath={ TEMPLATE_LIBRARY_PATH }
 				/> }
 			/>
 			<Route

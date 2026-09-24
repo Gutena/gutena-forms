@@ -1,6 +1,6 @@
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { ArrowLeft } from '../icons/arrow';
 import { activateLeftMenu } from '../utils/functions';
 import { useFormReady } from '../hooks/use-form-ready';
@@ -11,10 +11,22 @@ import FormReadyActions from '../components/form-ready/form-ready-actions';
 import FormReadyNotFound from '../components/form-ready/form-ready-not-found';
 import FormReadyPreviewOverlay from '../components/form-ready/form-ready-preview-overlay';
 import PageLoading from '../skeletons/page-loading';
+import {
+	NEW_FORM_PATH,
+	TEMPLATE_LIBRARY_PATH,
+} from '../utils/template-library-constants';
 
-const GutenaFormsTemplateFormReady = ( { setActiveMenu, showProPopupHandler } ) => {
+const GutenaFormsTemplateFormReady = ( {
+	setActiveMenu,
+	showProPopupHandler,
+	libraryPath = TEMPLATE_LIBRARY_PATH,
+} ) => {
 	const { templateId } = useParams();
-	const navigate = useNavigate();
+	const isNewFormFlow = libraryPath === NEW_FORM_PATH;
+	const activeMenuPath = isNewFormFlow ? '/forms' : '/templates';
+	const libraryBackLabel = isNewFormFlow
+		? __( 'Back to New Form', 'gutena-forms' )
+		: __( 'Back to Template Library', 'gutena-forms' );
 
 	const {
 		template,
@@ -32,13 +44,9 @@ const GutenaFormsTemplateFormReady = ( { setActiveMenu, showProPopupHandler } ) 
 	} = useFormReady( templateId, { onUpgrade: showProPopupHandler } );
 
 	useEffect( () => {
-		setActiveMenu( '/templates' );
+		setActiveMenu( activeMenuPath );
 		activateLeftMenu( 2 );
-	}, [ setActiveMenu ] );
-
-	const handleBackToLibrary = () => {
-		navigate( '/settings/templates' );
-	};
+	}, [ setActiveMenu, activeMenuPath ] );
 
 	if ( loading ) {
 		return (
@@ -51,7 +59,11 @@ const GutenaFormsTemplateFormReady = ( { setActiveMenu, showProPopupHandler } ) 
 	if ( notFound ) {
 		return (
 			<div className="gutena-forms-form-ready">
-				<FormReadyNotFound onBack={ handleBackToLibrary } />
+				<FormReadyNotFound
+					libraryPath={ libraryPath }
+					backLabel={ libraryBackLabel }
+					onBack={ () => setActiveMenu( activeMenuPath ) }
+				/>
 			</div>
 		);
 	}
@@ -60,12 +72,12 @@ const GutenaFormsTemplateFormReady = ( { setActiveMenu, showProPopupHandler } ) 
 		<div className="gutena-forms-form-ready">
 			<div className="gutena-forms-form-ready__header">
 				<Link
-					to="/settings/templates"
+					to={ libraryPath }
 					className="gutena-forms-form-ready__back-link"
-					onClick={ () => setActiveMenu( '/templates' ) }
+					onClick={ () => setActiveMenu( activeMenuPath ) }
 				>
 					<ArrowLeft color="#2C3338" />
-					<span className="screen-reader-text">{ __( 'Back to Template Library', 'gutena-forms' ) }</span>
+					<span className="screen-reader-text">{ libraryBackLabel }</span>
 				</Link>
 				<div>
 					<p className="gutena-forms-form-ready__brand">{ __( 'Gutena Forms', 'gutena-forms' ) }</p>
@@ -111,6 +123,7 @@ const GutenaFormsTemplateFormReady = ( { setActiveMenu, showProPopupHandler } ) 
 						canUse={ template.can_use }
 						canPreview={ template.can_preview }
 						proRequired={ proRequired }
+						libraryPath={ libraryPath }
 					/>
 				</div>
 

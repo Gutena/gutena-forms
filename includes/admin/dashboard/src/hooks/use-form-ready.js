@@ -111,7 +111,23 @@ export function useFormReady( templateId, { onUpgrade } = {} ) {
 					return;
 				}
 
-				toast.error( __( 'Failed to create form from template.', 'gutena-forms' ) );
+				if ( 'gutena_forms_template_invalid_id' === code ) {
+					toast.error( __( 'A valid template ID is required.', 'gutena-forms' ) );
+					return;
+				}
+
+				if ( 'gutena_forms_template_build_failed' === code ) {
+					toast.error( __( 'Unable to create a form from this template.', 'gutena-forms' ) );
+					return;
+				}
+
+				if ( 'gutena_forms_template_forbidden' === code ) {
+					toast.error( __( 'You do not have permission to create forms.', 'gutena-forms' ) );
+					return;
+				}
+
+				const message = error?.message || __( 'Failed to create form from template.', 'gutena-forms' );
+				toast.error( message );
 			} );
 	}, [ templateId, template, formName, proRequired, onUpgrade ] );
 

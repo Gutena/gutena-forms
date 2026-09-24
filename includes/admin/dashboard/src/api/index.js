@@ -443,20 +443,36 @@ export async function gutenaFormsFetchTemplate( templateId ) {
  * @returns {Promise<Object>} Created form data including edit_url.
  */
 export async function gutenaFormsCreateFromTemplate( templateId, formName = '' ) {
-	const response = await apiFetch( {
-		method: 'POST',
-		path: `${ GutenaFormsRestConfiguration.namespace }templates/create-from-template`,
-		data: {
-			template_id: templateId,
-			form_name: formName,
-		},
-	} );
+	try {
+		const response = await apiFetch( {
+			method: 'POST',
+			path: `${ GutenaFormsRestConfiguration.namespace }templates/create-from-template`,
+			data: {
+				template_id: templateId,
+				form_name: formName,
+			},
+		} );
 
-	if ( response.form ) {
-		return response.form;
+		if ( response?.form ) {
+			return response.form;
+		}
+
+		const error = new Error(
+			response?.message || 'Gutena Forms CreateFromTemplate Error'
+		);
+		error.code = 'gutena_forms_template_create_failed';
+		throw error;
+	} catch ( error ) {
+		if ( error?.code ) {
+			throw error;
+		}
+
+		const wrappedError = new Error(
+			error?.message || 'Gutena Forms CreateFromTemplate Error'
+		);
+		wrappedError.code = error?.data?.code || error?.code || 'gutena_forms_template_create_failed';
+		throw wrappedError;
 	}
-
-	throw new Error( 'Gutena Forms CreateFromTemplate Error' );
 }
 
 export { gutenaFormsDeleteEntry, deleteMultipleEntries } from './entries';

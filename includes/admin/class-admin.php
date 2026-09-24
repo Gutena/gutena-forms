@@ -180,7 +180,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 				__( 'Add New Forms', 'gutena-forms' ),
 				__( 'Add New Forms', 'gutena-forms' ),
 				'manage_options',
-				'post-new.php?post_type=gutena_forms'
+				'admin.php?page=gutena-forms#/settings/new-form'
 			);
 
 			add_submenu_page(
