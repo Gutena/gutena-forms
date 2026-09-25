@@ -249,10 +249,158 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			);
 			// filter content.
 			$content = apply_filters( 'gutena_forms_render_form', $content, $attributes );
+			$content   = $this->strip_form_inline_padding( $content );
+			$form_style = isset( $attributes['formStyle'] ) ? $attributes['formStyle'] : '';
+			$form_style = $this->strip_padding_from_css( $form_style );
+			$padding_css = $this->get_block_padding_css( $attributes );
+			$alignfull_css = $this->get_alignfull_containment_css( $attributes );
+			if ( ! empty( $padding_css ) ) {
+				$form_style .= ' ' . $padding_css;
+			}
+			if ( ! empty( $alignfull_css ) ) {
+				$form_style .= ' ' . $alignfull_css;
+			}
 			// Enqueue block styles.
-			$this->enqueue_block_styles( $attributes['formStyle'] );
+			$this->enqueue_block_styles( $form_style );
 
 			return $content;
+		}
+
+		/**
+		 * Normalize a spacing value for CSS output.
+		 *
+		 * @since 2.0.0
+		 * @param mixed $value Raw spacing value.
+		 * @return string
+		 */
+		private function normalize_spacing_value( $value ) {
+			if ( null === $value || '' === $value ) {
+				return '';
+			}
+
+			if ( '0' === $value || 0 === $value ) {
+				return '0';
+			}
+
+			if ( is_string( $value ) && preg_match( '/var:preset\|spacing\|(.+)/', $value, $matches ) ) {
+				return 'var(--wp--preset--spacing--' . $matches[1] . ')';
+			}
+
+			return $value;
+		}
+
+		/**
+		 * Get the CSS selector used for per-form inline styles.
+		 *
+		 * @since 2.0.0
+		 * @param array $attributes Block attributes.
+		 * @return string
+		 */
+		private function get_form_style_selector( $attributes ) {
+			if ( ! empty( $attributes['formClasses'] ) ) {
+				$classes = preg_split( '/\s+/', trim( $attributes['formClasses'] ) );
+				foreach ( $classes as $class ) {
+					if ( 0 === strpos( $class, 'gutena-forms-' ) && 0 !== strpos( $class, 'gutena_forms_ID_' ) ) {
+						return '.' . $class;
+					}
+				}
+			}
+
+			return '.wp-block-gutena-forms';
+		}
+
+		/**
+		 * Build padding CSS from block spacing attributes.
+		 *
+		 * @since 2.0.0
+		 * @param array $attributes Block attributes.
+		 * @return string
+		 */
+		private function get_block_padding_css( $attributes ) {
+			if ( empty( $attributes['style']['spacing']['padding'] ) || ! is_array( $attributes['style']['spacing']['padding'] ) ) {
+				return '';
+			}
+
+			$padding     = $attributes['style']['spacing']['padding'];
+			$padding_css = '';
+
+			foreach ( array( 'top', 'right', 'bottom', 'left' ) as $side ) {
+				if ( ! array_key_exists( $side, $padding ) ) {
+					continue;
+				}
+
+				$value = $this->normalize_spacing_value( $padding[ $side ] );
+				if ( '' !== $value ) {
+					$padding_css .= 'padding-' . $side . ':' . $value . ';';
+				}
+			}
+
+			if ( '' === $padding_css ) {
+				return '';
+			}
+
+			return $this->get_form_style_selector( $attributes ) . ' .gutena-forms-content-wrapper{' . $padding_css . '}';
+		}
+
+		/**
+		 * Remove padding declarations from a CSS string.
+		 *
+		 * @since 2.0.0
+		 * @param string $css CSS string.
+		 * @return string
+		 */
+		private function strip_padding_from_css( $css ) {
+			if ( empty( $css ) ) {
+				return '';
+			}
+
+			return preg_replace( '/padding-(top|right|bottom|left)\s*:\s*[^;]+;/', '', $css );
+		}
+
+		/**
+		 * Strip inline padding from the saved form tag markup.
+		 *
+		 * @since 2.0.0
+		 * @param string $content Form block content.
+		 * @return string
+		 */
+		private function strip_form_inline_padding( $content ) {
+			if ( empty( $content ) || false === stripos( $content, '<form' ) ) {
+				return $content;
+			}
+
+			return preg_replace_callback(
+				'/<form\b([^>]*)\sstyle="([^"]*)"([^>]*)>/i',
+				static function ( $matches ) {
+					$style = preg_replace( '/padding-(top|right|bottom|left)\s*:\s*[^;"]+;?\s*/i', '', $matches[2] );
+					$style = trim( $style, '; ' );
+
+					if ( '' === $style ) {
+						return '<form' . $matches[1] . $matches[3] . '>';
+					}
+
+					return '<form' . $matches[1] . ' style="' . $style . '"' . $matches[3] . '>';
+				},
+				$content,
+				1
+			);
+		}
+
+		/**
+		 * Build CSS to contain alignfull columns inside the form content wrapper.
+		 *
+		 * @since 2.0.0
+		 * @param array $attributes Block attributes.
+		 * @return string
+		 */
+		private function get_alignfull_containment_css( $attributes ) {
+			$selector = $this->get_form_style_selector( $attributes ) . ' .gutena-forms-content-wrapper';
+
+			return $selector . ' .wp-block-columns,' .
+				$selector . ' .wp-block-columns.alignfull,' .
+				$selector . ' .alignfull{' .
+				'margin-left:0!important;margin-right:0!important;width:100%!important;max-width:100%!important;' .
+				'}';
 		}
 
 		/**

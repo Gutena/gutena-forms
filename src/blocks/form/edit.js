@@ -16,6 +16,7 @@ import {
 	PanelColorSettings,
 	FontSizePicker,
 	__experimentalFontFamilyControl as FontFamilyControl,
+	__experimentalSpacingSizesControl as SpacingSizesControl,
 	useSettings,
 } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
@@ -419,6 +420,12 @@ export default function Edit( props ) {
 		[ clientId ]
 	);
 
+	const hasSelectedInnerBlock = useSelect(
+		( select ) =>
+			select( blockEditorStore ).hasSelectedInnerBlock( clientId, true ),
+		[ clientId ]
+	);
+
 	//Check if existing forms block is present
 	const hasExistingFormsBlock = useSelect(
 		( select ) => {
@@ -503,6 +510,34 @@ export default function Edit( props ) {
 				? 0
 				: quantityToReturn;
 		return 'unit' === quantityOrUnit ? unit : quantityToReturn;
+	};
+
+	const getSpacingCssValue = ( value ) => {
+		if ( gfIsEmpty( value ) && value !== '0' && value !== 0 ) {
+			return '';
+		}
+
+		if ( value === '0' || value === 0 ) {
+			return '0';
+		}
+
+		const presetMatch = String( value ).match( /var:preset\|spacing\|(.+)/ );
+		if ( presetMatch ) {
+			return `var(--wp--preset--spacing--${ presetMatch[ 1 ] })`;
+		}
+
+		return value;
+	};
+
+	const getBlockPaddingCss = () => {
+		const padding = style?.spacing?.padding || {};
+
+		return [ 'top', 'right', 'bottom', 'left' ]
+			.map( ( side ) => {
+				const value = getSpacingCssValue( padding[ side ] );
+				return value !== '' ? `padding-${ side }:${ value };` : '';
+			} )
+			.join( '' );
 	};
 
 	//Form Styles : local css variable for forms inner blocks styles
@@ -631,11 +666,15 @@ export default function Edit( props ) {
 				};
 			}
 
+			.${ formNameClass() } .gutena-forms-content-wrapper {
+				${ getBlockPaddingCss() }
+			}
+
 
 			${
 				gfIsEmpty( style?.spacing?.blockGap )
 					? ''
-					: `.editor-styles-wrapper .${ formNameClass() } > .block-editor-inner-blocks > .block-editor-block-list__layout > * + * {
+					: `.editor-styles-wrapper .${ formNameClass() } .gutena-forms-content-wrapper > .block-editor-inner-blocks > .block-editor-block-list__layout > * + * {
 						margin-block-start: ${ style?.spacing?.blockGap };
 						margin-block-end: 0;
 					}
@@ -758,6 +797,68 @@ export default function Edit( props ) {
 		className: formClasses,
 	} );
 
+	const blockPadding = style?.spacing?.padding || {};
+	const spacingControlValues = {
+		top: blockPadding.top,
+		right: blockPadding.right,
+		bottom: blockPadding.bottom,
+		left: blockPadding.left,
+	};
+
+	const setBlockPadding = ( partialPadding ) => {
+		const nextPadding = { ...blockPadding };
+
+		Object.entries( partialPadding ).forEach( ( [ key, value ] ) => {
+			if (
+				value === undefined ||
+				value === null ||
+				value === ''
+			) {
+				delete nextPadding[ key ];
+			} else {
+				nextPadding[ key ] = value;
+			}
+		} );
+
+		const nextSpacing = { ...( style?.spacing || {} ) };
+		if ( Object.keys( nextPadding ).length ) {
+			nextSpacing.padding = nextPadding;
+		} else {
+			delete nextSpacing.padding;
+		}
+
+		const nextStyle = { ...( style || {} ) };
+		if ( Object.keys( nextSpacing ).length ) {
+			nextStyle.spacing = nextSpacing;
+		} else {
+			delete nextStyle.spacing;
+		}
+
+		setAttributes( {
+			style: Object.keys( nextStyle ).length ? nextStyle : undefined,
+		} );
+	};
+
+	const onHorizontalPaddingChange = ( nextValues ) => {
+		setBlockPadding( {
+			left: nextValues.left,
+			right: nextValues.right,
+		} );
+	};
+
+	const onVerticalPaddingChange = ( nextValues ) => {
+		setBlockPadding( {
+			top: nextValues.top,
+			bottom: nextValues.bottom,
+		} );
+	};
+
+	const renderAppender = () => {
+		if ( isSelected && ! hasSelectedInnerBlock ) {
+			return <InnerBlocks.ButtonBlockAppender />;
+		}
+	};
+
 	let showFormNameField = '1' === gutenaFormsBlock.is_gutena_forms_post_type || 1 === gutenaFormsBlock.is_gutena_forms_post_type ? { display: 'none' } : {};
 
 	return (
@@ -791,6 +892,28 @@ export default function Edit( props ) {
 							onChange={ ( showLabel ) =>
 								setAttributes( { showLabel } )
 							}
+						/>
+						<SpacingSizesControl
+							label={ __(
+								'Horizontal Padding (Left & Right)',
+								'gutena-forms'
+							) }
+							values={ spacingControlValues }
+							sides={ [ 'left', 'right' ] }
+							onChange={ onHorizontalPaddingChange }
+							minimumCustomValue={ 0 }
+							showSideInLabel={ false }
+						/>
+						<SpacingSizesControl
+							label={ __(
+								'Vertical Padding (Top & Bottom)',
+								'gutena-forms'
+							) }
+							values={ spacingControlValues }
+							sides={ [ 'top', 'bottom' ] }
+							onChange={ onVerticalPaddingChange }
+							minimumCustomValue={ 0 }
+							showSideInLabel={ false }
 						/>
 						<p>
 							<span className="block-editor-block-card__title">
@@ -1428,11 +1551,12 @@ export default function Edit( props ) {
 					encType="multipart/form-data"
 					{ ...blockProps }
 				>
-					<div style={ { padding: '0 15px' } }>
-						<input type="hidden" name="formid" value={ formID } />
+					<input type="hidden" name="formid" value={ formID } />
+					<div className="gutena-forms-content-wrapper">
 						<InnerBlocks
 							template={ TEMPLATE }
 							allowedBlocks={ ALLOWED_BLOCKS }
+							renderAppender={ renderAppender }
 						/>
 					</div>
 				</form>

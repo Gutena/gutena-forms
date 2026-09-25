@@ -54,6 +54,26 @@
 	.form-message-icon .components-resizable-box__container:not(.has-show-handle) img {
 		display: inherit;
 	}
+
+	.gutena-forms-content-wrapper {
+		.wp-block-columns,
+		.wp-block-columns.alignfull,
+		.alignfull {
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			width: 100% !important;
+			max-width: 100% !important;
+		}
+	}
+
+	// Show block appender when the form block is selected.
+	&.is-selected .gutena-forms-content-wrapper > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender {
+		display: block;
+	}
+
+	.block-list-appender .block-editor-button-block-appender {
+		box-shadow: inset 0 0 0 1px #1e1e1e;
+	}
 }
 
 /*Inspector control components*/

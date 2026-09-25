@@ -13,7 +13,9 @@ export default function save( props ) {
 	return (
 		<form method="post" encType="multipart/form-data" { ...blockProps }>
 			<input type="hidden" name="formid" value={ formID } />
-			<InnerBlocks.Content />
+			<div className="gutena-forms-content-wrapper">
+				<InnerBlocks.Content />
+			</div>
 		</form>
 	);
 }

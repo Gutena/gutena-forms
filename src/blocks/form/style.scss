@@ -6,6 +6,24 @@
  */
 
 .wp-block-gutena-forms {
+	box-sizing: border-box;
+
+	.gutena-forms-content-wrapper {
+		box-sizing: border-box;
+		width: 100%;
+		max-width: 100%;
+		overflow-x: clip;
+
+		// Contain alignfull columns within the padded content area (themes use !important on alignfull).
+		.wp-block-columns,
+		.wp-block-columns.alignfull,
+		.alignfull {
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			width: 100% !important;
+			max-width: 100% !important;
+		}
+	}
 
 	/*Inside row make image block flex for fix alignment issue*/
 	.wp-block-group.is-layout-flex > .wp-block-image {

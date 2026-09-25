@@ -5,6 +5,7 @@ import './style.scss';
 import variations from './variations';
 import edit from './edit';
 import save from './save';
+import deprecated from './deprecated';
 import metadata from './block.json';
 import { gutenaFormsIcon } from './icon';
 import { Icon } from '@wordpress/components';
@@ -15,6 +16,7 @@ registerBlockType( metadata, {
 	variations,
 	edit,
 	save,
+	deprecated,
 } );
 
 /********************************

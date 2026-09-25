@@ -199,6 +199,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/legacy-blocks.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-block.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-block-markup-migrator.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-form-field-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-existing-forms-block.php';

@@ -454,7 +454,7 @@ variations.push( {
 	innerBlocks: [
 		[
 			'core/columns',
-			{ verticalAlignment: 'top', align: 'full' },
+			{ verticalAlignment: 'top' },
 			[
 				[
 					'core/column',
@@ -504,7 +504,7 @@ variations.push( {
 		],
 		[
 			'core/columns',
-			{ verticalAlignment: 'top', align: 'full' },
+			{ verticalAlignment: 'top' },
 			[
 				[
 					'core/column',
@@ -551,7 +551,7 @@ variations.push( {
 		],
 		[
 			'core/columns',
-			{ verticalAlignment: 'top', align: 'full' },
+			{ verticalAlignment: 'top' },
 			[
 				[
 					'core/column',
@@ -580,7 +580,7 @@ variations.push( {
 		],
 		[
 			'core/columns',
-			{ verticalAlignment: 'top', align: 'full' },
+			{ verticalAlignment: 'top' },
 			[
 				[
 					'core/column',
@@ -613,7 +613,7 @@ variations.push( {
 		],
 		[
 			'gutena/form-confirm-msg',
-			{ align: 'full' },
+			{},
 			[
 				[
 					'core/group',
@@ -676,7 +676,7 @@ variations.push( {
 		],
 		[
 			'gutena/form-error-msg',
-			{ align: 'full' },
+			{},
 			[
 				[
 					'core/group',
@@ -762,7 +762,7 @@ variations.push( {
 	innerBlocks: [
 		[
 			'core/columns',
-			{ verticalAlignment: 'top', align: 'full' },
+			{ verticalAlignment: 'top' },
 			[
 				[
 					'core/column',
@@ -812,7 +812,7 @@ variations.push( {
 		],
 		[
 			'core/columns',
-			{ verticalAlignment: 'top', align: 'full' },
+			{ verticalAlignment: 'top' },
 			[
 				[
 					'core/column',
@@ -859,7 +859,7 @@ variations.push( {
 		],
 		[
 			'core/columns',
-			{ verticalAlignment: 'top', align: 'full' },
+			{ verticalAlignment: 'top' },
 			[
 				[
 					'core/column',
@@ -888,7 +888,7 @@ variations.push( {
 		],
 		[
 			'core/columns',
-			{ verticalAlignment: 'top', align: 'full' },
+			{ verticalAlignment: 'top' },
 			[
 				[
 					'core/column',
@@ -921,7 +921,7 @@ variations.push( {
 		],
 		[
 			'gutena/form-confirm-msg',
-			{ align: 'full' },
+			{},
 			[
 				[
 					'core/group',
@@ -984,7 +984,7 @@ variations.push( {
 		],
 		[
 			'gutena/form-error-msg',
-			{ align: 'full' },
+			{},
 			[
 				[
 					'core/group',
