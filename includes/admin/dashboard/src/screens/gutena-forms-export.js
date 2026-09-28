@@ -7,7 +7,7 @@
 
 import { __ } from '@wordpress/i18n';
 import { Button, CheckboxControl, RadioControl } from '@wordpress/components';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import ExportIcon from '../icons/export';
 import {
 	gutenaFormsFetchAllForms,
@@ -19,6 +19,11 @@ import {
 import { toast } from 'react-toastify';
 
 const EXPORT_FORMAT_IDS = [ 'csv', 'xlsx', 'pdf' ];
+
+const formHasEntries = ( form ) => {
+	const count = parseInt( form?.entries, 10 );
+	return Number.isFinite( count ) && count > 0;
+};
 
 const GutenaFormsExport = () => {
 	const exportFormats = [
@@ -115,12 +120,28 @@ const GutenaFormsExport = () => {
 			document.removeEventListener( 'mousedown', handleOutsideClick );
 	}, [] );
 
+	const formsWithEntries = useMemo(
+		() => forms.filter( formHasEntries ),
+		[ forms ]
+	);
+
+	useEffect( () => {
+		if (
+			entriesFormId &&
+			! formsWithEntries.some(
+				( form ) => String( form.id ) === String( entriesFormId )
+			)
+		) {
+			setEntriesFormId( '' );
+		}
+	}, [ entriesFormId, formsWithEntries ] );
+
 	const allFormIds = forms.map( ( form ) => String( form.id ) );
 	const selectAllForms =
 		allFormIds.length > 0 &&
 		allFormIds.every( ( id ) => selectedFormIds.includes( id ) );
 
-	const selectedEntriesForm = forms.find(
+	const selectedEntriesForm = formsWithEntries.find(
 		( form ) => String( form.id ) === String( entriesFormId )
 	);
 
@@ -268,15 +289,15 @@ const GutenaFormsExport = () => {
 					</button>
 					{ entriesDropdownOpen && (
 						<ul className="gutena-forms__export-dropdown-menu">
-							{ forms.length === 0 && (
+							{ formsWithEntries.length === 0 && (
 								<li className="gutena-forms__export-dropdown-empty">
 									{ __(
-										'No forms available.',
+										'No forms with entries available.',
 										'gutena-forms'
 									) }
 								</li>
 							) }
-							{ forms.map( ( form ) => (
+							{ formsWithEntries.map( ( form ) => (
 								<li key={ form.id }>
 									<button
 										type="button"

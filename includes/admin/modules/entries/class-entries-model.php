@@ -140,7 +140,12 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 		 */
 		public function get_count_by_form_id( $form_id ) {
 			$block_form_id = get_post_meta( $form_id, 'gutena_form_id', true );
-			$sql           = 'SELECT COUNT( gutenaFormsEntries.entry_id ) FROM %i gutenaForms LEFT JOIN %i gutenaFormsEntries ON gutenaForms.form_id = gutenaFormsEntries.form_id WHERE gutenaForms.block_form_id = %s AND gutenaFormsEntries.trash = 0';
+			if ( empty( $block_form_id ) ) {
+				return 0;
+			}
+
+			$block_form_id = sanitize_key( $block_form_id );
+			$sql           = 'SELECT COUNT( entries.entry_id ) FROM %i forms INNER JOIN %i entries ON forms.form_id = entries.form_id WHERE forms.block_form_id = %s AND entries.trash = 0';
 			$sql           = $this->wpdb->prepare(
 				$sql,
 				$this->store->table_gutenaforms,
@@ -148,7 +153,7 @@ if ( ! class_exists( 'Gutena_Forms_Entries_Model' ) ) :
 				$block_form_id
 			);
 
-			return $this->wpdb->get_var( $sql );
+			return (int) $this->wpdb->get_var( $sql );
 		}
 
 		/**
