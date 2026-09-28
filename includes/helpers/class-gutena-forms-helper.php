@@ -16,6 +16,23 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 	 */
 	class Gutena_Forms_Helper {
 		/**
+		 * Resolve a form title for display and persistence.
+		 *
+		 * @since 2.4.0
+		 * @param string $title Raw form or post title.
+		 * @return string Sanitized title, or "Untitled" when empty.
+		 */
+		public static function get_form_display_title( $title ) {
+			$title = is_string( $title ) ? trim( $title ) : '';
+
+			if ( '' !== $title ) {
+				return sanitize_text_field( $title );
+			}
+
+			return __( 'Untitled', 'gutena-forms' );
+		}
+
+		/**
 		 * Merge missing block attributes with registered block.json defaults.
 		 *
 		 * @since 1.9.1

@@ -85,7 +85,9 @@ if ( ! class_exists( 'Gutena_Forms_Forms_Model' ) ) :
 					return array(
 						'id'        => $form->ID,
 						'datetime'  => gmdate( 'Y-m-d h:i A', strtotime( $form->post_date ) ),
-						'title'     => $form->post_title,
+						'title'     => class_exists( 'Gutena_Forms_Helper' )
+							? Gutena_Forms_Helper::get_form_display_title( $form->post_title )
+							: $form->post_title,
 						'status'    => ucfirst( $form->post_status ),
 						'entries'   => Gutena_Forms_Entries_Model::get_instance()->get_count_by_form_id( $form->ID ),
 						'author'    => get_the_author_meta( 'display_name', $form->post_author ),

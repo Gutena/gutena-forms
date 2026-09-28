@@ -282,18 +282,12 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 			$connected_posts = get_post_meta( $post_id, '_gutena_connected_posts', true );
 			$form_id         = get_post_meta( $post_id, 'gutena_form_id', true );
 			
-			// Find the form block and extract form name to sync with post title.
+			// Find the form block to sync post title with formName attribute.
 			$form_block = null;
-			$form_name  = '';
 			
 			foreach ( $blocks as $block ) {
 				if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
 					$form_block = $block;
-					// Extract form name from block attributes, with fallback to "Contact Form".
-					// This matches the behavior in insert_or_update_form method (line 290).
-					$form_name = isset( $block['attrs']['formName'] ) && ! empty( $block['attrs']['formName'] )
-							? sanitize_text_field( $block['attrs']['formName'] )
-							: 'Contact Form';
 					
 					// Extract formID from block and set gutena_form_id meta if it doesn't exist.
 					// This ensures the meta is set when a gutena_forms post is created directly.
@@ -320,7 +314,11 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 			}
 			
 			// Post title must always be form name - update it every time when form block exists.
-			if ( $form_block && ! empty( $form_name ) ) {
+			if ( $form_block ) {
+				$resolved_title = class_exists( 'Gutena_Forms_Helper' )
+					? Gutena_Forms_Helper::get_form_display_title( $post->post_title )
+					: ( '' !== trim( (string) $post->post_title ) ? sanitize_text_field( $post->post_title ) : __( 'Untitled', 'gutena-forms' ) );
+
 				// Prevent infinite loop by removing actions before updating.
 				self::$updating_connected_posts = true;
 				
@@ -334,7 +332,8 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 				
 				foreach ( $blocks as $k => $block ) {
 					if ( isset( $block['blockName'] ) && 'gutena/forms' === $block['blockName'] ) {
-						$blocks[ $k ]['attrs']['formName'] = $post->post_title;
+						$blocks[ $k ]['attrs']['formName'] = $resolved_title;
+						$form_block                        = $blocks[ $k ];
 					}
 				}
 				
@@ -345,6 +344,7 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 				wp_update_post(
 						array(
 								'ID'           => $post_id,
+								'post_title'   => $resolved_title,
 								'post_content' => $new_post_content,
 						),
 						false,
@@ -436,8 +436,15 @@ if ( ! class_exists( 'Gutena_Forms_CPT' ) ) :
 		 * @param int|string $parent_post_id Post ID.
 		 */
 		public function insert_or_update_form( $block, $parent_post_id ) {
-			$form_name = $block['attrs']['formName'] ?? 'Contact Form';
+			$form_name = class_exists( 'Gutena_Forms_Helper' )
+				? Gutena_Forms_Helper::get_form_display_title( $block['attrs']['formName'] ?? '' )
+				: ( ! empty( $block['attrs']['formName'] ) ? sanitize_text_field( $block['attrs']['formName'] ) : __( 'Untitled', 'gutena-forms' ) );
 			$form_id   = $block['attrs']['formID'];
+
+			if ( ! isset( $block['attrs'] ) || ! is_array( $block['attrs'] ) ) {
+				$block['attrs'] = array();
+			}
+			$block['attrs']['formName'] = $form_name;
 			
 			$post = get_posts(
 					array(
