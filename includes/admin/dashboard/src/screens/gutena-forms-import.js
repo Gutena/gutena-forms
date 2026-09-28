@@ -60,20 +60,54 @@ const hasGutenaFormsPro =
 const getProFieldTypeLabel = ( token ) =>
 	PRO_FIELD_LABELS[ token ] || token;
 
-const formatProFieldEntry = ( token, titleName ) => {
-	const typeLabel = getProFieldTypeLabel( token );
-	const title = titleName || typeLabel;
+const normalizeProFieldToken = ( token ) => {
+	const t = ( token || '' ).toLowerCase();
+	if ( 'file' === t ) {
+		return 'file-upload';
+	}
+	return t;
+};
 
-	return {
-		type: typeLabel,
-		title,
-		key: `${ typeLabel }:${ title }`,
-	};
+const isTechnicalFieldId = ( title ) =>
+	/^f_\d+$/i.test( String( title || '' ).trim() );
+
+const pickBetterProFieldTitle = ( current, candidate, typeLabel ) => {
+	const cur = String( current || '' ).trim();
+	const next = String( candidate || '' ).trim();
+
+	if ( ! next || next === typeLabel ) {
+		return cur || typeLabel;
+	}
+	if ( ! cur || cur === typeLabel ) {
+		return next;
+	}
+	if ( isTechnicalFieldId( cur ) && ! isTechnicalFieldId( next ) ) {
+		return next;
+	}
+	if ( ! isTechnicalFieldId( cur ) && isTechnicalFieldId( next ) ) {
+		return cur;
+	}
+	return cur.length >= next.length ? cur : next;
 };
 
 const addProFieldEntry = ( found, token, titleName ) => {
-	const entry = formatProFieldEntry( token, titleName );
-	found[ entry.key ] = entry;
+	const canonical = normalizeProFieldToken( token );
+	if ( ! PRO_FIELD_LABELS[ canonical ] && ! PRO_FIELD_LABELS[ token ] ) {
+		return;
+	}
+	const typeLabel = getProFieldTypeLabel( canonical );
+	const title = titleName || typeLabel;
+
+	if ( ! found[ canonical ] ) {
+		found[ canonical ] = { type: typeLabel, title, key: canonical };
+		return;
+	}
+
+	found[ canonical ].title = pickBetterProFieldTitle(
+		found[ canonical ].title,
+		title,
+		typeLabel
+	);
 };
 
 const getProFieldTokenFromBlockName = ( blockName ) =>
