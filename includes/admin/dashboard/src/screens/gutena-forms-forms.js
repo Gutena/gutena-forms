@@ -140,7 +140,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 	};
 
 	return (
-		<div>
+		<div data-tour="view-forms">
 			{ loading ? (
 				<FormsLoading />
 			) : (
@@ -151,6 +151,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 							<Button
 								href={ 'post-new.php?post_type=gutena_forms' }
 								className="gutena-forms-add-new-form-button"
+								data-tour="add-new-form"
 								variant="primary"
 							>
 								<Plus />

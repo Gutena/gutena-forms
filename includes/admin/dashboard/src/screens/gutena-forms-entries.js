@@ -12,8 +12,10 @@ import { __ } from '@wordpress/i18n';
 import {applyFilters, doAction} from "@wordpress/hooks";
 import { activateLeftMenu } from '../utils/functions';
 import EntriesLoading from "../skeletons/entries-loading";
+import { useTour } from '../tour';
 
 const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
+	const { isOpen: isTourOpen, currentStep } = useTour();
 
 	const { id, slug } = useParams();
 	const hasPro = ! ! ( typeof gutenaFormsAdmin !== 'undefined' && gutenaFormsAdmin.hasPro );
@@ -30,6 +32,21 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 	const [ selectedStatus, setSelectedStatus ] = useState( 'all' );
 
 	const [ statuses, setStatuses ] = useState( [] );
+
+	const showTourEntriesPlaceholder =
+		isTourOpen && currentStep === 14 && ! loading && entries.length === 0;
+
+	const tourEntriesPlaceholderRow = showTourEntriesPlaceholder
+		? {
+			checkbox: '',
+			entry_id: __( '#101', 'gutena-forms' ),
+			form_name: __( 'Contact Form', 'gutena-forms' ),
+			entry_data: __( 'First name: Jane', 'gutena-forms' ),
+			status: __( 'Unread', 'gutena-forms' ),
+			datetime: __( 'Sample row', 'gutena-forms' ),
+			actions: __( 'View', 'gutena-forms' ),
+		}
+		: null;
 
 	useEffect( () => {
 		activateLeftMenu( 4 );
@@ -180,7 +197,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 	];
 
 	return (
-		<div>
+		<div data-tour="view-entries">
 			{ loading ? (
 				<EntriesLoading />
 			) : (
@@ -208,6 +225,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 
 							<GutenaFormsDatatable
 								name={ 'entries' }
+								tourPlaceholderRow={ tourEntriesPlaceholderRow }
 								bulkActionOptions={ bulkActionOptions }
 								headers={ [
 									{

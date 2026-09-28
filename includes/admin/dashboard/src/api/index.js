@@ -355,3 +355,7 @@ export async function gutenaFormsFetchEntriesFiltered( { formId, tag, status } =
 }
 
 export { gutenaFormsDeleteEntry, deleteMultipleEntries } from './entries';
+export {
+	gutenaFormsFetchTourPreferences,
+	gutenaFormsSaveTourPreferences,
+} from '../tour/services/tourApi';

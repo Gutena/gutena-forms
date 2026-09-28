@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useRef } from '@wordpress/element';
 import {
 	gfIsEmpty,
 	getInnerBlocksbyNameAttr,
@@ -50,6 +50,23 @@ import ValidationMessagesSettings from './settings/validation-messages-settings'
  * https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#usesetting
  */
 
+/**
+ * Read the active product-tour step from the editor URL.
+ *
+ * @returns {number|null}
+ */
+const getTourStepFromQuery = () => {
+	const params = new URLSearchParams( window.location.search );
+
+	if ( ! params.has( 'gf_tour_step' ) ) {
+		return null;
+	}
+
+	const parsed = parseInt( params.get( 'gf_tour_step' ), 10 );
+
+	return Number.isNaN( parsed ) ? null : parsed;
+};
+
 const Placeholder = ( { clientId, name, setAttributes } ) => {
 	const { blockType, defaultVariation, variations } = useSelect(
 		( select ) => {
@@ -69,6 +86,41 @@ const Placeholder = ( { clientId, name, setAttributes } ) => {
 	);
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const blockProps = useBlockProps();
+	const tourLayoutAppliedRef = useRef( false );
+
+	useEffect( () => {
+		const tourStep = getTourStepFromQuery();
+
+		if (
+			tourLayoutAppliedRef.current ||
+			tourStep === null ||
+			tourStep < 8 ||
+			! defaultVariation
+		) {
+			return;
+		}
+
+		tourLayoutAppliedRef.current = true;
+
+		if ( defaultVariation.attributes ) {
+			setAttributes( defaultVariation.attributes );
+		}
+
+		if ( defaultVariation.innerBlocks ) {
+			replaceInnerBlocks(
+				clientId,
+				createBlocksFromInnerBlocksTemplate(
+					defaultVariation.innerBlocks
+				),
+				true
+			);
+		}
+	}, [
+		clientId,
+		defaultVariation,
+		replaceInnerBlocks,
+		setAttributes,
+	] );
 
 	// renaming the button from skip to 'Use Default'
 	useEffect( () => {
@@ -112,7 +164,7 @@ const Placeholder = ( { clientId, name, setAttributes } ) => {
 	}, [ variations ] );
 
 	return (
-		<div { ...blockProps }>
+		<div { ...blockProps } data-tour="layout-picker">
 			<__experimentalBlockVariationPicker
 				icon={ get( blockType, [ 'icon', 'src' ] ) }
 				label={ get( blockType, [ 'title' ] ) }
@@ -860,12 +912,15 @@ export default function Edit( props ) {
 	};
 
 	let showFormNameField = '1' === gutenaFormsBlock.is_gutena_forms_post_type || 1 === gutenaFormsBlock.is_gutena_forms_post_type ? { display: 'none' } : {};
+	const tourStep = getTourStepFromQuery();
+	const isEmbedTourStep = tourStep === 11;
 
 	return (
 		<>
 			<style>{ formStyle }</style>
 			{ ! hasExistingFormsBlock && (
 				<InspectorControls>
+					<div data-tour="editor-settings" className="gutena-forms-tour__editor-settings">
 					<PanelBody title="Form settings" initialOpen={ true }>
 						<TextControl
 							label={ __( 'Form name', 'gutena-forms' ) }
@@ -1543,6 +1598,36 @@ export default function Edit( props ) {
 					setAttributes={ setAttributes }
 					messages={ messages }
 				/>
+
+					<PanelBody
+						title={ __( 'Embed in Page', 'gutena-forms' ) }
+						initialOpen={ isEmbedTourStep }
+					>
+						<div data-tour="embed-in-page">
+							<p>
+								{ __(
+									'Embed this form on any WordPress page using the Gutena Forms block or the shortcode below.',
+									'gutena-forms'
+								) }
+							</p>
+							<TextControl
+								label={ __( 'Shortcode', 'gutena-forms' ) }
+								value={
+									formID
+										? `[gutena_forms id="${ formID }"]`
+										: ''
+								}
+								readOnly
+							/>
+							<p className="gf-text-muted">
+								{ __(
+									'Add the Gutena Forms block to a page, then select this form from the block settings.',
+									'gutena-forms'
+								) }
+							</p>
+						</div>
+					</PanelBody>
+					</div>
 				</InspectorControls>
 			) }
 			{ hasInnerBlocks ? (
@@ -1552,7 +1637,7 @@ export default function Edit( props ) {
 					{ ...blockProps }
 				>
 					<input type="hidden" name="formid" value={ formID } />
-					<div className="gutena-forms-content-wrapper">
+					<div className="gutena-forms-content-wrapper" data-tour="editor-canvas">
 						<InnerBlocks
 							template={ TEMPLATE }
 							allowedBlocks={ ALLOWED_BLOCKS }

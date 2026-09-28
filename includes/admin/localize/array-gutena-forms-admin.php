@@ -8,6 +8,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if ( ! class_exists( 'Gutena_Forms_Tour_Preferences' ) ) {
+	require_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/tour/class-tour-preferences.php';
+}
+
 /**
  * Return the localized array for Gutena Forms Admin.
  *
@@ -324,4 +328,5 @@ return array(
 			)
 		),
 	),
+	'tourPreferences'         => Gutena_Forms_Tour_Preferences::get(),
 );

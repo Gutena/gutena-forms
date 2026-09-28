@@ -10,7 +10,7 @@ const GutenaFormsKnowledgeBase = ( { setActiveMenu } ) => {
     }, [] );
 
     return (
-        <div id={ 'gfp-page-doc' }>
+        <div id={ 'gfp-page-doc' } data-tour="view-extras">
             <div className="gutena-forms-knowledge-base">
                 <div className="gutena-docs">
                     <div className="gutena-details">

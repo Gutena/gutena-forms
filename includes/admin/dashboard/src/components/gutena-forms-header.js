@@ -6,6 +6,21 @@ import Crown from '../icons/crown';
 import { gutenaFormsFetchMenus } from '../api';
 import { gutenaFormsStrContains } from '../utils/functions';
 
+const getTourTargetForMenuSlug = ( slug ) => {
+	switch ( slug ) {
+		case '/dashboard':
+			return 'tab-dashboard';
+		case '/forms':
+			return 'tab-forms';
+		case '/entries':
+			return 'tab-entries';
+		case '/knowledge-base':
+			return 'tab-extras';
+		default:
+			return null;
+	}
+};
+
 const GutenaFormsHeader = ( { activeMenu, setActiveMenu } ) => {
 
 	const [ menus, setMenus ] = useState( false );
@@ -35,9 +50,14 @@ const GutenaFormsHeader = ( { activeMenu, setActiveMenu } ) => {
 				</div>
 
 				{ ! loading && menus && (
-					<nav className={ 'gutena-forms__header-menu' }>
+					<nav
+						className={ 'gutena-forms__header-menu' }
+						data-tour="tab-bar"
+					>
 						<ul>
 							{ menus.map( ( menu, index ) => {
+								const tourTarget = getTourTargetForMenuSlug( menu.slug );
+
 								if ( menu.external ) {
 									return (
 										<li key={ index }>
@@ -55,6 +75,7 @@ const GutenaFormsHeader = ( { activeMenu, setActiveMenu } ) => {
 												to={ `settings${ menu.slug }` }
 												className={ gutenaFormsStrContains( menu.slug, activeMenu ) ? 'active' : '' }
 												onClick={ () => setActiveMenu( menu.slug ) }
+												{ ...( tourTarget ? { 'data-tour': tourTarget } : {} ) }
 											>
 												{ menu.title }
 											</NavLink>
