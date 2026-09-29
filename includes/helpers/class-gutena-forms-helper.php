@@ -33,6 +33,91 @@ if ( ! class_exists( 'Gutena_Forms_Helper' ) ) :
 		}
 
 		/**
+		 * Resolve a unique gutena_forms post title for import or duplication.
+		 *
+		 * When the base title is already in use (case-insensitive), appends " - 2",
+		 * " - 3", etc. until a free title is found.
+		 *
+		 * @since 2.4.0
+		 * @param string   $title           Raw desired title.
+		 * @param string[] $reserved_titles Titles already assigned in the current batch.
+		 * @return string Unique sanitized title.
+		 */
+		public static function get_unique_form_title( $title, $reserved_titles = array() ) {
+			$base_title = self::get_form_display_title( $title );
+			$used       = self::get_gutena_forms_title_lookup();
+
+			if ( ! empty( $reserved_titles ) && is_array( $reserved_titles ) ) {
+				foreach ( $reserved_titles as $reserved ) {
+					if ( ! is_string( $reserved ) ) {
+						continue;
+					}
+					$key = strtolower( trim( $reserved ) );
+					if ( '' !== $key ) {
+						$used[ $key ] = true;
+					}
+				}
+			}
+
+			$base_key = strtolower( $base_title );
+			if ( ! isset( $used[ $base_key ] ) ) {
+				return $base_title;
+			}
+
+			for ( $suffix = 2; $suffix <= 100; $suffix++ ) {
+				$candidate = sprintf( '%s - %d', $base_title, $suffix );
+				if ( ! isset( $used[ strtolower( $candidate ) ] ) ) {
+					return $candidate;
+				}
+			}
+
+			try {
+				$random = bin2hex( random_bytes( 3 ) );
+			} catch ( \Exception $e ) {
+				$random = substr( md5( uniqid( (string) wp_rand(), true ) ), 0, 6 );
+			}
+
+			return $base_title . ' - ' . $random;
+		}
+
+		/**
+		 * Build a lowercase title lookup for existing gutena_forms posts.
+		 *
+		 * @since 2.4.0
+		 * @return array<string, true> Keys are lowercased post titles.
+		 */
+		private static function get_gutena_forms_title_lookup() {
+			$posts = get_posts(
+				array(
+					'post_type'              => 'gutena_forms',
+					'post_status'            => array( 'publish', 'draft', 'private', 'pending' ),
+					'posts_per_page'         => -1,
+					'no_found_rows'          => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+				)
+			);
+
+			$lookup = array();
+
+			if ( empty( $posts ) || ! is_array( $posts ) ) {
+				return $lookup;
+			}
+
+			foreach ( $posts as $post ) {
+				if ( empty( $post->post_title ) || ! is_string( $post->post_title ) ) {
+					continue;
+				}
+				$key = strtolower( trim( $post->post_title ) );
+				if ( '' !== $key ) {
+					$lookup[ $key ] = true;
+				}
+			}
+
+			return $lookup;
+		}
+
+		/**
 		 * Merge missing block attributes with registered block.json defaults.
 		 *
 		 * @since 1.9.1

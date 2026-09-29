@@ -94,11 +94,12 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 				);
 			}
 
-			$imported = array();
-			$errors   = array();
+			$imported        = array();
+			$errors          = array();
+			$reserved_titles = array();
 
 			foreach ( $payload['forms'] as $index => $form ) {
-				$result = $this->import_single_form( $form );
+				$result = $this->import_single_form( $form, $reserved_titles );
 				if ( is_wp_error( $result ) ) {
 					$errors[] = sprintf(
 						/* translators: 1: form index, 2: error message */
@@ -108,7 +109,8 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 					);
 					continue;
 				}
-				$imported[] = $result;
+				$imported[]        = $result;
+				$reserved_titles[] = $result['title'];
 			}
 
 			if ( empty( $imported ) ) {
@@ -290,10 +292,11 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 		 * Import one form entry from the export file.
 		 *
 		 * @since 2.1.0
-		 * @param array $form Single form export entry.
+		 * @param array    $form            Single form export entry.
+		 * @param string[] $reserved_titles Titles assigned earlier in this import batch.
 		 * @return array|WP_Error
 		 */
-		private function import_single_form( $form ) {
+		private function import_single_form( $form, $reserved_titles = array() ) {
 			if ( ! is_array( $form ) ) {
 				return new WP_Error( 'invalid_form', __( 'Invalid form data in import file.', 'gutena-forms' ) );
 			}
@@ -333,9 +336,12 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 			}
 
 			$new_form_id = $this->generate_form_id();
-			$title       = ! empty( $form['title'] )
-				? sanitize_text_field( $form['title'] )
-				: ( ! empty( $block['attrs']['formName'] ) ? sanitize_text_field( $block['attrs']['formName'] ) : __( 'Contact Form', 'gutena-forms' ) );
+			$raw_title   = ! empty( $form['title'] )
+				? $form['title']
+				: ( ! empty( $block['attrs']['formName'] ) ? $block['attrs']['formName'] : __( 'Contact Form', 'gutena-forms' ) );
+			$title       = class_exists( 'Gutena_Forms_Helper' )
+				? Gutena_Forms_Helper::get_unique_form_title( $raw_title, $reserved_titles )
+				: sanitize_text_field( $raw_title );
 
 			// Prefer original serialized content for fidelity (avoids block recovery).
 			if ( ! empty( $form['content'] ) && is_string( $form['content'] ) ) {
@@ -388,7 +394,7 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 					'post_type'    => 'gutena_forms',
 					'post_title'   => $title,
 					'post_content' => $content,
-					'post_status'  => 'publish',
+					'post_status'  => 'draft',
 				),
 				true
 			);
@@ -411,9 +417,10 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 			$this->ensure_form_schema( $post_id, $new_form_id, $form );
 
 			return array(
-				'post_id'      => (int) $post_id,
-				'form_id'      => $new_form_id,
-				'title'        => $title,
+				'post_id'        => (int) $post_id,
+				'form_id'        => $new_form_id,
+				'title'          => $title,
+				'status'         => 'draft',
 				'source_form_id' => $old_form_id,
 			);
 		}
