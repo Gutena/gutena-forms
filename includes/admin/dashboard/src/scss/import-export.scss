@@ -402,6 +402,15 @@
 			position: relative;
 			width: 100%;
 			max-width: 574px;
+
+			&:has( .gutena-forms__export-dropdown-menu ) {
+				z-index: 100;
+			}
+
+			&.is-open-up .gutena-forms__export-dropdown-menu {
+				top: auto;
+				bottom: calc( 100% + 4px );
+			}
 		}
 
 		.gutena-forms__export-dropdown-trigger {
@@ -433,7 +442,7 @@
 
 		.gutena-forms__export-dropdown-menu {
 			position: absolute;
-			z-index: 20;
+			z-index: 100;
 			top: calc(100% + 4px);
 			left: 0;
 			right: 0;
@@ -510,5 +519,25 @@
 			cursor: pointer;
 			color: #000;
 		}
+	}
+}
+
+.gutena-froms#gutena-forms__root {
+	.gutena-froms__settings-layout .gutena-forms__main-content-container:has(
+			.gutena-forms__export
+		),
+	.gutena-froms__settings-layout
+		.gutena-forms__main-content-container
+		.gutena-forms__meta-box-container:has( .gutena-forms__export ),
+	.gutena-froms__settings-layout
+		.gutena-forms__main-content-container
+		.gutena-forms__settings-meta-box:has( .gutena-forms__export ) {
+		overflow: visible !important;
+	}
+
+	.gutena-froms__settings-layout
+		.gutena-forms__main-content-container:has( .gutena-forms__export )
+		.gutena-forms__container {
+		overflow: visible !important;
 	}
 }

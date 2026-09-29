@@ -421,9 +421,9 @@
 // Desktop: fix overflow on Settings pages (Manage Status, Manage Tags, User Access)
 @media ( min-width: 836px ) and ( max-width: 1100px ) {
 	.gutena-froms#gutena-forms__root {
-		.gutena-forms__settings-layout {
+		.gutena-froms__settings-layout {
 			.gutena-forms__main-content-container {
-				.gutena-forms__settings-meta-box {
+				.gutena-forms__settings-meta-box:not( :has( .gutena-forms__export ) ) {
 					overflow: hidden;
 
 					.gutena-forms__pro-wrapper {

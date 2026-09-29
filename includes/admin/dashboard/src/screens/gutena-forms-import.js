@@ -60,6 +60,44 @@ const hasGutenaFormsPro =
 const getProFieldTypeLabel = ( token ) =>
 	PRO_FIELD_LABELS[ token ] || token;
 
+const isMachineFieldId = ( value ) =>
+	/^f_\d+$/i.test( String( value || '' ).trim() );
+
+const pickBetterFieldTitle = ( token, currentTitle, nextTitle ) => {
+	const typeLabel = getProFieldTypeLabel( token );
+	const current = String( currentTitle || '' ).trim();
+	const next = String( nextTitle || '' ).trim();
+
+	if ( ! current ) {
+		return next || typeLabel;
+	}
+
+	if ( ! next ) {
+		return current;
+	}
+
+	const currentIsMachine = isMachineFieldId( current );
+	const nextIsMachine = isMachineFieldId( next );
+
+	if ( currentIsMachine && ! nextIsMachine ) {
+		return next;
+	}
+
+	if ( ! currentIsMachine && nextIsMachine ) {
+		return current;
+	}
+
+	if ( current === typeLabel && next !== typeLabel ) {
+		return next;
+	}
+
+	if ( next === typeLabel && current !== typeLabel ) {
+		return current;
+	}
+
+	return current;
+};
+
 const formatProFieldEntry = ( token, titleName ) => {
 	const typeLabel = getProFieldTypeLabel( token );
 	const title = titleName || typeLabel;
@@ -67,13 +105,24 @@ const formatProFieldEntry = ( token, titleName ) => {
 	return {
 		type: typeLabel,
 		title,
-		key: `${ typeLabel }:${ title }`,
+		token,
+		key: token,
 	};
 };
 
 const addProFieldEntry = ( found, token, titleName ) => {
 	const entry = formatProFieldEntry( token, titleName );
-	found[ entry.key ] = entry;
+	const existing = found[ token ];
+
+	if ( ! existing ) {
+		found[ token ] = entry;
+		return;
+	}
+
+	found[ token ] = {
+		...existing,
+		title: pickBetterFieldTitle( token, existing.title, titleName ),
+	};
 };
 
 const getProFieldTokenFromBlockName = ( blockName ) =>
@@ -267,7 +316,7 @@ const GutenaFormsImport = () => {
 		const payloadToImport = pending.payload;
 		setPayload( payloadToImport );
 		setPending( null );
-		runImport( payloadToImport );
+		runImport( payloadToImport, { skipProWarningToast: true } );
 	};
 
 	const handleCancelImport = () => {
@@ -278,7 +327,7 @@ const GutenaFormsImport = () => {
 		resetFileInput();
 	};
 
-	const runImport = ( payloadToImport ) => {
+	const runImport = ( payloadToImport, options = {} ) => {
 		if ( ! payloadToImport ) {
 			setError( INVALID_FILE_MESSAGE );
 			return;
@@ -293,6 +342,7 @@ const GutenaFormsImport = () => {
 				);
 
 				if (
+					! options.skipProWarningToast &&
 					Array.isArray( response?.pro_fields ) &&
 					response.pro_fields.length > 0
 				) {

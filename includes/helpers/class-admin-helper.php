@@ -50,6 +50,22 @@ if ( ! class_exists( 'Gutena_Forms_Admin_Helper' ) ) :
 			}
 		}
 
+		/**
+		 * Whether the current admin screen is the Gutena Forms React dashboard.
+		 *
+		 * @return bool
+		 */
+		public static function is_gutena_forms_dashboard_screen() {
+			if ( ! is_admin() ) {
+				return false;
+			}
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+
+			return 'gutena-forms' === $page;
+		}
+
 		public static function is_admin( $check_permission = 'manage_options' ) {
 			if ( ! function_exists( 'wp_get_current_user' ) && file_exists( ABSPATH . 'wp-includes/pluggable.php' ) ) {
 				require_once ABSPATH . 'wp-includes/pluggable.php';

@@ -7,7 +7,7 @@
 
 import { __ } from '@wordpress/i18n';
 import { Button, CheckboxControl, RadioControl } from '@wordpress/components';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import ExportIcon from '../icons/export';
 import {
 	gutenaFormsFetchAllForms,
@@ -19,6 +19,11 @@ import {
 import { toast } from 'react-toastify';
 
 const EXPORT_FORMAT_IDS = [ 'csv', 'xlsx', 'pdf' ];
+
+const formHasEntries = ( form ) => {
+	const count = parseInt( form?.entries, 10 );
+	return Number.isFinite( count ) && count > 0;
+};
 
 const GutenaFormsExport = () => {
 	const exportFormats = [
@@ -38,6 +43,7 @@ const GutenaFormsExport = () => {
 	const [ exportFormat, setExportFormat ] = useState( EXPORT_FORMAT_IDS[ 1 ] );
 	const [ selectedFormIds, setSelectedFormIds ] = useState( [] );
 	const [ formsDropdownOpen, setFormsDropdownOpen ] = useState( false );
+	const [ formsDropdownOpenUp, setFormsDropdownOpenUp ] = useState( false );
 	const [ entriesDropdownOpen, setEntriesDropdownOpen ] = useState( false );
 	const [ exportingEntries, setExportingEntries ] = useState( false );
 	const [ exportingForms, setExportingForms ] = useState( false );
@@ -94,6 +100,33 @@ const GutenaFormsExport = () => {
 		};
 	}, [ entriesFormId ] );
 
+	const formsWithEntries = useMemo(
+		() => forms.filter( formHasEntries ),
+		[ forms ]
+	);
+
+	useEffect( () => {
+		if (
+			entriesFormId &&
+			! formsWithEntries.some(
+				( form ) => String( form.id ) === String( entriesFormId )
+			)
+		) {
+			setEntriesFormId( '' );
+		}
+	}, [ entriesFormId, formsWithEntries ] );
+
+	useEffect( () => {
+		if ( ! formsDropdownOpen || ! formsDropdownRef.current ) {
+			setFormsDropdownOpenUp( false );
+			return;
+		}
+
+		const rect = formsDropdownRef.current.getBoundingClientRect();
+		const spaceBelow = window.innerHeight - rect.bottom;
+		setFormsDropdownOpenUp( spaceBelow < 220 );
+	}, [ formsDropdownOpen ] );
+
 	useEffect( () => {
 		const handleOutsideClick = ( event ) => {
 			if (
@@ -120,7 +153,7 @@ const GutenaFormsExport = () => {
 		allFormIds.length > 0 &&
 		allFormIds.every( ( id ) => selectedFormIds.includes( id ) );
 
-	const selectedEntriesForm = forms.find(
+	const selectedEntriesForm = formsWithEntries.find(
 		( form ) => String( form.id ) === String( entriesFormId )
 	);
 
@@ -268,15 +301,15 @@ const GutenaFormsExport = () => {
 					</button>
 					{ entriesDropdownOpen && (
 						<ul className="gutena-forms__export-dropdown-menu">
-							{ forms.length === 0 && (
+							{ formsWithEntries.length === 0 && (
 								<li className="gutena-forms__export-dropdown-empty">
 									{ __(
-										'No forms available.',
+										'No forms with entries available.',
 										'gutena-forms'
 									) }
 								</li>
 							) }
-							{ forms.map( ( form ) => (
+							{ formsWithEntries.map( ( form ) => (
 								<li key={ form.id }>
 									<button
 										type="button"
@@ -391,7 +424,9 @@ const GutenaFormsExport = () => {
 				</div>
 
 				<div
-					className="gutena-forms__export-dropdown gutena-forms__export-multi"
+					className={ `gutena-forms__export-dropdown gutena-forms__export-multi${
+						formsDropdownOpenUp ? ' is-open-up' : ''
+					}` }
 					ref={ formsDropdownRef }
 				>
 					<button

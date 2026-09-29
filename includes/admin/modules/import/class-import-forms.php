@@ -336,6 +336,7 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 			$title       = ! empty( $form['title'] )
 				? sanitize_text_field( $form['title'] )
 				: ( ! empty( $block['attrs']['formName'] ) ? sanitize_text_field( $block['attrs']['formName'] ) : __( 'Contact Form', 'gutena-forms' ) );
+			$title       = $this->resolve_unique_import_title( $title );
 
 			// Prefer original serialized content for fidelity (avoids block recovery).
 			if ( ! empty( $form['content'] ) && is_string( $form['content'] ) ) {
@@ -388,7 +389,7 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 					'post_type'    => 'gutena_forms',
 					'post_title'   => $title,
 					'post_content' => $content,
-					'post_status'  => 'publish',
+					'post_status'  => 'draft',
 				),
 				true
 			);
@@ -650,6 +651,55 @@ if ( ! class_exists( 'Gutena_Forms_Import_Forms' ) ) :
 			}
 
 			return $block;
+		}
+
+		/**
+		 * Ensure imported form titles are unique among gutena_forms posts.
+		 *
+		 * @since 2.4.0
+		 * @param string $title Proposed import title.
+		 * @return string
+		 */
+		private function resolve_unique_import_title( $title ) {
+			$title = sanitize_text_field( $title );
+
+			if ( '' === $title ) {
+				$title = __( 'Contact Form', 'gutena-forms' );
+			}
+
+			if ( ! $this->import_title_exists( $title ) ) {
+				return $title;
+			}
+
+			$base_title = $title;
+			$suffix     = 2;
+
+			while ( $this->import_title_exists( $title ) ) {
+				$title = $base_title . ' - ' . $suffix;
+				$suffix++;
+			}
+
+			return $title;
+		}
+
+		/**
+		 * Check whether a gutena_forms post title already exists.
+		 *
+		 * @since 2.4.0
+		 * @param string $title Post title to check.
+		 * @return bool
+		 */
+		private function import_title_exists( $title ) {
+			global $wpdb;
+
+			$post_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT ID FROM {$wpdb->posts} WHERE post_title = %s AND post_type = 'gutena_forms' AND post_status != 'trash' LIMIT 1",
+					$title
+				)
+			);
+
+			return ! empty( $post_id );
 		}
 
 		/**

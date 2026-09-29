@@ -2,9 +2,9 @@ document.addEventListener( 'DOMContentLoaded', function () {
 	class GutenaFormsAdmin {
 		constructor() {
 			if (
-				'undefined' !== typeof gutenaFormsAdminNotice &&
-				null !== gutenaFormsAdminNotice &&
-				'' !== gutenaFormsAdminNotice
+				'undefined' !== typeof gutenaFormsNotice &&
+				null !== gutenaFormsNotice &&
+				'' !== gutenaFormsNotice
 			) {
 				this.dismissAdminNotice();
 			}
@@ -42,7 +42,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				}
 
 				const noticeId = notice.getAttribute( 'id' );
-				fetch( gutenaFormsAdminNotice.ajax_url, {
+				fetch( gutenaFormsNotice.ajax_url, {
 					method: 'POST',
 					credentials: 'same-origin',
 					headers: {
@@ -51,8 +51,8 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						Accept: 'application/json',
 					},
 					body: new URLSearchParams( {
-						action: gutenaFormsAdminNotice.dismiss_notice_action,
-						gfnonce: gutenaFormsAdminNotice.nonce,
+						action: gutenaFormsNotice.dismiss_notice_action,
+						gfnonce: gutenaFormsNotice.nonce,
 						notice_id: noticeId,
 					} ),
 				} )

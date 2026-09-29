@@ -1,0 +1,62 @@
+// Gutena green focus ring (#0DA88C) for all dashboard input-like controls.
+.gutena-froms#gutena-forms__root {
+	$gfp-focus-color: #0da88c;
+	$gfp-focus-shadow: 0 0 0 1px $gfp-focus-color;
+
+	.components-input-control__container:focus-within,
+	.components-base-control:has( .components-input-control__input:focus ),
+	.components-base-control:has( .components-number-control__input:focus ),
+	.components-base-control:has( .components-select-control__input:focus ) {
+		.components-input-control__backdrop {
+			border-color: $gfp-focus-color !important;
+			box-shadow: $gfp-focus-shadow !important;
+			outline: none !important;
+		}
+	}
+
+	.components-input-control__input:focus,
+	.components-number-control__input:focus,
+	.components-select-control__input:focus {
+		box-shadow: none !important;
+		outline: none !important;
+	}
+
+	input[type='text']:not( .components-input-control__input ):focus,
+	input[type='email']:not( .components-input-control__input ):focus,
+	input[type='url']:not( .components-input-control__input ):focus,
+	input[type='password']:not( .components-input-control__input ):focus,
+	input[type='search']:not( .components-input-control__input ):focus,
+	input[type='number']:not( .components-input-control__input ):not(
+			.components-number-control__input
+		):focus,
+	textarea:focus,
+	select:focus {
+		border-color: $gfp-focus-color;
+		box-shadow: $gfp-focus-shadow;
+		outline: none;
+	}
+
+	.components-form-toggle.is-checked .components-form-toggle__track {
+		background-color: $gfp-focus-color;
+		border-color: $gfp-focus-color;
+	}
+
+	.components-form-toggle__input:focus + .components-form-toggle__track {
+		box-shadow: 0 0 0 1px #fff, 0 0 0 3px $gfp-focus-color;
+		outline: none;
+	}
+
+	input[type='checkbox']:focus,
+	input[type='radio']:focus {
+		border-color: $gfp-focus-color;
+		box-shadow: $gfp-focus-shadow;
+		outline: none;
+	}
+
+	.gutena-forms__export-dropdown-trigger:focus,
+	.gutena-forms__import-choose-button:focus {
+		border-color: $gfp-focus-color;
+		box-shadow: $gfp-focus-shadow;
+		outline: none;
+	}
+}
