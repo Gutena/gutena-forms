@@ -87,8 +87,11 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 		 * @return array
 		 */
 		public function get_settings() {
-			$defaults   = Gutena_Forms_Auto_Responder_Helper::get_defaults();
-			$merge_tags = Gutena_Forms_Auto_Responder_Helper::get_static_merge_tags();
+			$defaults        = Gutena_Forms_Auto_Responder_Helper::get_defaults();
+			$recipient_tags  = Gutena_Forms_Auto_Responder_Helper::get_recipient_merge_tags();
+			$content_tags    = Gutena_Forms_Auto_Responder_Helper::get_content_merge_tags();
+			$from_email_tags = Gutena_Forms_Auto_Responder_Helper::get_from_email_merge_tags();
+			$multi_help      = __( 'Comma separated values are also accepted.', 'gutena-forms' );
 
 			return array(
 				'id'          => 'auto-responder',
@@ -99,10 +102,12 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'id'    => 'send_email_to',
 						'type'  => 'email',
 						'name'  => __( 'Send Email To', 'gutena-forms' ),
+						'desc'  => $multi_help,
 						'value' => $this->get_setting_value( 'send_email_to', $defaults ),
 						'attrs' => array(
-							'required' => true,
-							'multiple' => true,
+							'required'   => true,
+							'multiple'   => true,
+							'merge_tags' => $recipient_tags,
 						),
 					),
 					array(
@@ -113,6 +118,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'attrs' => array(
 							'required'        => true,
 							'merge_tag_field' => true,
+							'merge_tags'      => $recipient_tags,
 							'placeholder'     => $defaults['subject'],
 						),
 					),
@@ -124,7 +130,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'attrs' => array(
 							'merge_tag_field' => true,
 							'placeholder'     => $defaults['message'],
-							'merge_tags'      => $merge_tags,
+							'merge_tags'      => $content_tags,
 						),
 					),
 					array(
@@ -134,6 +140,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'value' => $this->get_setting_value( 'from_name', $defaults ),
 						'attrs' => array(
 							'merge_tag_field' => true,
+							'merge_tags'      => $recipient_tags,
 							'placeholder'     => $defaults['from_name'],
 						),
 					),
@@ -141,38 +148,46 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'id'    => 'from_email',
 						'type'  => 'email',
 						'name'  => __( 'From Email', 'gutena-forms' ),
+						'desc'  => __( 'Notifications can use only one From Email so please enter a single address.', 'gutena-forms' ),
 						'value' => $this->get_setting_value( 'from_email', $defaults ),
 						'attrs' => array(
 							'allow_merge_tags' => true,
-							'merge_tags'       => Gutena_Forms_Auto_Responder_Helper::get_from_email_merge_tags(),
+							'merge_tags'       => $from_email_tags,
 							'merge_tag_field'  => true,
+							'placeholder'      => $defaults['from_email'],
 						),
 					),
 					array(
 						'id'    => 'cc',
 						'type'  => 'email',
-						'name'  => __( 'CC', 'gutena-forms' ),
+						'name'  => __( 'CC (Carbon Copy)', 'gutena-forms' ),
+						'desc'  => $multi_help,
 						'value' => $this->get_setting_value( 'cc', $defaults ),
 						'attrs' => array(
-							'multiple' => true,
+							'multiple'   => true,
+							'merge_tags' => $recipient_tags,
 						),
 					),
 					array(
 						'id'    => 'bcc',
 						'type'  => 'email',
-						'name'  => __( 'BCC', 'gutena-forms' ),
+						'name'  => __( 'BCC (Blind Carbon Copy)', 'gutena-forms' ),
+						'desc'  => $multi_help,
 						'value' => $this->get_setting_value( 'bcc', $defaults ),
 						'attrs' => array(
-							'multiple' => true,
+							'multiple'   => true,
+							'merge_tags' => $recipient_tags,
 						),
 					),
 					array(
 						'id'    => 'reply_to',
 						'type'  => 'email',
 						'name'  => __( 'Reply To', 'gutena-forms' ),
+						'desc'  => $multi_help,
 						'value' => $this->get_setting_value( 'reply_to', $defaults ),
 						'attrs' => array(
-							'multiple' => true,
+							'multiple'   => true,
+							'merge_tags' => $recipient_tags,
 						),
 					),
 					array(

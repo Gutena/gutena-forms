@@ -139,6 +139,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Confirmation' ) && class_exists( 'Gutena
 						'value' => $this->get_setting_value( 'success_message', $defaults ),
 						'attrs' => array(
 							'merge_tag_field' => true,
+							'merge_tags'      => $merge_tags,
 							'placeholder'     => $defaults['success_message'],
 						),
 					),
@@ -148,8 +149,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Confirmation' ) && class_exists( 'Gutena
 						'name'  => __( 'Error Message', 'gutena-forms' ),
 						'value' => $this->get_setting_value( 'error_message', $defaults ),
 						'attrs' => array(
-							'merge_tag_field' => true,
-							'placeholder'     => $defaults['error_message'],
+							'placeholder' => $defaults['error_message'],
 						),
 					),
 					array(
@@ -163,14 +163,6 @@ if ( ! class_exists( 'Gutena_Forms_Form_Confirmation' ) && class_exists( 'Gutena
 								'hide'  => __( 'Hide Form', 'gutena-forms' ),
 								'reset' => __( 'Reset Form', 'gutena-forms' ),
 							),
-						),
-					),
-					array(
-						'id'    => 'merge_tags',
-						'type'  => 'merge-tags',
-						'name'  => __( 'Merge Tags', 'gutena-forms' ),
-						'attrs' => array(
-							'tags' => $merge_tags,
 						),
 					),
 					array(
@@ -189,7 +181,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Confirmation' ) && class_exists( 'Gutena
 					array(
 						'id'    => 'redirect_page_id',
 						'type'  => 'select',
-						'name'  => __( 'Page', 'gutena-forms' ),
+						'name'  => __( 'Select Page', 'gutena-forms' ),
 						'value' => (string) absint( $this->get_setting_value( 'redirect_page_id', $defaults ) ),
 						'attrs' => array(
 							'options' => $this->get_page_options(),
@@ -200,8 +192,9 @@ if ( ! class_exists( 'Gutena_Forms_Form_Confirmation' ) && class_exists( 'Gutena
 						'type'  => 'url',
 						'name'  => __( 'Custom URL', 'gutena-forms' ),
 						'value' => $this->get_setting_value( 'redirect_url', $defaults ),
+						'desc'  => __( 'Enter a full URL using http:// or https://.', 'gutena-forms' ),
 						'attrs' => array(
-							'placeholder' => 'https://',
+							'placeholder' => 'https://example.com/thank-you',
 						),
 					),
 					array(

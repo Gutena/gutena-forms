@@ -639,6 +639,8 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 						'type'   => 'v2',
 					);
 				$gutena_forms_editor_data['cloudflare_turnstile_defaults'] = is_array( $cloudflare_turnstile_defaults ) ? $cloudflare_turnstile_defaults : array();
+				$gutena_forms_editor_data['form_confirmation_defaults']    = Gutena_Forms_Confirmation_Helper::get_form_defaults_for_editor();
+				$gutena_forms_editor_data['email_notifications_defaults'] = Gutena_Forms_Auto_Responder_Helper::get_form_defaults_for_editor();
 
 				wp_localize_script(
 					'gutena-forms-editor-script',
@@ -902,6 +904,23 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 								$effective_global,
 								array( 'defaultSettings' => true )
 							);
+						}
+
+						$email_settings = isset( $single_form_schema['form_attrs']['settings']['emailNotifications'] ) && is_array( $single_form_schema['form_attrs']['settings']['emailNotifications'] )
+							? $single_form_schema['form_attrs']['settings']['emailNotifications']
+							: array();
+
+						if ( class_exists( 'Gutena_Forms_Notification_Helper' ) && Gutena_Forms_Notification_Helper::uses_global_email_defaults( $email_settings ) ) {
+							unset( $single_form_schema['form_attrs']['adminEmails'] );
+							unset( $single_form_schema['form_attrs']['adminEmailSubject'] );
+							unset( $single_form_schema['form_attrs']['adminEmailTemplate'] );
+							unset( $single_form_schema['form_attrs']['emailFromName'] );
+
+							if ( ! isset( $single_form_schema['form_attrs']['settings']['emailNotifications'] ) || ! is_array( $single_form_schema['form_attrs']['settings']['emailNotifications'] ) ) {
+								$single_form_schema['form_attrs']['settings']['emailNotifications'] = array();
+							}
+
+							$single_form_schema['form_attrs']['settings']['emailNotifications']['defaultSettings'] = true;
 						}
 
 						$single_form_schema['form_attrs'] = Gutena_Forms_Helper::strip_captcha_secrets_from_form_attrs( $single_form_schema['form_attrs'] );

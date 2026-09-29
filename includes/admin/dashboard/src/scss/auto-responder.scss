@@ -1,4 +1,5 @@
 @import "../../../../../src/shared/scss/notification-message-field";
+@import "../../../../../src/shared/scss/notification-field";
 @import "../../../../../src/shared/scss/confirmation-option-cards";
 
 .gutena-froms#gutena-forms__root {
@@ -10,6 +11,54 @@
       font-weight: 700;
       margin-bottom: 10px;
       padding-right: 0;
+    }
+
+    &.gutena-forms__email-notifications-settings {
+      .gutena-forms__page-title {
+        color: #000;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: normal;
+        margin-bottom: 4px;
+      }
+
+      .gutena-forms__settings-meta-box-desc {
+        color: #000;
+        font-size: 12px;
+        font-weight: 400;
+        margin-bottom: 20px;
+      }
+
+      .gutena-forms__settings-meta-box {
+        background: #fff;
+        border: 1px solid #e2e2e2;
+        border-radius: 10px;
+        gap: 16px;
+        max-width: 750px;
+        padding: 20px 22px;
+      }
+
+      .gutena-forms__html-editor-field {
+        .gutena-forms-notification-message-field__label {
+          color: #000;
+          font-size: 12px;
+          font-weight: 700;
+        }
+      }
+
+      .gutena-forms__submit-button {
+        margin-top: 0;
+
+        button {
+          font-size: 12px;
+          padding: 6px 10px;
+        }
+      }
+
+      .gutena-forms__html-editor-field {
+        margin-bottom: 0;
+        width: 100%;
+      }
     }
 
     &.gutena-forms__form-confirmation-settings {
@@ -41,45 +90,30 @@
         .gutena-forms__field-label {
           color: #000;
           font-size: 12px;
-          font-weight: 500;
+          font-weight: 700;
           line-height: normal;
           margin-bottom: 10px;
         }
       }
 
       .gutena-forms__html-editor-field {
+        margin-bottom: 0;
+        width: 100%;
+
         .gutena-forms-notification-message-field__label {
           color: #000;
           font-size: 12px;
-          font-weight: 500;
+          font-weight: 700;
         }
-      }
-
-      .gutena-forms__select-control,
-      .gutena-forms__url-control {
-        .components-base-control__label {
-          color: #000;
-          font-size: 12px;
-          font-weight: 500;
-          line-height: normal;
-          margin-bottom: 10px;
-        }
-      }
-
-      .gutena-forms__select-control .components-select-control__input,
-      .gutena-forms__url-control .components-text-control__input {
-        border: 1px solid #e2e2e2;
-        border-radius: 4px;
-        box-shadow: none;
-        color: #2c3338;
-        font-size: 12px;
-        height: 35px;
-        min-height: 35px;
-        padding: 7px 15px;
       }
 
       .gutena-forms__submit-button {
         margin-top: 0;
+
+        button {
+          font-size: 12px;
+          padding: 6px 10px;
+        }
       }
     }
 
@@ -99,7 +133,7 @@
       display: flex;
       gap: 10px;
       margin: 0 0 16px;
-      max-width: 540px;
+      max-width: 750px;
       padding: 12px 14px;
 
       .dashicons {
@@ -143,10 +177,15 @@
       max-width: 540px;
       padding: 20px;
 
-      // Each field is wrapped in its own row div — use gap here instead of
-      // field-container margin (the old :last-child rule zeroed every field).
       > .gutena-forms__settings-field-row {
         margin: 0;
+      }
+    }
+
+    &.gutena-forms__email-notifications-settings,
+    &.gutena-forms__form-confirmation-settings {
+      .gutena-forms__settings-meta-box {
+        max-width: 750px;
       }
     }
 
@@ -177,11 +216,20 @@
     .gutena-forms__email-control .components-base-control__label {
       color: #000;
       display: block;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 700;
-      line-height: 1.4;
-      margin-bottom: 10px;
+      line-height: normal;
+      margin-bottom: 6px;
       text-transform: none;
+    }
+
+    .gutena-forms__email-control .gutena-forms__field-description,
+    .gutena-forms__text-control .gutena-forms__field-description {
+      color: #424d55;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: normal;
+      margin: 0;
     }
 
     .gutena-forms__text-control,
@@ -209,14 +257,12 @@
       line-height: normal;
       padding: 7px 15px;
 
-      // Same focus outline as Weekly Forms Summary (WP TextControl accent).
       &:focus {
         border-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #2271b1));
         box-shadow: 0 0 0 1px var(--wp-components-color-accent, var(--wp-admin-theme-color, #2271b1));
         outline: 2px solid transparent;
       }
 
-      // Same disabled look as Weekly Forms Summary fields.
       &:disabled {
         background: #f5f6f7;
         border-color: #e2e4e7;
@@ -235,53 +281,6 @@
       resize: vertical;
       width: 100%;
       margin-top: 5px;
-    }
-
-    // Merge tags sit closer to the message editor than other field gaps.
-    .gutena-forms__settings-field-row:has(.gutena-forms__merge-tags) {
-      margin-top: -8px;
-    }
-
-    .gutena-forms__merge-tags {
-      margin-top: 0;
-    }
-
-    .gutena-forms__merge-tags-label {
-      color: #424d55;
-      font-size: 13px;
-      font-weight: 400;
-      line-height: 1.4;
-      margin: 0 0 10px;
-    }
-
-    .gutena-forms__merge-tags-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .gutena-forms__merge-tag-pill {
-      background: #f0fffc;
-      border: none;
-      border-radius: 4px;
-      color: #424d55;
-      cursor: pointer;
-      font-family: "Satoshi", sans-serif;
-      font-size: 11px;
-      font-weight: 400;
-      line-height: normal;
-      padding: 6px;
-    }
-
-    .gutena-forms__merge-tag-pill:hover:not(:disabled) {
-      background: #dff8f2;
-    }
-
-    .gutena-forms__merge-tags.is-disabled .gutena-forms__merge-tag-pill,
-    .gutena-forms__merge-tag-pill:disabled {
-      background: #f5f6f7;
-      color: #8a8f98;
-      cursor: not-allowed;
     }
 
     .gutena-forms__submit-button {
@@ -361,17 +360,6 @@
       color: #ABABAD;
       cursor: not-allowed;
       outline: none;
-    }
-
-    .gutena-forms__field-validation-warning {
-      color: #b32d2e;
-      font-size: 12px;
-      margin: 6px 0 0;
-    }
-
-    .gutena-forms__html-editor-field {
-      margin-bottom: 0;
-      width: 100%;
     }
   }
 }

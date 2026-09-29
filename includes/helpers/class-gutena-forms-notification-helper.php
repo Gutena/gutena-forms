@@ -74,6 +74,32 @@ if ( ! class_exists( 'Gutena_Forms_Notification_Helper' ) ) :
 		}
 
 		/**
+		 * Whether per-form email notifications inherit global defaults.
+		 *
+		 * @param array $email_settings Email notification settings.
+		 * @return bool
+		 */
+		public static function uses_global_email_defaults( $email_settings ) {
+			if ( ! is_array( $email_settings ) ) {
+				return true;
+			}
+
+			if ( ! empty( $email_settings['hasSavedConfig'] ) ) {
+				if ( ! array_key_exists( 'defaultSettings', $email_settings ) ) {
+					return false;
+				}
+
+				return rest_sanitize_boolean( $email_settings['defaultSettings'] );
+			}
+
+			if ( array_key_exists( 'defaultSettings', $email_settings ) ) {
+				return rest_sanitize_boolean( $email_settings['defaultSettings'] );
+			}
+
+			return true;
+		}
+
+		/**
 		 * Resolve notifications list and fallback defaults.
 		 *
 		 * @param array $schema Form schema.
@@ -94,7 +120,7 @@ if ( ! class_exists( 'Gutena_Forms_Notification_Helper' ) ) :
 				'reply_to'   => isset( $email_settings['reply_to'] ) ? (string) $email_settings['reply_to'] : (string) ( $form_defaults['reply_to'] ?? '' ),
 			);
 
-			if ( ! empty( $email_settings['hasSavedConfig'] ) ) {
+			if ( ! self::uses_global_email_defaults( $email_settings ) ) {
 				$notifications = isset( $email_settings['notifications'] ) && is_array( $email_settings['notifications'] )
 					? $email_settings['notifications']
 					: array();
@@ -102,17 +128,17 @@ if ( ! class_exists( 'Gutena_Forms_Notification_Helper' ) ) :
 				return array( $notifications, $form_meta, $global_defaults );
 			}
 
-			if ( self::is_legacy_email_notification_form( $attrs ) ) {
-				return array(
-					array( self::build_legacy_admin_notification( $attrs, $form_defaults ) ),
-					$form_meta,
-					$global_defaults,
-				);
-			}
-
 			$notifications = isset( $email_settings['notifications'] ) && is_array( $email_settings['notifications'] )
 				? $email_settings['notifications']
 				: array();
+
+			if ( empty( $notifications ) ) {
+				$notifications = array(
+					self::build_inherited_admin_notification( $attrs, $form_defaults, $email_settings ),
+				);
+			} else {
+				$notifications = self::apply_global_defaults_to_notifications( $notifications, $form_defaults );
+			}
 
 			return array( $notifications, $form_meta, $global_defaults );
 		}
@@ -129,6 +155,21 @@ if ( ! class_exists( 'Gutena_Forms_Notification_Helper' ) ) :
 				? $attrs['settings']['emailNotifications']
 				: array();
 
+			if ( self::uses_global_email_defaults( $email_settings ) ) {
+				return array(
+					'send_email_to'      => (string) ( $global_defaults['send_email_to'] ?? '' ),
+					'subject'            => (string) ( $global_defaults['subject'] ?? '' ),
+					'message'            => (string) ( $global_defaults['message'] ?? '' ),
+					'from_name'          => (string) ( $global_defaults['from_name'] ?? '' ),
+					'from_email'         => ! empty( $email_settings['from_email'] ) ? (string) $email_settings['from_email'] : (string) ( $global_defaults['from_email'] ?? '' ),
+					'cc'                 => ! empty( $email_settings['cc'] ) ? (string) $email_settings['cc'] : (string) ( $global_defaults['cc'] ?? '' ),
+					'bcc'                => ! empty( $email_settings['bcc'] ) ? (string) $email_settings['bcc'] : (string) ( $global_defaults['bcc'] ?? '' ),
+					'reply_to'           => ! empty( $email_settings['reply_to'] ) ? (string) $email_settings['reply_to'] : (string) ( $global_defaults['reply_to'] ?? '' ),
+					'reply_to_name'      => ! empty( $attrs['replyToName'] ) ? (string) $attrs['replyToName'] : '',
+					'reply_to_last_name' => ! empty( $attrs['replyToLastName'] ) ? (string) $attrs['replyToLastName'] : '',
+				);
+			}
+
 			return array(
 				'send_email_to'      => ! empty( $attrs['adminEmails'] ) ? (string) $attrs['adminEmails'] : (string) ( $global_defaults['send_email_to'] ?? '' ),
 				'subject'            => ! empty( $attrs['adminEmailSubject'] ) ? (string) $attrs['adminEmailSubject'] : (string) ( $global_defaults['subject'] ?? '' ),
@@ -144,6 +185,67 @@ if ( ! class_exists( 'Gutena_Forms_Notification_Helper' ) ) :
 		}
 
 		/**
+		 * Build an inherited admin notification from global defaults.
+		 *
+		 * @param array $attrs            Form attributes.
+		 * @param array $form_defaults    Resolved form defaults.
+		 * @param array $email_settings   Email notification settings.
+		 * @return array
+		 */
+		private static function build_inherited_admin_notification( $attrs, $form_defaults, $email_settings ) {
+			$email_notify = isset( $attrs['emailNotifyAdmin'] ) ? $attrs['emailNotifyAdmin'] : true;
+
+			return array(
+				'id'                 => 'inherited-admin-notification',
+				'enabled'            => ! ( '' === $email_notify || false === $email_notify || '0' === $email_notify || 0 === $email_notify ),
+				'name'               => __( 'Admin Notification Email', 'gutena-forms' ),
+				'send_email_to'      => (string) ( $form_defaults['send_email_to'] ?? '' ),
+				'subject'            => (string) ( $form_defaults['subject'] ?? '' ),
+				'message'            => (string) ( $form_defaults['message'] ?? '' ),
+				'from_name'          => (string) ( $form_defaults['from_name'] ?? '' ),
+				'from_email'         => (string) ( $form_defaults['from_email'] ?? '' ),
+				'cc'                 => (string) ( $form_defaults['cc'] ?? '' ),
+				'bcc'                => (string) ( $form_defaults['bcc'] ?? '' ),
+				'reply_to'           => (string) ( $form_defaults['reply_to'] ?? '' ),
+				'reply_to_name'      => (string) ( $form_defaults['reply_to_name'] ?? '' ),
+				'reply_to_last_name' => (string) ( $form_defaults['reply_to_last_name'] ?? '' ),
+			);
+		}
+
+		/**
+		 * Apply live global defaults to stored inherited notifications.
+		 *
+		 * @param array $notifications  Stored notifications.
+		 * @param array $form_defaults    Resolved form defaults.
+		 * @return array
+		 */
+		private static function apply_global_defaults_to_notifications( $notifications, $form_defaults ) {
+			$updated = array();
+
+			foreach ( $notifications as $notification ) {
+				if ( empty( $notification ) || ! is_array( $notification ) ) {
+					continue;
+				}
+
+				$updated[] = array_merge(
+					$notification,
+					array(
+						'send_email_to' => (string) ( $form_defaults['send_email_to'] ?? '' ),
+						'subject'       => (string) ( $form_defaults['subject'] ?? '' ),
+						'message'       => (string) ( $form_defaults['message'] ?? '' ),
+						'from_name'     => (string) ( $form_defaults['from_name'] ?? '' ),
+						'from_email'    => (string) ( $form_defaults['from_email'] ?? '' ),
+						'cc'            => (string) ( $form_defaults['cc'] ?? '' ),
+						'bcc'           => (string) ( $form_defaults['bcc'] ?? '' ),
+						'reply_to'      => (string) ( $form_defaults['reply_to'] ?? '' ),
+					)
+				);
+			}
+
+			return $updated;
+		}
+
+		/**
 		 * Detect legacy forms that have not saved the new notification config.
 		 *
 		 * @param array $attrs Form attributes.
@@ -153,6 +255,10 @@ if ( ! class_exists( 'Gutena_Forms_Notification_Helper' ) ) :
 			$email_settings = isset( $attrs['settings']['emailNotifications'] ) && is_array( $attrs['settings']['emailNotifications'] )
 				? $attrs['settings']['emailNotifications']
 				: array();
+
+			if ( ! self::uses_global_email_defaults( $email_settings ) ) {
+				return false;
+			}
 
 			if ( ! empty( $email_settings['hasSavedConfig'] ) ) {
 				return false;

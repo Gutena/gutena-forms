@@ -3,6 +3,7 @@ import {NavLink, useParams} from 'react-router';
 import GutenaFormsNumberField from './fields/gutena-forms-number-field';
 import GutenaFormsToggleField from './fields/gutena-forms-toggle-field';
 import GutenaFormsEmailField from './fields/gutena-forms-email-field';
+import GutenaFormsNotificationFieldControl from './fields/gutena-forms-notification-field-control';
 import GutenaFormsSubmitButton from './fields/gutena-forms-submit-button';
 import GutenaFormsTextField from './fields/gutena-forms-text-field';
 import GutenaFormsTextareaField from './fields/gutena-forms-textarea-field';
@@ -62,6 +63,53 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test( trimmed );
 	};
 
+	const isValidRedirectUrl = ( url ) => {
+		const trimmed = String( url || '' ).trim();
+		if ( ! trimmed ) {
+			return true;
+		}
+
+		try {
+			const parsed = new URL( trimmed );
+			return [ 'http:', 'https:' ].includes( parsed.protocol );
+		} catch ( error ) {
+			return false;
+		}
+	};
+
+	const validateFormConfirmationForSave = ( values = {} ) => {
+		if ( 'redirect' !== values.confirmation_type ) {
+			return { valid: true };
+		}
+
+		if ( 'custom_url' === values.redirect_type ) {
+			const trimmed = String( values.redirect_url || '' ).trim();
+			if ( ! trimmed ) {
+				return {
+					valid: false,
+					message: __( 'Please enter a redirect URL.', 'gutena-forms' ),
+				};
+			}
+
+			if ( ! isValidRedirectUrl( trimmed ) ) {
+				return {
+					valid: false,
+					message: __(
+						'Please enter a valid redirect URL using http:// or https://.',
+						'gutena-forms'
+					),
+				};
+			}
+		} else if ( ( parseInt( values.redirect_page_id, 10 ) || 0 ) <= 0 ) {
+			return {
+				valid: false,
+				message: __( 'Please select a page to redirect to.', 'gutena-forms' ),
+			};
+		}
+
+		return { valid: true };
+	};
+
 	useLayoutEffect( () => {
 		const pending = pendingMergeCursor.current;
 		if ( ! pending ) {
@@ -113,9 +161,12 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 			setSettings( parsedSettings );
 			setFieldValue( initialFieldValue );
 			setInitialFieldValue( initialFieldValue );
+			if ( 'form-confirmation' === settings_id ) {
+				setActiveMergeField( 'success_message' );
+			}
 			setLoading( false );
 		},
-		[ items ] );
+		[ items, settings_id ] );
 
 	const handleFieldChange = ( id, newValue ) => {
 		setHasChange( true );
@@ -151,6 +202,8 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 	};
 
 	const shouldRenderField = ( fieldId ) => {
+		const isFormConfirmation =
+			'form-confirmation' === settings_id || 'form-confirmation' === id;
 		const isRecaptchaSettings = 'recaptcha' === id || 'google-recaptcha' === settings_id;
 		if ( isRecaptchaSettings ) {
 			const recaptchaType = fieldValue?.type || 'v2';
@@ -165,7 +218,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 			return true;
 		}
 
-		if ( 'form-confirmation' === settings_id ) {
+		if ( isFormConfirmation ) {
 			const confirmationType = fieldValue?.confirmation_type || 'message';
 			const redirectType = fieldValue?.redirect_type || 'page';
 
@@ -173,7 +226,7 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				return true;
 			}
 
-			if ( 'merge-tags' === fieldId ) {
+			if ( 'merge_tags' === fieldId ) {
 				return 'message' === confirmationType;
 			}
 
@@ -202,11 +255,13 @@ const handleSubmit = () => {
 		if ( 'auto-responder' === settings_id ) {
 			if ( ! fieldValue?.send_email_to?.trim() ) {
 				toast.error( __( 'Send Email To is required.', 'gutena-forms' ) );
+				setSaving( false );
 				return;
 			}
 
 			if ( ! fieldValue?.subject?.trim() ) {
 				toast.error( __( 'Subject is required.', 'gutena-forms' ) );
+				setSaving( false );
 				return;
 			}
 
@@ -218,6 +273,16 @@ const handleSubmit = () => {
 				)
 			) {
 				toast.error( __( 'Please enter a valid From Email address.', 'gutena-forms' ) );
+				setSaving( false );
+				return;
+			}
+		}
+
+		if ( 'form-confirmation' === settings_id ) {
+			const validation = validateFormConfirmationForSave( fieldValue );
+			if ( ! validation.valid ) {
+				toast.error( validation.message );
+				setSaving( false );
 				return;
 			}
 		}
@@ -292,21 +357,43 @@ const handleSubmit = () => {
 				break;
 
 			case 'email':
-				fieldElement = (
-					<GutenaFormsEmailField
-						id={ field.id }
-						label={ getFieldLabel( field ) }
-						desc={ field.desc }
-						value={ fieldValue[ field.id ] }
-						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
-						onFocus={ field.attrs?.merge_tag_field ? () => setActiveMergeField( field.id ) : undefined }
-						disabled={ isDisabled }
-						multiple={ !! field.attrs?.multiple }
-						allowMergeTags={ !! field.attrs?.allow_merge_tags }
-						mergeTags={ field.attrs?.merge_tags || [] }
-						showValidation={ !! field.attrs?.allow_merge_tags }
-					/>
-				);
+				if ( 'auto-responder' === id ) {
+					const emailMergeTags = field.attrs?.merge_tags || [];
+					fieldElement = (
+						<GutenaFormsNotificationFieldControl
+							id={ field.id }
+							label={ field.label }
+							value={ fieldValue[ field.id ] }
+							onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+							placeholder={ field.attrs?.placeholder }
+							required={ !! field.attrs?.required }
+							helpText={ field.desc || '' }
+							mergeTags={ emailMergeTags }
+							tagItems={ buildTagItemsFromTags( emailMergeTags ) }
+							type="email"
+							disabled={ isDisabled }
+							allowMergeTags={ !! field.attrs?.allow_merge_tags || emailMergeTags.length > 0 }
+							multiple={ !! field.attrs?.multiple }
+							showValidation={ 'from_email' === field.id }
+						/>
+					);
+				} else {
+					fieldElement = (
+						<GutenaFormsEmailField
+							id={ field.id }
+							label={ getFieldLabel( field ) }
+							desc={ field.desc }
+							value={ fieldValue[ field.id ] }
+							onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+							onFocus={ field.attrs?.merge_tag_field ? () => setActiveMergeField( field.id ) : undefined }
+							disabled={ isDisabled }
+							multiple={ !! field.attrs?.multiple }
+							allowMergeTags={ !! field.attrs?.allow_merge_tags }
+							mergeTags={ field.attrs?.merge_tags || [] }
+							showValidation={ !! field.attrs?.allow_merge_tags }
+						/>
+					);
+				}
 				break;
 
 			case 'submit':
@@ -320,26 +407,41 @@ const handleSubmit = () => {
 				break;
 
 			case 'text':
-				fieldElement = (
-					<GutenaFormsTextField
-						id={ field.id }
-						label={ getFieldLabel( field ) }
-						desc={ field.desc }
-						value={ fieldValue[ field.id ] }
-						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
-						onFocus={ field.attrs?.merge_tag_field ? () => setActiveMergeField( field.id ) : undefined }
-						placeholder={ field.attrs.placeholder }
-						disabled={ isDisabled }
-					/>
-				);
+				if ( 'auto-responder' === id && field.attrs?.merge_tag_field ) {
+					const textMergeTags = field.attrs?.merge_tags || [];
+					fieldElement = (
+						<GutenaFormsNotificationFieldControl
+							id={ field.id }
+							label={ field.label }
+							value={ fieldValue[ field.id ] }
+							onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+							placeholder={ field.attrs?.placeholder }
+							required={ !! field.attrs?.required }
+							helpText={ field.desc || '' }
+							mergeTags={ textMergeTags }
+							tagItems={ buildTagItemsFromTags( textMergeTags ) }
+							disabled={ isDisabled }
+						/>
+					);
+				} else {
+					fieldElement = (
+						<GutenaFormsTextField
+							id={ field.id }
+							label={ getFieldLabel( field ) }
+							desc={ field.desc }
+							value={ fieldValue[ field.id ] }
+							onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
+							onFocus={ field.attrs?.merge_tag_field ? () => setActiveMergeField( field.id ) : undefined }
+							placeholder={ field.attrs.placeholder }
+							disabled={ isDisabled }
+						/>
+					);
+				}
 				break;
 
 			case 'html-editor': {
-				const editorMergeTags = field.attrs?.merge_tags;
-				const resolvedTagItems = editorMergeTags && editorMergeTags.length
-					? editorMergeTags
-					: ( settings?.find( ( item ) => 'merge-tags' === item.type )?.attrs?.tags || [] );
-				const messageTagItems = buildTagItemsFromTags( resolvedTagItems );
+				const editorMergeTags = field.attrs?.merge_tags || [];
+				const messageTagItems = buildTagItemsFromTags( editorMergeTags );
 
 				fieldElement = (
 					<GutenaFormsHtmlEditorField
@@ -347,10 +449,10 @@ const handleSubmit = () => {
 						label={ getFieldLabel( field ) }
 						value={ fieldValue[ field.id ] }
 						onChange={ ( newValue ) => handleFieldChange( field.id, newValue ) }
-						onFocus={ () => setActiveMergeField( field.id ) }
-						onRegisterInsert={ ( insertFn ) => {
+						onFocus={ field.attrs?.merge_tag_field ? () => setActiveMergeField( field.id ) : undefined }
+						onRegisterInsert={ field.attrs?.merge_tag_field ? ( insertFn ) => {
 							mergeEditorRefs.current[ field.id ] = insertFn;
-						} }
+						} : undefined }
 						placeholder={ field.attrs?.placeholder }
 						disabled={ isDisabled }
 						tagItems={ messageTagItems }
@@ -499,37 +601,9 @@ const handleSubmit = () => {
 				dangerouslySetInnerHTML={ { __html: description } }
 			/>
 
-			{ 'auto-responder' === id && (
-				<div className="gutena-forms__auto-responder-notice">
-					<span className="dashicons dashicons-info" aria-hidden="true" />
-					<p>
-						<strong>{ __( 'Note:', 'gutena-forms' ) }</strong>
-						{ ' ' }
-						{ __(
-							'These settings apply as defaults when a new form is created. Existing forms keep their own saved notification settings.',
-							'gutena-forms'
-						) }
-					</p>
-				</div>
-			) }
-
-			{ 'form-confirmation' === id && (
-				<div className="gutena-forms__auto-responder-notice">
-					<span className="dashicons dashicons-info" aria-hidden="true" />
-					<p>
-						<strong>{ __( 'Note:', 'gutena-forms' ) }</strong>
-						{ ' ' }
-						{ __(
-							'These settings apply as defaults when a new form is created. Existing forms keep their own saved confirmation settings.',
-							'gutena-forms'
-						) }
-					</p>
-				</div>
-			) }
-
 			<div className={ 'gutena-forms__settings-meta-box' }>
 				{ ! template && ! loading && settings && settings.map( ( field ) => {
-					if ( field.type !== 'merge-tags' && ! shouldRenderField( field.id ) ) {
+					if ( ! shouldRenderField( field.id ) ) {
 						return null;
 					}
 

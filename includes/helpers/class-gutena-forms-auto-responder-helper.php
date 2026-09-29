@@ -25,11 +25,11 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 		 */
 		public static function get_defaults() {
 			return array(
-				'send_email_to' => sanitize_email( get_option( 'admin_email' ) ),
-				'subject'       => __( 'Thankyou for your submission', 'gutena-forms' ),
-				'message'       => __( "Thankyou for your submission!\n\nDear {Name},\n\nThank you for contacting us through our contact form. We have received your message and will get back to you as soon as possible.", 'gutena-forms' ),
-				'from_name'     => get_bloginfo( 'name' ),
-				'from_email'    => '',
+				'send_email_to' => '{admin_email}',
+				'subject'       => 'New Form Submission - {form_title}',
+				'message'       => '{all_data}',
+				'from_name'     => '{site_title}',
+				'from_email'    => '{admin_email}',
 				'cc'            => '',
 				'bcc'           => '',
 				'reply_to'      => '',
@@ -89,12 +89,45 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 		 * @return array
 		 */
 		public static function get_static_merge_tags() {
+			return self::get_recipient_merge_tags();
+		}
+
+		/**
+		 * Merge tags for recipient and text fields.
+		 *
+		 * @return array
+		 */
+		public static function get_recipient_merge_tags() {
 			return array(
+				'{admin_email}',
+				'{user_email}',
+				'{user_name}',
+				'{form_title}',
+				'{form-title}',
+				'{site_title}',
 				'{site_name}',
 				'{site_url}',
 				'{submission_date}',
-				'{form-title}',
+			);
+		}
+
+		/**
+		 * Merge tags for email message content.
+		 *
+		 * @return array
+		 */
+		public static function get_content_merge_tags() {
+			return array(
+				'{all_data}',
 				'{admin_email}',
+				'{user_email}',
+				'{user_name}',
+				'{form_title}',
+				'{form-title}',
+				'{site_title}',
+				'{site_name}',
+				'{site_url}',
+				'{submission_date}',
 			);
 		}
 
@@ -217,10 +250,15 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 				return '';
 			}
 
-			$parts   = array_map( 'trim', explode( ',', $value ) );
-			$emails  = array();
+			$allowed_merge_tags = self::get_recipient_merge_tags();
+			$parts              = array_map( 'trim', explode( ',', $value ) );
+			$emails             = array();
 			foreach ( $parts as $part ) {
 				if ( '' === $part ) {
+					continue;
+				}
+				if ( in_array( $part, $allowed_merge_tags, true ) ) {
+					$emails[] = $part;
 					continue;
 				}
 				$email = sanitize_email( $part );

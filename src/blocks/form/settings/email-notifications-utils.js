@@ -58,13 +58,57 @@ export const cloneNotifications = ( notifications ) => {
 	return notifications.map( ( notification ) => ( { ...notification } ) );
 };
 
-export const getNotificationDefaults = ( settings, legacyAttrs = {} ) => {
-	const stored = settings?.emailNotifications || {};
-	const globalDefaults =
+export const getGlobalNotificationDefaults = () => {
+	if (
 		typeof gutenaFormsBlock !== 'undefined' &&
 		gutenaFormsBlock?.email_notifications_defaults
-			? gutenaFormsBlock.email_notifications_defaults
-			: {};
+	) {
+		return gutenaFormsBlock.email_notifications_defaults;
+	}
+
+	return {};
+};
+
+export const usesGlobalEmailDefaults = ( stored = {} ) => {
+	if ( stored?.hasSavedConfig && false === stored?.defaultSettings ) {
+		return false;
+	}
+
+	if ( stored?.hasSavedConfig && undefined === stored?.defaultSettings ) {
+		return false;
+	}
+
+	return false !== stored?.defaultSettings;
+};
+
+export const hasCustomEmailNotifications = ( stored = {} ) => {
+	return ! usesGlobalEmailDefaults( stored );
+};
+
+export const getNotificationDefaults = (
+	settings,
+	legacyAttrs = {},
+	isCustomized = null
+) => {
+	const stored = settings?.emailNotifications || {};
+	const customized =
+		null === isCustomized ? hasCustomEmailNotifications( stored ) : isCustomized;
+	const globalDefaults = getGlobalNotificationDefaults();
+
+	if ( ! customized ) {
+		return buildNotificationFromDefaults( {
+			send_email_to: globalDefaults.send_email_to || '',
+			subject: globalDefaults.subject || DEFAULT_ADMIN_NOTIFICATION_SUBJECT,
+			message: globalDefaults.message || '',
+			from_name: globalDefaults.from_name || '',
+			from_email: stored.from_email || globalDefaults.from_email || '',
+			cc: stored.cc || globalDefaults.cc || '',
+			bcc: stored.bcc || globalDefaults.bcc || '',
+			reply_to: stored.reply_to || globalDefaults.reply_to || '',
+			reply_to_name: legacyAttrs.replyToName || '',
+			reply_to_last_name: legacyAttrs.replyToLastName || '',
+		} );
+	}
 
 	return buildNotificationFromDefaults( {
 		send_email_to:
@@ -87,13 +131,65 @@ export const getNotificationDefaults = ( settings, legacyAttrs = {} ) => {
 			globalDefaults.from_name ||
 			stored.from_name ||
 			'',
-		from_email: globalDefaults.from_email || stored.from_email || '',
-		cc: globalDefaults.cc || stored.cc || '',
-		bcc: globalDefaults.bcc || stored.bcc || '',
-		reply_to: globalDefaults.reply_to || stored.reply_to || '',
+		from_email: stored.from_email || globalDefaults.from_email || '',
+		cc: stored.cc || globalDefaults.cc || '',
+		bcc: stored.bcc || globalDefaults.bcc || '',
+		reply_to: stored.reply_to || globalDefaults.reply_to || '',
 		reply_to_name: legacyAttrs.replyToName || '',
 		reply_to_last_name: legacyAttrs.replyToLastName || '',
 	} );
+};
+
+export const mergeNotificationWithDefaults = (
+	notification = {},
+	defaults = {}
+) => {
+	const merged = {
+		...notification,
+	};
+
+	Object.keys( buildNotificationFromDefaults() ).forEach( ( key ) => {
+		const value = merged[ key ];
+		if ( null === value || undefined === value || '' === String( value ).trim() ) {
+			merged[ key ] = defaults[ key ] || '';
+		}
+	} );
+
+	if ( ! merged.name ) {
+		merged.name = defaults.name || DEFAULT_ADMIN_NOTIFICATION_NAME;
+	}
+
+	return merged;
+};
+
+export const buildInheritedNotifications = ( stored = {}, defaults = {} ) => {
+	const metaDefaults = buildNotificationFromDefaults( {
+		...defaults,
+		from_email: stored.from_email || defaults.from_email || '',
+		cc: stored.cc || defaults.cc || '',
+		bcc: stored.bcc || defaults.bcc || '',
+		reply_to: stored.reply_to || defaults.reply_to || '',
+	} );
+
+	const storedNotifications = Array.isArray( stored.notifications )
+		? stored.notifications
+		: [];
+
+	if ( storedNotifications.length > 0 ) {
+		return storedNotifications.map( ( notification ) => ( {
+			...notification,
+			send_email_to: metaDefaults.send_email_to,
+			subject: metaDefaults.subject,
+			message: metaDefaults.message,
+			from_name: metaDefaults.from_name,
+			from_email: metaDefaults.from_email,
+			cc: metaDefaults.cc,
+			bcc: metaDefaults.bcc,
+			reply_to: metaDefaults.reply_to,
+		} ) );
+	}
+
+	return [ createSeedNotification( metaDefaults ) ];
 };
 
 export const isValidFromEmailValue = ( value, formFields = [] ) => {
@@ -157,7 +253,17 @@ export const sanitizeNotification = ( notification ) => {
 export const isLegacyEmailNotificationForm = ( attributes ) => {
 	const emailNotifications = attributes?.settings?.emailNotifications;
 
-	if ( emailNotifications?.hasSavedConfig ) {
+	if (
+		emailNotifications?.hasSavedConfig &&
+		false === emailNotifications?.defaultSettings
+	) {
+		return false;
+	}
+
+	if (
+		emailNotifications?.hasSavedConfig &&
+		undefined === emailNotifications?.defaultSettings
+	) {
 		return false;
 	}
 
@@ -178,25 +284,10 @@ export const isLegacyEmailNotificationForm = ( attributes ) => {
 	return true;
 };
 
-const buildLegacyAdminNotification = ( legacyAttrs, defaults ) => ( {
-	id: 'legacy-admin-notification',
-	enabled: false !== legacyAttrs?.emailNotifyAdmin,
-	name: DEFAULT_ADMIN_NOTIFICATION_NAME,
-	...buildNotificationFromDefaults( {
-		...defaults,
-		send_email_to: legacyAttrs?.adminEmails || defaults.send_email_to,
-		subject: legacyAttrs?.adminEmailSubject || defaults.subject,
-		message: legacyAttrs?.adminEmailTemplate || defaults.message,
-		from_name: legacyAttrs?.emailFromName || defaults.from_name,
-		reply_to_name: legacyAttrs?.replyToName || defaults.reply_to_name,
-		reply_to_last_name:
-			legacyAttrs?.replyToLastName || defaults.reply_to_last_name,
-	} ),
-} );
-
 export const resolveEmailNotificationsState = ( settings, legacyAttrs ) => {
 	const stored = settings?.emailNotifications || {};
-	const defaults = getNotificationDefaults( settings, legacyAttrs );
+	const customized = hasCustomEmailNotifications( stored );
+	const defaults = getNotificationDefaults( settings, legacyAttrs, customized );
 	const meta = {
 		from_email: stored.from_email || defaults.from_email,
 		cc: stored.cc || defaults.cc,
@@ -204,30 +295,27 @@ export const resolveEmailNotificationsState = ( settings, legacyAttrs ) => {
 		reply_to: stored.reply_to || defaults.reply_to,
 	};
 
-	if ( stored.hasSavedConfig ) {
+	if ( customized ) {
 		return {
 			enabled: !! stored.enabled,
 			hasSavedConfig: true,
+			defaultSettings: false,
 			notifications: cloneNotifications( stored.notifications ),
 			defaults,
 			...meta,
 		};
 	}
 
-	if ( isLegacyEmailNotificationForm( { settings, formID: legacyAttrs?.formID } ) ) {
-		return {
-			enabled: false !== legacyAttrs?.emailNotifyAdmin,
-			hasSavedConfig: true,
-			notifications: [ buildLegacyAdminNotification( legacyAttrs, defaults ) ],
-			defaults,
-			...meta,
-		};
-	}
+	const enabled =
+		'enabled' in stored
+			? !! stored.enabled
+			: false !== legacyAttrs?.emailNotifyAdmin;
 
 	return {
-		enabled: !! stored.enabled,
-		hasSavedConfig: false,
-		notifications: cloneNotifications( stored.notifications ),
+		enabled,
+		hasSavedConfig: !! stored.hasSavedConfig,
+		defaultSettings: true,
+		notifications: buildInheritedNotifications( stored, defaults ),
 		defaults,
 		...meta,
 	};
@@ -245,7 +333,7 @@ export const persistEmailNotifications = ( setAttributes, settings, partial ) =>
 		notifications: nextNotifications,
 	};
 
-	setAttributes( {
+	const attrs = {
 		settings: {
 			...settings,
 			emailNotifications: nextEmailNotifications,
@@ -254,5 +342,18 @@ export const persistEmailNotifications = ( setAttributes, settings, partial ) =>
 			'enabled' in partial
 				? !! partial.enabled
 				: !! nextEmailNotifications.enabled,
-	} );
+	};
+
+	if (
+		false === partial.defaultSettings ||
+		false === nextEmailNotifications.defaultSettings
+	) {
+		const primary = nextNotifications[ 0 ] || {};
+		attrs.adminEmails = primary.send_email_to || '';
+		attrs.adminEmailSubject = primary.subject || '';
+		attrs.adminEmailTemplate = primary.message || '';
+		attrs.emailFromName = primary.from_name || '';
+	}
+
+	setAttributes( attrs );
 };

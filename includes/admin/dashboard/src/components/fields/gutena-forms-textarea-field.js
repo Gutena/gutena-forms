@@ -6,8 +6,8 @@ const GutenaFormsTextareaField = ( { onChange, label, id, desc, value, placehold
 	};
 
 	return (
-		<div className={ 'gutena-forms__textarea-control' }>
-			<label className="components-base-control__label" htmlFor={ id }>
+		<div className={ 'gutena-forms__textarea-control gutena-forms-notification-field' }>
+			<label className="gutena-forms-notification-field__label" htmlFor={ id }>
 				{ label }
 			</label>
 			<textarea
@@ -22,7 +22,7 @@ const GutenaFormsTextareaField = ( { onChange, label, id, desc, value, placehold
 			/>
 			{ desc && (
 				<p
-					className={ 'gutena-forms__field-description' }
+					className={ 'gutena-forms-notification-field__help' }
 					dangerouslySetInnerHTML={ { __html: desc } }
 				/>
 			) }

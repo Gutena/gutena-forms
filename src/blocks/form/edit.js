@@ -407,21 +407,23 @@ export default function Edit( props ) {
 
 			if ( ! gfIsEmpty( gutenaFormsBlock ) && ! gfIsEmpty( gutenaFormsBlock.email_notifications_defaults ) ) {
 				const emailDefaults = gutenaFormsBlock.email_notifications_defaults;
-				const nextSettings = { ...settings };
-				nextSettings.emailNotifications = {
-					from_email: emailDefaults.from_email || '',
-					cc: emailDefaults.cc || '',
-					bcc: emailDefaults.bcc || '',
-					reply_to: emailDefaults.reply_to || '',
-				};
+				const existingEmail = settings?.emailNotifications || {};
 
-				setAttributes( {
-					adminEmails: emailDefaults.send_email_to || '',
-					adminEmailSubject: emailDefaults.subject || '',
-					adminEmailTemplate: emailDefaults.message || '',
-					emailFromName: emailDefaults.from_name || '',
-					settings: nextSettings,
-				} );
+				if ( false !== existingEmail.defaultSettings ) {
+					const nextSettings = { ...settings };
+					nextSettings.emailNotifications = {
+						...existingEmail,
+						defaultSettings: true,
+						from_email: emailDefaults.from_email || '',
+						cc: emailDefaults.cc || '',
+						bcc: emailDefaults.bcc || '',
+						reply_to: emailDefaults.reply_to || '',
+					};
+
+					setAttributes( {
+						settings: nextSettings,
+					} );
+				}
 			}
 
 			if (

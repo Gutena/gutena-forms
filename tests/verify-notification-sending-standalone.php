@@ -79,8 +79,21 @@ if ( ! function_exists( 'get_site_url' ) ) {
 }
 
 if ( ! function_exists( 'get_option' ) ) {
-	function get_option( $key ) {
-		return 'admin_email' === $key ? 'admin@example.com' : '';
+	function get_option( $key, $default = false ) {
+		if ( 'admin_email' === $key ) {
+			return 'admin@example.com';
+		}
+
+		if ( 'gutena_forms__auto_responder' === $key ) {
+			return array(
+				'message'       => '<p>Global inherited body</p>',
+				'send_email_to' => 'global@example.com',
+				'subject'       => 'Global Subject',
+				'from_name'     => 'Global Site',
+			);
+		}
+
+		return $default;
 	}
 }
 
@@ -263,6 +276,26 @@ try {
 	Gutena_Forms_Notification_Helper::send_form_notifications( $form_submit_data, $schema, $field_schema, '' );
 	assert_true( false !== strpos( implode( "\n", (array) $GLOBALS['gf_mail_log'][0]['headers'] ), 'admin@example.com' ), '7 from merge tag' );
 	assert_true( false !== strpos( $GLOBALS['gf_mail_log'][0]['message'], '<!DOCTYPE html>' ), '8 html wrapper' );
+	++$passed;
+
+	reset_mail();
+	$schema = array(
+		'form_attrs' => array(
+			'formID'             => 'test_form_1',
+			'emailNotifyAdmin'   => true,
+			'adminEmailTemplate' => '{all_data}',
+			'settings'           => array(
+				'emailNotifications' => array(
+					'enabled'         => true,
+					'defaultSettings' => true,
+				),
+			),
+		),
+	);
+	assert_true( Gutena_Forms_Notification_Helper::send_form_notifications( $form_submit_data, $schema, $field_schema, '' ), '9 inherited send true' );
+	assert_true( 1 === count( $GLOBALS['gf_mail_log'] ), '9 one email' );
+	assert_true( false !== strpos( $GLOBALS['gf_mail_log'][0]['message'], 'Global inherited body' ), '9 global message used' );
+	assert_true( in_array( 'global@example.com', (array) $GLOBALS['gf_mail_log'][0]['to'], true ), '9 global recipient used' );
 	++$passed;
 
 	echo "All {$passed} notification sending checks passed.\n";

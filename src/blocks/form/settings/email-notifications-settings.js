@@ -63,6 +63,7 @@ const EmailNotificationsSettings = ( {
 		persistEmailNotifications( setAttributes, settings, {
 			enabled: true,
 			hasSavedConfig: true,
+			defaultSettings: false,
 			notifications,
 		} );
 		setPendingFirstEnable( false );

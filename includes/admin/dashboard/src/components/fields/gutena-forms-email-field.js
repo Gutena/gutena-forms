@@ -75,9 +75,18 @@ const GutenaFormsEmailField = ( {
 				<p className="gutena-forms__field-description">{ desc }</p>
 			) }
 			{ showWarning && (
-				<p className="gutena-forms__field-validation-warning">
-					{ __( 'Please enter a valid email address.', 'gutena-forms' ) }
-				</p>
+				<div className="gutena-forms-notification-field-warning-box">
+					<span
+						className="gutena-forms-notification-field-warning-box__icon dashicons dashicons-warning"
+						aria-hidden="true"
+					/>
+					<p>
+						{ __(
+							"Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly.",
+							'gutena-forms'
+						) }
+					</p>
+				</div>
 			) }
 		</div>
 	);

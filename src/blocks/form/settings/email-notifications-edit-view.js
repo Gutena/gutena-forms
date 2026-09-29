@@ -5,6 +5,7 @@ import NotificationFieldControl from './components/notification-field-control';
 import GutenaFormsNotificationMessageField from '../../../shared/components/GutenaFormsNotificationMessageField';
 import {
 	DEFAULT_ADMIN_NOTIFICATION_SUBJECT,
+	mergeNotificationWithDefaults,
 	sanitizeNotification,
 	shouldShowFromEmailWarning,
 } from './email-notifications-utils';
@@ -44,11 +45,15 @@ const EmailNotificationsEditView = ( {
 			return;
 		}
 
-		setDraft( { ...notification } );
-		setShowFromEmailWarning(
-			shouldShowFromEmailWarning( notification.from_email, formFields )
+		const nextDraft = mergeNotificationWithDefaults(
+			notification,
+			notificationDefaults || {}
 		);
-	}, [ notification, formFields ] );
+		setDraft( nextDraft );
+		setShowFromEmailWarning(
+			shouldShowFromEmailWarning( nextDraft.from_email, formFields )
+		);
+	}, [ notification, notificationDefaults, formFields ] );
 
 	if ( ! draft ) {
 		return null;

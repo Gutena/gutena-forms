@@ -164,8 +164,13 @@ const GutenaFormsNotificationMessageField = ( {
 
 		const editor = editorRef.current;
 
-		editor.innerHTML = value || '';
-		lastSyncedValue.current = value || '';
+		// Only push prop value into the DOM when it changed externally.
+		// Re-setting innerHTML on every keystroke resets the caret to the start
+		// and causes characters to appear in reverse order.
+		if ( lastSyncedValue.current !== value ) {
+			editor.innerHTML = value || '';
+			lastSyncedValue.current = value || '';
+		}
 
 		editor.addEventListener( 'keyup', checkActiveFormats );
 		editor.addEventListener( 'mouseup', checkActiveFormats );
