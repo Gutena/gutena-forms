@@ -817,7 +817,9 @@
           }
 
           &:focus {
-            box-shadow: none;
+            border-color: #0DA88C;
+            box-shadow: 0 0 0 1px #0DA88C;
+            outline: none;
           }
         }
 

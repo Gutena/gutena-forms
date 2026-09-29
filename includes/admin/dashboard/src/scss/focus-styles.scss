@@ -1,0 +1,77 @@
+$gutena-green: #0DA88C;
+$gutena-green-ring: 0 0 0 1px $gutena-green;
+
+.gutena-froms#gutena-forms__root {
+	// WordPress InputControl fields (text, email, number).
+	// WP core adds a blue outline on the backdrop — remove it and use Gutena green instead.
+	.components-input-control__container:focus-within .components-input-control__backdrop,
+	.components-input-control__container:focus-within:not(:has(:is(.components-input-control__prefix, .components-input-control__suffix):focus-within)) .components-input-control__backdrop,
+	.components-base-control.is-focused .components-input-control__backdrop {
+		border-color: $gutena-green !important;
+		box-shadow: $gutena-green-ring !important;
+		outline: none !important;
+		outline-offset: 0 !important;
+	}
+
+	// Inner WP inputs use a backdrop for the visible border — suppress duplicate rings.
+	.components-input-control__input:focus,
+	.components-input-control__input:focus-visible,
+	.components-number-control__input:focus,
+	.components-number-control__input:focus-visible {
+		border-color: transparent !important;
+		box-shadow: none !important;
+		outline: none !important;
+	}
+
+	// Native select dropdowns.
+	.components-select-control__input:focus {
+		border-color: $gutena-green !important;
+		box-shadow: $gutena-green-ring !important;
+		outline: none;
+	}
+
+	// Fallback for direct form controls (exclude WP component inner inputs).
+	input[type="text"]:focus:not(.components-input-control__input),
+	input[type="email"]:focus:not(.components-input-control__input),
+	input[type="number"]:focus:not(.components-input-control__input):not(.components-number-control__input),
+	input[type="password"]:focus:not(.components-input-control__input),
+	input[type="search"]:focus:not(.components-input-control__input),
+	input[type="url"]:focus:not(.components-input-control__input),
+	textarea:focus,
+	select:focus {
+		border-color: $gutena-green !important;
+		box-shadow: $gutena-green-ring !important;
+		outline: none;
+	}
+
+	// Checkbox and radio (WordPress + custom).
+	.components-checkbox-control__input:focus,
+	.components-radio-control__input:focus {
+		border-color: $gutena-green;
+		box-shadow: $gutena-green-ring;
+	}
+
+	.gutena-forms__radio-group-options:focus-within {
+		border-color: $gutena-green;
+		box-shadow: $gutena-green-ring;
+	}
+
+	// Toggle focus ring (keyboard accessibility).
+	.components-form-toggle__input:focus + .components-form-toggle__track {
+		box-shadow: 0 0 0 2px $gutena-green;
+	}
+
+	// Import/Export custom controls.
+	.gutena-forms__export-dropdown-trigger:focus {
+		border-color: $gutena-green !important;
+		box-shadow: $gutena-green-ring !important;
+		outline: none;
+	}
+
+	.gutena-forms__import-file-row input:focus,
+	.gutena-forms__import-file-input:focus {
+		border-color: $gutena-green !important;
+		box-shadow: $gutena-green-ring !important;
+		outline: none;
+	}
+}
