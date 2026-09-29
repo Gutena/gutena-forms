@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function(){
     class GutenaFormsAdmin {
     
         constructor() {
-            if ( 'undefined' !== typeof gutenaFormsAdmin && null !== gutenaFormsAdmin && '' !== gutenaFormsAdmin ) {
+            if ( 'undefined' !== typeof gutenaFormsNotice && null !== gutenaFormsNotice && '' !== gutenaFormsNotice ) {
                 setTimeout(() => {
                     this.dismissAdminNotice();
                 }, 100);
@@ -38,17 +38,17 @@ document.addEventListener("DOMContentLoaded", function(){
                         let notice = obj.getParents( this, '.gutena-forms-admin-notice' );
                         if ( ! obj.isEmpty( notice ) ) {
                             let notice_id = notice.getAttribute('id');
-                            fetch( gutenaFormsAdmin.ajax_url, {
+                            fetch( gutenaFormsNotice.ajax_url, {
                                 method: 'POST',
                                 credentials: 'same-origin', // <-- make sure to include credentials
                                 headers:{
                                     'Content-Type': 'application/x-www-form-urlencoded',
                                     'Accept': 'application/json',
-                                    'X-WP-Nonce' : gutenaFormsAdmin.nonce
+                                    'X-WP-Nonce' : gutenaFormsNotice.nonce
                                 },
                                 body: new URLSearchParams({
-                                    action:gutenaFormsAdmin.dismiss_notice_action,
-                                    gfnonce:gutenaFormsAdmin.nonce,
+                                    action:gutenaFormsNotice.dismiss_notice_action,
+                                    gfnonce:gutenaFormsNotice.nonce,
                                     notice_id:notice_id
                                 }),
                             } )

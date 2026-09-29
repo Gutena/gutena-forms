@@ -110,6 +110,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts_admin' ) );
 			add_action( 'current_screen', array( $this, 'redirect_when_old_screen' ) );
+			add_action( 'in_admin_header', array( $this, 'hide_admin_notices_on_dashboard' ), 0 );
 
 			if ( ! is_gutena_forms_pro( false ) ) {
 				add_action( 'admin_notices', array( $this, 'view_dashboard_notice' ) );
@@ -277,9 +278,27 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		}
 
 		/**
+		 * Remove all admin notices on the Gutena Forms dashboard screen.
+		 */
+		public function hide_admin_notices_on_dashboard() {
+			if ( ! Gutena_Forms_Admin_Helper::is_gutena_forms_dashboard_screen() ) {
+				return;
+			}
+
+			remove_all_actions( 'admin_notices' );
+			remove_all_actions( 'all_admin_notices' );
+			remove_all_actions( 'network_admin_notices' );
+			remove_all_actions( 'user_admin_notices' );
+		}
+
+		/**
 		 * View dashboard notice
 		 */
 		public function view_dashboard_notice() {
+			if ( Gutena_Forms_Admin_Helper::is_gutena_forms_dashboard_screen() ) {
+				return;
+			}
+
 			$notice_id = 'gutena-forms-view-dashboard-notice';
 			$notice    = $this->get_notices_and_status( $notice_id );
 			if ( false === $notice['dismissed'] ) {
@@ -298,19 +317,28 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		 * Enqueue admin scripts
 		 */
 		public function enqueue_scripts_admin() {
-			if ( is_gutena_forms_pro() ) {
-				wp_enqueue_script( 'gutena-forms-admin', GUTENA_FORMS_PLUGIN_URL . 'assets/minify/js/admin.min.js', array(), GUTENA_FORMS_VERSION, true );
-			}
+			$notice_id   = 'gutena-forms-view-dashboard-notice';
+			$show_notice = ! is_gutena_forms_pro( false ) && false === $this->get_notices_and_status( $notice_id )['dismissed'];
 
-			wp_localize_script(
-				'gutena-forms-admin',
-				'gutenaFormsAdmin',
-				array(
-					'dismiss_notice_action' => 'gutena_forms_dismiss_notice',
-					'ajax_url'              => admin_url( 'admin-ajax.php' ),
-					'nonce'                 => wp_create_nonce( 'gutena_Forms' ),
-				)
-			);
+			if ( $show_notice ) {
+				wp_register_script(
+					'gutena-forms-notice',
+					GUTENA_FORMS_PLUGIN_URL . 'assets/minify/js/admin.min.js',
+					array(),
+					GUTENA_FORMS_VERSION,
+					true
+				);
+				wp_localize_script(
+					'gutena-forms-notice',
+					'gutenaFormsNotice',
+					array(
+						'dismiss_notice_action' => 'gutena_forms_dismiss_notice',
+						'ajax_url'              => admin_url( 'admin-ajax.php' ),
+						'nonce'                 => wp_create_nonce( 'gutena_Forms' ),
+					)
+				);
+				wp_enqueue_script( 'gutena-forms-notice' );
+			}
 
 			$assets_file = GUTENA_FORMS_DIR_PATH . 'includes/admin/dashboard/build/index.asset.php';
 			if ( file_exists( $assets_file ) ) {
