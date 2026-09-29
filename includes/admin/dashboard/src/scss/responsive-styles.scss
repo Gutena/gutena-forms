@@ -42,3 +42,448 @@
     }
   }
 }
+
+@media ( max-width: 835px ) {
+	// Remove WP admin border/padding that interferes with sidebar
+	#wpcontent {
+		padding-left: 0 !important;
+		border-left: none !important;
+		outline: none !important;
+	}
+
+	#adminmenuback,
+	#adminmenuwrap {
+		z-index: 1 !important;
+	}
+
+	.gutena-froms#gutena-forms__root {
+		overflow-x: hidden;
+
+		// ── Settings layout: sidebar collapse/expand ──
+		.gutena-froms__settings-layout {
+
+			// Sidebar toggle button (fixed bottom-right hamburger)
+			.gutena-forms__settings-sidebar-toggle {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: fixed;
+				bottom: 20px;
+				right: 20px;
+				z-index: 100000001;
+				width: 44px;
+				height: 44px;
+				border-radius: 50%;
+				background: #0DA88C;
+				color: #FFFFFF;
+				border: none;
+				cursor: pointer;
+				box-shadow: 0 4px 12px rgba(13, 168, 140, 0.4);
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+				padding: 0;
+
+				&:hover {
+					transform: scale(1.05);
+					box-shadow: 0 6px 16px rgba(13, 168, 140, 0.5);
+				}
+
+				&:focus {
+					outline: none;
+					box-shadow: 0 0 0 3px rgba(13, 168, 140, 0.3);
+				}
+
+				svg {
+					transition: transform 0.25s ease;
+				}
+
+				&.is-open {
+					background: #E2E2E2;
+					color: #424D55;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+					svg {
+						transform: rotate(180deg);
+					}
+				}
+			}
+
+			// Overlay behind sidebar
+			.gutena-forms__settings-sidebar-overlay {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.5);
+				z-index: 100000000;
+				opacity: 0;
+				transition: opacity 0.25s ease;
+
+				&.is-open {
+					display: block;
+					opacity: 1;
+				}
+			}
+
+			// Sidebar wrapper: slides in from left
+			.gutena-forms__settings-sidebar-wrapper {
+				float: none;
+				position: fixed;
+				top: 32px;
+				left: 0;
+				width: 260px;
+				bottom: 0;
+				z-index: 100000000;
+				background: #ffffff;
+				transform: translateX(-100%);
+				transition: transform 0.25s ease;
+				overflow-y: auto;
+				box-shadow: none;
+				outline: none;
+				border: none;
+
+				.gutena-forms__left-menu-navigation {
+					width: 100%;
+					min-height: 100%;
+					border-right: none;
+
+					.gutena-forms__accordion-header {
+						width: 100%;
+
+						// icon + title stay on one line
+						> div:first-child {
+							display: flex;
+							align-items: center;
+							min-width: 0;
+							overflow: hidden;
+						}
+					}
+
+					.gutena-forms__accordion-items {
+						padding: 0 10px 0 18px;
+					}
+
+					.gutena-forms__accordion-item {
+						a {
+							width: auto;
+							padding: 0 6px;
+						}
+					}
+				}
+
+				&.is-open {
+					transform: translateX(0);
+					box-shadow: 4px 0 16px rgba(0, 0, 0, 0.1);
+				}
+			}
+
+			// Main content takes full width
+			.gutena-forms__main-content-container {
+				float: none;
+				width: 100%;
+
+				.gutena-forms__meta-box-container {
+					width: 100%;
+
+					h2 {
+						width: 100%;
+					}
+				}
+			}
+		}
+
+		.gutena-forms__page-layout-wrapper {
+			padding: 20px;
+		}
+
+		.gutena-forms__field-container {
+			.components-base-control__field {
+				width: 100%;
+			}
+		}
+
+		// Prevent horizontal overflow on main content
+		.gutena-forms__main-content-container {
+			overflow-x: hidden;
+			overflow-wrap: break-word;
+
+			.gutena-forms__container {
+				padding: 15px;
+				overflow-x: hidden;
+			}
+		}
+
+		.gutena-forms__page-title {
+			padding-right: 0;
+			word-break: break-word;
+		}
+
+		.gutena-forms__settings-meta-box-desc {
+			word-break: break-word;
+		}
+
+		// ── Integrations grid (free + pro) ──
+		.gutena-forms__integrations {
+			.gutena-forms__integration {
+				width: 100%;
+				margin-right: 0;
+				height: auto;
+				min-height: 120px;
+				box-sizing: border-box;
+			}
+		}
+
+		// ── Pro list wrapper (Status, Tags, User Access) ──
+		.gutena-forms__pro-wrapper {
+			.gutena-forms__pro-single-list-wrapper {
+				width: 100%;
+				flex-wrap: wrap;
+				gap: 8px;
+				box-sizing: border-box;
+			}
+		}
+
+		// ── User Access: stack profile and select on small screens ──
+		.gutena-forms__user-profile {
+			span {
+				display: block;
+				margin-left: 0;
+				margin-top: 2px;
+			}
+		}
+
+		// ── Select controls full width ──
+		.components-select-control__input,
+		.components-base-control__field {
+			max-width: 100%;
+		}
+
+		// ── Entries / Datatable responsive ──
+		.gutena-forms__data-table-container {
+			padding: 15px;
+
+			// Filter header: allow wrapping
+			.gutena-forms__datatable-header {
+				flex-wrap: wrap;
+				gap: 10px;
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			// Each filter item full width when wrapping
+			.display-inline-block {
+				display: block !important;
+				width: 100%;
+				margin-left: 0 !important;
+			}
+
+			// Bulk action row
+			.gutena-forms__bulk-action-container {
+				display: flex;
+				gap: 8px;
+				align-items: center;
+				flex-wrap: wrap;
+				width: 100%;
+			}
+
+			// Form filter select: full width
+			.components-select-control {
+				width: 100% !important;
+
+				select {
+					width: 100% !important;
+					height: 40px;
+				}
+			}
+
+			// Search boxes full width
+			.gutena-forms__search-box {
+				min-width: 0;
+				width: 100%;
+				margin-right: 0;
+
+				input {
+					width: 100% !important;
+				}
+			}
+		}
+
+		// ── Single entry page: stack columns ──
+		.gutena-forms__entry-screen {
+			.gutena-forms__entry-screen-container {
+				flex-direction: column;
+				gap: 14px;
+			}
+
+			.gutena-forms__col-70,
+			.gutena-forms__col-30 {
+				width: 100%;
+			}
+
+			// Entry data rows: stack label/value
+			.gutena-forms__entry-data {
+				.gutena-forms__entry-data-row {
+					flex-direction: column;
+					gap: 4px;
+					padding: 8px 12px;
+
+					.label,
+					.value {
+						width: 100%;
+						text-align: left;
+					}
+				}
+			}
+		}
+
+		// ── Header ──
+		.gutena-forms__header-container {
+			padding: 0 12px;
+
+			.gutena-forms_icon-menu-container {
+				.gutena-forms_icon-menu {
+					margin-right: 8px;
+
+					img {
+						max-height: 32px;
+						width: auto;
+					}
+				}
+
+				// Dropdown menu: hidden by default, revealed via .is-open.
+				.gutena-forms__header-menu {
+					display: none;
+					position: absolute;
+					top: 100%;
+					left: 0;
+					right: 0;
+					background: #FFFFFF;
+					border-bottom: 0.5px solid #E2E2E2;
+					box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+					z-index: 100;
+
+					&.is-open {
+						display: block;
+						animation: gutena-forms-menu-slide 0.18s ease-out;
+					}
+
+					ul {
+						li {
+							display: block;
+							width: 100%;
+							height: auto;
+
+							a {
+								display: block;
+								padding: 12px 20px;
+								line-height: 1.4;
+								height: auto;
+								border-bottom: 1px solid #F1F1F1;
+
+								&:last-child {
+									border-bottom: 0;
+								}
+
+								&.active {
+									height: auto;
+									border-bottom: 1px solid #F1F1F1;
+									border-left: 3px solid #0DA88C;
+									padding-left: 17px;
+									background: rgba(13, 168, 140, 0.04);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.gutena-forms__header-right {
+				// Show the burger toggle on small screens.
+				.gutena-forms__burger-toggle {
+					display: inline-flex;
+				}
+
+				// Slightly tighten the upgrade button on small screens.
+				.gutena-forms__upgrade-button {
+					padding: 4px 10px;
+					font-size: 12px;
+
+					svg {
+						margin-right: 4px;
+					}
+				}
+			}
+		}
+	}
+}
+
+// Desktop: fix overflow on Settings pages (Manage Status, Manage Tags, User Access)
+@media ( min-width: 836px ) and ( max-width: 1100px ) {
+	.gutena-froms#gutena-forms__root {
+		.gutena-forms__settings-layout {
+			.gutena-forms__main-content-container {
+				.gutena-forms__settings-meta-box {
+					overflow: hidden;
+
+					.gutena-forms__pro-wrapper {
+						.gutena-forms__pro-single-list-wrapper {
+							.gutena-forms__user-profile {
+								min-width: 0;
+								overflow: hidden;
+
+								span {
+									display: block;
+									margin-left: 0;
+									margin-top: 2px;
+								}
+							}
+
+							.components-select-control {
+								min-width: 0;
+								max-width: 160px;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// On very narrow screens, drop the upgrade button's icon margin so the
+// burger + logo + upgrade all fit comfortably.
+@media ( max-width: 420px ) {
+	.gutena-froms#gutena-forms__root {
+		.gutena-forms__header-container {
+			.gutena-forms__header-right {
+				.gutena-forms__upgrade-button {
+					svg {
+						margin-right: 0;
+					}
+				}
+			}
+		}
+
+		.gutena-forms__page-layout-wrapper {
+			padding: 12px;
+		}
+
+		.gutena-forms__main-content-container {
+			.gutena-forms__container {
+				padding: 10px;
+			}
+		}
+	}
+}
+
+@keyframes gutena-forms-menu-slide {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

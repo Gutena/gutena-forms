@@ -1,6 +1,5 @@
 @import "./animation";
 @import "./old-styles";
-@import "./responsive-styles";
 
 .gutena-froms#gutena-forms__root {
 
@@ -82,6 +81,7 @@
     padding: 0 20px;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 
     .gutena-forms_icon-menu-container {
       display: flex;
@@ -138,6 +138,52 @@
       }
     }
 
+    .gutena-forms__header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      // Burger toggle button. Hidden on desktop, shown on small screens
+      // via responsive-styles.scss.
+      .gutena-forms__burger-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: 0;
+        padding: 6px;
+        margin: 0;
+        cursor: pointer;
+        color: #424D55;
+        width: 36px;
+        height: 36px;
+        border-radius: 4px;
+        transition: background-color 0.15s ease;
+
+        &:hover,
+        &:focus {
+          background-color: rgba(13, 168, 140, 0.08);
+          outline: none;
+          box-shadow: none;
+        }
+
+        svg {
+          display: block;
+          width: 22px;
+          height: 22px;
+          fill: currentColor;
+        }
+
+        svg path {
+          fill: currentColor;
+        }
+
+        svg path[stroke] {
+          fill: none;
+        }
+      }
+    }
+
     .gutena-forms__upgrade-button {
       border: 0.603px solid #1AE8C2;
       background: linear-gradient(90deg, #1AE8C2 -51.51%, #0E826D 100%), linear-gradient(270deg, #E2A446 0%, #FED38E 100%);
@@ -188,8 +234,22 @@
       clear: both;
     }
 
+    .gutena-forms__settings-sidebar-toggle {
+      display: none;
+    }
+
+    .gutena-forms__settings-sidebar-overlay {
+      display: none;
+    }
+
+    .gutena-forms__settings-sidebar-wrapper {
+      float: left;
+      margin-top: -1px;
+    }
+
     .gutena-forms__main-content-container {
       width: calc( 100% - 210px - 20px );
+      overflow: hidden;
 
       .gutena-forms__container {
         padding: 20px;
@@ -210,9 +270,12 @@
 
       .gutena-forms__meta-box-container {
         width: 760px;
+        max-width: 100%;
+        overflow: hidden;
 
         h2 {
           width: 760px;
+          max-width: 100%;
           display: flex;
           justify-content: space-between;
 
@@ -332,6 +395,7 @@
         width: 100%;
         height: 100%;
         position: relative;
+        overflow: hidden;
 
         .gutena-forms__pro-description {
           color: #424D55;
@@ -341,11 +405,13 @@
 
         .gutena-forms__pro-single-list-wrapper {
           display: flex;
-          width: 450px;
+          width: 100%;
           justify-content: space-between;
           align-items: center;
           padding: 10px 20px;
           margin-top: 10px;
+          box-sizing: border-box;
+          min-width: 0;
 
           border-radius: 4px;
           border-color: #cccccc;
@@ -368,21 +434,40 @@
           .gutena-forms__pro-single-list {
             display: flex;
             align-items: center;
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
 
             .gutena-forms__pro-single-list-title {
               color: #424D55;
               font-size: 12px;
               font-weight: 500;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              min-width: 0;
             }
 
             .gutena-forms__pro-single-list-icon {
+              flex-shrink: 0;
               svg {
                 margin: 0 15px -4px 0;
               }
             }
           }
 
+          .gutena-forms__pro-single-tag-delete-icon {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+          }
+
           .gutena-forms__user-profile {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
             span {
               display: inline-block;
               margin-left: 5px;
@@ -1417,3 +1502,8 @@
     }
   }
 }
+
+// Responsive styles imported last so media-query overrides win the cascade
+// against the base rules above (which share the same specificity via the
+// #gutena-forms__root ID prefix).
+@import "./responsive-styles";

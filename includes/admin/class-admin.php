@@ -89,6 +89,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/export/class-export.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/rest-api/class-rest-api.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/settings-migrator/class-settings-migrator.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'vendor/smtp/class-smtp.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/rest-api/class-rest-api-controller.php';
 		}
 
@@ -317,6 +318,13 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		 * Enqueue admin scripts
 		 */
 		public function enqueue_scripts_admin() {
+			wp_enqueue_style(
+				'gutena-forms-admin-menu',
+				GUTENA_FORMS_PLUGIN_URL . 'assets/css/admin-menu.css',
+				array(),
+				GUTENA_FORMS_VERSION
+			);
+
 			$notice_id   = 'gutena-forms-view-dashboard-notice';
 			$show_notice = ! is_gutena_forms_pro( false ) && false === $this->get_notices_and_status( $notice_id )['dismissed'];
 
