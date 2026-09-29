@@ -402,6 +402,10 @@
 			position: relative;
 			width: 100%;
 			max-width: 574px;
+
+			&:has(.gutena-forms__export-dropdown-menu) {
+				z-index: 100;
+			}
 		}
 
 		.gutena-forms__export-dropdown-trigger {
@@ -433,7 +437,7 @@
 
 		.gutena-forms__export-dropdown-menu {
 			position: absolute;
-			z-index: 20;
+			z-index: 100;
 			top: calc(100% + 4px);
 			left: 0;
 			right: 0;
@@ -509,6 +513,34 @@
 			font-size: 12px;
 			cursor: pointer;
 			color: #000;
+		}
+	}
+
+	// Allow export dropdown menus to escape the settings card.
+	// Match .gutena-froms__settings-layout (actual DOM class) and beat nested overflow:hidden specificity.
+	.gutena-froms__settings-layout .gutena-forms__main-content-container:has(.gutena-forms__export),
+	.gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__meta-box-container:has(.gutena-forms__export),
+	.gutena-froms__settings-layout .gutena-forms__main-content-container .gutena-forms__settings-meta-box:has(.gutena-forms__export) {
+		overflow: visible !important;
+	}
+
+	.gutena-forms__export-dropdown.is-open-up .gutena-forms__export-dropdown-menu {
+		top: auto;
+		bottom: calc(100% + 4px);
+	}
+
+	@media (max-width: 835px) {
+		&:has(.gutena-forms__export) {
+			overflow-x: hidden;
+			overflow-y: visible;
+		}
+
+		.gutena-froms__settings-layout .gutena-forms__main-content-container:has(.gutena-forms__export) {
+			overflow: visible !important;
+
+			.gutena-forms__container {
+				overflow: visible !important;
+			}
 		}
 	}
 }

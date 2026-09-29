@@ -43,6 +43,7 @@ const GutenaFormsExport = () => {
 	const [ exportFormat, setExportFormat ] = useState( EXPORT_FORMAT_IDS[ 1 ] );
 	const [ selectedFormIds, setSelectedFormIds ] = useState( [] );
 	const [ formsDropdownOpen, setFormsDropdownOpen ] = useState( false );
+	const [ formsDropdownOpenUp, setFormsDropdownOpenUp ] = useState( false );
 	const [ entriesDropdownOpen, setEntriesDropdownOpen ] = useState( false );
 	const [ exportingEntries, setExportingEntries ] = useState( false );
 	const [ exportingForms, setExportingForms ] = useState( false );
@@ -98,6 +99,40 @@ const GutenaFormsExport = () => {
 			cancelled = true;
 		};
 	}, [ entriesFormId ] );
+
+	const DROPDOWN_MENU_MAX_HEIGHT = 220;
+
+	useEffect( () => {
+		if ( ! formsDropdownOpen || ! formsDropdownRef.current ) {
+			setFormsDropdownOpenUp( false );
+			return;
+		}
+
+		const updateDropdownDirection = () => {
+			if ( ! formsDropdownRef.current ) {
+				return;
+			}
+
+			const rect = formsDropdownRef.current.getBoundingClientRect();
+			const spaceBelow = window.innerHeight - rect.bottom;
+			setFormsDropdownOpenUp(
+				spaceBelow < DROPDOWN_MENU_MAX_HEIGHT + 8
+			);
+		};
+
+		updateDropdownDirection();
+		window.addEventListener( 'resize', updateDropdownDirection );
+		window.addEventListener( 'scroll', updateDropdownDirection, true );
+
+		return () => {
+			window.removeEventListener( 'resize', updateDropdownDirection );
+			window.removeEventListener(
+				'scroll',
+				updateDropdownDirection,
+				true
+			);
+		};
+	}, [ formsDropdownOpen ] );
 
 	useEffect( () => {
 		const handleOutsideClick = ( event ) => {
@@ -412,7 +447,9 @@ const GutenaFormsExport = () => {
 				</div>
 
 				<div
-					className="gutena-forms__export-dropdown gutena-forms__export-multi"
+					className={ `gutena-forms__export-dropdown gutena-forms__export-multi${
+						formsDropdownOpenUp ? ' is-open-up' : ''
+					}` }
 					ref={ formsDropdownRef }
 				>
 					<button
