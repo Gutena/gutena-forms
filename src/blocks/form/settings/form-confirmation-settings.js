@@ -14,7 +14,6 @@ const FormConfirmationSettings = ( {
 	settings,
 	setAttributes,
 	legacyAttrs,
-	formFields = [],
 } ) => {
 	const resolved = resolveFormConfirmationState( settings, legacyAttrs );
 	const confirmationDefaults = resolved.defaults;
@@ -129,7 +128,6 @@ const FormConfirmationSettings = ( {
 				isOpen={ isModalOpen }
 				initialConfirmation={ modalConfirmation }
 				confirmationDefaults={ confirmationDefaults }
-				formFields={ formFields }
 				onSave={ handleModalSave }
 				onClose={ handleModalClose }
 			/>

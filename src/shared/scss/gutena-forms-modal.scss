@@ -1,0 +1,12 @@
+$gf-modal-title-color: #1e1e1e;
+
+// Higher specificity so WP sidebar h2 styles do not override modal titles.
+[class*="gutena-forms-"][class*="-modal"] {
+	h2[class*="-modal__title"] {
+		color: $gf-modal-title-color;
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0;
+	}
+}

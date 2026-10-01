@@ -1329,7 +1329,6 @@ export default function Edit( props ) {
 							afterSubmitHide,
 							redirectUrl,
 						} }
-						formFields={ formFields }
 					/>
 
 				<ValidationMessagesSettings

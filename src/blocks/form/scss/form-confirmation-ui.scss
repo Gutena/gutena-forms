@@ -37,10 +37,13 @@ $gf-fc-danger: #d70404;
 		}
 
 		.components-form-toggle.is-checked .components-form-toggle__track {
-			background-color: var(
-				--wp-components-color-accent,
-				var(--wp-admin-theme-color, #3858e9)
-			);
+			background-color: $gf-fc-primary;
+			border-color: $gf-fc-primary;
+		}
+
+		.components-form-toggle__input:focus + .components-form-toggle__track {
+			box-shadow: 0 0 0 1px #fff, 0 0 0 3px $gf-fc-primary;
+			outline: none;
 		}
 	}
 
@@ -111,14 +114,6 @@ $gf-fc-danger: #d70404;
 		gap: 12px;
 		justify-content: space-between;
 		padding: 20px 20px 0;
-	}
-
-	&__title {
-		color: $gf-fc-heading;
-		font-size: 16px;
-		font-weight: 700;
-		line-height: 1.2;
-		margin: 0;
 	}
 
 	&__close.components-button {
@@ -426,11 +421,33 @@ $gf-fc-danger: #d70404;
 			gap: 10px;
 			margin: 0;
 
-			input {
-				accent-color: $gf-fc-primary;
+			input[type="radio"] {
+				appearance: none;
+				-webkit-appearance: none;
+				background: #fff;
+				border: 0.583px solid #a7aaad;
+				border-radius: 50%;
+				cursor: pointer;
+				flex-shrink: 0;
 				height: 14px;
 				margin: 0;
 				width: 14px;
+
+				&:checked {
+					background-color: #fff;
+					border-color: $gf-fc-primary;
+					box-shadow: inset 0 0 0 3.5px $gf-fc-primary;
+				}
+
+				&:focus-visible {
+					box-shadow: 0 0 0 1px #fff, 0 0 0 3px $gf-fc-primary;
+					outline: none;
+				}
+
+				&:disabled {
+					cursor: not-allowed;
+					opacity: 0.6;
+				}
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import GutenaFormsNotificationMergeTagPopover from '../../../../shared/components/GutenaFormsNotificationMergeTagPopover';
 import {
 	BoldIcon,
 	ItalicIcon,
@@ -43,68 +42,12 @@ const FormConfirmationMessageField = ( {
 	value,
 	onChange,
 	placeholder = '',
-	formTagItems = [],
 	disabled = false,
 } ) => {
 	const [ viewMode, setViewMode ] = useState( 'visual' );
 	const [ activeFormats, setActiveFormats ] = useState( {} );
 	const editorRef = useRef( null );
 	const lastSyncedValue = useRef( null );
-
-	const insertAtCursor = useCallback(
-		( text ) => {
-			if ( disabled ) {
-				return;
-			}
-
-			if ( 'code' === viewMode ) {
-				const element = document.getElementById( `${ id }-code` );
-				const currentValue = value || '';
-				const start =
-					element && typeof element.selectionStart === 'number'
-						? element.selectionStart
-						: currentValue.length;
-				const end =
-					element && typeof element.selectionEnd === 'number'
-						? element.selectionEnd
-						: start;
-				const nextValue = `${ currentValue.slice(
-					0,
-					start
-				) }${ text }${ currentValue.slice( end ) }`;
-				onChange( nextValue );
-				requestAnimationFrame( () => {
-					if ( element ) {
-						element.focus();
-						const cursor = start + text.length;
-						element.setSelectionRange( cursor, cursor );
-					}
-				} );
-				return;
-			}
-
-			if ( editorRef.current ) {
-				editorRef.current.focus();
-				const selection = window.getSelection();
-				if ( selection.rangeCount > 0 ) {
-					const range = selection.getRangeAt( 0 );
-					range.deleteContents();
-					const textNode = document.createTextNode( text );
-					range.insertNode( textNode );
-					range.setStartAfter( textNode );
-					range.setEndAfter( textNode );
-					selection.removeAllRanges();
-					selection.addRange( range );
-				} else {
-					editorRef.current.textContent += text;
-				}
-				const html = editorRef.current.innerHTML;
-				lastSyncedValue.current = html;
-				onChange( html );
-			}
-		},
-		[ disabled, id, onChange, value, viewMode ]
-	);
 
 	const checkActiveFormats = useCallback( () => {
 		setActiveFormats( {
@@ -154,8 +97,13 @@ const FormConfirmationMessageField = ( {
 
 		const editor = editorRef.current;
 
-		editor.innerHTML = value || '';
-		lastSyncedValue.current = value || '';
+		// Only push prop value into the DOM when it changed externally.
+		// Re-setting innerHTML on every keystroke resets the caret to the start
+		// and causes characters to appear in reverse order.
+		if ( lastSyncedValue.current !== value ) {
+			editor.innerHTML = value || '';
+			lastSyncedValue.current = value || '';
+		}
 
 		editor.addEventListener( 'keyup', checkActiveFormats );
 		editor.addEventListener( 'mouseup', checkActiveFormats );
@@ -223,14 +171,6 @@ const FormConfirmationMessageField = ( {
 					>
 						{ __( 'Code', 'gutena-forms' ) }
 					</button>
-					<GutenaFormsNotificationMergeTagPopover
-						variant="form-tags"
-						tagItems={ formTagItems }
-						onInsert={ insertAtCursor }
-						buttonLabel={ __( 'Form tags', 'gutena-forms' ) }
-						popoverTitle={ __( 'Form input Tags', 'gutena-forms' ) }
-						disabled={ disabled }
-					/>
 				</div>
 			</div>
 

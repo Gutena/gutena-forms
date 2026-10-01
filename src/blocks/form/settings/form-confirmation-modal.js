@@ -12,13 +12,10 @@ import {
 	sanitizeConfirmation,
 	validateConfirmationForSave,
 } from './form-confirmation-utils';
-import { getConfirmationTagItems } from './form-confirmation-merge-tags';
-
 const FormConfirmationModal = ( {
 	isOpen,
 	initialConfirmation,
 	confirmationDefaults,
-	formFields = [],
 	onSave,
 	onClose,
 } ) => {
@@ -71,8 +68,6 @@ const FormConfirmationModal = ( {
 	if ( ! isOpen || ! draft ) {
 		return null;
 	}
-
-	const tagItems = getConfirmationTagItems( formFields );
 
 	const updateDraft = ( key, value ) => {
 		setDraft( ( current ) => ( {
@@ -166,7 +161,6 @@ const FormConfirmationModal = ( {
 										updateDraft( 'successMessage', value )
 									}
 									placeholder={ confirmationDefaults?.successMessage }
-									formTagItems={ tagItems }
 								/>
 							</div>
 
@@ -179,7 +173,6 @@ const FormConfirmationModal = ( {
 										updateDraft( 'errorMessage', value )
 									}
 									placeholder={ confirmationDefaults?.errorMessage }
-									formTagItems={ tagItems }
 								/>
 							</div>
 
