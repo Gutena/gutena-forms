@@ -105,9 +105,10 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'desc'  => $multi_help,
 						'value' => $this->get_setting_value( 'send_email_to', $defaults ),
 						'attrs' => array(
-							'required'   => true,
-							'multiple'   => true,
-							'merge_tags' => $recipient_tags,
+							'required'    => true,
+							'multiple'    => true,
+							'merge_tags'  => $recipient_tags,
+							'placeholder' => $defaults['send_email_to'],
 						),
 					),
 					array(
@@ -164,8 +165,9 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'desc'  => $multi_help,
 						'value' => $this->get_setting_value( 'cc', $defaults ),
 						'attrs' => array(
-							'multiple'   => true,
-							'merge_tags' => $recipient_tags,
+							'multiple'    => true,
+							'merge_tags'  => $recipient_tags,
+							'placeholder' => $defaults['send_email_to'],
 						),
 					),
 					array(
@@ -175,8 +177,9 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'desc'  => $multi_help,
 						'value' => $this->get_setting_value( 'bcc', $defaults ),
 						'attrs' => array(
-							'multiple'   => true,
-							'merge_tags' => $recipient_tags,
+							'multiple'    => true,
+							'merge_tags'  => $recipient_tags,
+							'placeholder' => $defaults['send_email_to'],
 						),
 					),
 					array(
@@ -186,8 +189,9 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'desc'  => $multi_help,
 						'value' => $this->get_setting_value( 'reply_to', $defaults ),
 						'attrs' => array(
-							'multiple'   => true,
-							'merge_tags' => $recipient_tags,
+							'multiple'    => true,
+							'merge_tags'  => $recipient_tags,
+							'placeholder' => $defaults['send_email_to'],
 						),
 					),
 					array(

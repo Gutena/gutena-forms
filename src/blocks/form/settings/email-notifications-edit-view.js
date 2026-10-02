@@ -5,6 +5,9 @@ import NotificationFieldControl from './components/notification-field-control';
 import GutenaFormsNotificationMessageField from '../../../shared/components/GutenaFormsNotificationMessageField';
 import {
 	DEFAULT_ADMIN_NOTIFICATION_SUBJECT,
+	DEFAULT_FROM_EMAIL,
+	DEFAULT_FROM_NAME,
+	DEFAULT_SEND_EMAIL_TO,
 	mergeNotificationWithDefaults,
 	sanitizeNotification,
 	shouldShowFromEmailWarning,
@@ -113,6 +116,7 @@ const EmailNotificationsEditView = ( {
 				label={ __( 'Send Email To', 'gutena-forms' ) }
 				value={ draft.send_email_to }
 				onChange={ ( value ) => updateDraft( 'send_email_to', value ) }
+				placeholder={ DEFAULT_SEND_EMAIL_TO }
 				required
 				mergeTags={ recipientTags }
 				helpText={ MULTI_VALUE_HELP }
@@ -142,6 +146,7 @@ const EmailNotificationsEditView = ( {
 				label={ __( 'From Name', 'gutena-forms' ) }
 				value={ draft.from_name }
 				onChange={ ( value ) => updateDraft( 'from_name', value ) }
+				placeholder={ DEFAULT_FROM_NAME }
 				required
 				mergeTags={ contentTags }
 			/>
@@ -152,6 +157,7 @@ const EmailNotificationsEditView = ( {
 					label={ __( 'From Email', 'gutena-forms' ) }
 					value={ draft.from_email }
 					onChange={ ( value ) => updateDraft( 'from_email', value ) }
+					placeholder={ DEFAULT_FROM_EMAIL }
 					required
 					mergeTags={ recipientTags }
 					helpText={ FROM_EMAIL_HELP }
@@ -173,6 +179,7 @@ const EmailNotificationsEditView = ( {
 				label={ __( 'CC', 'gutena-forms' ) }
 				value={ draft.cc }
 				onChange={ ( value ) => updateDraft( 'cc', value ) }
+				placeholder={ DEFAULT_SEND_EMAIL_TO }
 				mergeTags={ recipientTags }
 				helpText={ MULTI_VALUE_HELP }
 			/>
@@ -182,6 +189,7 @@ const EmailNotificationsEditView = ( {
 				label={ __( 'BCC', 'gutena-forms' ) }
 				value={ draft.bcc }
 				onChange={ ( value ) => updateDraft( 'bcc', value ) }
+				placeholder={ DEFAULT_SEND_EMAIL_TO }
 				mergeTags={ recipientTags }
 				helpText={ MULTI_VALUE_HELP }
 			/>
@@ -191,6 +199,7 @@ const EmailNotificationsEditView = ( {
 				label={ __( 'Reply To', 'gutena-forms' ) }
 				value={ draft.reply_to }
 				onChange={ ( value ) => updateDraft( 'reply_to', value ) }
+				placeholder={ DEFAULT_SEND_EMAIL_TO }
 				mergeTags={ recipientTags }
 				helpText={ MULTI_VALUE_HELP }
 			/>

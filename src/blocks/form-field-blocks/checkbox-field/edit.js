@@ -134,7 +134,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			<div { ...blockProps }>
 				<span className="heading-input-label-gutena">
 					{ fieldName }
-					{ isRequired ? ' *' : '' }
+					{ isRequired ? <span className="gutena-forms-required-mark" aria-hidden="true"> *</span> : null }
 				</span>
 				<div className={ fieldClasses }>
 					{ Array.isArray( selectOptions ) &&

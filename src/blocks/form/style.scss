@@ -5,6 +5,8 @@
  * Replace them with your own styles or remove the file completely.
  */
 
+@import "../../shared/scss/form-notice";
+
 .wp-block-gutena-forms {
 
 	/*Inside row make image block flex for fix alignment issue*/
@@ -41,8 +43,13 @@
 		font-weight: var(--wp--gutena-forms--label-font-weight);
 	}
 
+	.gutena-forms-required-mark {
+		color: #c51919;
+	}
+
 	.gutena-forms-field {
 		color: var(--wp--gutena-forms--label-color);
+		font-family: inherit;
 		/*Background color not for radio, checkbox */
 		&:not(.checkbox-field):not(.radio-field):not(.optin-field) {
 			background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
@@ -264,21 +271,21 @@
 		Placeholder styles : start
 	**********************************/
 	.gutena-forms-field::-webkit-input-placeholder { /* Edge */
-		color: var(--wp--gutena-forms--placeholder-color);
+		color: var(--wp--gutena-forms--placeholder-color, #808080);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
 	}
 
 	.gutena-forms-field:-ms-input-placeholder { /* Internet Explorer */
-		color: var(--wp--gutena-forms--placeholder-color);
+		color: var(--wp--gutena-forms--placeholder-color, #808080);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
 	}
 
 	.gutena-forms-field::placeholder, .gutena-forms-placeholder {
-		color: var(--wp--gutena-forms--placeholder-color);
+		color: var(--wp--gutena-forms--placeholder-color, #808080);
 		font-size: var(--wp--gutena-forms--placeholder-font-size);
 		line-height: var(--wp--gutena-forms--placeholder-line-height);
 		font-weight: var(--wp--gutena-forms--placeholder-font-weight);
@@ -365,8 +372,8 @@
 	&:not(.input-box-border-bottom-only) .wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-rating-field):not(.gutena-forms-optin-field) {
 		border-style: solid;
 		border-width: var(--wp--gutena-forms--input-border-width, 1px );
-		border-color: var(--wp--gutena-forms--input-border-color, #D7DBE7);
-		border-radius: var(--wp--gutena-forms--input-border-radius, 0px );
+		border-color: var(--wp--gutena-forms--input-border-color, #DADADA);
+		border-radius: var(--wp--gutena-forms--input-border-radius, 8px );
 
 		&:focus-within {
 			width: 100%;
@@ -434,7 +441,7 @@
 
 		&.display-error {
 			.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-rating-field):not(.gutena-forms-optin-field) {
-				border-color: var(--wp--gutena-forms--input-focus-border-color, var(--wp--preset--color--primary, #3F6DE4 ));
+				border-color: #8e0b21;
 			}
 		}
 

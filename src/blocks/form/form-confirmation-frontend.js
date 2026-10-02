@@ -70,6 +70,26 @@ const buildFieldValueMap = ( formData ) => {
 	return fields;
 };
 
+const getSuccessIconImg = ( sourceHtml = '' ) => {
+	const existingIcon = String( sourceHtml ).match(
+		/<img[^>]*class="[^"]*form-message-icon[^"]*"[^>]*>/i
+	);
+
+	if ( existingIcon ) {
+		return existingIcon[ 0 ];
+	}
+
+	const iconSrc = String( sourceHtml ).match(
+		/src="([^"]*success-tick[^"]*)"/i
+	);
+
+	if ( ! iconSrc ) {
+		return '';
+	}
+
+	return `<img src="${ iconSrc[ 1 ] }" alt="Success" class="form-message-icon" width="16" height="16" />`;
+};
+
 const getStaticMergeReplacements = ( form ) => {
 	const block = typeof gutenaFormsBlock !== 'undefined' ? gutenaFormsBlock : {};
 	const formName = form?.getAttribute( 'data-form-name' ) || '';
@@ -91,12 +111,21 @@ export const replaceConfirmationMergeTags = ( html, form, formData ) => {
 		return '';
 	}
 
+	let resolvedHtml = String( html );
+
+	if ( resolvedHtml.includes( '{icon}' ) ) {
+		const iconMarkup = getSuccessIconImg( resolvedHtml );
+		resolvedHtml = resolvedHtml
+			.replace( /<p>\s*\{icon\}\s*<\/p>/gi, iconMarkup )
+			.replace( /\{icon\}/g, iconMarkup );
+	}
+
 	const replacements = {
 		...getStaticMergeReplacements( form ),
 		...buildFieldValueMap( formData ),
 	};
 
-	return String( html ).replace( /\{[^}]+\}/g, ( tag ) => {
+	return resolvedHtml.replace( /\{[^}]+\}/g, ( tag ) => {
 		if ( Object.prototype.hasOwnProperty.call( replacements, tag ) ) {
 			const value = replacements[ tag ];
 			return null === value || 'undefined' === typeof value
@@ -150,17 +179,8 @@ export const resolveSafeRedirectUrl = ( config ) => {
 const getConfirmMessageElement = ( form ) =>
 	form.querySelector( '.wp-block-gutena-form-confirm-msg' );
 
-const getErrorMessageElement = ( form ) => {
-	const errorText = form.querySelector(
-		'.wp-block-gutena-form-error-msg .gutena-forms-error-text'
-	);
-
-	if ( errorText ) {
-		return errorText;
-	}
-
-	return form.querySelector( '.wp-block-gutena-form-error-msg' );
-};
+const getErrorMessageElement = ( form ) =>
+	form.querySelector( '.wp-block-gutena-form-error-msg' );
 
 const showSuccessMessage = ( form, formData, config ) => {
 	const messageHtml = replaceConfirmationMergeTags(
@@ -264,6 +284,18 @@ export const handleLegacyConfirmationError = ( form, response ) => {
 		! isEmpty( response.message ) &&
 		'error' === response.status
 	) {
-		errorElement.innerHTML = response.message;
+		const message = String( response.message );
+		if ( message.includes( '<' ) ) {
+			errorElement.innerHTML = message;
+			return;
+		}
+
+		const errorText = errorElement.querySelector( '.gutena-forms-error-text' );
+		if ( errorText ) {
+			errorText.textContent = message;
+			return;
+		}
+
+		errorElement.innerHTML = `<p class="gutena-forms-error-text">${ escapeHtml( message ) }</p>`;
 	}
 };

@@ -16,12 +16,15 @@ const FormConfirmationModal = ( {
 	isOpen,
 	initialConfirmation,
 	confirmationDefaults,
+	initialFocusField = null,
 	onSave,
 	onClose,
 } ) => {
 	const [ draft, setDraft ] = useState( null );
 	const [ redirectUrlError, setRedirectUrlError ] = useState( '' );
 	const initialConfirmationRef = useRef( initialConfirmation );
+	const successFieldRef = useRef( null );
+	const errorFieldRef = useRef( null );
 
 	useEffect( () => {
 		initialConfirmationRef.current = initialConfirmation;
@@ -38,10 +41,52 @@ const FormConfirmationModal = ( {
 
 	useEffect( () => {
 		if ( isOpen ) {
-			setDraft( cloneConfirmation( initialConfirmationRef.current ) );
+			const nextDraft = cloneConfirmation( initialConfirmationRef.current );
+
+			if (
+				initialFocusField &&
+				( 'successMessage' === initialFocusField ||
+					'errorMessage' === initialFocusField ) &&
+				'redirect' === nextDraft.confirmationType
+			) {
+				nextDraft.confirmationType = 'message';
+			}
+
+			setDraft( nextDraft );
 			setRedirectUrlError( '' );
 		}
-	}, [ isOpen ] );
+	}, [ isOpen, initialFocusField ] );
+
+	useEffect( () => {
+		if ( ! isOpen || ! draft || ! initialFocusField ) {
+			return undefined;
+		}
+
+		if ( 'message' !== draft.confirmationType ) {
+			return undefined;
+		}
+
+		const fieldRef =
+			'successMessage' === initialFocusField
+				? successFieldRef
+				: errorFieldRef;
+		const fieldId =
+			'successMessage' === initialFocusField
+				? 'gutena-form-confirmation-success-message'
+				: 'gutena-form-confirmation-error-message';
+
+		const timeoutId = window.setTimeout( () => {
+			document
+				.getElementById( fieldId )
+				?.closest( '.gutena-forms-form-confirmation-modal__section' )
+				?.scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+			fieldRef.current?.focusEditor();
+		}, 100 );
+
+		return () => {
+			window.clearTimeout( timeoutId );
+		};
+	}, [ isOpen, initialFocusField, draft?.confirmationType ] );
 
 	useEffect( () => {
 		if ( ! isOpen ) {
@@ -154,6 +199,7 @@ const FormConfirmationModal = ( {
 						<>
 							<div className="gutena-forms-form-confirmation-modal__section">
 								<FormConfirmationMessageField
+									ref={ successFieldRef }
 									id="gutena-form-confirmation-success-message"
 									label={ __( 'Confirmation Message', 'gutena-forms' ) }
 									value={ draft.successMessage }
@@ -166,6 +212,7 @@ const FormConfirmationModal = ( {
 
 							<div className="gutena-forms-form-confirmation-modal__section">
 								<FormConfirmationMessageField
+									ref={ errorFieldRef }
 									id="gutena-form-confirmation-error-message"
 									label={ __( 'Error Message', 'gutena-forms' ) }
 									value={ draft.errorMessage }

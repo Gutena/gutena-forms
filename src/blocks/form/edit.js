@@ -19,7 +19,6 @@ import {
 	useSettings,
 } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
-import { store as coreStore } from '@wordpress/core-data';
 import { useDispatch, useSelect, dispatch } from '@wordpress/data';
 import {
 	PanelBody,
@@ -50,9 +49,14 @@ import NotificationSettings from './settings/notification-settings';
 import {
 	buildFormConfirmationFromDefaults,
 	hasExistingFormConfirmationSettings,
+	isFormConfirmationExplicitlyDisabled,
+	persistFormConfirmation,
 } from './settings/form-confirmation-utils';
 import EmailNotificationsSettings from './settings/email-notifications-settings';
 import FormConfirmationSettings from './settings/form-confirmation-settings';
+import FormConfirmationModal from './settings/form-confirmation-modal';
+import { FormConfirmationEditorContext } from './settings/form-confirmation-editor-context';
+import { useFormConfirmationModal } from './settings/use-form-confirmation-modal';
 import {
 	buildTextFieldOptions,
 	collectFormFields,
@@ -426,23 +430,107 @@ export default function Edit( props ) {
 				}
 			}
 
+			const storedConfirmation = settings?.formConfirmation || {};
+
 			if (
 				! gfIsEmpty( gutenaFormsBlock ) &&
 				! gfIsEmpty( gutenaFormsBlock.form_confirmation_defaults ) &&
 				! hasExistingFormConfirmationSettings( settings )
 			) {
-				const confirmationDefaults =
-					gutenaFormsBlock.form_confirmation_defaults;
-				const formConfirmation = buildFormConfirmationFromDefaults(
-					confirmationDefaults
+				const builtConfirmation = buildFormConfirmationFromDefaults(
+					gutenaFormsBlock.form_confirmation_defaults
 				);
+				const formConfirmation = {
+					enabled: true,
+					defaultSettings: true,
+					hasSavedConfig: false,
+					confirmationType: builtConfirmation.confirmationType,
+					afterSubmit: builtConfirmation.afterSubmit,
+					redirectType: builtConfirmation.redirectType,
+					redirectPageId: builtConfirmation.redirectPageId,
+					redirectUrl: builtConfirmation.redirectUrl,
+					resolvedRedirectUrl: builtConfirmation.resolvedRedirectUrl,
+				};
 
-				setAttributes( {
-					settings: {
-						...settings,
-						formConfirmation,
-					},
-				} );
+				persistFormConfirmation(
+					setAttributes,
+					settings,
+					formConfirmation,
+					{ syncLegacy: true }
+				);
+			} else if (
+				! isFormConfirmationExplicitlyDisabled( storedConfirmation )
+			) {
+				const confirmationDefaults =
+					gutenaFormsBlock?.form_confirmation_defaults || {};
+				const builtConfirmation =
+					buildFormConfirmationFromDefaults( confirmationDefaults );
+				const usesGlobalDefaults =
+					storedConfirmation.defaultSettings !== false;
+				const shouldEnable =
+					true !== storedConfirmation.enabled;
+				const shouldNormalizeStored =
+					shouldEnable ||
+					( usesGlobalDefaults &&
+						( storedConfirmation.successMessage ||
+							storedConfirmation.errorMessage ) ) ||
+					( ! usesGlobalDefaults &&
+						( ! String( storedConfirmation.successMessage || '' ).trim() ||
+							! String(
+								storedConfirmation.errorMessage || ''
+							).trim() ) );
+
+				if ( shouldNormalizeStored ) {
+					let nextConfirmation = {
+						...storedConfirmation,
+						enabled: true,
+						defaultSettings:
+							storedConfirmation.defaultSettings ?? true,
+					};
+
+					if ( usesGlobalDefaults ) {
+						nextConfirmation = {
+							...nextConfirmation,
+							confirmationType: builtConfirmation.confirmationType,
+							afterSubmit: builtConfirmation.afterSubmit,
+							redirectType: builtConfirmation.redirectType,
+							redirectPageId: builtConfirmation.redirectPageId,
+							redirectUrl: builtConfirmation.redirectUrl,
+							resolvedRedirectUrl:
+								builtConfirmation.resolvedRedirectUrl,
+						};
+					} else {
+						nextConfirmation = {
+							...builtConfirmation,
+							...storedConfirmation,
+							enabled: true,
+							defaultSettings: false,
+						};
+
+						if (
+							! String(
+								nextConfirmation.successMessage || ''
+							).trim()
+						) {
+							nextConfirmation.successMessage =
+								builtConfirmation.successMessage;
+						}
+
+						if (
+							! String( nextConfirmation.errorMessage || '' ).trim()
+						) {
+							nextConfirmation.errorMessage =
+								builtConfirmation.errorMessage;
+						}
+					}
+
+					persistFormConfirmation(
+						setAttributes,
+						settings,
+						nextConfirmation,
+						{ syncLegacy: true }
+					);
+				}
 			}
 		}
 		//set replyToEmailID
@@ -497,34 +585,6 @@ export default function Edit( props ) {
 		},
 		[ clientId ]
 	);
-
-	//Get Author Email
-	const currentUser = useSelect( ( select ) => {
-		return '' == adminEmails
-			? select( coreStore ).getUsers( { who: 'authors' } )
-			: [];
-	}, [] );
-
-	//Set Author Email
-	useEffect( () => {
-		let shouldRunAuthorEmail = true;
-		if ( shouldRunAuthorEmail ) {
-			if (
-				'' == adminEmails &&
-				'undefined' !== typeof currentUser &&
-				null !== currentUser &&
-				'undefined' !== typeof currentUser[ 0 ].email &&
-				null !== currentUser[ 0 ].email
-			) {
-				setAttributes( { adminEmails: currentUser[ 0 ].email } );
-			}
-		}
-
-		//cleanup
-		return () => {
-			shouldRunAuthorEmail = false;
-		};
-	}, [ currentUser ] );
 
 	//Template
 	const TEMPLATE =
@@ -826,8 +886,27 @@ export default function Edit( props ) {
 
 	let showFormNameField = '1' === gutenaFormsBlock.is_gutena_forms_post_type || 1 === gutenaFormsBlock.is_gutena_forms_post_type ? { display: 'none' } : {};
 
+	const formConfirmationLegacyAttrs = {
+		formID,
+		afterSubmitAction,
+		afterSubmitHide,
+		redirectUrl,
+	};
+
+	const {
+		contextValue: formConfirmationContextValue,
+		isModalOpen: isFormConfirmationModalOpen,
+		modalConfirmation: formConfirmationModalState,
+		confirmationDefaults: formConfirmationDefaults,
+		initialFocusField: formConfirmationInitialFocusField,
+		closeFormConfirmationModal,
+		saveFormConfirmation,
+	} = useFormConfirmationModal( settings, setAttributes, formConfirmationLegacyAttrs );
+
 	return (
-		<>
+		<FormConfirmationEditorContext.Provider
+			value={ formConfirmationContextValue }
+		>
 			<style>{ formStyle }</style>
 			{ ! hasExistingFormsBlock && (
 				<InspectorControls>
@@ -1320,16 +1399,7 @@ export default function Edit( props ) {
 						formFields={ formFields }
 						textFieldOptions={ textFieldOptions }
 					/>
-					<FormConfirmationSettings
-						settings={ settings }
-						setAttributes={ setAttributes }
-						legacyAttrs={ {
-							formID,
-							afterSubmitAction,
-							afterSubmitHide,
-							redirectUrl,
-						} }
-					/>
+					<FormConfirmationSettings />
 
 				<ValidationMessagesSettings
 					setAttributes={ setAttributes }
@@ -1354,6 +1424,14 @@ export default function Edit( props ) {
 			) : (
 				<Placeholder { ...props } />
 			) }
-		</>
+			<FormConfirmationModal
+				isOpen={ isFormConfirmationModalOpen }
+				initialConfirmation={ formConfirmationModalState }
+				confirmationDefaults={ formConfirmationDefaults }
+				initialFocusField={ formConfirmationInitialFocusField }
+				onSave={ saveFormConfirmation }
+				onClose={ closeFormConfirmationModal }
+			/>
+		</FormConfirmationEditorContext.Provider>
 	);
 }

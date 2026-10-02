@@ -1,0 +1,149 @@
+.gutena-forms-success-banner {
+	align-items: center;
+	background: #d8eacc;
+	border-radius: 5px;
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 8px;
+	justify-content: flex-start;
+	padding: 12px;
+
+	.form-message-icon {
+		flex-shrink: 0;
+		height: 16px;
+		width: 16px;
+	}
+
+	.gutena-forms-success-text {
+		color: #1e1e1e;
+		font-size: 12px;
+		font-weight: 500;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	&--stacked {
+		align-items: flex-start;
+		flex-direction: column;
+
+		.form-message-icon {
+			display: block;
+			margin-bottom: 8px;
+		}
+	}
+
+	&--rich {
+		align-items: flex-start;
+
+		.form-message-icon {
+			margin-top: 4px;
+		}
+	}
+
+	&__content {
+		flex: 1;
+		min-width: 0;
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			color: #1e1e1e;
+			font-size: 24px;
+			font-weight: 700;
+			line-height: 1.2;
+			margin: 0 0 8px;
+		}
+
+		p {
+			color: #6e7376;
+			font-size: 14px;
+			line-height: 1.5;
+			margin: 0;
+		}
+	}
+}
+
+.gutena-forms-error-message {
+	background: #ffd3d3;
+	border-radius: 5px;
+	color: #1e1e1e;
+	padding: 12px;
+	text-align: left;
+
+	.form-message-icon {
+		display: block;
+		height: 16px;
+		margin-bottom: 8px;
+		width: 16px;
+	}
+
+	h3 {
+		font-size: 24px;
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0 0 8px;
+	}
+
+	.gutena-forms-error-text,
+	p {
+		color: #6e7376;
+		font-size: 14px;
+		line-height: 1.5;
+		margin: 0;
+	}
+}
+
+.wp-block-gutena-forms {
+	.wp-block-gutena-form-confirm-msg:not(.gutena-forms-notice-preview) {
+		> .wp-block-group {
+			align-items: center;
+			background: #d8eacc;
+			border-radius: 5px;
+			display: flex;
+			flex-wrap: nowrap;
+			gap: 8px;
+			padding: 12px;
+
+			.form-message-icon {
+				flex-shrink: 0;
+				height: 16px;
+				width: 16px;
+			}
+
+			p {
+				font-size: 12px;
+				font-weight: 500;
+				line-height: 1.2;
+				margin: 0;
+			}
+		}
+	}
+
+	.wp-block-gutena-form-error-msg:not(.gutena-forms-notice-preview) {
+		> .wp-block-group {
+			align-items: center;
+			background: #ffd3d3;
+			border-radius: 5px;
+			display: flex;
+			flex-wrap: nowrap;
+			gap: 8px;
+			padding: 12px;
+
+			.form-message-icon {
+				flex-shrink: 0;
+				height: 16px;
+				width: 16px;
+			}
+
+			p {
+				font-size: 12px;
+				font-weight: 500;
+				line-height: 1.2;
+				margin: 0;
+			}
+		}
+	}
+}

@@ -4,7 +4,7 @@ export default function save( props ) {
 	const { attributes } = props;
 
 	//Attributes
-	const { formID, formClasses } = attributes;
+	const { formID, formClasses, formStyle } = attributes;
 
 	const blockProps = useBlockProps.save( {
 		className: formClasses,
@@ -12,6 +12,7 @@ export default function save( props ) {
 
 	return (
 		<form method="post" encType="multipart/form-data" { ...blockProps }>
+			{ formStyle ? <style>{ formStyle }</style> : null }
 			<input type="hidden" name="formid" value={ formID } />
 			<InnerBlocks.Content />
 		</form>

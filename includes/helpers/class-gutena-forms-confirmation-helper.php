@@ -45,14 +45,12 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 				GUTENA_FORMS_PLUGIN_URL . 'src/blocks/form/variations/assets/success-tick.svg'
 			);
 
-			$heading = __( 'Thank you', 'gutena-forms' );
-			$message = __( "Your form has been submitted successfully. We'll review your details and get back to you soon.", 'gutena-forms' );
+			$message = __( 'Your form submitted successfully!', 'gutena-forms' );
 
 			return sprintf(
-				'<div class="gutena-forms-confirmation-message"><img src="%1$s" alt="%2$s" class="form-message-icon" width="16" height="16" /><h3>%3$s</h3><p>%4$s</p></div>',
+				'<div class="gutena-forms-success-banner gutena-forms-success-banner--stacked"><img src="%1$s" alt="%2$s" class="form-message-icon" width="16" height="16" /><p class="gutena-forms-success-text">%3$s</p></div>',
 				$icon_url,
 				esc_attr__( 'Success', 'gutena-forms' ),
-				esc_html( $heading ),
 				esc_html( $message )
 			);
 		}
@@ -63,11 +61,239 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 		 * @return string
 		 */
 		public static function get_default_error_message_html() {
+			$icon_url = esc_url(
+				GUTENA_FORMS_PLUGIN_URL . 'src/blocks/form/variations/assets/error.svg'
+			);
+
+			$heading = __( 'Something went wrong', 'gutena-forms' );
 			$message = __( 'Something went wrong while submitting the form. Please check your entries and try again.', 'gutena-forms' );
 
 			return sprintf(
-				'<p>%s</p>',
+				'<div class="gutena-forms-error-message"><img src="%1$s" alt="%2$s" class="form-message-icon" width="16" height="16" /><h3>%3$s</h3><p class="gutena-forms-error-text">%4$s</p></div>',
+				$icon_url,
+				esc_attr__( 'Error', 'gutena-forms' ),
+				esc_html( $heading ),
 				esc_html( $message )
+			);
+		}
+
+		/**
+		 * Success message icon URL.
+		 *
+		 * @return string
+		 */
+		public static function get_success_message_icon_url() {
+			return esc_url(
+				GUTENA_FORMS_PLUGIN_URL . 'src/blocks/form/variations/assets/success-tick.svg'
+			);
+		}
+
+		/**
+		 * Error message icon URL.
+		 *
+		 * @return string
+		 */
+		public static function get_error_message_icon_url() {
+			return esc_url(
+				GUTENA_FORMS_PLUGIN_URL . 'src/blocks/form/variations/assets/error.svg'
+			);
+		}
+
+		/**
+		 * Success message icon image markup.
+		 *
+		 * @return string
+		 */
+		public static function get_success_message_icon_img() {
+			return sprintf(
+				'<img src="%1$s" alt="%2$s" class="form-message-icon" width="16" height="16" />',
+				self::get_success_message_icon_url(),
+				esc_attr__( 'Success', 'gutena-forms' )
+			);
+		}
+
+		/**
+		 * Replace the {icon} merge tag with the success icon image.
+		 *
+		 * @param string $html Raw HTML.
+		 * @return string
+		 */
+		public static function replace_success_icon_merge_tag( $html ) {
+			if ( false === strpos( $html, '{icon}' ) ) {
+				return $html;
+			}
+
+			$icon = self::get_success_message_icon_img();
+			$html = preg_replace( '/<p>\s*\{icon\}\s*<\/p>/i', $icon, $html );
+
+			return str_replace( '{icon}', $icon, $html );
+		}
+
+		/**
+		 * Whether the success message should use stacked icon + text layout.
+		 *
+		 * @param string $html HTML content.
+		 * @return bool
+		 */
+		private static function success_message_uses_stacked_layout( $html ) {
+			if ( false !== strpos( $html, '{icon}' ) ) {
+				return true;
+			}
+
+			if ( preg_match( '/<p>\s*<img[^>]*form-message-icon[^>]*>\s*<\/p>/i', $html ) ) {
+				return true;
+			}
+
+			return 1 < preg_match_all( '/<p\b/i', $html );
+		}
+
+		/**
+		 * Ensure a simple success banner uses the stacked layout modifier.
+		 *
+		 * @param string $html Banner HTML.
+		 * @return string
+		 */
+		private static function ensure_success_banner_stacked_class( $html ) {
+			if ( false !== strpos( $html, 'gutena-forms-success-banner--stacked' )
+				|| false !== strpos( $html, 'gutena-forms-success-banner--rich' ) ) {
+				return $html;
+			}
+
+			return str_replace(
+				'gutena-forms-success-banner"',
+				'gutena-forms-success-banner gutena-forms-success-banner--stacked"',
+				$html
+			);
+		}
+
+		/**
+		 * Normalize legacy success HTML into the green banner layout.
+		 *
+		 * @param string $html Raw success HTML.
+		 * @return string
+		 */
+		public static function normalize_success_message_html( $html ) {
+			$raw_input = (string) $html;
+			$html      = self::sanitize_confirmation_html( $html );
+
+			if ( '' === trim( $html ) ) {
+				return self::get_default_success_message_html();
+			}
+
+			if ( false !== strpos( $html, 'gutena-forms-success-banner' ) ) {
+				$html = self::replace_success_icon_merge_tag( $html );
+				$html = self::ensure_success_banner_stacked_class( $html );
+
+				return $html;
+			}
+
+			$had_icon_token = false !== strpos( $raw_input, '{icon}' );
+			$html           = self::replace_success_icon_merge_tag( $html );
+
+			$inner = $html;
+
+			if ( preg_match( '/<div[^>]*class="[^"]*gutena-forms-confirmation-message[^"]*"[^>]*>(.*)<\/div>\s*$/is', $html, $matches ) ) {
+				$inner = $matches[1];
+			}
+
+			$inner = preg_replace( '/^\s*<img[^>]*class="[^"]*form-message-icon[^"]*"[^>]*>\s*/i', '', $inner );
+			$inner = trim( (string) $inner );
+
+			if ( '' === $inner ) {
+				return self::get_default_success_message_html();
+			}
+
+			$has_heading  = (bool) preg_match( '/<h[1-6][^>]*>/i', $inner );
+			$banner_class = 'gutena-forms-success-banner';
+			$uses_stacked = $had_icon_token || self::success_message_uses_stacked_layout( $inner );
+
+			if ( $has_heading ) {
+				$banner_class .= ' gutena-forms-success-banner--rich';
+				$content = sprintf(
+					'<div class="gutena-forms-success-banner__content">%s</div>',
+					$inner
+				);
+			} else {
+				if ( $uses_stacked ) {
+					$banner_class .= ' gutena-forms-success-banner--stacked';
+				}
+
+				if ( preg_match( '/^<p(?![^>]*class=)/i', $inner ) ) {
+					$inner = preg_replace( '/^<p/i', '<p class="gutena-forms-success-text"', $inner, 1 );
+				}
+
+				$inner = preg_replace(
+					'/<p(?![^>]*class=)/i',
+					'<p class="gutena-forms-success-text"',
+					$inner
+				);
+
+				$content = $inner;
+			}
+
+			$has_icon_in_content = false !== strpos( $content, 'form-message-icon' );
+
+			if ( $has_icon_in_content ) {
+				$output = sprintf(
+					'<div class="%1$s">%2$s</div>',
+					esc_attr( $banner_class ),
+					$content
+				);
+			} else {
+				$output = sprintf(
+					'<div class="%1$s">%2$s%3$s</div>',
+					esc_attr( $banner_class ),
+					self::get_success_message_icon_img(),
+					$content
+				);
+			}
+
+			return $output;
+		}
+
+		/**
+		 * Normalize legacy error HTML into the structured error layout.
+		 *
+		 * @param string $html Raw error HTML.
+		 * @return string
+		 */
+		public static function normalize_error_message_html( $html ) {
+			$html = self::sanitize_confirmation_html( $html );
+
+			if ( '' === trim( $html ) ) {
+				return self::get_default_error_message_html();
+			}
+
+			if ( false !== strpos( $html, 'gutena-forms-error-message' ) ) {
+				return $html;
+			}
+
+			$inner = preg_replace( '/^\s*<img[^>]*class="[^"]*form-message-icon[^"]*"[^>]*>\s*/i', '', $html );
+			$inner = trim( (string) $inner );
+
+			if ( '' === $inner ) {
+				return self::get_default_error_message_html();
+			}
+
+			if ( ! preg_match( '/<h[1-6][^>]*>/i', $inner ) ) {
+				$inner = sprintf(
+					'<h3>%1$s</h3><p class="gutena-forms-error-text">%2$s</p>',
+					esc_html__( 'Something went wrong', 'gutena-forms' ),
+					$inner
+				);
+			} elseif ( ! preg_match( '/class="[^"]*gutena-forms-error-text[^"]*"/i', $inner ) ) {
+				$inner = preg_replace(
+					'/<p(?![^>]*class=)/i',
+					'<p class="gutena-forms-error-text"',
+					$inner
+				);
+			}
+
+			return sprintf(
+				'<div class="gutena-forms-error-message"><img src="%1$s" alt="%2$s" class="form-message-icon" width="16" height="16" />%3$s</div>',
+				self::get_error_message_icon_url(),
+				esc_attr__( 'Error', 'gutena-forms' ),
+				$inner
 			);
 		}
 
@@ -95,8 +321,8 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 
 			return array(
 				'confirmation_type'     => $settings['confirmation_type'],
-				'success_message'       => $settings['success_message'],
-				'error_message'         => $settings['error_message'],
+				'success_message'       => self::normalize_success_message_html( $settings['success_message'] ),
+				'error_message'         => self::normalize_error_message_html( $settings['error_message'] ),
 				'after_submit'          => $settings['after_submit'],
 				'redirect_type'         => $settings['redirect_type'],
 				'redirect_page_id'      => (int) $settings['redirect_page_id'],
@@ -112,6 +338,7 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 		 */
 		public static function get_static_merge_tags() {
 			return array(
+				'{icon}',
 				'{site_name}',
 				'{site_url}',
 				'{submission_date}',
@@ -189,6 +416,81 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 		}
 
 		/**
+		 * Whether form confirmation was explicitly disabled in saved settings.
+		 *
+		 * @param array $settings Form confirmation settings.
+		 * @return bool
+		 */
+		public static function is_confirmation_explicitly_disabled( $settings ) {
+			$settings = is_array( $settings ) ? $settings : array();
+
+			return isset( $settings['hasSavedConfig'] )
+				&& true === (bool) $settings['hasSavedConfig']
+				&& isset( $settings['enabled'] )
+				&& false === (bool) $settings['enabled'];
+		}
+
+		/**
+		 * Whether a form inherits global confirmation messages.
+		 *
+		 * @param array $settings Form confirmation settings.
+		 * @return bool
+		 */
+		public static function uses_global_confirmation_defaults( $settings ) {
+			$settings = is_array( $settings ) ? $settings : array();
+
+			if ( isset( $settings['hasSavedConfig'] ) && true === (bool) $settings['hasSavedConfig']
+				&& isset( $settings['defaultSettings'] ) && false === (bool) $settings['defaultSettings'] ) {
+				return false;
+			}
+
+			if ( isset( $settings['hasSavedConfig'] ) && true === (bool) $settings['hasSavedConfig']
+				&& ! isset( $settings['defaultSettings'] ) ) {
+				return false;
+			}
+
+			return ! isset( $settings['defaultSettings'] ) || true === (bool) $settings['defaultSettings'];
+		}
+
+		/**
+		 * Resolve stored confirmation messages with global or form settings.
+		 *
+		 * @param array $settings Form confirmation settings.
+		 * @return array
+		 */
+		public static function resolve_confirmation_messages( $settings ) {
+			$settings = is_array( $settings ) ? $settings : array();
+			$global   = self::get_settings();
+
+			if ( self::uses_global_confirmation_defaults( $settings ) ) {
+				return array(
+					'success_message' => self::normalize_success_message_html( $global['success_message'] ),
+					'error_message'   => self::normalize_error_message_html( $global['error_message'] ),
+				);
+			}
+
+			$success_message = isset( $settings['successMessage'] )
+				? self::sanitize_confirmation_html( $settings['successMessage'] )
+				: '';
+			$error_message   = isset( $settings['errorMessage'] )
+				? self::sanitize_confirmation_html( $settings['errorMessage'] )
+				: '';
+
+			if ( '' === trim( (string) $success_message ) ) {
+				$success_message = $global['success_message'];
+			}
+
+			if ( '' === trim( (string) $error_message ) ) {
+				$error_message = $global['error_message'];
+			}
+
+			return array(
+				'success_message' => self::normalize_success_message_html( $success_message ),
+				'error_message'   => self::normalize_error_message_html( $error_message ),
+			);
+		}
+
+		/**
 		 * Build frontend-safe confirmation config from block attributes.
 		 *
 		 * @param array $attributes Form block attributes.
@@ -200,7 +502,7 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 				? $attributes['settings']['formConfirmation']
 				: array();
 
-			if ( empty( $settings['enabled'] ) ) {
+			if ( self::is_confirmation_explicitly_disabled( $settings ) || empty( $settings ) ) {
 				return null;
 			}
 
@@ -231,11 +533,13 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 				)
 			);
 
+			$messages = self::resolve_confirmation_messages( $settings );
+
 			return array(
 				'enabled'             => true,
 				'confirmationType'    => $confirmation_type,
-				'successMessage'      => self::sanitize_confirmation_html( $settings['successMessage'] ?? '' ),
-				'errorMessage'        => self::sanitize_confirmation_html( $settings['errorMessage'] ?? '' ),
+				'successMessage'      => $messages['success_message'],
+				'errorMessage'        => $messages['error_message'],
 				'afterSubmit'         => $after_submit,
 				'redirectType'        => $redirect_type,
 				'redirectPageId'      => $redirect_page_id,
@@ -362,6 +666,8 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 
 			$success_message = isset( $settings['success_message'] ) ? self::sanitize_confirmation_html( $settings['success_message'] ) : $defaults['success_message'];
 			$error_message   = isset( $settings['error_message'] ) ? self::sanitize_confirmation_html( $settings['error_message'] ) : $defaults['error_message'];
+			$success_message = self::normalize_success_message_html( $success_message );
+			$error_message   = self::normalize_error_message_html( $error_message );
 
 			$redirect_page_id = self::sanitize_redirect_page_id( $settings['redirect_page_id'] ?? 0 );
 			$redirect_url     = self::sanitize_redirect_url( $settings['redirect_url'] ?? '' );

@@ -153,13 +153,6 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 				return array();
 			}
 
-			if ( empty( $settings['send_email_to'] ) ) {
-				$admin_email = sanitize_email( get_option( 'admin_email' ) );
-				if ( $admin_email ) {
-					$settings['send_email_to'] = $admin_email;
-				}
-			}
-
 			return $settings;
 		}
 

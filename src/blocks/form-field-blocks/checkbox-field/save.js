@@ -38,7 +38,7 @@ export default function Save( { attributes } ) {
 				<legend>
 				<span className="heading-input-label-gutena">
 					{ fieldName }
-					{ isRequired ? ' *' : '' }
+					{ isRequired ? <span className="gutena-forms-required-mark" aria-hidden="true"> *</span> : null }
 				</span>
 				</legend>
 				<div className={ fieldClasses }>

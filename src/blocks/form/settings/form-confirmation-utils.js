@@ -85,17 +85,300 @@ export const extractConfirmationConfig = ( stored = {} ) => ( {
 	resolvedRedirectUrl: stored.resolvedRedirectUrl || '',
 } );
 
-export const getConfirmationDefaults = ( settings = {} ) => {
-	const stored = settings?.formConfirmation || {};
-	const globalDefaults =
-		typeof gutenaFormsBlock !== 'undefined' &&
-		gutenaFormsBlock?.form_confirmation_defaults
-			? gutenaFormsBlock.form_confirmation_defaults
-			: {};
+export const getGlobalConfirmationDefaults = () =>
+	typeof gutenaFormsBlock !== 'undefined' &&
+	gutenaFormsBlock?.form_confirmation_defaults
+		? gutenaFormsBlock.form_confirmation_defaults
+		: {};
+
+const getSuccessMessageIconUrl = () => {
+	const globalBuilt = buildFormConfirmationFromDefaults(
+		getGlobalConfirmationDefaults()
+	);
+	const iconMatch = String( globalBuilt.successMessage || '' ).match(
+		/src="([^"]+)"/i
+	);
+
+	return iconMatch ? iconMatch[ 1 ] : '';
+};
+
+const getErrorMessageIconUrl = () => {
+	const globalBuilt = buildFormConfirmationFromDefaults(
+		getGlobalConfirmationDefaults()
+	);
+	const iconMatch = String( globalBuilt.errorMessage || '' ).match(
+		/src="([^"]+)"/i
+	);
+
+	return iconMatch ? iconMatch[ 1 ] : '';
+};
+
+const getSuccessMessageIconImg = () => {
+	const iconUrl = getSuccessMessageIconUrl();
+
+	if ( ! iconUrl ) {
+		return '';
+	}
+
+	return `<img src="${ iconUrl }" alt="Success" class="form-message-icon" width="16" height="16" />`;
+};
+
+const replaceSuccessIconMergeTag = ( html ) => {
+	const value = String( html || '' );
+
+	if ( ! value.includes( '{icon}' ) ) {
+		return value;
+	}
+
+	const icon = getSuccessMessageIconImg();
+
+	return value
+		.replace( /<p>\s*\{icon\}\s*<\/p>/gi, icon )
+		.replace( /\{icon\}/g, icon );
+};
+
+const successMessageUsesStackedLayout = ( html ) => {
+	const value = String( html || '' );
+
+	if ( value.includes( '{icon}' ) ) {
+		return true;
+	}
+
+	if ( /<p>\s*<img[^>]*form-message-icon[^>]*>\s*<\/p>/i.test( value ) ) {
+		return true;
+	}
+
+	return ( value.match( /<p\b/gi ) || [] ).length > 1;
+};
+
+const ensureSuccessBannerStackedClass = ( html ) => {
+	const value = String( html || '' );
+
+	if (
+		value.includes( 'gutena-forms-success-banner--stacked' ) ||
+		value.includes( 'gutena-forms-success-banner--rich' )
+	) {
+		return value;
+	}
+
+	return value.replace(
+		'gutena-forms-success-banner"',
+		'gutena-forms-success-banner gutena-forms-success-banner--stacked"'
+	);
+};
+
+export const normalizeSuccessMessageHtml = ( html, { allowFallback = true } = {} ) => {
+	const trimmed = String( html || '' ).trim();
+	const hadIconToken = trimmed.includes( '{icon}' );
+
+	if ( ! trimmed ) {
+		if ( ! allowFallback ) {
+			return '';
+		}
+
+		const built = buildFormConfirmationFromDefaults(
+			getGlobalConfirmationDefaults()
+		);
+
+		return normalizeSuccessMessageHtml( built.successMessage, {
+			allowFallback: false,
+		} );
+	}
+
+	if ( trimmed.includes( 'gutena-forms-success-banner' ) ) {
+		return ensureSuccessBannerStackedClass(
+			replaceSuccessIconMergeTag( trimmed )
+		);
+	}
+
+	let inner = replaceSuccessIconMergeTag( trimmed );
+
+	if (
+		/<div[^>]*class="[^"]*gutena-forms-confirmation-message[^"]*"[^>]*>/i.test(
+			inner
+		)
+	) {
+		inner = inner
+			.replace(
+				/^[\s\S]*<div[^>]*class="[^"]*gutena-forms-confirmation-message[^"]*"[^>]*>/i,
+				''
+			)
+			.replace( /<\/div>\s*$/i, '' );
+	}
+
+	inner = inner
+		.replace( /^\s*<img[^>]*class="[^"]*form-message-icon[^"]*"[^>]*>\s*/i, '' )
+		.trim();
+
+	if ( ! inner ) {
+		return normalizeSuccessMessageHtml( '', { allowFallback } );
+	}
+
+	const hasHeading = /<h[1-6][^>]*>/i.test( inner );
+	const usesStacked =
+		hadIconToken || successMessageUsesStackedLayout( inner );
+	let bannerClass = 'gutena-forms-success-banner';
+	let content = inner;
+
+	if ( hasHeading ) {
+		bannerClass += ' gutena-forms-success-banner--rich';
+		content = `<div class="gutena-forms-success-banner__content">${ inner }</div>`;
+	} else {
+		if ( usesStacked ) {
+			bannerClass += ' gutena-forms-success-banner--stacked';
+		}
+
+		content = inner.replace(
+			/<p(?![^>]*class=)/gi,
+			'<p class="gutena-forms-success-text"'
+		);
+	}
+
+	const hasIconInContent = content.includes( 'form-message-icon' );
+	const iconMarkup = getSuccessMessageIconImg();
+	return hasIconInContent
+		? `<div class="${ bannerClass }">${ content }</div>`
+		: `<div class="${ bannerClass }">${ iconMarkup }${ content }</div>`;
+};
+
+export const normalizeErrorMessageHtml = ( html, { allowFallback = true } = {} ) => {
+	const trimmed = String( html || '' ).trim();
+
+	if ( ! trimmed ) {
+		if ( ! allowFallback ) {
+			return '';
+		}
+
+		const built = buildFormConfirmationFromDefaults(
+			getGlobalConfirmationDefaults()
+		);
+
+		return normalizeErrorMessageHtml( built.errorMessage, {
+			allowFallback: false,
+		} );
+	}
+
+	if ( trimmed.includes( 'gutena-forms-error-message' ) ) {
+		return trimmed;
+	}
+
+	let inner = trimmed
+		.replace( /^\s*<img[^>]*class="[^"]*form-message-icon[^"]*"[^>]*>\s*/i, '' )
+		.trim();
+
+	if ( ! inner ) {
+		return normalizeErrorMessageHtml( '', { allowFallback } );
+	}
+
+	if ( ! /<h[1-6][^>]*>/i.test( inner ) ) {
+		inner = `<h3>${ __( 'Something went wrong', 'gutena-forms' ) }</h3><p class="gutena-forms-error-text">${ inner }</p>`;
+	} else if ( ! /class="[^"]*gutena-forms-error-text[^"]*"/i.test( inner ) ) {
+		inner = inner.replace( /<p(?![^>]*class=)/gi, '<p class="gutena-forms-error-text"' );
+	}
+
+	const iconUrl = getErrorMessageIconUrl();
+
+	return `<div class="gutena-forms-error-message"><img src="${ iconUrl }" alt="Error" class="form-message-icon" width="16" height="16" />${ inner }</div>`;
+};
+
+export const getGlobalConfirmationDefaultsForEditor = () => {
+	const built = buildFormConfirmationFromDefaults( getGlobalConfirmationDefaults() );
 
 	return {
-		...buildFormConfirmationFromDefaults( globalDefaults ),
-		...extractConfirmationConfig( stored ),
+		...built,
+		successMessage: normalizeSuccessMessageHtml( built.successMessage, {
+			allowFallback: false,
+		} ),
+		errorMessage: normalizeErrorMessageHtml( built.errorMessage, {
+			allowFallback: false,
+		} ),
+	};
+};
+
+const hasMessageContent = ( message ) =>
+	String( message || '' ).trim().length > 0;
+
+export const usesGlobalConfirmationDefaults = ( stored = {} ) => {
+	if ( stored?.hasSavedConfig && false === stored?.defaultSettings ) {
+		return false;
+	}
+
+	if ( stored?.hasSavedConfig && undefined === stored?.defaultSettings ) {
+		return false;
+	}
+
+	return false !== stored?.defaultSettings;
+};
+
+const normalizeConfirmationValue = ( value ) => String( value ?? '' ).trim();
+
+export const confirmationMatchesGlobalDefaults = (
+	confirmation = {},
+	globalDefaults = {}
+) => {
+	const built = buildFormConfirmationFromDefaults( globalDefaults );
+
+	return (
+		normalizeConfirmationValue( confirmation.confirmationType ) ===
+			normalizeConfirmationValue( built.confirmationType ) &&
+		normalizeConfirmationValue( confirmation.afterSubmit ) ===
+			normalizeConfirmationValue( built.afterSubmit ) &&
+		normalizeConfirmationValue( confirmation.redirectType ) ===
+			normalizeConfirmationValue( built.redirectType ) &&
+		( parseInt( confirmation.redirectPageId, 10 ) || 0 ) ===
+			( parseInt( built.redirectPageId, 10 ) || 0 ) &&
+		normalizeConfirmationValue( confirmation.redirectUrl ) ===
+			normalizeConfirmationValue( built.redirectUrl ) &&
+		normalizeConfirmationValue(
+			normalizeSuccessMessageHtml( confirmation.successMessage )
+		) ===
+			normalizeConfirmationValue(
+				normalizeSuccessMessageHtml( built.successMessage )
+			) &&
+		normalizeConfirmationValue(
+			normalizeErrorMessageHtml( confirmation.errorMessage )
+		) ===
+			normalizeConfirmationValue(
+				normalizeErrorMessageHtml( built.errorMessage )
+			)
+	);
+};
+
+export const resolveConfirmationMessages = ( stored = {}, globalDefaults = {} ) => {
+	const built = getGlobalConfirmationDefaultsForEditor();
+	const extracted = extractConfirmationConfig( stored );
+	let successMessage = built.successMessage;
+	let errorMessage = built.errorMessage;
+
+	if ( ! usesGlobalConfirmationDefaults( stored ) ) {
+		successMessage = hasMessageContent( extracted.successMessage )
+			? extracted.successMessage
+			: built.successMessage;
+		errorMessage = hasMessageContent( extracted.errorMessage )
+			? extracted.errorMessage
+			: built.errorMessage;
+	}
+
+	return {
+		...extracted,
+		successMessage: normalizeSuccessMessageHtml( successMessage ),
+		errorMessage: normalizeErrorMessageHtml( errorMessage ),
+	};
+};
+
+export const getConfirmationDefaults = ( settings = {} ) => {
+	const stored = settings?.formConfirmation || {};
+	const globalDefaults = getGlobalConfirmationDefaults();
+	const built = buildFormConfirmationFromDefaults( globalDefaults );
+	const resolved = resolveConfirmationMessages( stored, globalDefaults );
+
+	return {
+		...built,
+		...resolved,
+		defaultSettings:
+			stored.defaultSettings !== undefined
+				? stored.defaultSettings
+				: built.defaultSettings,
 	};
 };
 
@@ -114,6 +397,12 @@ export const mapLegacyAttrsToConfirmation = ( legacyAttrs = {}, defaults = {} ) 
 		resolvedRedirectUrl: legacyAttrs.redirectUrl || '',
 	};
 };
+
+export const isFormConfirmationExplicitlyDisabled = ( stored = {} ) =>
+	stored.hasSavedConfig === true && stored.enabled === false;
+
+export const resolveFormConfirmationEnabled = ( stored = {} ) =>
+	! isFormConfirmationExplicitlyDisabled( stored );
 
 export const isLegacyFormConfirmation = ( { formID, settings } ) => {
 	const stored = settings?.formConfirmation;
@@ -135,48 +424,62 @@ export const isLegacyFormConfirmation = ( { formID, settings } ) => {
 
 export const resolveFormConfirmationState = ( settings, legacyAttrs = {} ) => {
 	const stored = settings?.formConfirmation || {};
+	const globalDefaults = getGlobalConfirmationDefaults();
 	const defaults = getConfirmationDefaults( settings );
+	const enabled = resolveFormConfirmationEnabled( stored );
+	const resolvedMessages = resolveConfirmationMessages(
+		stored,
+		globalDefaults
+	);
 
 	if ( stored.hasSavedConfig ) {
 		return {
-			enabled: !! stored.enabled,
+			enabled,
 			hasSavedConfig: true,
-			confirmation: extractConfirmationConfig( stored ),
+			confirmation: resolvedMessages,
 			defaults,
 		};
 	}
 
 	if ( hasExistingFormConfirmationSettings( settings ) ) {
 		return {
-			enabled: !! stored.enabled,
+			enabled,
 			hasSavedConfig: false,
-			confirmation: extractConfirmationConfig( stored ),
+			confirmation: resolvedMessages,
 			defaults,
 		};
 	}
 
 	if ( isLegacyFormConfirmation( { formID: legacyAttrs.formID, settings } ) ) {
 		return {
-			enabled: false,
+			enabled,
 			hasSavedConfig: false,
-			confirmation: mapLegacyAttrsToConfirmation( legacyAttrs, defaults ),
+			confirmation: {
+				...mapLegacyAttrsToConfirmation( legacyAttrs, defaults ),
+				...resolvedMessages,
+			},
 			defaults,
 		};
 	}
 
 	return {
-		enabled: !! stored.enabled,
+		enabled,
 		hasSavedConfig: false,
-		confirmation: extractConfirmationConfig( stored ),
+		confirmation: resolvedMessages,
 		defaults,
 	};
 };
 
-export const createSeedConfirmation = ( defaults = {}, existing = {} ) =>
-	cloneConfirmation( {
+export const createSeedConfirmation = ( defaults = {}, existing = {} ) => {
+	const resolved = resolveConfirmationMessages( existing, getGlobalConfirmationDefaults() );
+
+	return cloneConfirmation( {
 		...defaults,
 		...existing,
+		successMessage: resolved.successMessage,
+		errorMessage: resolved.errorMessage,
 	} );
+};
 
 export const sanitizeRedirectUrl = ( url ) => {
 	const trimmed = String( url || '' ).trim();
@@ -291,6 +594,11 @@ export const persistFormConfirmation = (
 		...current,
 		...partial,
 	};
+
+	if ( usesGlobalConfirmationDefaults( next ) ) {
+		delete next.successMessage;
+		delete next.errorMessage;
+	}
 
 	const attrs = {
 		settings: {

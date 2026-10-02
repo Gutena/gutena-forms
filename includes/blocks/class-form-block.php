@@ -167,6 +167,143 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		}
 
 		/**
+		 * Form block CSS class derived from the form name.
+		 *
+		 * @param string $form_name Form name attribute.
+		 * @return string
+		 */
+		private static function get_form_name_class( $form_name ) {
+			$name = is_string( $form_name ) && '' !== trim( $form_name ) ? $form_name : 'Contact Form';
+
+			return 'gutena-forms-' . strtolower( preg_replace( '/\s+/', '-', $name ) );
+		}
+
+		/**
+		 * Whether a style attribute value is empty.
+		 *
+		 * @param mixed $value Raw value.
+		 * @return bool
+		 */
+		private static function is_empty_style_value( $value ) {
+			return null === $value || '' === $value;
+		}
+
+		/**
+		 * Build per-form CSS variables from block attributes (editor parity fallback).
+		 *
+		 * @param array $attributes Block attributes.
+		 * @return string
+		 */
+		public static function build_form_style_from_attributes( $attributes ) {
+			$attributes = is_array( $attributes ) ? $attributes : array();
+
+			$form_class        = self::get_form_name_class( $attributes['formName'] ?? '' );
+			$label_typography  = isset( $attributes['labelTypography'] ) && is_array( $attributes['labelTypography'] ) ? $attributes['labelTypography'] : array();
+			$placeholder_typo  = isset( $attributes['placeholderTypography'] ) && is_array( $attributes['placeholderTypography'] ) ? $attributes['placeholderTypography'] : array();
+			$style_spacing     = isset( $attributes['style']['spacing'] ) && is_array( $attributes['style']['spacing'] ) ? $attributes['style']['spacing'] : array();
+			$input_label_gap   = $attributes['inputLabelGap'] ?? '10px';
+			$block_gap         = $style_spacing['blockGap'] ?? '2em';
+
+			$vars = array();
+
+			if ( ! self::is_empty_style_value( $attributes['labelColor'] ?? '' ) ) {
+				$vars[] = '--wp--gutena-forms--label-color:' . $attributes['labelColor'] . ';';
+			}
+			if ( ! self::is_empty_style_value( $attributes['placeholderColor'] ?? '' ) ) {
+				$vars[] = '--wp--gutena-forms--placeholder-color:' . $attributes['placeholderColor'] . ';';
+			}
+			if ( ! self::is_empty_style_value( $attributes['inputBgColor'] ?? '' ) ) {
+				$vars[] = '--wp--gutena-forms--input-bg-color:' . $attributes['inputBgColor'] . ';';
+			}
+			if ( ! self::is_empty_style_value( $attributes['inputBorderColor'] ?? '' ) ) {
+				$vars[] = '--wp--gutena-forms--input-border-color:' . $attributes['inputBorderColor'] . ';';
+			}
+			if ( ! self::is_empty_style_value( $attributes['inputFocusBorderColor'] ?? '' ) ) {
+				$vars[] = '--wp--gutena-forms--input-focus-border-color:' . $attributes['inputFocusBorderColor'] . ';';
+			}
+			if ( ! empty( $label_typography['fontFamily'] ) ) {
+				$vars[] = '--wp--gutena-forms--label-font-family:' . $label_typography['fontFamily'] . ';';
+			}
+			if ( ! empty( $label_typography ) ) {
+				if ( ! self::is_empty_style_value( $label_typography['fontSize'] ?? '' ) ) {
+					$vars[] = '--wp--gutena-forms--label-font-size:' . $label_typography['fontSize'] . ';';
+				}
+				if ( ! self::is_empty_style_value( $label_typography['lineHeight'] ?? '' ) ) {
+					$vars[] = '--wp--gutena-forms--label-line-height:' . $label_typography['lineHeight'] . ';';
+				}
+				if ( ! self::is_empty_style_value( $label_typography['fontWeight'] ?? '' ) ) {
+					$vars[] = '--wp--gutena-forms--label-font-weight:' . $label_typography['fontWeight'] . ';';
+				}
+			}
+			if ( ! empty( $placeholder_typo['fontFamily'] ) ) {
+				$vars[] = '--wp--gutena-forms--placeholder-font-family:' . $placeholder_typo['fontFamily'] . ';';
+			}
+			if ( ! empty( $placeholder_typo ) ) {
+				if ( ! self::is_empty_style_value( $placeholder_typo['fontSize'] ?? '' ) ) {
+					$vars[] = '--wp--gutena-forms--placeholder-font-size:' . $placeholder_typo['fontSize'] . ';';
+				}
+				if ( ! self::is_empty_style_value( $placeholder_typo['lineHeight'] ?? '' ) ) {
+					$vars[] = '--wp--gutena-forms--placeholder-line-height:' . $placeholder_typo['lineHeight'] . ';';
+				}
+				if ( ! self::is_empty_style_value( $placeholder_typo['fontWeight'] ?? '' ) ) {
+					$vars[] = '--wp--gutena-forms--placeholder-font-weight:' . $placeholder_typo['fontWeight'] . ';';
+				}
+			}
+			if ( ! self::is_empty_style_value( $attributes['inputBorderWidth'] ?? '' ) ) {
+				$vars[] = '--wp--gutena-forms--input-border-width:' . $attributes['inputBorderWidth'] . ';';
+			}
+			if ( ! self::is_empty_style_value( $attributes['inputBorderRadius'] ?? '' ) ) {
+				$vars[] = '--wp--gutena-forms--input-border-radius:' . $attributes['inputBorderRadius'] . ';';
+			}
+
+			$vars[] = '--wp--style--block-gap:' . $block_gap . ';';
+
+			$css  = '.' . $form_class . ' {' . implode( '', $vars ) . '}';
+			$css .= '.' . $form_class . ' .wp-block-gutena-field-group {--wp--style--block-gap:' . $input_label_gap . ';}';
+
+			return $css;
+		}
+
+		/**
+		 * Resolve saved or generated form style CSS for frontend output.
+		 *
+		 * @param array $attributes Block attributes.
+		 * @return string
+		 */
+		public static function get_form_style_for_render( $attributes ) {
+			$attributes = is_array( $attributes ) ? $attributes : array();
+
+			if ( ! empty( $attributes['formStyle'] ) ) {
+				return (string) $attributes['formStyle'];
+			}
+
+			return self::build_form_style_from_attributes( $attributes );
+		}
+
+		/**
+		 * Normalize and inject per-form CSS before rendered block markup.
+		 *
+		 * @param string $content    Block HTML.
+		 * @param string $form_style Raw CSS string.
+		 * @return string
+		 */
+		private function inject_form_style_markup( $content, $form_style ) {
+			if ( empty( $form_style ) ) {
+				return $content;
+			}
+
+			if ( str_contains( $form_style, 'u002' ) ) {
+				$form_style = str_replace(
+					array( 'u002d', 'u0022', 'u003e' ),
+					array( '-', '"', '>' ),
+					$form_style
+				);
+			}
+
+			return '<style>' . wp_strip_all_tags( $form_style ) . '</style>' . $content;
+		}
+
+		/**
 		 * Render Form Block
 		 *
 		 * @since 1.6.0
@@ -179,6 +316,10 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 
 			$content = $this->demote_nested_form_wrapper( $content );
 
+			$form_style = self::get_form_style_for_render( $attributes );
+
+			$content = $this->inject_form_style_markup( $content, $form_style );
+
 			// Page-break / multi-step settings for front end (independent of email settings).
 			if ( ! empty( $attributes['settings']['pageBreak'] ) && is_array( $attributes['settings']['pageBreak'] ) ) {
 				$page_break_json = wp_json_encode( $attributes['settings']['pageBreak'] );
@@ -190,14 +331,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				}
 			}
 
-			// No changes if attributes is empty.
-			if ( empty( $attributes ) || empty( $attributes['adminEmails'] ) ) {
-				return $content;
-			}
-
-
-
-			if ( class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) {
+			if ( ! empty( $attributes ) && class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) {
 				$confirmation_config = Gutena_Forms_Confirmation_Helper::get_frontend_config( $attributes );
 				if ( ! empty( $confirmation_config ) ) {
 					$confirmation_json = wp_json_encode( $confirmation_config );
@@ -216,8 +350,8 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				}
 			}
 
-			// No changes if admin emails are empty.
-			if ( empty( $attributes['adminEmails'] ) ) {
+			// No changes if attributes is empty.
+			if ( empty( $attributes ) || empty( $attributes['adminEmails'] ) ) {
 				return $content;
 			}
 
@@ -329,8 +463,6 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			);
 			// filter content.
 			$content = apply_filters( 'gutena_forms_render_form', $content, $attributes );
-			// Enqueue block styles.
-			$this->enqueue_block_styles( $attributes['formStyle'] );
 
 			return $content;
 		}
@@ -385,7 +517,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 					}
 
 					$new_style = wp_strip_all_tags( $style );
-					echo '<style>' . esc_attr( $new_style ) . "</style>\n";
+					echo '<style>' . $new_style . "</style>\n";
 				},
 				$priority
 			);

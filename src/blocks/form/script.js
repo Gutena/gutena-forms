@@ -240,8 +240,24 @@ document.addEventListener("DOMContentLoaded", function(){
 
 					//exit and scroll to error field
 					if ( false === formCheck ) {
-						//Show error message at the form bottom
-						gutena_forms.classList.add( 'display-error-message' );
+						const validationConfirmationConfig =
+							getFormConfirmationConfig( gutena_forms );
+
+						if (
+							isFormConfirmationEnabled(
+								validationConfirmationConfig
+							)
+						) {
+							handleConfirmationError(
+								gutena_forms,
+								new FormData( gutena_forms ),
+								validationConfirmationConfig
+							);
+						} else {
+							gutena_forms.classList.add(
+								'display-error-message'
+							);
+						}
 						//scroll to element
 						error_field.scrollIntoView( {
 							behavior: 'smooth',

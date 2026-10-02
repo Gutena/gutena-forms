@@ -108,7 +108,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			<div { ...blockProps }>
 				<label htmlFor={ nameAttr } className="heading-input-label-gutena">
 					{ fieldName }
-					{ isRequired ? ' *' : '' }
+					{ isRequired ? <span className="gutena-forms-required-mark" aria-hidden="true"> *</span> : null }
 				</label>
 				<div className={ 'wp-block-gutena-form-field' }>
 					<input

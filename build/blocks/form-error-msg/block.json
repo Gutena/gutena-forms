@@ -31,7 +31,11 @@
       "margin": true,
       "padding": true
     },
-    "__experimentalLayout": true
+    "__experimentalLayout": true,
+    "lock": {
+      "remove": true,
+      "move": false
+    }
   },
   "textdomain": "gutena-forms",
   "editorScript": "file:./index.js",

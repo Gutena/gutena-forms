@@ -1,0 +1,21 @@
+.gutena-forms-notice-preview.is-readonly {
+	cursor: pointer;
+	margin-top: 1rem;
+	min-height: 48px;
+	position: relative;
+
+	&:hover,
+	&:focus {
+		outline: 1px solid #0da88c;
+		outline-offset: 2px;
+	}
+
+	&__content {
+		pointer-events: none;
+
+		> .gutena-forms-success-banner,
+		> .gutena-forms-error-message {
+			width: 100%;
+		}
+	}
+}

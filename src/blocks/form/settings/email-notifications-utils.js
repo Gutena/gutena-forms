@@ -11,6 +11,11 @@ export const DEFAULT_ADMIN_NOTIFICATION_SUBJECT = __(
 	'gutena-forms'
 );
 
+export const DEFAULT_SEND_EMAIL_TO = '{admin_email}';
+export const DEFAULT_FROM_NAME = '{site_title}';
+export const DEFAULT_FROM_EMAIL = '{admin_email}';
+export const DEFAULT_MESSAGE = '{all_data}';
+
 export const FROM_EMAIL_WARNING = __(
 	"Please enter a valid email address. Your notifications won't be sent if the field is not filled in correctly.",
 	'gutena-forms'
@@ -23,12 +28,20 @@ export const createNotificationId = () => {
 	return `gutena_notification_${ random }`;
 };
 
+const resolveTagDefault = ( value, fallback ) => {
+	const trimmed = String( value ?? '' ).trim();
+	return trimmed || fallback;
+};
+
 export const buildNotificationFromDefaults = ( defaults = {} ) => ( {
-	send_email_to: defaults.send_email_to || '',
+	send_email_to: resolveTagDefault(
+		defaults.send_email_to,
+		DEFAULT_SEND_EMAIL_TO
+	),
 	subject: defaults.subject || DEFAULT_ADMIN_NOTIFICATION_SUBJECT,
-	message: defaults.message || '',
-	from_name: defaults.from_name || '',
-	from_email: defaults.from_email || '',
+	message: resolveTagDefault( defaults.message, DEFAULT_MESSAGE ),
+	from_name: resolveTagDefault( defaults.from_name, DEFAULT_FROM_NAME ),
+	from_email: resolveTagDefault( defaults.from_email, DEFAULT_FROM_EMAIL ),
 	cc: defaults.cc || '',
 	bcc: defaults.bcc || '',
 	reply_to: defaults.reply_to || '',
@@ -94,47 +107,49 @@ export const getNotificationDefaults = (
 	const customized =
 		null === isCustomized ? hasCustomEmailNotifications( stored ) : isCustomized;
 	const globalDefaults = getGlobalNotificationDefaults();
+	const hasExplicitCustomConfig =
+		stored.hasSavedConfig && false === stored.defaultSettings;
 
 	if ( ! customized ) {
 		return buildNotificationFromDefaults( {
-			send_email_to: globalDefaults.send_email_to || '',
-			subject: globalDefaults.subject || DEFAULT_ADMIN_NOTIFICATION_SUBJECT,
-			message: globalDefaults.message || '',
-			from_name: globalDefaults.from_name || '',
-			from_email: stored.from_email || globalDefaults.from_email || '',
-			cc: stored.cc || globalDefaults.cc || '',
-			bcc: stored.bcc || globalDefaults.bcc || '',
-			reply_to: stored.reply_to || globalDefaults.reply_to || '',
+			send_email_to: globalDefaults.send_email_to,
+			subject: globalDefaults.subject,
+			message: globalDefaults.message,
+			from_name: globalDefaults.from_name,
+			from_email: stored.from_email || globalDefaults.from_email,
+			cc: stored.cc || globalDefaults.cc,
+			bcc: stored.bcc || globalDefaults.bcc,
+			reply_to: stored.reply_to || globalDefaults.reply_to,
 			reply_to_name: legacyAttrs.replyToName || '',
 			reply_to_last_name: legacyAttrs.replyToLastName || '',
 		} );
 	}
 
 	return buildNotificationFromDefaults( {
-		send_email_to:
-			legacyAttrs.adminEmails ||
-			globalDefaults.send_email_to ||
-			stored.send_email_to ||
-			'',
-		subject:
-			legacyAttrs.adminEmailSubject ||
-			globalDefaults.subject ||
-			stored.subject ||
-			DEFAULT_ADMIN_NOTIFICATION_SUBJECT,
-		message:
-			legacyAttrs.adminEmailTemplate ||
-			globalDefaults.message ||
-			stored.message ||
-			'',
-		from_name:
-			legacyAttrs.emailFromName ||
-			globalDefaults.from_name ||
-			stored.from_name ||
-			'',
-		from_email: stored.from_email || globalDefaults.from_email || '',
-		cc: stored.cc || globalDefaults.cc || '',
-		bcc: stored.bcc || globalDefaults.bcc || '',
-		reply_to: stored.reply_to || globalDefaults.reply_to || '',
+		send_email_to: hasExplicitCustomConfig
+			? legacyAttrs.adminEmails ||
+				stored.send_email_to ||
+				globalDefaults.send_email_to
+			: globalDefaults.send_email_to || stored.send_email_to,
+		subject: hasExplicitCustomConfig
+			? legacyAttrs.adminEmailSubject ||
+				stored.subject ||
+				globalDefaults.subject
+			: globalDefaults.subject || stored.subject,
+		message: hasExplicitCustomConfig
+			? legacyAttrs.adminEmailTemplate ||
+				stored.message ||
+				globalDefaults.message
+			: globalDefaults.message || stored.message,
+		from_name: hasExplicitCustomConfig
+			? legacyAttrs.emailFromName ||
+				stored.from_name ||
+				globalDefaults.from_name
+			: globalDefaults.from_name || stored.from_name,
+		from_email: stored.from_email || globalDefaults.from_email,
+		cc: stored.cc || globalDefaults.cc,
+		bcc: stored.bcc || globalDefaults.bcc,
+		reply_to: stored.reply_to || globalDefaults.reply_to,
 		reply_to_name: legacyAttrs.replyToName || '',
 		reply_to_last_name: legacyAttrs.replyToLastName || '',
 	} );

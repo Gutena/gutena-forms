@@ -405,7 +405,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					className="heading-input-label-gutena"
 				>
 					{ fieldName }
-					{ isRequired ? ' *' : '' }
+					{ isRequired ? <span className="gutena-forms-required-mark" aria-hidden="true"> *</span> : null }
 				</label>
 				<div className="wp-block-gutena-form-field">
 					<DropdownCustomEditor
