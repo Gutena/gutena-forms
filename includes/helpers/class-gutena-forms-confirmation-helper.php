@@ -491,6 +491,69 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 		}
 
 		/**
+		 * Resolve full confirmation settings (messages, redirect, type) from global or form attrs.
+		 *
+		 * @param array $settings Form confirmation settings from block attrs.
+		 * @return array
+		 */
+		public static function resolve_confirmation_settings( $settings ) {
+			$settings = is_array( $settings ) ? $settings : array();
+			$global   = self::get_settings();
+			$uses_global = self::uses_global_confirmation_defaults( $settings );
+
+			if ( $uses_global ) {
+				$confirmation_type = sanitize_key( $global['confirmation_type'] );
+				$after_submit      = sanitize_key( $global['after_submit'] );
+				$redirect_type       = sanitize_key( $global['redirect_type'] );
+				$redirect_page_id    = self::sanitize_redirect_page_id( $global['redirect_page_id'] );
+				$redirect_url        = self::sanitize_redirect_url( $global['redirect_url'] );
+				$messages            = array(
+					'success_message' => self::normalize_success_message_html( $global['success_message'] ),
+					'error_message'   => self::normalize_error_message_html( $global['error_message'] ),
+				);
+			} else {
+				$confirmation_type = isset( $settings['confirmationType'] ) ? sanitize_key( $settings['confirmationType'] ) : 'message';
+				$after_submit      = isset( $settings['afterSubmit'] ) ? sanitize_key( $settings['afterSubmit'] ) : 'hide';
+				$redirect_type       = isset( $settings['redirectType'] ) ? sanitize_key( $settings['redirectType'] ) : 'page';
+				$redirect_page_id    = self::sanitize_redirect_page_id( $settings['redirectPageId'] ?? 0 );
+				$redirect_url        = self::sanitize_redirect_url( $settings['redirectUrl'] ?? '' );
+				$messages            = self::resolve_confirmation_messages( $settings );
+			}
+
+			if ( ! in_array( $confirmation_type, array( 'message', 'redirect' ), true ) ) {
+				$confirmation_type = 'message';
+			}
+
+			if ( ! in_array( $after_submit, array( 'hide', 'reset' ), true ) ) {
+				$after_submit = 'hide';
+			}
+
+			if ( ! in_array( $redirect_type, array( 'page', 'custom_url' ), true ) ) {
+				$redirect_type = 'page';
+			}
+
+			$resolved_redirect_url = self::resolve_redirect_url(
+				array(
+					'confirmation_type' => $confirmation_type,
+					'redirect_type'       => $redirect_type,
+					'redirect_page_id'    => $redirect_page_id,
+					'redirect_url'        => $redirect_url,
+				)
+			);
+
+			return array(
+				'confirmation_type'     => $confirmation_type,
+				'after_submit'          => $after_submit,
+				'redirect_type'         => $redirect_type,
+				'redirect_page_id'      => $redirect_page_id,
+				'redirect_url'          => $redirect_url,
+				'resolved_redirect_url' => $resolved_redirect_url,
+				'success_message'       => $messages['success_message'],
+				'error_message'         => $messages['error_message'],
+			);
+		}
+
+		/**
 		 * Build frontend-safe confirmation config from block attributes.
 		 *
 		 * @param array $attributes Form block attributes.
@@ -502,49 +565,30 @@ if ( ! class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) :
 				? $attributes['settings']['formConfirmation']
 				: array();
 
-			if ( self::is_confirmation_explicitly_disabled( $settings ) || empty( $settings ) ) {
+			if ( self::is_confirmation_explicitly_disabled( $settings ) ) {
 				return null;
 			}
 
-			$confirmation_type = isset( $settings['confirmationType'] ) ? sanitize_key( $settings['confirmationType'] ) : 'message';
-			if ( ! in_array( $confirmation_type, array( 'message', 'redirect' ), true ) ) {
-				$confirmation_type = 'message';
+			// Match editor behavior: missing formConfirmation inherits global defaults.
+			if ( empty( $settings ) ) {
+				$settings = array(
+					'defaultSettings' => true,
+					'enabled'         => true,
+				);
 			}
 
-			$after_submit = isset( $settings['afterSubmit'] ) ? sanitize_key( $settings['afterSubmit'] ) : 'hide';
-			if ( ! in_array( $after_submit, array( 'hide', 'reset' ), true ) ) {
-				$after_submit = 'hide';
-			}
-
-			$redirect_type = isset( $settings['redirectType'] ) ? sanitize_key( $settings['redirectType'] ) : 'page';
-			if ( ! in_array( $redirect_type, array( 'page', 'custom_url' ), true ) ) {
-				$redirect_type = 'page';
-			}
-
-			$redirect_page_id = self::sanitize_redirect_page_id( $settings['redirectPageId'] ?? 0 );
-			$redirect_url     = self::sanitize_redirect_url( $settings['redirectUrl'] ?? '' );
-
-			$resolved_redirect_url = self::resolve_redirect_url(
-				array(
-					'confirmation_type' => $confirmation_type,
-					'redirect_type'       => $redirect_type,
-					'redirect_page_id'    => $redirect_page_id,
-					'redirect_url'        => $redirect_url,
-				)
-			);
-
-			$messages = self::resolve_confirmation_messages( $settings );
+			$resolved = self::resolve_confirmation_settings( $settings );
 
 			return array(
 				'enabled'             => true,
-				'confirmationType'    => $confirmation_type,
-				'successMessage'      => $messages['success_message'],
-				'errorMessage'        => $messages['error_message'],
-				'afterSubmit'         => $after_submit,
-				'redirectType'        => $redirect_type,
-				'redirectPageId'      => $redirect_page_id,
-				'redirectUrl'         => $redirect_url,
-				'resolvedRedirectUrl' => $resolved_redirect_url,
+				'confirmationType'    => $resolved['confirmation_type'],
+				'successMessage'      => $resolved['success_message'],
+				'errorMessage'        => $resolved['error_message'],
+				'afterSubmit'         => $resolved['after_submit'],
+				'redirectType'        => $resolved['redirect_type'],
+				'redirectPageId'      => $resolved['redirect_page_id'],
+				'redirectUrl'         => $resolved['redirect_url'],
+				'resolvedRedirectUrl' => $resolved['resolved_redirect_url'],
 			);
 		}
 

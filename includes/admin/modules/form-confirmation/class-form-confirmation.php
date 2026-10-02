@@ -117,7 +117,7 @@ if ( ! class_exists( 'Gutena_Forms_Form_Confirmation' ) && class_exists( 'Gutena
 			return array(
 				'id'          => 'form-confirmation',
 				'title'       => __( 'Form Confirmation', 'gutena-forms' ),
-				'description' => __( 'Configure default settings that apply to newly created forms.', 'gutena-forms' ),
+				'description' => __( 'Configure default confirmation settings for forms that use global defaults. Per-form settings in the block editor override these when configured individually.', 'gutena-forms' ),
 				'fields'      => array(
 					array(
 						'id'    => 'confirmation_type',

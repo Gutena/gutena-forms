@@ -344,27 +344,41 @@ export const confirmationMatchesGlobalDefaults = (
 	);
 };
 
-export const resolveConfirmationMessages = ( stored = {}, globalDefaults = {} ) => {
+export const resolveConfirmationSettings = ( stored = {} ) => {
 	const built = getGlobalConfirmationDefaultsForEditor();
+
+	if ( usesGlobalConfirmationDefaults( stored ) ) {
+		return cloneConfirmation( built );
+	}
+
 	const extracted = extractConfirmationConfig( stored );
 	let successMessage = built.successMessage;
 	let errorMessage = built.errorMessage;
 
-	if ( ! usesGlobalConfirmationDefaults( stored ) ) {
-		successMessage = hasMessageContent( extracted.successMessage )
-			? extracted.successMessage
-			: built.successMessage;
-		errorMessage = hasMessageContent( extracted.errorMessage )
-			? extracted.errorMessage
-			: built.errorMessage;
+	if ( hasMessageContent( extracted.successMessage ) ) {
+		successMessage = extracted.successMessage;
+	}
+
+	if ( hasMessageContent( extracted.errorMessage ) ) {
+		errorMessage = extracted.errorMessage;
 	}
 
 	return {
-		...extracted,
+		confirmationType: extracted.confirmationType || built.confirmationType,
+		afterSubmit: extracted.afterSubmit || built.afterSubmit,
+		redirectType: extracted.redirectType || built.redirectType,
+		redirectPageId:
+			extracted.redirectPageId || built.redirectPageId,
+		redirectUrl: extracted.redirectUrl || built.redirectUrl,
+		resolvedRedirectUrl:
+			extracted.resolvedRedirectUrl || built.resolvedRedirectUrl,
 		successMessage: normalizeSuccessMessageHtml( successMessage ),
 		errorMessage: normalizeErrorMessageHtml( errorMessage ),
 	};
 };
+
+export const resolveConfirmationMessages = ( stored = {}, globalDefaults = {} ) =>
+	resolveConfirmationSettings( stored, globalDefaults );
 
 export const getConfirmationDefaults = ( settings = {} ) => {
 	const stored = settings?.formConfirmation || {};
@@ -427,7 +441,7 @@ export const resolveFormConfirmationState = ( settings, legacyAttrs = {} ) => {
 	const globalDefaults = getGlobalConfirmationDefaults();
 	const defaults = getConfirmationDefaults( settings );
 	const enabled = resolveFormConfirmationEnabled( stored );
-	const resolvedMessages = resolveConfirmationMessages(
+	const resolvedSettings = resolveConfirmationSettings(
 		stored,
 		globalDefaults
 	);
@@ -436,7 +450,7 @@ export const resolveFormConfirmationState = ( settings, legacyAttrs = {} ) => {
 		return {
 			enabled,
 			hasSavedConfig: true,
-			confirmation: resolvedMessages,
+			confirmation: resolvedSettings,
 			defaults,
 		};
 	}
@@ -445,7 +459,7 @@ export const resolveFormConfirmationState = ( settings, legacyAttrs = {} ) => {
 		return {
 			enabled,
 			hasSavedConfig: false,
-			confirmation: resolvedMessages,
+			confirmation: resolvedSettings,
 			defaults,
 		};
 	}
@@ -456,7 +470,7 @@ export const resolveFormConfirmationState = ( settings, legacyAttrs = {} ) => {
 			hasSavedConfig: false,
 			confirmation: {
 				...mapLegacyAttrsToConfirmation( legacyAttrs, defaults ),
-				...resolvedMessages,
+				...resolvedSettings,
 			},
 			defaults,
 		};
@@ -465,19 +479,21 @@ export const resolveFormConfirmationState = ( settings, legacyAttrs = {} ) => {
 	return {
 		enabled,
 		hasSavedConfig: false,
-		confirmation: resolvedMessages,
+		confirmation: resolvedSettings,
 		defaults,
 	};
 };
 
 export const createSeedConfirmation = ( defaults = {}, existing = {} ) => {
-	const resolved = resolveConfirmationMessages( existing, getGlobalConfirmationDefaults() );
+	const resolved = resolveConfirmationSettings(
+		existing,
+		getGlobalConfirmationDefaults()
+	);
 
 	return cloneConfirmation( {
 		...defaults,
 		...existing,
-		successMessage: resolved.successMessage,
-		errorMessage: resolved.errorMessage,
+		...resolved,
 	} );
 };
 
@@ -598,6 +614,12 @@ export const persistFormConfirmation = (
 	if ( usesGlobalConfirmationDefaults( next ) ) {
 		delete next.successMessage;
 		delete next.errorMessage;
+		delete next.confirmationType;
+		delete next.afterSubmit;
+		delete next.redirectType;
+		delete next.redirectPageId;
+		delete next.redirectUrl;
+		delete next.resolvedRedirectUrl;
 	}
 
 	const attrs = {
@@ -613,9 +635,12 @@ export const persistFormConfirmation = (
 			mapFormConfirmationToLegacyAttrs( getNeutralLegacyConfirmation() )
 		);
 	} else if ( syncLegacy ) {
+		const legacySource = usesGlobalConfirmationDefaults( next )
+			? buildFormConfirmationFromDefaults( getGlobalConfirmationDefaults() )
+			: extractConfirmationConfig( next );
 		Object.assign(
 			attrs,
-			mapFormConfirmationToLegacyAttrs( extractConfirmationConfig( next ) )
+			mapFormConfirmationToLegacyAttrs( legacySource )
 		);
 	}
 

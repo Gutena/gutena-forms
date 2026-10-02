@@ -228,8 +228,14 @@ export const handleConfirmationSuccess = ( form, formData, config ) => {
 			return;
 		}
 
-		showSuccessMessage( form, formData, config );
-		form.reset();
+		if ( typeof console !== 'undefined' && console.warn ) {
+			console.warn(
+				'Gutena Forms: redirect URL could not be resolved.',
+				config
+			);
+		}
+
+		handleConfirmationError( form, formData, config );
 		return;
 	}
 

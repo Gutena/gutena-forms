@@ -167,6 +167,27 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		}
 
 		/**
+		 * Inject HTML immediately after the opening form tag.
+		 *
+		 * @since 2.3.0
+		 * @param string $content       Block HTML.
+		 * @param string $html_fragment HTML to insert after <form>.
+		 * @return string
+		 */
+		private function inject_after_form_opening( $content, $html_fragment ) {
+			if ( empty( $html_fragment ) ) {
+				return $content;
+			}
+
+			return preg_replace(
+				'/(<form\b[^>]*>)/i',
+				'$1' . $html_fragment,
+				$content,
+				1
+			);
+		}
+
+		/**
 		 * Form block CSS class derived from the form name.
 		 *
 		 * @param string $form_name Form name attribute.
@@ -313,6 +334,9 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 		 * @return string
 		 */
 		public function render_block( $attributes, $content ) {
+			if ( empty( $attributes ) ) {
+				return $content;
+			}
 
 			$content = $this->demote_nested_form_wrapper( $content );
 
@@ -331,7 +355,8 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 				}
 			}
 
-			if ( ! empty( $attributes ) && class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) {
+			$confirmation_config = null;
+			if ( class_exists( 'Gutena_Forms_Confirmation_Helper' ) ) {
 				$confirmation_config = Gutena_Forms_Confirmation_Helper::get_frontend_config( $attributes );
 				if ( ! empty( $confirmation_config ) ) {
 					$confirmation_json = wp_json_encode( $confirmation_config );
@@ -341,23 +366,26 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 						$form_attrs .= ' data-form-name="' . esc_attr( $attributes['formName'] ) . '"';
 					}
 
-					$content = preg_replace(
-						'/' . preg_quote( '>', '/' ) . '/',
-						$form_attrs . '>',
-						$content,
-						1
-					);
+					$content = $this->inject_form_opening_attribute( $content, $form_attrs );
 				}
-			}
-
-			// No changes if attributes is empty.
-			if ( empty( $attributes ) || empty( $attributes['adminEmails'] ) ) {
-				return $content;
 			}
 
 			$html = '';
 			if ( ! empty( $attributes['redirectUrl'] ) ) {
 				$html = '<input type="hidden" name="redirect_url" value="' . esc_attr( esc_url( $attributes['redirectUrl'] ) ) . '" />';
+			} elseif (
+				! empty( $confirmation_config )
+				&& 'redirect' === ( $confirmation_config['confirmationType'] ?? '' )
+			) {
+				$legacy_redirect = '';
+				if ( 'custom_url' === ( $confirmation_config['redirectType'] ?? '' ) ) {
+					$legacy_redirect = $confirmation_config['redirectUrl'] ?? '';
+				} else {
+					$legacy_redirect = $confirmation_config['resolvedRedirectUrl'] ?? '';
+				}
+				if ( ! empty( $legacy_redirect ) ) {
+					$html = '<input type="hidden" name="redirect_url" value="' . esc_attr( esc_url( $legacy_redirect ) ) . '" />';
+				}
 			}
 
 			$recaptcha_html      = '';
@@ -420,33 +448,21 @@ if ( ! class_exists( 'Gutena_Forms_Form_Block' ) ) :
 			// Add validation messages data attribute.
 			if ( ! empty( $attributes['messages'] ) && isset( $attributes['messages']['defaultSettings'] ) && false === $attributes['messages']['defaultSettings'] ) {
 				$messages_json = wp_json_encode( $attributes['messages'] );
-				$content       = preg_replace(
-					'/' . preg_quote( '>', '/' ) . '/',
-					' data-validation-messages="' . esc_attr( $messages_json ) . '">',
+				$content       = $this->inject_form_opening_attribute(
 					$content,
-					1
+					' data-validation-messages="' . esc_attr( $messages_json ) . '"'
 				);
 			}
 
 			// Add recaptcha data attributes for frontend (per-form site key / type).
 			if ( ! empty( $effective_recaptcha ) ) {
 				$recaptcha_attrs = ' data-recaptcha-site-key="' . esc_attr( $effective_recaptcha['site_key'] ) . '" data-recaptcha-type="' . esc_attr( $effective_recaptcha['type'] ) . '"';
-				$content         = preg_replace(
-					'/' . preg_quote( '>', '/' ) . '/',
-					$recaptcha_attrs . '>',
-					$content,
-					1
-				);
+				$content         = $this->inject_form_opening_attribute( $content, $recaptcha_attrs );
 			}
 
-			// Add required html.
+			// Legacy redirect hidden input (inside the form).
 			if ( ! empty( $html ) ) {
-				$content = preg_replace(
-					'/' . preg_quote( '>', '/' ) . '/',
-					'>' . $html,
-					$content,
-					1
-				);
+				$content = $this->inject_after_form_opening( $content, $html );
 			}
 
 			// Submit Button HTML markup : change link to button tag.
