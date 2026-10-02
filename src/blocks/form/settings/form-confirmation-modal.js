@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Button, SelectControl, TextControl } from '@wordpress/components';
+import { Button } from '@wordpress/components';
+import FormConfirmationFieldControl from './components/form-confirmation-field-control';
 import { close } from '@wordpress/icons';
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
@@ -171,12 +172,14 @@ const FormConfirmationModal = ( {
 					>
 						{ __( 'Form Confirmation', 'gutena-forms' ) }
 					</h2>
-					<Button
-						className="gutena-forms-form-confirmation-modal__close"
-						icon={ close }
-						label={ __( 'Close', 'gutena-forms' ) }
-						onClick={ onClose }
-					/>
+					<div className="gutena-forms-form-confirmation-modal__header-actions">
+						<Button
+							className="gutena-forms-form-confirmation-modal__close"
+							icon={ close }
+							label={ __( 'Close', 'gutena-forms' ) }
+							onClick={ onClose }
+						/>
+					</div>
 				</div>
 
 				<div className="gutena-forms-form-confirmation-modal__body">
@@ -241,66 +244,57 @@ const FormConfirmationModal = ( {
 					) }
 
 					{ 'redirect' === draft.confirmationType && (
-						<>
-							<div className="gutena-forms-form-confirmation-modal__section">
-								<FormConfirmationRadioGroup
-									id="gutena-form-confirmation-redirect-type"
-									label={ __( 'Redirect to', 'gutena-forms' ) }
-									value={ draft.redirectType }
-									options={ {
-										page: __( 'Page', 'gutena-forms' ),
-										custom_url: __( 'Custom URL', 'gutena-forms' ),
-									} }
-									onChange={ ( value ) =>
-										updateDraft( 'redirectType', value )
-									}
-								/>
-							</div>
+						<div className="gutena-forms-form-confirmation-modal__section gutena-forms-form-confirmation-modal__section--redirect">
+							<FormConfirmationRadioGroup
+								id="gutena-form-confirmation-redirect-type"
+								label={ __( 'Redirect to', 'gutena-forms' ) }
+								value={ draft.redirectType }
+								options={ {
+									page: __( 'Page', 'gutena-forms' ),
+									custom_url: __( 'Custom URL', 'gutena-forms' ),
+								} }
+								onChange={ ( value ) =>
+									updateDraft( 'redirectType', value )
+								}
+							/>
 
 							{ 'page' === draft.redirectType && (
-								<div className="gutena-forms-form-confirmation-modal__section">
-									<SelectControl
-										label={ __( 'Page', 'gutena-forms' ) }
-										value={ String( draft.redirectPageId || 0 ) }
-										options={ pageOptions }
-										onChange={ ( value ) =>
-											updateDraft(
-												'redirectPageId',
-												parseInt( value, 10 ) || 0
-											)
-										}
-										__nextHasNoMarginBottom
-									/>
-								</div>
+								<FormConfirmationFieldControl
+									id="gutena-form-confirmation-redirect-page"
+									label={ __( 'Select Page', 'gutena-forms' ) }
+									type="select"
+									value={ String( draft.redirectPageId || 0 ) }
+									options={ pageOptions }
+									onChange={ ( value ) =>
+										updateDraft(
+											'redirectPageId',
+											parseInt( value, 10 ) || 0
+										)
+									}
+								/>
 							) }
 
 							{ 'custom_url' === draft.redirectType && (
-								<div className="gutena-forms-form-confirmation-modal__section">
-									<TextControl
-										type="url"
-										label={ __( 'Custom URL', 'gutena-forms' ) }
-										value={ draft.redirectUrl }
-										onChange={ ( value ) =>
-											updateDraft( 'redirectUrl', value )
-										}
-										placeholder="https://example.com/thank-you"
-										help={
-											redirectUrlError ||
-											__(
-												'Enter a full URL using http:// or https://.',
-												'gutena-forms'
-											)
-										}
-										className={
-											redirectUrlError
-												? 'gutena-forms-form-confirmation-modal__url-error'
-												: ''
-										}
-										__nextHasNoMarginBottom
-									/>
-								</div>
+								<FormConfirmationFieldControl
+									id="gutena-form-confirmation-redirect-url"
+									label={ __( 'Custom URL', 'gutena-forms' ) }
+									type="url"
+									value={ draft.redirectUrl }
+									onChange={ ( value ) =>
+										updateDraft( 'redirectUrl', value )
+									}
+									placeholder="https://example.com/thank-you"
+									helpText={
+										redirectUrlError ||
+										__(
+											'Enter a full URL using http:// or https://.',
+											'gutena-forms'
+										)
+									}
+									hasError={ Boolean( redirectUrlError ) }
+								/>
 							) }
-						</>
+						</div>
 					) }
 				</div>
 

@@ -12,11 +12,7 @@ import {
 	sanitizeNotification,
 	shouldShowFromEmailWarning,
 } from './email-notifications-utils';
-import {
-	getContentMergeTags,
-	getFormInputTagItems,
-	getRecipientMergeTags,
-} from './email-notifications-merge-tags';
+import { getTagsForField } from './email-notifications-merge-tags';
 
 const FROM_EMAIL_HELP = __(
 	'Notifications can use only one From Email so please enter a single address.',
@@ -62,9 +58,14 @@ const EmailNotificationsEditView = ( {
 		return null;
 	}
 
-	const recipientTags = getRecipientMergeTags( formFields );
-	const contentTags = getContentMergeTags( formFields );
-	const formTagItems = getFormInputTagItems( formFields );
+	const sendEmailToTags = getTagsForField( 'send_email_to', formFields, 'form' );
+	const subjectTags = getTagsForField( 'subject', formFields, 'form' );
+	const messageTags = getTagsForField( 'message', formFields, 'form' );
+	const fromNameTags = getTagsForField( 'from_name', formFields, 'form' );
+	const fromEmailTags = getTagsForField( 'from_email', formFields, 'form' );
+	const ccTags = getTagsForField( 'cc', formFields, 'form' );
+	const bccTags = getTagsForField( 'bcc', formFields, 'form' );
+	const replyToTags = getTagsForField( 'reply_to', formFields, 'form' );
 
 	const updateDraft = ( key, value ) => {
 		setDraft( ( current ) => ( {
@@ -118,7 +119,8 @@ const EmailNotificationsEditView = ( {
 				onChange={ ( value ) => updateDraft( 'send_email_to', value ) }
 				placeholder={ DEFAULT_SEND_EMAIL_TO }
 				required
-				mergeTags={ recipientTags }
+				mergeTags={ sendEmailToTags.tags }
+				tagItems={ sendEmailToTags.tagItems }
 				helpText={ MULTI_VALUE_HELP }
 			/>
 
@@ -129,16 +131,19 @@ const EmailNotificationsEditView = ( {
 				onChange={ ( value ) => updateDraft( 'subject', value ) }
 				placeholder={ DEFAULT_ADMIN_NOTIFICATION_SUBJECT }
 				required
-				mergeTags={ contentTags }
+				mergeTags={ subjectTags.tags }
+				tagItems={ subjectTags.tagItems }
 			/>
 
-				<GutenaFormsNotificationMessageField
+			<GutenaFormsNotificationMessageField
 				id="gutena-notification-message"
 				label={ __( 'Email Message', 'gutena-forms' ) }
 				value={ draft.message }
 				onChange={ ( value ) => updateDraft( 'message', value ) }
 				placeholder={ notificationDefaults?.message || '' }
-				formTagItems={ formTagItems }
+				genericTags={ messageTags.tags }
+				formTagItems={ messageTags.tagItems }
+				showFormTagsButton={ messageTags.tagItems.length > 0 }
 			/>
 
 			<NotificationFieldControl
@@ -148,7 +153,8 @@ const EmailNotificationsEditView = ( {
 				onChange={ ( value ) => updateDraft( 'from_name', value ) }
 				placeholder={ DEFAULT_FROM_NAME }
 				required
-				mergeTags={ contentTags }
+				mergeTags={ fromNameTags.tags }
+				tagItems={ fromNameTags.tagItems }
 			/>
 
 			<div className="gutena-forms-notification-field-group">
@@ -159,7 +165,8 @@ const EmailNotificationsEditView = ( {
 					onChange={ ( value ) => updateDraft( 'from_email', value ) }
 					placeholder={ DEFAULT_FROM_EMAIL }
 					required
-					mergeTags={ recipientTags }
+					mergeTags={ fromEmailTags.tags }
+					tagItems={ fromEmailTags.tagItems }
 					helpText={ FROM_EMAIL_HELP }
 				/>
 
@@ -180,7 +187,8 @@ const EmailNotificationsEditView = ( {
 				value={ draft.cc }
 				onChange={ ( value ) => updateDraft( 'cc', value ) }
 				placeholder={ DEFAULT_SEND_EMAIL_TO }
-				mergeTags={ recipientTags }
+				mergeTags={ ccTags.tags }
+				tagItems={ ccTags.tagItems }
 				helpText={ MULTI_VALUE_HELP }
 			/>
 
@@ -190,7 +198,8 @@ const EmailNotificationsEditView = ( {
 				value={ draft.bcc }
 				onChange={ ( value ) => updateDraft( 'bcc', value ) }
 				placeholder={ DEFAULT_SEND_EMAIL_TO }
-				mergeTags={ recipientTags }
+				mergeTags={ bccTags.tags }
+				tagItems={ bccTags.tagItems }
 				helpText={ MULTI_VALUE_HELP }
 			/>
 
@@ -200,7 +209,8 @@ const EmailNotificationsEditView = ( {
 				value={ draft.reply_to }
 				onChange={ ( value ) => updateDraft( 'reply_to', value ) }
 				placeholder={ DEFAULT_SEND_EMAIL_TO }
-				mergeTags={ recipientTags }
+				mergeTags={ replyToTags.tags }
+				tagItems={ replyToTags.tagItems }
 				helpText={ MULTI_VALUE_HELP }
 			/>
 

@@ -10,7 +10,10 @@ const NotificationFieldControl = ( {
 	required = false,
 	helpText = '',
 	mergeTags = [],
+	tagItems = [],
 } ) => {
+	const hasMergeTags = mergeTags.length > 0 || tagItems.length > 0;
+
 	return (
 		<div className="gutena-forms-notification-field">
 			<label className="gutena-forms-notification-field__label" htmlFor={ id }>
@@ -31,9 +34,10 @@ const NotificationFieldControl = ( {
 					placeholder={ placeholder }
 				/>
 
-				{ mergeTags.length > 0 && (
+				{ hasMergeTags && (
 					<GutenaFormsNotificationMergeTagPopover
 						tags={ mergeTags }
+						tagItems={ tagItems }
 						onInsert={ ( tag ) => {
 							const currentValue = value || '';
 							const element = document.getElementById( id );

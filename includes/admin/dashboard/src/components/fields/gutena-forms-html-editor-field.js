@@ -1,4 +1,3 @@
-import { __ } from '@wordpress/i18n';
 import GutenaFormsNotificationMessageField from '../../../../../../src/shared/components/GutenaFormsNotificationMessageField';
 
 const GutenaFormsHtmlEditorField = ( {
@@ -10,7 +9,7 @@ const GutenaFormsHtmlEditorField = ( {
 	disabled = false,
 	placeholder = '',
 	onRegisterInsert,
-	tagItems = [],
+	genericTags = [],
 } ) => {
 	return (
 		<div className={ `gutena-forms__html-editor-field${ disabled ? ' is-disabled' : '' }` }>
@@ -23,9 +22,8 @@ const GutenaFormsHtmlEditorField = ( {
 				disabled={ disabled }
 				placeholder={ placeholder }
 				onRegisterInsert={ onRegisterInsert }
-				formTagItems={ tagItems }
-				formTagsButtonLabel={ __( 'Form tags', 'gutena-forms' ) }
-				formTagsPopoverTitle={ __( 'Form input Tags', 'gutena-forms' ) }
+				genericTags={ genericTags }
+				showFormTagsButton={ false }
 			/>
 		</div>
 	);

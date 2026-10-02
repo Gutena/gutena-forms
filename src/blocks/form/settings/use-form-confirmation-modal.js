@@ -124,6 +124,9 @@ export const useFormConfirmationModal = ( settings, setAttributes, legacyAttrs )
 			displayEnabled,
 			confirmation: resolved.confirmation,
 			confirmationDefaults,
+			isModalOpen,
+			modalConfirmation,
+			initialFocusField,
 			openFormConfirmationModal,
 			closeFormConfirmationModal,
 			saveFormConfirmation,
@@ -135,6 +138,9 @@ export const useFormConfirmationModal = ( settings, setAttributes, legacyAttrs )
 			displayEnabled,
 			handleConfigure,
 			handleToggle,
+			initialFocusField,
+			isModalOpen,
+			modalConfirmation,
 			openFormConfirmationModal,
 			closeFormConfirmationModal,
 			resolved.confirmation,
@@ -145,11 +151,5 @@ export const useFormConfirmationModal = ( settings, setAttributes, legacyAttrs )
 
 	return {
 		contextValue,
-		isModalOpen,
-		modalConfirmation,
-		confirmationDefaults,
-		initialFocusField,
-		closeFormConfirmationModal,
-		saveFormConfirmation,
 	};
 };

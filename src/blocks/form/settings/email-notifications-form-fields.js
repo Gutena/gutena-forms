@@ -2,15 +2,25 @@ import { __ } from '@wordpress/i18n';
 import { gfIsEmpty, getInnerBlocksbyNameAttr } from '../../../shared/utils/helper';
 
 const STANDALONE_FIELD_BLOCKS = [
-	'gutena/email-field',
 	'gutena/text-field',
+	'gutena/email-field',
 	'gutena/textarea-field',
 	'gutena/number-field',
+	'gutena/range-field',
+	'gutena/dropdown-field',
+	'gutena/radio-field',
+	'gutena/checkbox-field',
+	'gutena/optin-field',
 	'gutena/url-field',
 	'gutena/phone-field',
-	'gutena/checkbox-field',
 	'gutena/country-field',
 	'gutena/state-field',
+	'gutena/date-field',
+	'gutena/time-field',
+	'gutena/rating-field',
+	'gutena/password-field',
+	'gutena/hidden-field',
+	'gutena/file-upload-field',
 ];
 
 const collectStandaloneFields = ( blocks, fieldType = '' ) => {

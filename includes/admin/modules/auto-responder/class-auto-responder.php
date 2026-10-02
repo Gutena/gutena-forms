@@ -87,11 +87,8 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 		 * @return array
 		 */
 		public function get_settings() {
-			$defaults        = Gutena_Forms_Auto_Responder_Helper::get_defaults();
-			$recipient_tags  = Gutena_Forms_Auto_Responder_Helper::get_recipient_merge_tags();
-			$content_tags    = Gutena_Forms_Auto_Responder_Helper::get_content_merge_tags();
-			$from_email_tags = Gutena_Forms_Auto_Responder_Helper::get_from_email_merge_tags();
-			$multi_help      = __( 'Comma separated values are also accepted.', 'gutena-forms' );
+			$defaults   = Gutena_Forms_Auto_Responder_Helper::get_defaults();
+			$multi_help = __( 'Comma separated values are also accepted.', 'gutena-forms' );
 
 			return array(
 				'id'          => 'auto-responder',
@@ -107,7 +104,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'attrs' => array(
 							'required'    => true,
 							'multiple'    => true,
-							'merge_tags'  => $recipient_tags,
+							'merge_tags'  => Gutena_Forms_Auto_Responder_Helper::get_merge_tags_for_field( 'send_email_to' ),
 							'placeholder' => $defaults['send_email_to'],
 						),
 					),
@@ -119,7 +116,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'attrs' => array(
 							'required'        => true,
 							'merge_tag_field' => true,
-							'merge_tags'      => $recipient_tags,
+							'merge_tags'      => Gutena_Forms_Auto_Responder_Helper::get_merge_tags_for_field( 'subject' ),
 							'placeholder'     => $defaults['subject'],
 						),
 					),
@@ -131,7 +128,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'attrs' => array(
 							'merge_tag_field' => true,
 							'placeholder'     => $defaults['message'],
-							'merge_tags'      => $content_tags,
+							'merge_tags'      => Gutena_Forms_Auto_Responder_Helper::get_merge_tags_for_field( 'message' ),
 						),
 					),
 					array(
@@ -141,7 +138,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'value' => $this->get_setting_value( 'from_name', $defaults ),
 						'attrs' => array(
 							'merge_tag_field' => true,
-							'merge_tags'      => $recipient_tags,
+							'merge_tags'      => Gutena_Forms_Auto_Responder_Helper::get_merge_tags_for_field( 'from_name' ),
 							'placeholder'     => $defaults['from_name'],
 						),
 					),
@@ -153,7 +150,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'value' => $this->get_setting_value( 'from_email', $defaults ),
 						'attrs' => array(
 							'allow_merge_tags' => true,
-							'merge_tags'       => $from_email_tags,
+							'merge_tags'       => Gutena_Forms_Auto_Responder_Helper::get_merge_tags_for_field( 'from_email' ),
 							'merge_tag_field'  => true,
 							'placeholder'      => $defaults['from_email'],
 						),
@@ -166,7 +163,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'value' => $this->get_setting_value( 'cc', $defaults ),
 						'attrs' => array(
 							'multiple'    => true,
-							'merge_tags'  => $recipient_tags,
+							'merge_tags'  => Gutena_Forms_Auto_Responder_Helper::get_merge_tags_for_field( 'cc' ),
 							'placeholder' => $defaults['send_email_to'],
 						),
 					),
@@ -178,7 +175,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'value' => $this->get_setting_value( 'bcc', $defaults ),
 						'attrs' => array(
 							'multiple'    => true,
-							'merge_tags'  => $recipient_tags,
+							'merge_tags'  => Gutena_Forms_Auto_Responder_Helper::get_merge_tags_for_field( 'bcc' ),
 							'placeholder' => $defaults['send_email_to'],
 						),
 					),
@@ -190,7 +187,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder' ) && class_exists( 'Gutena_Fo
 						'value' => $this->get_setting_value( 'reply_to', $defaults ),
 						'attrs' => array(
 							'multiple'    => true,
-							'merge_tags'  => $recipient_tags,
+							'merge_tags'  => Gutena_Forms_Auto_Responder_Helper::get_merge_tags_for_field( 'reply_to' ),
 							'placeholder' => $defaults['send_email_to'],
 						),
 					),

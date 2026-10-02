@@ -89,7 +89,35 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 		 * @return array
 		 */
 		public static function get_static_merge_tags() {
-			return self::get_recipient_merge_tags();
+			return self::get_generic_email_tags();
+		}
+
+		/**
+		 * Generic merge tags for email recipient fields.
+		 *
+		 * @return array
+		 */
+		public static function get_generic_email_tags() {
+			return array(
+				'{admin_email}',
+				'{user_email}',
+			);
+		}
+
+		/**
+		 * Generic merge tags for content fields.
+		 *
+		 * @return array
+		 */
+		public static function get_generic_content_tags() {
+			return array(
+				'{site_url}',
+				'{admin_email}',
+				'{site_title}',
+				'{form_title}',
+				'{user_email}',
+				'{user_name}',
+			);
 		}
 
 		/**
@@ -98,17 +126,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 		 * @return array
 		 */
 		public static function get_recipient_merge_tags() {
-			return array(
-				'{admin_email}',
-				'{user_email}',
-				'{user_name}',
-				'{form_title}',
-				'{form-title}',
-				'{site_title}',
-				'{site_name}',
-				'{site_url}',
-				'{submission_date}',
-			);
+			return self::get_generic_email_tags();
 		}
 
 		/**
@@ -117,18 +135,7 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 		 * @return array
 		 */
 		public static function get_content_merge_tags() {
-			return array(
-				'{all_data}',
-				'{admin_email}',
-				'{user_email}',
-				'{user_name}',
-				'{form_title}',
-				'{form-title}',
-				'{site_title}',
-				'{site_name}',
-				'{site_url}',
-				'{submission_date}',
-			);
+			return self::get_generic_content_tags();
 		}
 
 		/**
@@ -137,9 +144,27 @@ if ( ! class_exists( 'Gutena_Forms_Auto_Responder_Helper' ) ) :
 		 * @return array
 		 */
 		public static function get_from_email_merge_tags() {
-			return array(
-				'{admin_email}',
+			return self::get_generic_email_tags();
+		}
+
+		/**
+		 * Resolve generic merge tags for a global notification field.
+		 *
+		 * @param string $field_key Notification field key.
+		 * @return array
+		 */
+		public static function get_merge_tags_for_field( $field_key ) {
+			$content_fields = array(
+				'subject',
+				'message',
+				'from_name',
 			);
+
+			if ( in_array( $field_key, $content_fields, true ) ) {
+				return self::get_generic_content_tags();
+			}
+
+			return self::get_generic_email_tags();
 		}
 
 		/**

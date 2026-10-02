@@ -75,6 +75,12 @@ $gf-msg-border-light: #e2e2e2;
 	padding: 0;
 }
 
+.gutena-forms-notification-merge-tag-popover__items--grouped {
+	border-top: 1px solid $gf-msg-border-light;
+	margin-top: 8px;
+	padding-top: 8px;
+}
+
 .gutena-forms-notification-merge-tag-popover__items {
 	display: flex;
 	flex-direction: column;

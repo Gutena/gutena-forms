@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { getRecipientMergeTags } from './email-notifications-merge-tags';
+import { getAllowedMergeTagsForField } from './email-notifications-merge-tags';
 
 export const DEFAULT_ADMIN_NOTIFICATION_NAME = __(
 	'Admin Notification Email',
@@ -215,7 +215,9 @@ export const isValidFromEmailValue = ( value, formFields = [] ) => {
 	if ( EMAIL_REGEX.test( trimmed ) ) {
 		return true;
 	}
-	return getRecipientMergeTags( formFields ).includes( trimmed );
+	return getAllowedMergeTagsForField( 'from_email', formFields, 'form' ).includes(
+		trimmed
+	);
 };
 
 export const shouldShowFromEmailWarning = ( value, formFields = [] ) => {

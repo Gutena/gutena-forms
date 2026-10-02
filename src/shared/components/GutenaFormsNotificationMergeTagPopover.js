@@ -22,8 +22,9 @@ const GutenaFormsNotificationMergeTagPopover = ( {
 	tagItems = [],
 	onInsert,
 	variant = 'dots',
-	buttonLabel = __( 'Form tags', 'gutena-forms' ),
-	popoverTitle = __( 'Merge Tags', 'gutena-forms' ),
+	buttonLabel = __( 'Form Tags', 'gutena-forms' ),
+	popoverTitle = '',
+	showPopoverTitle = false,
 	disabled = false,
 } ) => {
 	const [ isOpen, setIsOpen ] = useState( false );
@@ -62,12 +63,36 @@ const GutenaFormsNotificationMergeTagPopover = ( {
 					offset={ 8 }
 				>
 					<div className="gutena-forms-notification-merge-tag-popover__content">
-						<p className="gutena-forms-notification-merge-tag-popover__title">
-							{ popoverTitle }
-						</p>
+						{ showPopoverTitle && popoverTitle && (
+							<p className="gutena-forms-notification-merge-tag-popover__title">
+								{ popoverTitle }
+							</p>
+						) }
 
-						{ tagItems.length > 0 ? (
-							<ul className="gutena-forms-notification-merge-tag-popover__items">
+						{ tags.length > 0 && (
+							<ul className="gutena-forms-notification-merge-tag-popover__tags">
+								{ tags.map( ( tag ) => (
+									<li key={ tag }>
+										<button
+											type="button"
+											className="gutena-forms-notification-merge-tag-popover__tag"
+											onClick={ () => handleInsert( tag ) }
+										>
+											{ tag }
+										</button>
+									</li>
+								) ) }
+							</ul>
+						) }
+
+						{ tagItems.length > 0 && (
+							<ul
+								className={ `gutena-forms-notification-merge-tag-popover__items${
+									tags.length > 0
+										? ' gutena-forms-notification-merge-tag-popover__items--grouped'
+										: ''
+								}` }
+							>
 								{ tagItems.map( ( item ) => (
 									<li key={ item.tag }>
 										<button
@@ -81,20 +106,6 @@ const GutenaFormsNotificationMergeTagPopover = ( {
 											<span className="gutena-forms-notification-merge-tag-popover__item-tag">
 												{ item.tag }
 											</span>
-										</button>
-									</li>
-								) ) }
-							</ul>
-						) : (
-							<ul className="gutena-forms-notification-merge-tag-popover__tags">
-								{ tags.map( ( tag ) => (
-									<li key={ tag }>
-										<button
-											type="button"
-											className="gutena-forms-notification-merge-tag-popover__tag"
-											onClick={ () => handleInsert( tag ) }
-										>
-											{ tag }
 										</button>
 									</li>
 								) ) }

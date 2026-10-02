@@ -105,15 +105,23 @@ $gf-fc-danger: #d70404;
 		top: 50%;
 		transform: translate(-50%, -50%);
 		width: min(700px, calc(100% - 32px));
+		z-index: 1;
 	}
 
 	&__header {
-		align-items: flex-start;
+		align-items: center;
 		display: flex;
 		flex-shrink: 0;
 		gap: 12px;
 		justify-content: space-between;
 		padding: 20px 20px 0;
+	}
+
+	&__header-actions {
+		align-items: center;
+		display: flex;
+		flex-shrink: 0;
+		gap: 10px;
 	}
 
 	&__close.components-button {
@@ -152,17 +160,25 @@ $gf-fc-danger: #d70404;
 	}
 
 	&__section {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
 		margin: 0;
 		width: 100%;
+
+		&--redirect {
+			gap: 12px;
+		}
 	}
 
 	&__footer {
-		border-top: none;
+		border-top: 1px solid $gf-fc-border-light;
 		display: flex;
 		flex-shrink: 0;
 		gap: 10px;
 		justify-content: flex-end;
-		padding: 0 20px 20px;
+		margin-top: 0;
+		padding: 16px 20px 20px;
 	}
 
 	&__cancel.components-button {
@@ -203,59 +219,84 @@ $gf-fc-danger: #d70404;
 		}
 	}
 
-	.components-base-control__label {
+}
+
+.gutena-forms-form-confirmation-field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+
+	&__label {
 		color: $gf-fc-heading;
 		font-size: 14px;
 		font-weight: 700;
 		line-height: 1.2;
-		margin-bottom: 8px;
+		margin: 0;
+		text-transform: none;
 	}
 
-	.components-base-control__field {
-		margin-bottom: 0;
-	}
-
-	.components-select-control__input,
-	.components-text-control__input {
+	&__input,
+	&__select {
+		appearance: none;
 		background: #fff;
+		background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%231E1E1E' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+		background-position: right 12px center;
+		background-repeat: no-repeat;
+		background-size: 10px 6px;
 		border: 1px solid $gf-fc-border-light;
 		border-radius: 4px;
 		box-shadow: none;
 		color: $gf-fc-heading;
 		font-size: 12px;
 		height: 35px;
+		line-height: 1.2;
 		min-height: 35px;
-		padding: 7px 15px;
+		padding: 7px 32px 7px 15px;
+		width: 100%;
 
 		&:focus {
-			border-color: var(
-				--wp-components-color-accent,
-				var(--wp-admin-theme-color, #2271b1)
-			);
-			box-shadow: 0 0 0 1px
-				var(
-					--wp-components-color-accent,
-					var(--wp-admin-theme-color, #2271b1)
-				);
+			border-color: $gf-fc-primary;
+			box-shadow: 0 0 0 1px $gf-fc-primary;
 			outline: 2px solid transparent;
 		}
 	}
 
-	.components-base-control__help {
+	&__input {
+		background-image: none;
+		padding: 7px 15px;
+	}
+
+	&__help {
 		color: $gf-fc-body;
 		font-size: 11px;
-		margin-top: 6px;
+		line-height: normal;
+		margin: 0;
+	}
+
+	&.has-error {
+		.gutena-forms-form-confirmation-field__input {
+			border-color: $gf-fc-danger;
+		}
+
+		.gutena-forms-form-confirmation-field__help {
+			color: $gf-fc-danger;
+		}
 	}
 }
 
 .gutena-forms-form-confirmation-message-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+
 	&__header {
 		align-items: center;
 		display: flex;
 		flex-wrap: wrap;
 		gap: 10px;
 		justify-content: space-between;
-		margin-bottom: 6px;
+		margin-bottom: 0;
 	}
 
 	&__label {
@@ -380,19 +421,17 @@ $gf-fc-danger: #d70404;
 	}
 }
 
-.gutena-forms-form-confirmation-modal__url-error {
-	.components-base-control__help {
-		color: $gf-fc-danger;
-	}
-}
-
 .gutena-forms-form-confirmation-radio-group {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+
 	&__label {
 		color: $gf-fc-heading;
 		font-size: 14px;
 		font-weight: 700;
 		line-height: 1.2;
-		margin: 0 0 8px;
+		margin: 0;
 	}
 
 	&.is-card {

@@ -8,7 +8,6 @@ import GutenaFormsSubmitButton from './fields/gutena-forms-submit-button';
 import GutenaFormsTextField from './fields/gutena-forms-text-field';
 import GutenaFormsTextareaField from './fields/gutena-forms-textarea-field';
 import GutenaFormsHtmlEditorField from './fields/gutena-forms-html-editor-field';
-import GutenaFormsMergeTagsField from './fields/gutena-forms-merge-tags-field';
 import GutenaFormsRadioGroup from './fields/gutena-forms-radio-group';
 import GutenaFormsSelectField from './fields/gutena-forms-select-field';
 import GutenaFormsUrlField from './fields/gutena-forms-url-field';
@@ -42,15 +41,6 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 		}
 		return field.label;
 	};
-
-	const buildTagItemsFromTags = ( tags = [] ) =>
-		tags.map( ( tag ) => ( {
-			label: tag
-				.replace( /^\{|\}$/g, '' )
-				.replace( /[-_]/g, ' ' )
-				.replace( /\b\w/g, ( char ) => char.toUpperCase() ),
-			tag,
-		} ) );
 
 	const isValidFromEmail = ( emailValue, mergeTags = [] ) => {
 		const trimmed = String( emailValue || '' ).trim();
@@ -137,14 +127,6 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 					setTemplate( item.name );
 				} else if ( 'field-template' === item.type ) {
 					parsedSettings.push( { id, ...item } );
-				} else if ( 'merge-tags' === item.type ) {
-					parsedSettings.push( {
-						id: item.id,
-						type: item.type,
-						label: item.name,
-						desc: item.desc,
-						attrs: item.attrs || {},
-					} );
 				} else {
 					// Use ?? so boolean false (e.g. enable off) is kept — `||` dropped it and left fields editable on first load.
 					initialFieldValue[ item.id ] = item.value ?? item.default;
@@ -226,10 +208,6 @@ const GutenaFormsSettingsMetaBox = ( { id, title, description, items, isPro = fa
 				return true;
 			}
 
-			if ( 'merge_tags' === fieldId ) {
-				return 'message' === confirmationType;
-			}
-
 			if ( [ 'success_message', 'error_message', 'after_submit' ].includes( fieldId ) ) {
 				return 'message' === confirmationType;
 			}
@@ -269,7 +247,7 @@ const handleSubmit = () => {
 				fieldValue?.from_email?.trim() &&
 				! isValidFromEmail(
 					fieldValue.from_email,
-					[ '{admin_email}' ]
+					[ '{admin_email}', '{user_email}' ]
 				)
 			) {
 				toast.error( __( 'Please enter a valid From Email address.', 'gutena-forms' ) );
@@ -369,7 +347,6 @@ const handleSubmit = () => {
 							required={ !! field.attrs?.required }
 							helpText={ field.desc || '' }
 							mergeTags={ emailMergeTags }
-							tagItems={ buildTagItemsFromTags( emailMergeTags ) }
 							type="email"
 							disabled={ isDisabled }
 							allowMergeTags={ !! field.attrs?.allow_merge_tags || emailMergeTags.length > 0 }
@@ -419,7 +396,6 @@ const handleSubmit = () => {
 							required={ !! field.attrs?.required }
 							helpText={ field.desc || '' }
 							mergeTags={ textMergeTags }
-							tagItems={ buildTagItemsFromTags( textMergeTags ) }
 							disabled={ isDisabled }
 						/>
 					);
@@ -441,7 +417,6 @@ const handleSubmit = () => {
 
 			case 'html-editor': {
 				const editorMergeTags = field.attrs?.merge_tags || [];
-				const messageTagItems = buildTagItemsFromTags( editorMergeTags );
 
 				fieldElement = (
 					<GutenaFormsHtmlEditorField
@@ -455,7 +430,7 @@ const handleSubmit = () => {
 						} : undefined }
 						placeholder={ field.attrs?.placeholder }
 						disabled={ isDisabled }
-						tagItems={ messageTagItems }
+						genericTags={ editorMergeTags }
 					/>
 				);
 				break;
@@ -473,20 +448,6 @@ const handleSubmit = () => {
 						placeholder={ field.attrs?.placeholder }
 						rows={ field.attrs?.rows || 5 }
 						disabled={ isDisabled }
-					/>
-				);
-				break;
-
-			case 'merge-tags':
-				fieldElement = (
-					<GutenaFormsMergeTagsField
-						tags={ field.attrs?.tags || [] }
-						onInsert={ insertMergeTag }
-						disabled={
-							typeof fieldValue?.enable !== 'undefined'
-								? ! fieldValue?.enable
-								: false
-						}
 					/>
 				);
 				break;

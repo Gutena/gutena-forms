@@ -44,11 +44,12 @@ const GutenaFormsNotificationMessageField = ( {
 	onChange,
 	onFocus,
 	placeholder,
+	genericTags = [],
 	formTagItems = [],
+	showFormTagsButton = false,
 	onRegisterInsert,
 	disabled = false,
-	formTagsButtonLabel = __( 'Form tags', 'gutena-forms' ),
-	formTagsPopoverTitle = __( 'Form input Tags', 'gutena-forms' ),
+	formTagsButtonLabel = __( 'Form Tags', 'gutena-forms' ),
 } ) => {
 	const [ viewMode, setViewMode ] = useState( 'visual' );
 	const [ activeFormats, setActiveFormats ] = useState( {} );
@@ -252,14 +253,22 @@ const GutenaFormsNotificationMessageField = ( {
 					>
 						{ __( 'Code', 'gutena-forms' ) }
 					</button>
-					<GutenaFormsNotificationMergeTagPopover
-						variant="form-tags"
-						tagItems={ formTagItems }
-						onInsert={ insertAtCursor }
-						buttonLabel={ formTagsButtonLabel }
-						popoverTitle={ formTagsPopoverTitle }
-						disabled={ disabled }
-					/>
+					{ genericTags.length > 0 && (
+						<GutenaFormsNotificationMergeTagPopover
+							tags={ genericTags }
+							onInsert={ insertAtCursor }
+							disabled={ disabled }
+						/>
+					) }
+					{ showFormTagsButton && formTagItems.length > 0 && (
+						<GutenaFormsNotificationMergeTagPopover
+							variant="form-tags"
+							tagItems={ formTagItems }
+							onInsert={ insertAtCursor }
+							buttonLabel={ formTagsButtonLabel }
+							disabled={ disabled }
+						/>
+					) }
 				</div>
 			</div>
 

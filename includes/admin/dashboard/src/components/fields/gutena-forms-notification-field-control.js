@@ -87,15 +87,7 @@ const GutenaFormsNotificationFieldControl = ( {
 		} );
 	};
 
-	const resolvedTagItems = tagItems.length
-		? tagItems
-		: mergeTags.map( ( tag ) => ( {
-			label: tag
-				.replace( /^\{|\}$/g, '' )
-				.replace( /[-_:]/g, ' ' )
-				.replace( /\b\w/g, ( char ) => char.toUpperCase() ),
-			tag,
-		} ) );
+	const hasMergeTags = mergeTags.length > 0 || tagItems.length > 0;
 
 	return (
 		<div className="gutena-forms-notification-field">
@@ -118,11 +110,11 @@ const GutenaFormsNotificationFieldControl = ( {
 					disabled={ disabled }
 				/>
 
-				{ mergeTags.length > 0 && (
+				{ hasMergeTags && (
 					<GutenaFormsNotificationMergeTagPopover
-						tagItems={ resolvedTagItems }
+						tags={ mergeTags }
+						tagItems={ tagItems }
 						onInsert={ handleInsertTag }
-						popoverTitle={ __( 'Generic Tags', 'gutena-forms' ) }
 						disabled={ disabled }
 					/>
 				) }

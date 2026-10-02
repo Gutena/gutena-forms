@@ -54,7 +54,6 @@ import {
 } from './settings/form-confirmation-utils';
 import EmailNotificationsSettings from './settings/email-notifications-settings';
 import FormConfirmationSettings from './settings/form-confirmation-settings';
-import FormConfirmationModal from './settings/form-confirmation-modal';
 import { FormConfirmationEditorContext } from './settings/form-confirmation-editor-context';
 import { useFormConfirmationModal } from './settings/use-form-confirmation-modal';
 import {
@@ -893,15 +892,8 @@ export default function Edit( props ) {
 		redirectUrl,
 	};
 
-	const {
-		contextValue: formConfirmationContextValue,
-		isModalOpen: isFormConfirmationModalOpen,
-		modalConfirmation: formConfirmationModalState,
-		confirmationDefaults: formConfirmationDefaults,
-		initialFocusField: formConfirmationInitialFocusField,
-		closeFormConfirmationModal,
-		saveFormConfirmation,
-	} = useFormConfirmationModal( settings, setAttributes, formConfirmationLegacyAttrs );
+	const { contextValue: formConfirmationContextValue } =
+		useFormConfirmationModal( settings, setAttributes, formConfirmationLegacyAttrs );
 
 	return (
 		<FormConfirmationEditorContext.Provider
@@ -1424,14 +1416,6 @@ export default function Edit( props ) {
 			) : (
 				<Placeholder { ...props } />
 			) }
-			<FormConfirmationModal
-				isOpen={ isFormConfirmationModalOpen }
-				initialConfirmation={ formConfirmationModalState }
-				confirmationDefaults={ formConfirmationDefaults }
-				initialFocusField={ formConfirmationInitialFocusField }
-				onSave={ saveFormConfirmation }
-				onClose={ closeFormConfirmationModal }
-			/>
 		</FormConfirmationEditorContext.Provider>
 	);
 }
