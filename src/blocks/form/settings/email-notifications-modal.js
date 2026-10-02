@@ -1,7 +1,7 @@
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Button, ToggleControl } from '@wordpress/components';
-import { close } from '@wordpress/icons';
+import { close, pencil, plus, trash } from '@wordpress/icons';
 import EmailNotificationsEditView from './email-notifications-edit-view';
 import {
 	cloneNotifications,
@@ -141,12 +141,22 @@ const EmailNotificationsModal = ( {
 					>
 						{ __( 'Email Notifications', 'gutena-forms' ) }
 					</h2>
-					<Button
-						className="gutena-forms-email-notifications-modal__close"
-						icon={ close }
-						label={ __( 'Close', 'gutena-forms' ) }
-						onClick={ handleRequestClose }
-					/>
+					<div className="gutena-forms-email-notifications-modal__header-actions">
+						<Button
+							variant="secondary"
+							className="gutena-forms-email-notifications-modal__add-button"
+							icon={ plus }
+							onClick={ handleAddNotification }
+						>
+							{ __( 'Add Notification', 'gutena-forms' ) }
+						</Button>
+						<Button
+							className="gutena-forms-email-notifications-modal__close"
+							icon={ close }
+							label={ __( 'Close', 'gutena-forms' ) }
+							onClick={ handleRequestClose }
+						/>
+					</div>
 				</div>
 
 				<div className="gutena-forms-email-notifications-modal__body">
@@ -160,38 +170,41 @@ const EmailNotificationsModal = ( {
 						/>
 					) : (
 						<>
-							<p className="gutena-forms-email-notifications-modal__subtitle">
-								{ __(
-									'Control email alerts sent to admins or users after a form submission.',
-									'gutena-forms'
-								) }
-							</p>
-
-							<div className="gutena-forms-email-notifications-modal__toolbar">
-								<Button
-									variant="primary"
-									className="gutena-forms-email-notifications-modal__add-button"
-									onClick={ handleAddNotification }
-								>
-									{ __( 'Add Notification', 'gutena-forms' ) }
-								</Button>
-							</div>
-
 							{ notifications.length > 0 ? (
 								<div className="gutena-forms-email-notifications-modal__table-wrap">
 									<table className="gutena-forms-email-notifications-table">
+										<colgroup>
+											<col className="gutena-forms-email-notifications-table__col-name" />
+											<col className="gutena-forms-email-notifications-table__col-subject" />
+											<col className="gutena-forms-email-notifications-table__col-status" />
+											<col className="gutena-forms-email-notifications-table__col-actions" />
+										</colgroup>
 										<thead>
 											<tr>
-												<th>{ __( 'Status', 'gutena-forms' ) }</th>
-												<th>{ __( 'Name', 'gutena-forms' ) }</th>
-												<th>{ __( 'Subject', 'gutena-forms' ) }</th>
-												<th>{ __( 'Actions', 'gutena-forms' ) }</th>
+												<th className="gutena-forms-email-notifications-table__col-name">
+													{ __( 'Name', 'gutena-forms' ) }
+												</th>
+												<th className="gutena-forms-email-notifications-table__col-subject">
+													{ __( 'Subject', 'gutena-forms' ) }
+												</th>
+												<th className="gutena-forms-email-notifications-table__col-status">
+													{ __( 'Status', 'gutena-forms' ) }
+												</th>
+												<th className="gutena-forms-email-notifications-table__col-actions">
+													{ __( 'Actions', 'gutena-forms' ) }
+												</th>
 											</tr>
 										</thead>
 										<tbody>
 											{ notifications.map( ( notification ) => (
 												<tr key={ notification.id }>
-													<td>
+													<td className="gutena-forms-email-notifications-table__col-name">
+														{ notification.name }
+													</td>
+													<td className="gutena-forms-email-notifications-table__col-subject">
+														{ notification.subject }
+													</td>
+													<td className="gutena-forms-email-notifications-table__col-status">
 														<ToggleControl
 															className="gutena-forms-email-notifications-table__toggle"
 															label=""
@@ -205,33 +218,35 @@ const EmailNotificationsModal = ( {
 															}
 														/>
 													</td>
-													<td>{ notification.name }</td>
-													<td>{ notification.subject }</td>
-													<td>
+													<td className="gutena-forms-email-notifications-table__col-actions">
 														<div className="gutena-forms-email-notifications-table__actions">
 															<Button
-																variant="tertiary"
-																className="gutena-forms-email-notifications-table__action"
+																className="gutena-forms-email-notifications-table__action-icon"
+																icon={ pencil }
+																label={ __(
+																	'Edit',
+																	'gutena-forms'
+																) }
 																onClick={ () => {
 																	setEditingNotification( {
 																		...notification,
 																	} );
 																} }
-															>
-																{ __( 'Edit', 'gutena-forms' ) }
-															</Button>
+															/>
 															<Button
-																variant="tertiary"
-																className="gutena-forms-email-notifications-table__action is-destructive"
+																className="gutena-forms-email-notifications-table__action-icon is-destructive"
+																icon={ trash }
+																label={ __(
+																	'Delete',
+																	'gutena-forms'
+																) }
 																isDestructive
 																onClick={ () =>
 																	handleDeleteNotification(
 																		notification.id
 																	)
 																}
-															>
-																{ __( 'Delete', 'gutena-forms' ) }
-															</Button>
+															/>
 														</div>
 													</td>
 												</tr>

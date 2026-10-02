@@ -13,6 +13,7 @@ $gf-en-warning-border: #f79808;
 $gf-en-surface-muted: #f9f9f9;
 $gf-en-pill-bg: #f0fffc;
 $gf-en-pill-hover: #dff8f2;
+$gf-en-table-header: #4b5563;
 
 .gutena-forms-email-notifications-panel {
 	.components-panel__body-title {
@@ -61,6 +62,10 @@ $gf-en-pill-hover: #dff8f2;
 	position: fixed;
 	z-index: 100000;
 
+	&.is-detail-view .gutena-forms-email-notifications-modal__add-button {
+		display: none;
+	}
+
 	&__overlay {
 		background: rgba(0, 0, 0, 0.35);
 		border: none;
@@ -73,7 +78,7 @@ $gf-en-pill-hover: #dff8f2;
 	&__dialog {
 		background: #fff;
 		border-radius: 10px;
-		box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+		box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
 		display: flex;
 		flex-direction: column;
 		left: 50%;
@@ -86,12 +91,45 @@ $gf-en-pill-hover: #dff8f2;
 	}
 
 	&__header {
-		align-items: flex-start;
+		align-items: center;
 		display: flex;
 		flex-shrink: 0;
 		gap: 12px;
 		justify-content: space-between;
 		padding: 20px 20px 0;
+	}
+
+	&__header-actions {
+		align-items: center;
+		display: flex;
+		flex-shrink: 0;
+		gap: 10px;
+	}
+
+	&__add-button.components-button {
+		background: #fff;
+		border: 1px solid $gf-en-primary;
+		border-radius: 4px;
+		box-shadow: none;
+		color: #0e826d;
+		font-size: 12px;
+		font-weight: 700;
+		height: auto;
+		line-height: 1;
+		min-height: 0;
+		padding: 10px;
+
+		svg {
+			height: 10px;
+			width: 10px;
+		}
+
+		&:hover,
+		&:focus {
+			background: #fff;
+			border-color: $gf-en-primary;
+			color: #0e826d;
+		}
 	}
 
 	&__close.components-button {
@@ -132,6 +170,7 @@ $gf-en-pill-hover: #dff8f2;
 		flex-shrink: 0;
 		gap: 10px;
 		justify-content: flex-end;
+		margin-top: 0;
 		padding: 16px 20px 20px;
 	}
 }
@@ -143,36 +182,8 @@ $gf-en-pill-hover: #dff8f2;
 	margin: 0;
 }
 
-.gutena-forms-email-notifications-modal__subtitle {
-	color: $gf-en-body;
-	font-size: 12px;
-	line-height: 1.5;
-	margin: 0 0 16px;
-}
-
-.gutena-forms-email-notifications-modal__toolbar {
-	display: flex;
-	justify-content: flex-start;
-	margin-bottom: 16px;
-}
-
-.gutena-forms-email-notifications-modal__add-button.components-button.is-primary {
-	background: $gf-en-primary;
-	border-radius: 4px;
-	font-size: 12px;
-	font-weight: 700;
-	height: auto;
-	min-height: 32px;
-	padding: 6px 12px;
-
-	&:hover,
-	&:focus {
-		background: $gf-en-primary-dark;
-	}
-}
-
 .gutena-forms-email-notifications-modal__table-wrap {
-	border: 1px solid $gf-en-border-light;
+	border: 1px solid $gf-en-border;
 	border-radius: 8px;
 	overflow-x: auto;
 }
@@ -180,12 +191,33 @@ $gf-en-pill-hover: #dff8f2;
 .gutena-forms-email-notifications-table {
 	border-collapse: collapse;
 	margin: 0;
+	table-layout: fixed;
 	width: 100%;
+
+	&__col-name {
+		width: 150px;
+		min-width: 150px;
+	}
+
+	&__col-subject {
+		width: 200px;
+		min-width: 200px;
+	}
+
+	&__col-status {
+		width: 100px;
+		min-width: 100px;
+	}
+
+	&__col-actions {
+		width: 100px;
+		min-width: 100px;
+	}
 
 	th,
 	td {
 		border-bottom: 1px solid $gf-en-border-light;
-		padding: 12px 14px;
+		padding: 15px;
 		text-align: left;
 		vertical-align: middle;
 	}
@@ -197,15 +229,23 @@ $gf-en-pill-hover: #dff8f2;
 	}
 
 	th {
-		background: #f8f9fa;
-		color: $gf-en-heading;
-		font-size: 12px;
+		background: $gf-en-surface-muted;
+		border-bottom: 1px solid $gf-en-border;
+		color: $gf-en-table-header;
+		font-size: 14px;
 		font-weight: 700;
+		text-transform: uppercase;
 	}
 
 	td {
-		color: $gf-en-body;
-		font-size: 13px;
+		color: $gf-en-heading;
+		font-size: 12px;
+	}
+
+	&__col-subject {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 }
 
@@ -218,25 +258,31 @@ $gf-en-pill-hover: #dff8f2;
 
 	.components-form-toggle.is-checked .components-form-toggle__track {
 		background-color: $gf-en-primary;
+		border-color: $gf-en-primary;
 	}
 }
 
 .gutena-forms-email-notifications-table__actions {
+	align-items: center;
 	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
+	gap: 8px;
 }
 
-.gutena-forms-email-notifications-table__action.components-button {
+.gutena-forms-email-notifications-table__action-icon.components-button {
 	color: $gf-en-primary;
-	font-size: 12px;
-	font-weight: 600;
-	height: auto;
+	height: 20px;
 	min-height: 0;
+	min-width: 20px;
 	padding: 0;
+	width: 20px;
 
 	&.is-destructive {
 		color: $gf-en-danger;
+	}
+
+	svg {
+		height: 16px;
+		width: 16px;
 	}
 }
 
@@ -252,10 +298,6 @@ $gf-en-pill-hover: #dff8f2;
 		font-size: 13px;
 		margin: 0;
 	}
-}
-
-.gutena-forms-email-notifications-modal__footer {
-	margin-top: 0;
 }
 
 .gutena-forms-email-notifications-modal__cancel.components-button {
@@ -416,6 +458,6 @@ $gf-en-pill-hover: #dff8f2;
 	}
 
 	.gutena-forms-email-notifications-table {
-		min-width: 560px;
+		min-width: 550px;
 	}
 }
