@@ -56,7 +56,7 @@ export function useContextualTourTriggers( {
 
 		if ( ! isFormsListRoute( location.pathname ) ) {
 			resetContextualLaunchForTrigger(
-				CONTEXTUAL_TRIGGER.FORMS_LIST_STEP_6
+				CONTEXTUAL_TRIGGER.FORMS_LIST_STEP_5
 			);
 			return undefined;
 		}
@@ -64,7 +64,7 @@ export function useContextualTourTriggers( {
 		if (
 			! shouldAutoLaunchContextualStep(
 				state,
-				6,
+				5,
 				location.pathname
 			)
 		) {
@@ -82,7 +82,7 @@ export function useContextualTourTriggers( {
 
 			if (
 				! beginContextualLaunch(
-					CONTEXTUAL_TRIGGER.FORMS_LIST_STEP_6,
+					CONTEXTUAL_TRIGGER.FORMS_LIST_STEP_5,
 					routeKey
 				)
 			) {
@@ -105,21 +105,21 @@ export function useContextualTourTriggers( {
 					isTriggerASuppressed() ||
 					! shouldAutoLaunchContextualStep(
 						latestState,
-						6,
+						5,
 						location.pathname
 					)
 				) {
 					resetContextualLaunchForTrigger(
-						CONTEXTUAL_TRIGGER.FORMS_LIST_STEP_6
+						CONTEXTUAL_TRIGGER.FORMS_LIST_STEP_5
 					);
 					return;
 				}
 
-				await resumeContextualTourAt( 6, location.pathname );
+				await resumeContextualTourAt( 5, location.pathname );
 			} catch ( error ) {
 				// Target not ready; allow a future route visit to retry.
 				resetContextualLaunchForTrigger(
-					CONTEXTUAL_TRIGGER.FORMS_LIST_STEP_6
+					CONTEXTUAL_TRIGGER.FORMS_LIST_STEP_5
 				);
 			} finally {
 				endContextualLaunch();
@@ -151,7 +151,7 @@ export function useContextualTourTriggers( {
 
 		if ( ! isEntriesListRoute( location.pathname ) ) {
 			resetContextualLaunchForTrigger(
-				CONTEXTUAL_TRIGGER.ENTRIES_STEP_13
+				CONTEXTUAL_TRIGGER.ENTRIES_STEP_12
 			);
 			return undefined;
 		}
@@ -159,7 +159,7 @@ export function useContextualTourTriggers( {
 		if (
 			! shouldAutoLaunchContextualStep(
 				state,
-				13,
+				12,
 				location.pathname
 			)
 		) {
@@ -177,7 +177,7 @@ export function useContextualTourTriggers( {
 
 			if (
 				! beginContextualLaunch(
-					CONTEXTUAL_TRIGGER.ENTRIES_STEP_13,
+					CONTEXTUAL_TRIGGER.ENTRIES_STEP_12,
 					routeKey
 				)
 			) {
@@ -197,20 +197,20 @@ export function useContextualTourTriggers( {
 					launchToken !== launchTokenRef.current ||
 					! shouldAutoLaunchContextualStep(
 						latestState,
-						13,
+						12,
 						location.pathname
 					)
 				) {
 					resetContextualLaunchForTrigger(
-						CONTEXTUAL_TRIGGER.ENTRIES_STEP_13
+						CONTEXTUAL_TRIGGER.ENTRIES_STEP_12
 					);
 					return;
 				}
 
-				await resumeContextualTourAt( 13, location.pathname );
+				await resumeContextualTourAt( 12, location.pathname );
 			} catch ( error ) {
 				resetContextualLaunchForTrigger(
-					CONTEXTUAL_TRIGGER.ENTRIES_STEP_13
+					CONTEXTUAL_TRIGGER.ENTRIES_STEP_12
 				);
 			} finally {
 				endContextualLaunch();

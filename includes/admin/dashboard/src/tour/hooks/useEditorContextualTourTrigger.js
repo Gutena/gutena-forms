@@ -1,5 +1,5 @@
 /**
- * Editor contextual resume trigger (B — Create Form → Step 7).
+ * Editor contextual resume trigger (B — Create Form → Step 6).
  *
  * @since 1.9.0
  * @package Gutena Forms
@@ -38,7 +38,7 @@ export function useEditorContextualTourTrigger( {
 			return undefined;
 		}
 
-		if ( ! shouldAutoLaunchContextualStep( state, 7 ) ) {
+		if ( ! shouldAutoLaunchContextualStep( state, 6 ) ) {
 			return undefined;
 		}
 
@@ -54,7 +54,7 @@ export function useEditorContextualTourTrigger( {
 
 			if (
 				! beginContextualLaunch(
-					CONTEXTUAL_TRIGGER.CREATE_FORM_STEP_7,
+					CONTEXTUAL_TRIGGER.CREATE_FORM_STEP_6,
 					routeKey
 				)
 			) {
@@ -70,18 +70,18 @@ export function useEditorContextualTourTrigger( {
 					return;
 				}
 
-				const launched = await resumeContextualTourAt( 7 );
+				const launched = await resumeContextualTourAt( 6 );
 
 				if ( launched ) {
 					clearContextualNavigationFlags();
 				} else {
 					resetContextualLaunchForTrigger(
-						CONTEXTUAL_TRIGGER.CREATE_FORM_STEP_7
+						CONTEXTUAL_TRIGGER.CREATE_FORM_STEP_6
 					);
 				}
 			} catch ( error ) {
 				resetContextualLaunchForTrigger(
-					CONTEXTUAL_TRIGGER.CREATE_FORM_STEP_7
+					CONTEXTUAL_TRIGGER.CREATE_FORM_STEP_6
 				);
 			} finally {
 				endContextualLaunch();

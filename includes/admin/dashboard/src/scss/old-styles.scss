@@ -239,6 +239,33 @@
       font-weight: 400;
       line-height: normal;
     }
+
+    .gf-tour-cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #00a896;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Satoshi', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s ease;
+
+      &:hover,
+      &:focus {
+        background: #009684;
+        color: #ffffff;
+        outline: none;
+        box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px rgba(0, 168, 150, 0.35);
+      }
+    }
   }
 
   // Video Section

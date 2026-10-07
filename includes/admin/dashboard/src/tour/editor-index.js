@@ -25,7 +25,7 @@ const EditorTourRuntimeBridge = () => {
 	useEffect( () => {
 		setEditorTourActiveStep( isOpen ? currentStep : null );
 
-		if ( isOpen && ( currentStep === 10 || currentStep === 11 ) ) {
+		if ( isOpen && ( currentStep === 9 || currentStep === 10 ) ) {
 			prepareEditorForTourStep( currentStep );
 		}
 	}, [ isOpen, currentStep ] );

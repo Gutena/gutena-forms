@@ -48,7 +48,7 @@ export function useTourTarget( { isOpen, currentStep, dispatch } ) {
 		dispatch( { type: TOUR_ACTIONS.SET_TARGET_WAITING, value: true } );
 		dispatch( { type: TOUR_ACTIONS.SET_CURRENT_TARGET, target: null } );
 
-		if ( currentStep === 10 || currentStep === 11 ) {
+		if ( currentStep === 9 || currentStep === 10 ) {
 			setEditorTourActiveStep( currentStep );
 			prepareEditorForTourStep( currentStep );
 		}

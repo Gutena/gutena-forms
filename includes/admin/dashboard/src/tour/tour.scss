@@ -1,7 +1,7 @@
 // Product tour visual styles.
 
 .gutena-forms-tour {
-	--gf-tour-accent: #0ea489;
+	--gf-tour-accent: #00a896;
 	--gf-tour-text: #2c3338;
 	--gf-tour-muted: #646970;
 	--gf-tour-border: #e2e4e7;
@@ -64,7 +64,7 @@
 		height: 14px;
 		border-radius: 50%;
 		background: var(--gf-tour-accent);
-		box-shadow: 0 0 0 0 rgba(14, 164, 137, 0.45);
+		box-shadow: 0 0 0 0 rgba(0, 168, 150, 0.45);
 		transform: translate(-50%, -50%);
 		pointer-events: none;
 		animation: gf-tour-pulse 1.8s ease-out infinite;

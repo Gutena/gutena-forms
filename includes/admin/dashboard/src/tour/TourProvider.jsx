@@ -17,7 +17,6 @@ import { getTourStep, isValidTourStep } from './config/steps';
 import {
 	TOUR_FIRST_STEP,
 	TOUR_LAST_STEP,
-	TOUR_STATUS,
 } from './constants';
 import { useTourTarget } from './hooks/useTourTarget';
 import {
@@ -78,7 +77,6 @@ const TourProvider = ( {
 	);
 	const persistQueueRef = useRef( Promise.resolve() );
 	const hasAutoResumedRef = useRef( false );
-	const hasInitialOnboardingLaunchedRef = useRef( false );
 	const hasFreshPrefsFetchedRef = useRef( false );
 	const stateRef = useRef( state );
 
@@ -409,31 +407,6 @@ const TourProvider = ( {
 			cancelled = true;
 		};
 	}, [ runtime, state.isHydrated ] );
-
-	useEffect( () => {
-		if (
-			runtime !== 'dashboard' ||
-			! state.isHydrated ||
-			hasInitialOnboardingLaunchedRef.current
-		) {
-			return;
-		}
-
-		const currentState = stateRef.current;
-
-		if (
-			! shouldAutoLaunchTour( {
-				context: 'intro_onboarding',
-				state: currentState,
-			} )
-		) {
-			return;
-		}
-
-		hasInitialOnboardingLaunchedRef.current = true;
-
-		startTourAt( TOUR_FIRST_STEP );
-	}, [ runtime, startTourAt, state.isHydrated, state.tourStatus, state.doNotShowAgain ] );
 
 	useTourTarget( {
 		isOpen: state.isOpen,

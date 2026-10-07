@@ -27,14 +27,14 @@ if ( ! class_exists( 'Gutena_Forms_Tour_Preferences' ) ) :
 		 *
 		 * @var string
 		 */
-		const VERSION = '1.0.0';
+		const VERSION = '1.1.0';
 
 		/**
-		 * Total number of tour steps (indexes 0–15).
+		 * Total number of tour steps (indexes 0–14).
 		 *
 		 * @var int
 		 */
-		const STEP_COUNT = 16;
+		const STEP_COUNT = 15;
 
 		/**
 		 * Get default preferences for a user who has never started the tour.
@@ -75,6 +75,10 @@ if ( ! class_exists( 'Gutena_Forms_Tour_Preferences' ) ) :
 			$stored = get_user_meta( $user_id, self::META_KEY, true );
 
 			if ( ! is_array( $stored ) || empty( $stored ) ) {
+				return self::get_defaults();
+			}
+
+			if ( empty( $stored['version'] ) || self::VERSION !== $stored['version'] ) {
 				return self::get_defaults();
 			}
 

@@ -120,24 +120,24 @@ export function prepareEditorForTourStep( stepIndex = null ) {
 		? stepIndex
 		: getActiveEditorTourStep();
 
-	if ( tourStep === 10 || tourStep === 11 ) {
+	if ( tourStep === 9 || tourStep === 10 ) {
 		selectGutenaFormsBlock();
 		openBlockSidebar();
 	}
 
-	if ( tourStep === 11 ) {
-		openEmbedInPagePanel();
+	if ( tourStep === 10 ) {
+		openReuseOnPagesPanel();
 	}
 }
 
 /**
- * Expand the Embed in Page inspector panel for the tour spotlight target.
+ * Expand the Reuse on Pages inspector panel for the tour spotlight target.
  */
-function openEmbedInPagePanel() {
-	const embedTarget = document.querySelector( '[data-tour="embed-in-page"]' );
+function openReuseOnPagesPanel() {
+	const reuseTarget = document.querySelector( '[data-tour="reuse-on-pages"]' );
 
-	if ( embedTarget ) {
-		const panel = embedTarget.closest( '.components-panel__body' );
+	if ( reuseTarget ) {
+		const panel = reuseTarget.closest( '.components-panel__body' );
 		const toggle = panel?.querySelector( '.components-panel__body-toggle' );
 
 		if ( toggle && ! panel?.classList.contains( 'is-opened' ) ) {
@@ -150,7 +150,7 @@ function openEmbedInPagePanel() {
 	document
 		.querySelectorAll( '.components-panel__body-toggle' )
 		.forEach( ( toggle ) => {
-			if ( ! toggle.textContent?.includes( 'Embed in Page' ) ) {
+			if ( ! toggle.textContent?.includes( 'Reuse on Pages' ) ) {
 				return;
 			}
 
@@ -178,7 +178,7 @@ export function initEditorTourAnchors() {
 
 		const activeTourStep = getActiveEditorTourStep();
 
-		if ( activeTourStep === 10 || activeTourStep === 11 ) {
+		if ( activeTourStep === 9 || activeTourStep === 10 ) {
 			prepareEditorForTourStep( activeTourStep );
 		}
 	} );

@@ -5,7 +5,7 @@
  * @package Gutena Forms
  */
 
-import { TOUR_STATUS } from './constants';
+import { TOUR_LAST_STEP, TOUR_STATUS } from './constants';
 import { createInitialStepsSeen } from './utils/createInitialStepsSeen';
 
 export const TOUR_ACTIONS = {
@@ -138,7 +138,7 @@ export function tourReducer( state, action ) {
 				isTargetWaiting: false,
 				stepsSeen: {
 					...state.stepsSeen,
-					15: true,
+					[ TOUR_LAST_STEP ]: true,
 				},
 			};
 

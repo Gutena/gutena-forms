@@ -31,7 +31,7 @@ export function useCreateFormClickInterceptor( { runtime, state, markStepSeen } 
 		}
 
 		const handleClick = async ( event ) => {
-			if ( ! shouldAutoLaunchContextualStep( state, 7 ) ) {
+			if ( ! shouldAutoLaunchContextualStep( state, 6 ) ) {
 				return;
 			}
 
@@ -49,7 +49,7 @@ export function useCreateFormClickInterceptor( { runtime, state, markStepSeen } 
 
 			if (
 				! beginContextualLaunch(
-					CONTEXTUAL_TRIGGER.CREATE_FORM_STEP_7,
+					CONTEXTUAL_TRIGGER.CREATE_FORM_STEP_6,
 					'create-form-click'
 				)
 			) {
@@ -59,12 +59,12 @@ export function useCreateFormClickInterceptor( { runtime, state, markStepSeen } 
 			event.preventDefault();
 
 			try {
-				if ( ! state.stepsSeen[ 6 ] ) {
-					await markStepSeen( 6 );
+				if ( ! state.stepsSeen[ 5 ] ) {
+					await markStepSeen( 5 );
 				}
 
 				suppressTriggerA();
-				setPendingContextualStep( 7 );
+				setPendingContextualStep( 6 );
 				window.location.assign( href );
 			} finally {
 				endContextualLaunch();

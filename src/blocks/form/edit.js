@@ -4,7 +4,6 @@ import { useEffect, useRef } from '@wordpress/element';
 import {
 	gfIsEmpty,
 	getInnerBlocksbyNameAttr,
-	slugToName,
 } from '../../shared/utils/helper';
 import {
 	InspectorControls,
@@ -19,9 +18,8 @@ import {
 	__experimentalSpacingSizesControl as SpacingSizesControl,
 	useSettings,
 } from '@wordpress/block-editor';
-import { store as editorStore } from '@wordpress/editor';
 import { store as coreStore } from '@wordpress/core-data';
-import { useDispatch, useSelect, dispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	PanelBody,
 	PanelRow,
@@ -29,11 +27,8 @@ import {
 	ToggleControl,
 	RangeControl,
 	SelectControl,
-	__experimentalUseCustomUnits as useCustomUnits,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
-	__experimentalUnitControl as UnitControl,
-	__experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue,
 } from '@wordpress/components';
 import {
 	createBlocksFromInnerBlocksTemplate,
@@ -189,18 +184,9 @@ const Placeholder = ( { clientId, name, setAttributes } ) => {
 	);
 };
 
-const MAX_SPACE_VALUES = {
-	px: 100,
-	em: 20,
-	rem: 20,
-	vh: 1,
-	vw: 1,
-};
-
 export default function Edit( props ) {
 	//props
-	const { className, attributes, setAttributes, isSelected, clientId } =
-		props;
+	const { attributes, setAttributes, isSelected, clientId } = props;
 
 	//Attributes
 	const {
@@ -229,7 +215,6 @@ export default function Edit( props ) {
 		replyToLastName,
 		adminEmailSubject,
 		emailNotifyAdmin,
-		emailNotifyUser,
 		messages = {},
 		formStyle,
 		style,
@@ -238,8 +223,7 @@ export default function Edit( props ) {
 		honeypot,
 	} = attributes;
 
-	const { getClientIdsOfDescendants, getBlock } =
-		useSelect( blockEditorStore );
+	const { getBlock } = useSelect( blockEditorStore );
 
 	/**
 	 * Returns an array of font family names from a given object.
@@ -262,7 +246,7 @@ export default function Edit( props ) {
 			}
 		}
 
-		if ( gfIsEmpty( fontFamilies ) || 0 == fontFamilies.length ) {
+		if ( gfIsEmpty( fontFamilies ) || fontFamilies.length === 0 ) {
 			return [];
 		}
 
@@ -271,7 +255,7 @@ export default function Edit( props ) {
 
 	const [ fontFamilies ] = useSettings( 'typography.fontFamilies' );
 	const fontFamiliesList = getFontFamiliesList( fontFamilies );
-	const hasfontFamilies = 0 < fontFamiliesList.length;
+	const hasfontFamilies = fontFamiliesList.length > 0;
 
 	const getEmailFields = () => {
 		let emailOptions = [
@@ -499,7 +483,7 @@ export default function Edit( props ) {
 
 	//Get Author Email
 	const currentUser = useSelect( ( select ) => {
-		return '' == adminEmails
+		return adminEmails === ''
 			? select( coreStore ).getUsers( { who: 'authors' } )
 			: [];
 	}, [] );
@@ -509,7 +493,7 @@ export default function Edit( props ) {
 		let shouldRunAuthorEmail = true;
 		if ( shouldRunAuthorEmail ) {
 			if (
-				'' == adminEmails &&
+				adminEmails === '' &&
 				'undefined' !== typeof currentUser &&
 				null !== currentUser &&
 				'undefined' !== typeof currentUser[ 0 ].email &&
@@ -541,28 +525,6 @@ export default function Edit( props ) {
 					],
 			  ]
 			: variations[ 0 ].innerBlocks;
-
-	//Spacing units
-	const units = useCustomUnits( {
-		availableUnits: [ 'px', 'em', 'rem', 'vh', 'vw' ],
-		defaultValues: { px: 0, em: 0, rem: 0, vh: 0, vw: 0 },
-	} );
-
-	const getQtyOrunit = ( rawUnit, quantityOrUnit = 'unit' ) => {
-		const [ quantityToReturn, unitToReturn ] =
-			parseQuantityAndUnitFromRawValue( rawUnit );
-		let unit =
-			'undefined' === typeof unitToReturn || null === unitToReturn
-				? 'px'
-				: unitToReturn;
-		let Qty =
-			'undefined' === typeof quantityToReturn ||
-			null === quantityToReturn ||
-			'' == quantityToReturn
-				? 0
-				: quantityToReturn;
-		return 'unit' === quantityOrUnit ? unit : quantityToReturn;
-	};
 
 	const getSpacingCssValue = ( value ) => {
 		if ( gfIsEmpty( value ) && value !== '0' && value !== 0 ) {
@@ -913,7 +875,7 @@ export default function Edit( props ) {
 
 	let showFormNameField = '1' === gutenaFormsBlock.is_gutena_forms_post_type || 1 === gutenaFormsBlock.is_gutena_forms_post_type ? { display: 'none' } : {};
 	const tourStep = getTourStepFromQuery();
-	const isEmbedTourStep = tourStep === 11;
+	const isReuseTourStep = tourStep === 10;
 
 	return (
 		<>
@@ -1600,28 +1562,13 @@ export default function Edit( props ) {
 				/>
 
 					<PanelBody
-						title={ __( 'Embed in Page', 'gutena-forms' ) }
-						initialOpen={ isEmbedTourStep }
+						title={ __( 'Reuse on Pages', 'gutena-forms' ) }
+						initialOpen={ isReuseTourStep }
 					>
-						<div data-tour="embed-in-page">
+						<div data-tour="reuse-on-pages">
 							<p>
 								{ __(
-									'Embed this form on any WordPress page using the Gutena Forms block or the shortcode below.',
-									'gutena-forms'
-								) }
-							</p>
-							<TextControl
-								label={ __( 'Shortcode', 'gutena-forms' ) }
-								value={
-									formID
-										? `[gutena_forms id="${ formID }"]`
-										: ''
-								}
-								readOnly
-							/>
-							<p className="gf-text-muted">
-								{ __(
-									'Add the Gutena Forms block to a page, then select this form from the block settings.',
+									'To show this form on a page or post, add the Existing Forms block in the page editor and select this saved form from the block settings.',
 									'gutena-forms'
 								) }
 							</p>

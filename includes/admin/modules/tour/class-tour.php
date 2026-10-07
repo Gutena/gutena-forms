@@ -80,7 +80,7 @@ if ( ! class_exists( 'Gutena_Forms_Tour' ) ) :
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$step = absint( wp_unslash( $_GET['gf_tour_step'] ) );
 
-			if ( $step < 0 || $step > 15 ) {
+			if ( $step < 0 || $step > 14 ) {
 				return $location;
 			}
 

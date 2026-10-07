@@ -5,9 +5,11 @@
  * @package Gutena Forms
  */
 
-export const TOUR_STEP_COUNT = 16;
+export const TOUR_BRAND_COLOR = '#00a896';
+
+export const TOUR_STEP_COUNT = 15;
 export const TOUR_FIRST_STEP = 0;
-export const TOUR_LAST_STEP = 15;
+export const TOUR_LAST_STEP = 14;
 
 export const TOUR_STATUS = {
 	NOT_STARTED: 'not_started',
@@ -33,11 +35,11 @@ export const TOUR_SECTIONS = {
 };
 
 export const TOUR_SECTION_COLORS = {
-	intro: '#0EA489',
-	navigation: '#2271b1',
-	form_creation: '#7c3aed',
-	entries: '#0EA489',
-	done: '#0EA489',
+	intro: TOUR_BRAND_COLOR,
+	navigation: TOUR_BRAND_COLOR,
+	form_creation: TOUR_BRAND_COLOR,
+	entries: TOUR_BRAND_COLOR,
+	done: TOUR_BRAND_COLOR,
 };
 
 export const TOUR_PLACEMENT = {

@@ -31,7 +31,7 @@ export function isTourAutoLaunchBlocked( state ) {
  * @param {Object} params
  * @param {TourLaunchContext} params.context
  * @param {Object} params.state Tour reducer state.
- * @param {Object} [params.options]
+ * @param {Object} [params.options] Optional launch options.
  * @param {number} [params.options.step] Step index for query/contextual launches.
  * @param {string} [params.options.pathname] Current dashboard pathname.
  * @returns {boolean}
@@ -43,7 +43,7 @@ export function shouldAutoLaunchTour( { context, state, options = {} } ) {
 
 	switch ( context ) {
 		case 'intro_onboarding':
-			return state.tourStatus === TOUR_STATUS.NOT_STARTED;
+			return false;
 
 		case 'query_resume': {
 			const step = options.step;
@@ -58,7 +58,7 @@ export function shouldAutoLaunchTour( { context, state, options = {} } ) {
 		case 'contextual_forms_list':
 			return (
 				state.tourStatus === TOUR_STATUS.SKIPPED &&
-				! state.stepsSeen[ 6 ] &&
+				! state.stepsSeen[ 5 ] &&
 				isFormsListRoute( options.pathname || '' ) &&
 				! isTriggerASuppressed()
 			);
@@ -66,13 +66,13 @@ export function shouldAutoLaunchTour( { context, state, options = {} } ) {
 		case 'contextual_create_form':
 			return (
 				state.tourStatus === TOUR_STATUS.SKIPPED &&
-				! state.stepsSeen[ 7 ]
+				! state.stepsSeen[ 6 ]
 			);
 
 		case 'contextual_entries':
 			return (
 				state.tourStatus === TOUR_STATUS.SKIPPED &&
-				! state.stepsSeen[ 13 ] &&
+				! state.stepsSeen[ 12 ] &&
 				isEntriesListRoute( options.pathname || '' )
 			);
 
@@ -89,19 +89,19 @@ export function shouldAutoLaunchTour( { context, state, options = {} } ) {
  */
 export function shouldAutoLaunchContextualStep( state, step, pathname = '' ) {
 	switch ( step ) {
-		case 6:
+		case 5:
 			return shouldAutoLaunchTour( {
 				context: 'contextual_forms_list',
 				state,
 				options: { step, pathname },
 			} );
-		case 7:
+		case 6:
 			return shouldAutoLaunchTour( {
 				context: 'contextual_create_form',
 				state,
 				options: { step },
 			} );
-		case 13:
+		case 12:
 			return shouldAutoLaunchTour( {
 				context: 'contextual_entries',
 				state,

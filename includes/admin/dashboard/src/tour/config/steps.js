@@ -1,5 +1,5 @@
 /**
- * Authoritative product tour step configuration (indexes 0–15).
+ * Authoritative product tour step configuration (indexes 0–14).
  *
  * @since 1.9.0
  * @package Gutena Forms
@@ -11,6 +11,7 @@ import {
 	TOUR_SECTIONS,
 	TOUR_SECTION_COLORS,
 	TOUR_TARGET_VIEWS,
+	TOUR_LAST_STEP,
 } from '../constants';
 import { tourTargetSelector } from '../utils/tourTarget';
 
@@ -37,23 +38,6 @@ import { tourTargetSelector } from '../utils/tourTarget';
 export const TOUR_STEPS = [
 	{
 		index: 0,
-		id: 'intro',
-		section: TOUR_SECTIONS.INTRO,
-		title: __( 'Welcome to Gutena Forms', 'gutena-forms' ),
-		description: __(
-			'Take a quick tour to learn how to build forms, manage entries, and get the most out of Gutena Forms.',
-			'gutena-forms'
-		),
-		targetView: TOUR_TARGET_VIEWS.DASHBOARD,
-		placement: TOUR_PLACEMENT.CENTER,
-		useSpotlight: false,
-		isIntro: true,
-		isDone: false,
-		navigateOnEnter: false,
-		sectionColor: TOUR_SECTION_COLORS.intro,
-	},
-	{
-		index: 1,
 		id: 'tab-bar',
 		section: TOUR_SECTIONS.NAVIGATION,
 		title: __( 'Navigation', 'gutena-forms' ),
@@ -71,7 +55,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.navigation,
 	},
 	{
-		index: 2,
+		index: 1,
 		id: 'tab-dashboard',
 		section: TOUR_SECTIONS.NAVIGATION,
 		title: __( 'Dashboard', 'gutena-forms' ),
@@ -89,7 +73,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.navigation,
 	},
 	{
-		index: 3,
+		index: 2,
 		id: 'tab-forms',
 		section: TOUR_SECTIONS.NAVIGATION,
 		title: __( 'Forms', 'gutena-forms' ),
@@ -107,7 +91,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.navigation,
 	},
 	{
-		index: 4,
+		index: 3,
 		id: 'tab-entries',
 		section: TOUR_SECTIONS.NAVIGATION,
 		title: __( 'Entries', 'gutena-forms' ),
@@ -125,7 +109,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.navigation,
 	},
 	{
-		index: 5,
+		index: 4,
 		id: 'tab-extras',
 		section: TOUR_SECTIONS.NAVIGATION,
 		title: __( 'Extras', 'gutena-forms' ),
@@ -143,7 +127,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.navigation,
 	},
 	{
-		index: 6,
+		index: 5,
 		id: 'add-new-form',
 		section: TOUR_SECTIONS.FORM_CREATION,
 		title: __( 'Add New Form', 'gutena-forms' ),
@@ -161,7 +145,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.form_creation,
 	},
 	{
-		index: 7,
+		index: 6,
 		id: 'layout-picker',
 		section: TOUR_SECTIONS.FORM_CREATION,
 		title: __( 'Layout Picker', 'gutena-forms' ),
@@ -188,7 +172,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.form_creation,
 	},
 	{
-		index: 8,
+		index: 7,
 		id: 'editor-blocks',
 		section: TOUR_SECTIONS.FORM_CREATION,
 		title: __( 'Editor Blocks', 'gutena-forms' ),
@@ -211,7 +195,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.form_creation,
 	},
 	{
-		index: 9,
+		index: 8,
 		id: 'editor-canvas',
 		section: TOUR_SECTIONS.FORM_CREATION,
 		title: __( 'Editor Canvas', 'gutena-forms' ),
@@ -233,7 +217,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.form_creation,
 	},
 	{
-		index: 10,
+		index: 9,
 		id: 'editor-settings',
 		section: TOUR_SECTIONS.FORM_CREATION,
 		title: __( 'Editor Settings', 'gutena-forms' ),
@@ -255,16 +239,16 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.form_creation,
 	},
 	{
-		index: 11,
-		id: 'embed-in-page',
+		index: 10,
+		id: 'reuse-on-pages',
 		section: TOUR_SECTIONS.FORM_CREATION,
-		title: __( 'Embed in Page', 'gutena-forms' ),
+		title: __( 'Reuse on Pages', 'gutena-forms' ),
 		description: __(
-			'Use the Gutena Form sidebar to embed your form on any page with the Gutena Forms block or shortcode.',
+			'To show this form on a page, add the Existing Forms block in the page editor and select this saved form from the block settings.',
 			'gutena-forms'
 		),
 		targetView: TOUR_TARGET_VIEWS.EDITOR,
-		targetSelector: tourTargetSelector( 'embed-in-page' ),
+		targetSelector: tourTargetSelector( 'reuse-on-pages' ),
 		placement: TOUR_PLACEMENT.LEFT,
 		useSpotlight: true,
 		isIntro: false,
@@ -274,7 +258,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.form_creation,
 	},
 	{
-		index: 12,
+		index: 11,
 		id: 'editor-save',
 		section: TOUR_SECTIONS.FORM_CREATION,
 		title: __( 'Save', 'gutena-forms' ),
@@ -296,7 +280,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.form_creation,
 	},
 	{
-		index: 13,
+		index: 12,
 		id: 'entries-table',
 		section: TOUR_SECTIONS.ENTRIES,
 		title: __( 'Entries Table', 'gutena-forms' ),
@@ -318,7 +302,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.entries,
 	},
 	{
-		index: 14,
+		index: 13,
 		id: 'entries-row',
 		section: TOUR_SECTIONS.ENTRIES,
 		title: __( 'Entry Row', 'gutena-forms' ),
@@ -340,7 +324,7 @@ export const TOUR_STEPS = [
 		sectionColor: TOUR_SECTION_COLORS.entries,
 	},
 	{
-		index: 15,
+		index: 14,
 		id: 'done',
 		section: TOUR_SECTIONS.DONE,
 		title: __( "You're all set! 🎉", 'gutena-forms' ),
@@ -371,7 +355,7 @@ export function getTourStep( stepIndex ) {
  * @returns {boolean}
  */
 export function isValidTourStep( stepIndex ) {
-	return Number.isInteger( stepIndex ) && stepIndex >= 0 && stepIndex <= 15;
+	return Number.isInteger( stepIndex ) && stepIndex >= 0 && stepIndex <= TOUR_LAST_STEP;
 }
 
 /**

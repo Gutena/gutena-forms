@@ -1,10 +1,11 @@
 import { useState, useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import { useTour } from '../../tour';
 
-const Introduction = ( props ) => {
+const Introduction = () => {
+    const { startTourAt, isOpen: isTourOpen, doNotShowAgain } = useTour();
     const welcome  = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.welcome;
     const features = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.features;
-    const fields   = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.fields;
-    const pricing  = gutenaFormsAdmin.gutenaFormsIntroduction?.section?.pricing;
 
     // Check if PRO version is active
     const isProActive = gutenaFormsAdmin?.hasPro === '1';
@@ -68,6 +69,14 @@ const Introduction = ( props ) => {
             document.body.style.overflow = 'unset';
         };
     }, [isVideoModalOpen, isClosing]);
+
+    const showTourButton = ! doNotShowAgain && ! isTourOpen;
+
+    const TourPlayIcon = () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6.5 11.5V4.5L11.5 8L6.5 11.5Z" fill="currentColor"/>
+        </svg>
+    );
 
     // Video Play Icon SVG
     const PlayIcon = () => (
@@ -133,6 +142,16 @@ const Introduction = ( props ) => {
                 <p className="gf-top-description">
                     Thank you for choosing Gutena - the most powerful drag & drop WordPress form builder in the market.
                 </p>
+                { showTourButton && (
+                    <button
+                        type="button"
+                        className="gf-tour-cta-button"
+                        onClick={ () => startTourAt( 0 ) }
+                    >
+                        <TourPlayIcon />
+                        { __( 'Take a Product Tour', 'gutena-forms' ) }
+                    </button>
+                ) }
             </div>
 
             {/* Video Section */}

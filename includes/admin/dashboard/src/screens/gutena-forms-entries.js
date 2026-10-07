@@ -34,7 +34,7 @@ const GutenaFormsEntries = ( { showProPopupHandler, setActiveMenu } ) => {
 	const [ statuses, setStatuses ] = useState( [] );
 
 	const showTourEntriesPlaceholder =
-		isTourOpen && currentStep === 14 && ! loading && entries.length === 0;
+		isTourOpen && currentStep === 13 && ! loading && entries.length === 0;
 
 	const tourEntriesPlaceholderRow = showTourEntriesPlaceholder
 		? {
