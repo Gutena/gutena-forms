@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useEffect, useMemo, useState } from '@wordpress/element';
-import { select } from '@wordpress/data';
+import { useMemo, useState } from '@wordpress/element';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -9,21 +8,9 @@ import {
 	RangeControl,
 	FormTokenField,
 } from '@wordpress/components';
-import { gfIsEmpty, gfSanitizeName } from '../../../shared/utils/helper';
-
-const isFieldNameAttrReserved = ( nameAttrCheck, clientIdCheck ) => {
-	const blocksClientIds = select( 'core/block-editor' ).getClientIdsWithDescendants();
-	return gfIsEmpty( blocksClientIds )
-		? false
-		: blocksClientIds.some( ( blockClientId ) => {
-				const attrs = select( 'core/block-editor' ).getBlockAttributes( blockClientId );
-				return (
-					clientIdCheck !== blockClientId &&
-					! gfIsEmpty( attrs?.nameAttr ) &&
-					attrs.nameAttr === nameAttrCheck
-				);
-		  } );
-};
+import FieldIdControl from '../../../shared/components/FieldIdControl';
+import { gfIsEmpty } from '../../../shared/utils/helper';
+import { useEnsureFieldNameAttr } from '../../../shared/utils/fieldNameAttr';
 
 function getFieldClasses( { isRequired, optionsInline, optionsColumns, autocomplete } ) {
 	const parts = [ 'gutena-forms-field', 'radio-field' ];
@@ -55,19 +42,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 
 	const [ selected, setSelected ] = useState( '' );
 
-	useEffect( () => {
-		if ( ! gfIsEmpty( nameAttr ) && ! isFieldNameAttrReserved( nameAttr, clientId ) ) {
-			return;
-		}
-
-		for ( let index = 0; index < 5000; index++ ) {
-			const nextName = `f_${ index }`;
-			if ( ! isFieldNameAttrReserved( nextName, clientId ) ) {
-				setAttributes( { nameAttr: nextName } );
-				break;
-			}
-		}
-	}, [] );
+	useEnsureFieldNameAttr( clientId, nameAttr, setAttributes );
 
 	const fieldClasses = useMemo(
 		() => getFieldClasses( { isRequired, optionsInline, optionsColumns, autocomplete } ),
@@ -85,20 +60,11 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<TextControl
 						label={ __( 'Label', 'gutena-forms' ) + ' *' }
 						value={ fieldName ?? '' }
-						onChange={ ( nextLabel ) => {
-							const updates = { fieldName: nextLabel };
-							if ( gfIsEmpty( nameAttr ) || 0 === nameAttr.indexOf( 'f_' ) ) {
-								updates.nameAttr = gfSanitizeName( nextLabel );
-							}
-							setAttributes( updates );
-						} }
+						onChange={ ( nextLabel ) =>
+							setAttributes( { fieldName: nextLabel } )
+						}
 					/>
-					<TextControl
-						label={ __( 'Field ID', 'gutena-forms' ) + ' *' }
-						value={ nameAttr ?? '' }
-						onChange={ ( nextNameAttr ) => setAttributes( { nameAttr: gfSanitizeName( nextNameAttr ) } ) }
-						help={ __( 'Used as input name in form submission.', 'gutena-forms' ) }
-					/>
+					<FieldIdControl nameAttr={ nameAttr } />
 					<FormTokenField
 						label={ __( 'Options', 'gutena-forms' ) }
 						value={ selectOptions }

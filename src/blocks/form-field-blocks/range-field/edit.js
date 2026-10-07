@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import { select } from '@wordpress/data';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -8,21 +7,9 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
-import { gfIsEmpty, gfSanitizeName } from '../../../shared/utils/helper';
-
-const isFieldNameAttrReserved = ( nameAttrCheck, clientIdCheck ) => {
-	const blocksClientIds = select( 'core/block-editor' ).getClientIdsWithDescendants();
-	return gfIsEmpty( blocksClientIds )
-		? false
-		: blocksClientIds.some( ( blockClientId ) => {
-				const attrs = select( 'core/block-editor' ).getBlockAttributes( blockClientId );
-				return (
-					clientIdCheck !== blockClientId &&
-					! gfIsEmpty( attrs?.nameAttr ) &&
-					attrs.nameAttr === nameAttrCheck
-				);
-		  } );
-};
+import FieldIdControl from '../../../shared/components/FieldIdControl';
+import { gfIsEmpty } from '../../../shared/utils/helper';
+import { useEnsureFieldNameAttr } from '../../../shared/utils/fieldNameAttr';
 
 function numAttr( v ) {
 	if ( gfIsEmpty( v ) && v !== 0 && v !== '0' ) {
@@ -71,19 +58,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		setRangeVal( getRangeValue( defaultValue, minMaxStep ) );
 	}, [ defaultValue, minMaxStep ] );
 
-	useEffect( () => {
-		if ( ! gfIsEmpty( nameAttr ) && ! isFieldNameAttrReserved( nameAttr, clientId ) ) {
-			return;
-		}
-
-		for ( let index = 0; index < 5000; index++ ) {
-			const nextName = `f_${ index }`;
-			if ( ! isFieldNameAttrReserved( nextName, clientId ) ) {
-				setAttributes( { nameAttr: nextName } );
-				break;
-			}
-		}
-	}, [] );
+	useEnsureFieldNameAttr( clientId, nameAttr, setAttributes );
 
 	const blockProps = useBlockProps( {
 		className: 'wp-block-gutena-field-group wp-block-gutena-range-field field-group-type-range standalone-range-field',
@@ -103,20 +78,11 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<TextControl
 						label={ __( 'Label', 'gutena-forms' ) + ' *' }
 						value={ fieldName ?? '' }
-						onChange={ ( nextLabel ) => {
-							const updates = { fieldName: nextLabel };
-							if ( gfIsEmpty( nameAttr ) || 0 === nameAttr.indexOf( 'f_' ) ) {
-								updates.nameAttr = gfSanitizeName( nextLabel );
-							}
-							setAttributes( updates );
-						} }
+						onChange={ ( nextLabel ) =>
+							setAttributes( { fieldName: nextLabel } )
+						}
 					/>
-					<TextControl
-						label={ __( 'Field ID', 'gutena-forms' ) + ' *' }
-						value={ nameAttr ?? '' }
-						onChange={ ( nextNameAttr ) => setAttributes( { nameAttr: gfSanitizeName( nextNameAttr ) } ) }
-						help={ __( 'Used as input name in form submission.', 'gutena-forms' ) }
-					/>
+					<FieldIdControl nameAttr={ nameAttr } />
 					<h2 className="block-editor-block-card__title gf-mt-1">{ __( 'Value', 'gutena-forms' ) }</h2>
 					<PanelRow className="gf-child-mb-0 gf-mb-24">
 						<TextControl
