@@ -4,7 +4,6 @@ import { useEffect } from '@wordpress/element';
 import {
 	gfIsEmpty,
 	getInnerBlocksbyNameAttr,
-	slugToName,
 } from '../../shared/utils/helper';
 import {
 	InspectorControls,
@@ -18,9 +17,8 @@ import {
 	__experimentalFontFamilyControl as FontFamilyControl,
 	useSettings,
 } from '@wordpress/block-editor';
-import { store as editorStore } from '@wordpress/editor';
 import { store as coreStore } from '@wordpress/core-data';
-import { useDispatch, useSelect, dispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	PanelBody,
 	PanelRow,
@@ -28,11 +26,8 @@ import {
 	ToggleControl,
 	RangeControl,
 	SelectControl,
-	__experimentalUseCustomUnits as useCustomUnits,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
-	__experimentalUnitControl as UnitControl,
-	__experimentalParseQuantityAndUnitFromRawValue as parseQuantityAndUnitFromRawValue,
 } from '@wordpress/components';
 import {
 	createBlocksFromInnerBlocksTemplate,
@@ -138,18 +133,9 @@ const Placeholder = ( { clientId, name, setAttributes } ) => {
 	);
 };
 
-const MAX_SPACE_VALUES = {
-	px: 100,
-	em: 20,
-	rem: 20,
-	vh: 1,
-	vw: 1,
-};
-
 export default function Edit( props ) {
 	//props
-	const { className, attributes, setAttributes, isSelected, clientId } =
-		props;
+	const { attributes, setAttributes, clientId } = props;
 
 	//Attributes
 	const {
@@ -178,7 +164,6 @@ export default function Edit( props ) {
 		replyToLastName,
 		adminEmailSubject,
 		emailNotifyAdmin,
-		emailNotifyUser,
 		messages = {},
 		formStyle,
 		style,
@@ -187,8 +172,7 @@ export default function Edit( props ) {
 		honeypot,
 	} = attributes;
 
-	const { getClientIdsOfDescendants, getBlock } =
-		useSelect( blockEditorStore );
+	const { getBlock } = useSelect( blockEditorStore );
 
 	/**
 	 * Returns an array of font family names from a given object.
@@ -211,7 +195,7 @@ export default function Edit( props ) {
 			}
 		}
 
-		if ( gfIsEmpty( fontFamilies ) || 0 == fontFamilies.length ) {
+		if ( gfIsEmpty( fontFamilies ) || fontFamilies.length === 0 ) {
 			return [];
 		}
 
@@ -439,7 +423,7 @@ export default function Edit( props ) {
 
 	//Get Author Email
 	const currentUser = useSelect( ( select ) => {
-		return '' == adminEmails
+		return adminEmails === ''
 			? select( coreStore ).getUsers( { who: 'authors' } )
 			: [];
 	}, [] );
@@ -449,7 +433,7 @@ export default function Edit( props ) {
 		let shouldRunAuthorEmail = true;
 		if ( shouldRunAuthorEmail ) {
 			if (
-				'' == adminEmails &&
+				adminEmails === '' &&
 				'undefined' !== typeof currentUser &&
 				null !== currentUser &&
 				'undefined' !== typeof currentUser[ 0 ].email &&
@@ -467,7 +451,9 @@ export default function Edit( props ) {
 
 	//Template
 	const TEMPLATE =
-		gfIsEmpty( variations ) || gfIsEmpty( variations[ 0 ].innerBlocks )
+		! Array.isArray( variations ) ||
+		variations.length === 0 ||
+		gfIsEmpty( variations[ 0 ]?.innerBlocks )
 			? [
 					[
 						'gutena/text-field',
@@ -481,28 +467,6 @@ export default function Edit( props ) {
 					],
 			  ]
 			: variations[ 0 ].innerBlocks;
-
-	//Spacing units
-	const units = useCustomUnits( {
-		availableUnits: [ 'px', 'em', 'rem', 'vh', 'vw' ],
-		defaultValues: { px: 0, em: 0, rem: 0, vh: 0, vw: 0 },
-	} );
-
-	const getQtyOrunit = ( rawUnit, quantityOrUnit = 'unit' ) => {
-		const [ quantityToReturn, unitToReturn ] =
-			parseQuantityAndUnitFromRawValue( rawUnit );
-		let unit =
-			'undefined' === typeof unitToReturn || null === unitToReturn
-				? 'px'
-				: unitToReturn;
-		let Qty =
-			'undefined' === typeof quantityToReturn ||
-			null === quantityToReturn ||
-			'' == quantityToReturn
-				? 0
-				: quantityToReturn;
-		return 'unit' === quantityOrUnit ? unit : quantityToReturn;
-	};
 
 	//Form Styles : local css variable for forms inner blocks styles
 	useEffect( () => {
@@ -1359,7 +1323,15 @@ export default function Edit( props ) {
 					</div>
 				</form>
 			) : (
-				<Placeholder { ...props } />
+				gutenaFormsBlock.is_gutena_forms_post_type ? (
+					<div { ...blockProps }>
+						<p style={ { padding: '24px', textAlign: 'center', color: '#50575e' } }>
+							{ __( 'Loading form...', 'gutena-forms' ) }
+						</p>
+					</div>
+				) : (
+					<Placeholder { ...props } />
+				)
 			) }
 		</>
 	);

@@ -107,7 +107,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 					{/* Create Button */}
 					<div className={ 'gutena-forms__empty-state-actions' }>
 						<Button
-							href={ 'post-new.php?post_type=gutena_forms' }
+							href={ 'admin.php?page=gutena-forms#/create' }
 							className="gutena-forms-create-first-form-button"
 							variant="primary"
 						>
@@ -149,7 +149,7 @@ const GutenaFormsForms = ( { setActiveMenu } ) => {
 						<h2 className={ 'gutena-forms__page-title' }>
 							{ __( 'Gutena Forms', 'gutena-forms' ) }
 							<Button
-								href={ 'post-new.php?post_type=gutena_forms' }
+								href={ 'admin.php?page=gutena-forms#/create' }
 								className="gutena-forms-add-new-form-button"
 								variant="primary"
 							>

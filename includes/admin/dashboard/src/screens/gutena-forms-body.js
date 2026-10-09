@@ -1,9 +1,10 @@
-import {Routes, Route, useParams} from 'react-router';
+import { Routes, Route } from 'react-router';
 import GutenaFormsSettingsLayout from '../layouts/gutena-forms-settings-layout';
 import GutenaFormsPageLayout from '../layouts/gutena-forms-page-layout';
 import GutenaFormsDashboard from './gutena-forms-dashboard';
 import GuennaFormsKnowledgeBase from './gutena-forms-knowledge-base';
-import { applyFilters } from '@wordpress/hooks';
+import GutenaFormsCreateEntry from './gutena-forms-create-entry';
+import GutenaFormsTemplateLibrary from './gutena-forms-template-library';
 
 const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 
@@ -14,6 +15,22 @@ const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 				element={ <GutenaFormsDashboard
 					showProPopupHandler={ showProPopupHandler }
 					setActiveMenu={ setActiveMenu }
+				/> }
+			/>
+			<Route
+				path={ '/create' }
+				element={ <GutenaFormsCreateEntry /> }
+			/>
+			<Route
+				path={ '/templates' }
+				element={ <GutenaFormsTemplateLibrary
+					showProPopupHandler={ showProPopupHandler }
+				/> }
+			/>
+			<Route
+				path={ '/templates/:category' }
+				element={ <GutenaFormsTemplateLibrary
+					showProPopupHandler={ showProPopupHandler }
 				/> }
 			/>
 			<Route

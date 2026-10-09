@@ -1,3 +1,12 @@
+function setUpgradeSubmenuTargetBlank() {
+	const link = document.querySelector(
+		'#toplevel_page_gutena-forms ul li:last-child a'
+	);
+	if ( link && link.innerText === 'Upgrade' ) {
+		link.setAttribute( 'target', '_blank' );
+	}
+}
+
 document.addEventListener( 'DOMContentLoaded', function () {
 	class GutenaFormsAdmin {
 		constructor() {
@@ -68,4 +77,5 @@ document.addEventListener( 'DOMContentLoaded', function () {
 	}
 
 	new GutenaFormsAdmin();
+	setUpgradeSubmenuTargetBlank();
 } );

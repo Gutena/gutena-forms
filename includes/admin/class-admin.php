@@ -17,13 +17,6 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 	 */
 	class Gutena_Forms_Admin extends Gutena_Forms {
 		/**
-		 * Form Id
-		 *
-		 * @var string $form_id Form Id.
-		 */
-		private $form_id = '';
-
-		/**
 		 * The instance of this class
 		 *
 		 * @var Gutena_Forms_Admin $instance The instance of this class.
@@ -43,11 +36,14 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		}
 
 		/**
-		 * Constructor
+		 * Constructor.
+		 *
+		 * Does not call parent::__construct(); admin bootstrap replaces plugin-wide includes/run.
+		 *
+		 * @noinspection PhpMissingParentConstructorInspection
 		 */
 		public function __construct() {
 			$this->includes();
-			$this->initialize();
 			$this->run();
 		}
 
@@ -56,7 +52,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 		 */
 		private function includes() {
 			if ( class_exists( 'Gutena_Forms_Activate_Deactivate' ) ) {
-				return false;
+				return;
 			}
 
 			/**
@@ -81,6 +77,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/manage-status/class-manage-status.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/user-access/class-user-access.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/forms/class-forms.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/templates/class-templates.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/entries/class-entries.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/validation-messages/class-validation-messages.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/auto-responder/class-auto-responder.php';
@@ -89,15 +86,8 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/settings-migrator/class-settings-migrator.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'vendor/smtp/class-smtp.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/rest-api/class-rest-api-controller.php';
-		}
 
-		/**
-		 * Initialize form id if exist in url
-		 */
-		private function initialize() {
-			if ( ! empty( $_GET['formid'] ) && is_numeric( $_GET['formid'] ) ) {
-				$this->form_id = absint( sanitize_key( $_GET['formid'] ) );
-			}
+			return;
 		}
 
 		/**
@@ -124,10 +114,6 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 				echo '<style>
 					#toplevel_page_gutena-forms ul li:last-child a{background:#27a68a!important;border:1px solid #27a68a!important;color:#fff!important;font-weight:600}#toplevel_page_gutena-forms ul li:last-child a:focus,#toplevel_page_gutena-forms ul li:last-child a:hover{color:#fff!important}
 				</style>';
-
-				echo '<script type="text/javascript">
-					!function(){var e;e=()=>{const e=document.querySelector("#toplevel_page_gutena-forms ul li:last-child a");e&&"Upgrade"===e.innerText&&e.setAttribute("target","_blank")},"undefined"!=typeof document&&("complete"!==document.readyState&&"interactive"!==document.readyState?document.addEventListener("DOMContentLoaded",e):e())}();
-				</script>';
 			}
 		}
 
@@ -179,7 +165,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 				__( 'Add New Forms', 'gutena-forms' ),
 				__( 'Add New Forms', 'gutena-forms' ),
 				'manage_options',
-				'post-new.php?post_type=gutena_forms'
+				'admin.php?page=gutena-forms#/create'
 			);
 
 			add_submenu_page(
