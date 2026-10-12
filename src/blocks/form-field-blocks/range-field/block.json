@@ -4,7 +4,7 @@
 	"name": "gutena/range-field",
 	"version": "1.0.0",
 	"title": "Range Field",
-	"parent": [ "gutena/forms" ],
+	"parent": [ "gutena/forms", "gutena/layout-column" ],
 	"category": "gutena",
 	"icon": "slides",
 	"description": "Standalone range slider field for Gutena Forms.",

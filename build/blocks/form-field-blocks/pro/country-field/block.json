@@ -5,7 +5,8 @@
   "version": "1.0.1",
   "title": "Country",
   "parent": [
-    "gutena/forms"
+    "gutena/forms",
+    "gutena/layout-column"
   ],
   "category": "gutena-pro",
   "icon": "admin-site",

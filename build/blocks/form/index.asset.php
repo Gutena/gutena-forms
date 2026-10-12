@@ -8,10 +8,9 @@
 		'wp-core-data',
 		'wp-data',
 		'wp-dom-ready',
-		'wp-editor',
 		'wp-element',
 		'wp-hooks',
 		'wp-i18n'
 	),
-	'version' => '8a0cf0f03f47cb6eab4a'
+	'version' => 'b617191e7dcc9d157386'
 );

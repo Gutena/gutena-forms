@@ -4,7 +4,7 @@
 	"name": "gutena/email-field",
 	"version": "1.0.0",
 	"title": "Email Field",
-	"parent": [ "gutena/forms" ],
+	"parent": [ "gutena/forms", "gutena/layout-column" ],
 	"category": "gutena",
 	"icon": "email",
 	"description": "Standalone email input field for Gutena Forms.",

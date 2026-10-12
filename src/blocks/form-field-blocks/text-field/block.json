@@ -4,7 +4,7 @@
 	"name": "gutena/text-field",
 	"version": "1.0.0",
 	"title": "Text Field",
-	"parent": [ "gutena/forms" ],
+	"parent": [ "gutena/forms", "gutena/layout-column" ],
 	"category": "gutena",
 	"icon": "text",
 	"description": "Standalone text input field for Gutena Forms.",

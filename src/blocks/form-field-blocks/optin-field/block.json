@@ -4,7 +4,7 @@
 	"name": "gutena/optin-field",
 	"version": "1.0.0",
 	"title": "Opt-in Field",
-	"parent": [ "gutena/forms" ],
+	"parent": [ "gutena/forms", "gutena/layout-column" ],
 	"category": "gutena",
 	"icon": "privacy",
 	"description": "Add a consent checkbox for privacy policies, terms, or GDPR compliance.",

@@ -206,6 +206,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-field-label-block.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-pro-field-blocks.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-fields.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/blocks/class-layout-blocks.php';
 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-handle-save-form.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/handlers/class-form-submit-handler.php';
@@ -522,6 +523,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 			Gutena_Forms_Form_Block::get_instance()->register_block();
 			Gutena_Forms_Existing_Forms_Block::get_instance()->register_block();
 			Gutena_Forms_Fields::get_instance()->register_blocks();
+			Gutena_Forms_Layout_Blocks::get_instance()->register_blocks();
 			Gutena_Forms_Pro_Field_Blocks::get_instance()->register_blocks( 'only when pro version not available' );
 
 
@@ -600,6 +602,7 @@ if ( ! class_exists( 'Gutena_Forms' ) ) :
 
 			$gutena_forms_block_data = array_merge(
 				array(
+					'pluginUrl'                     => GUTENA_FORMS_PLUGIN_URL,
 					'submit_action'                 => 'gutena_forms_submit',
 					'ajax_url'                      => admin_url( 'admin-ajax.php' ),
 					'nonce'                         => wp_create_nonce( 'gutena_Forms' ),

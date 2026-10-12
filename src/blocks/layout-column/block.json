@@ -1,0 +1,20 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "gutena/layout-column",
+	"version": "1.0.0",
+	"title": "Layout Column",
+	"parent": [ "gutena/layout-field" ],
+	"category": "gutena",
+	"description": "Column slot inside a Gutena Forms layout row.",
+	"supports": {
+		"html": false,
+		"inserter": false,
+		"reusable": false,
+		"lock": false
+	},
+	"textdomain": "gutena-forms",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}

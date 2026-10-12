@@ -31,7 +31,7 @@
 	}
 
 	&.has-label-font-family .heading-input-label-gutena {
-		font-family: var(--wp--gutena-forms--label-font-family);
+		font-family: var(--wp--gutena-forms--label-font-family), sans-serif;
 	}
 
 	.heading-input-label-gutena {
@@ -45,11 +45,11 @@
 		color: var(--wp--gutena-forms--label-color);
 		/*Background color not for radio, checkbox */
 		&:not(.checkbox-field):not(.radio-field):not(.optin-field) {
-			background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
+			background-color: var(--wp--gutena-forms--input-bg-color, transparent);
 			&:-webkit-autofill,
 			&:-webkit-autofill:hover,
 			&:-webkit-autofill:focus {
-			-webkit-box-shadow: 0 0 0px 1000px var(--wp--gutena-forms--input-bg-color,'transparent') inset;
+			-webkit-box-shadow: 0 0 0 1000px var(--wp--gutena-forms--input-bg-color, transparent) inset;
 			transition: background-color 5000s ease-in-out 0s;
 			}
 		}
@@ -148,7 +148,7 @@
 			/* The container */
 			.radio-container {
 				border: 0.8px solid var(--wp--gutena-forms--input-border-color, #D7DBE7);
-				background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
+				background-color: var(--wp--gutena-forms--input-bg-color, transparent);
 				border-radius: 8px;
 				margin-bottom: 15px;
 				margin-right: 5px;
@@ -257,7 +257,7 @@
 
 	/* Field background color*/
 	.wp-block-gutena-form-field:not(.gutena-forms-radio-field):not(.gutena-forms-checkbox-field):not(.gutena-forms-range-field):not(.gutena-forms-rating-field):not(.gutena-forms-optin-field) {
-		background-color: var(--wp--gutena-forms--input-bg-color,'transparent');
+		background-color: var(--wp--gutena-forms--input-bg-color, transparent);
 	}
 
 	/**********************************
@@ -288,7 +288,7 @@
 	//input placeholder font family
 	&.has-placeholder-font-family {
 		.wp-block-gutena-form-field .gutena-forms-field {
-			font-family: var(--wp--gutena-forms--placeholder-font-family);
+			font-family: var(--wp--gutena-forms--placeholder-font-family), sans-serif;
 		}
 	}
 
@@ -347,7 +347,8 @@
 		Placeholder styles : end
 	**********************************/
 
-	.wp-block-columns {
+	.wp-block-columns,
+	.wp-block-gutena-layout-field {
 		margin-bottom: var( --wp--style--block-gap, 2em );
 	}
 

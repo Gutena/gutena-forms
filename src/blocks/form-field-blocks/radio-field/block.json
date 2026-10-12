@@ -4,7 +4,7 @@
 	"name": "gutena/radio-field",
 	"version": "1.0.0",
 	"title": "Radio Field",
-	"parent": [ "gutena/forms" ],
+	"parent": [ "gutena/forms", "gutena/layout-column" ],
 	"category": "gutena",
 	"icon": "forms",
 	"description": "Standalone radio button group for Gutena Forms.",

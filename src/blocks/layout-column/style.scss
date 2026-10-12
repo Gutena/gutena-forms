@@ -1,0 +1,10 @@
+.wp-block-gutena-layout-column {
+	min-width: 0;
+	box-sizing: border-box;
+
+	> .wp-block-gutena-field-group,
+	> [ class*='wp-block-gutena-' ] {
+		width: 100%;
+		max-width: 100%;
+	}
+}

@@ -1,0 +1,165 @@
+$gutena-layout-accent: #0da88c;
+$gutena-layout-accent-bg: #f5fffd;
+$gutena-layout-drop-text: #0e826d;
+$gutena-layout-muted: #949494;
+$gutena-layout-frame-bg: #f7f7f7;
+$gutena-layout-frame-border: rgba( 0, 0, 0, 0.35 );
+
+// Frontend style.scss also loads in the editor and sets display:grid on the wrapper.
+.editor-styles-wrapper .wp-block-gutena-layout-field,
+.wp-block-gutena-layout-field {
+	--gutena-layout-accent: #{$gutena-layout-accent};
+	--gutena-layout-accent-bg: #{$gutena-layout-accent-bg};
+
+	display: block !important;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	margin-bottom: 1rem;
+	padding: 9px;
+	border: 0.5px solid $gutena-layout-frame-border;
+	border-radius: 3px;
+	background: $gutena-layout-frame-bg;
+	grid-template-columns: unset !important;
+	gap: 0;
+	box-shadow: none;
+}
+
+// Grid lives on the columns wrapper; inner block editor shells use display:contents.
+.wp-block-gutena-layout-field .gutena-layout-field__columns {
+	display: grid !important;
+	grid-template-columns: var( --gutena-layout-columns, 1fr 1fr ) !important;
+	gap: 10px;
+	width: 100%;
+	align-items: stretch;
+	box-sizing: border-box;
+
+	.block-editor-inner-blocks,
+	.block-editor-block-list__layout {
+		display: contents;
+	}
+
+	.block-editor-block-list__block {
+		display: flex;
+		min-width: 0;
+		max-width: 100%;
+		min-height: 88px;
+		box-sizing: border-box;
+		border: 1px dashed $gutena-layout-accent;
+		border-radius: 2px;
+		background: $gutena-layout-accent-bg;
+		overflow: visible;
+
+		&:has( .wp-block-gutena-layout-column.has-inner-blocks ) {
+			border: 1px solid #b8dcd4;
+			background: #fff;
+		}
+	}
+
+	.wp-block-gutena-layout-column {
+		flex: 1;
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		min-height: 88px;
+	}
+}
+
+.gutena-layout-field__helper {
+	margin: 10px 0 0;
+	padding: 0;
+	border: 0;
+	font-size: 12px;
+	font-style: italic;
+	font-weight: 300;
+	line-height: 1.45;
+	color: #1e1e1e;
+	text-align: left;
+}
+
+.gutena-layout-preset-picker {
+	margin-top: 16px;
+
+	&__label {
+		margin: 0 0 8px;
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		color: #1e1e1e;
+	}
+
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat( 3, 1fr );
+		gap: 8px;
+	}
+
+	&__option {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: center;
+		min-height: 48px;
+		padding: 4px;
+		border: 1px solid $gutena-layout-muted;
+		border-radius: 2px;
+		background: #fff;
+		cursor: pointer;
+		text-align: center;
+		transition:
+			border-color 0.15s ease,
+			background-color 0.15s ease;
+
+		&:hover {
+			border-color: $gutena-layout-accent;
+		}
+
+		&.is-selected {
+			border-color: $gutena-layout-accent;
+			background: $gutena-layout-accent-bg;
+			box-shadow: none;
+		}
+	}
+
+	&__bars {
+		display: flex;
+		gap: 4px;
+		height: 25px;
+		align-items: stretch;
+		width: 100%;
+	}
+
+	&__bar {
+		flex: 1;
+		background: $gutena-layout-muted;
+		border-radius: 2px;
+		min-width: 4px;
+	}
+
+	&__option.is-selected &__bar {
+		background: $gutena-layout-accent;
+	}
+
+	&__bars[data-preset='33-67'] .gutena-layout-preset-picker__bar:first-child {
+		flex: 1;
+	}
+	&__bars[data-preset='33-67'] .gutena-layout-preset-picker__bar:last-child {
+		flex: 2;
+	}
+	&__bars[data-preset='67-33'] .gutena-layout-preset-picker__bar:first-child {
+		flex: 2;
+	}
+	&__bars[data-preset='67-33'] .gutena-layout-preset-picker__bar:last-child {
+		flex: 1;
+	}
+	&__bars[data-preset='25-50-25'] .gutena-layout-preset-picker__bar:nth-child( 2 ) {
+		flex: 2;
+	}
+	&__bars[data-preset='50-25-25'] .gutena-layout-preset-picker__bar:first-child {
+		flex: 2;
+	}
+	&__bars[data-preset='25-25-50'] .gutena-layout-preset-picker__bar:last-child {
+		flex: 2;
+	}
+}

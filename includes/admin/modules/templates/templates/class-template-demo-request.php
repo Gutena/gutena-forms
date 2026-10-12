@@ -73,8 +73,10 @@ if ( ! class_exists( 'Gutena_Forms_Template_Demo_Request' ) ) :
 			$builder = 'Gutena_Forms_Templates_Block_Builder';
 			return $builder::with_form_footer(
 				array(
-					$builder::text_field( 'f_0', __( 'Name', 'gutena-forms' ), __( 'Enter name', 'gutena-forms' ) ),
-					$builder::email_field( 'f_1', __( 'Business Email', 'gutena-forms' ) ),
+					$builder::layout_field_row(
+						$builder::text_field( 'f_0', __( 'Name', 'gutena-forms' ), __( 'Enter name', 'gutena-forms' ) ),
+						$builder::email_field( 'f_1', __( 'Business Email', 'gutena-forms' ) )
+					),
 					$builder::text_field( 'f_2', __( 'Company', 'gutena-forms' ), __( 'Company', 'gutena-forms' ) ),
 					$builder::date_field_for_template( 'f_3', __( 'Date', 'gutena-forms' ) ),
 					$builder::textarea_field( 'f_4', __( 'Notes', 'gutena-forms' ), __( 'Enter description', 'gutena-forms' ), 5, false ),

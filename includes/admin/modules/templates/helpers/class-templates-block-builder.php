@@ -128,6 +128,57 @@ if ( ! class_exists( 'Gutena_Forms_Templates_Block_Builder' ) ) :
 		}
 
 		/**
+		 * Modern blank: name | email in layout row, message full width.
+		 *
+		 * @since 2.2.0
+		 * @return array
+		 */
+		public static function modern_blank_fields() {
+			return array(
+				self::layout_field_row(
+					self::text_field( 'f_0', __( 'Name', 'gutena-forms' ), __( 'Enter your name', 'gutena-forms' ) ),
+					self::email_field( 'f_1' )
+				),
+				self::textarea_field( 'f_2', __( 'Message', 'gutena-forms' ), __( 'Type here', 'gutena-forms' ) ),
+			);
+		}
+
+		/**
+		 * Gutena layout-field row with one field per column.
+		 *
+		 * @since 2.2.0
+		 * @param array  $left_field  Left column field template.
+		 * @param array  $right_field Right column field template.
+		 * @param string $preset      Layout preset key.
+		 * @return array
+		 */
+		public static function layout_field_row( $left_field, $right_field, $preset = '50-50' ) {
+			$display_ratio = '50% / 50%';
+			if ( '50-50' !== $preset ) {
+				$display_ratio = $preset;
+			}
+
+			return array(
+				'gutena/layout-field',
+				array(
+					'layoutLabel'  => __( 'Layout', 'gutena-forms' ),
+					'preset'       => $preset,
+					'displayRatio' => $display_ratio,
+				),
+				array(
+					'gutena/layout-column',
+					array(),
+					$left_field,
+				),
+				array(
+					'gutena/layout-column',
+					array(),
+					$right_field,
+				),
+			);
+		}
+
+		/**
 		 * Append submit button and message blocks to field templates.
 		 *
 		 * @since 2.2.0

@@ -4,7 +4,7 @@
 	"name": "gutena/textarea-field",
 	"version": "1.0.0",
 	"title": "Textarea Field",
-	"parent": [ "gutena/forms" ],
+	"parent": [ "gutena/forms", "gutena/layout-column" ],
 	"category": "gutena",
 	"icon": "editor-paragraph",
 	"description": "Standalone textarea field for Gutena Forms.",

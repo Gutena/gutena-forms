@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutena/layout-field",
+  "version": "1.0.0",
+  "title": "Layout",
+  "parent": [
+    "gutena/forms"
+  ],
+  "category": "gutena",
+  "icon": "layout",
+  "description": "Arrange form fields in columns with layout presets.",
+  "keywords": [
+    "layout",
+    "columns",
+    "row",
+    "gutena forms"
+  ],
+  "attributes": {
+    "layoutLabel": {
+      "type": "string",
+      "default": "Layout"
+    },
+    "preset": {
+      "type": "string",
+      "default": "50-50"
+    },
+    "displayRatio": {
+      "type": "string",
+      "default": "50% / 50%"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "reusable": false
+  },
+  "textdomain": "gutena-forms",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}

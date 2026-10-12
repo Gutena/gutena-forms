@@ -168,6 +168,10 @@
       "type": "string",
       "default": ""
     },
+    "formLayoutMode": {
+      "type": "string",
+      "default": "basic"
+    },
     "recaptcha": {
       "type": "object",
       "default": {

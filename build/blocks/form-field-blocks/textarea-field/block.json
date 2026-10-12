@@ -5,7 +5,8 @@
   "version": "1.0.0",
   "title": "Textarea Field",
   "parent": [
-    "gutena/forms"
+    "gutena/forms",
+    "gutena/layout-column"
   ],
   "category": "gutena",
   "icon": "editor-paragraph",

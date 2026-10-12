@@ -62,14 +62,33 @@ if ( ! class_exists( 'Gutena_Forms_Templates_Model' ) ) :
 		 * @param string $title Optional post title.
 		 * @return array|WP_Error
 		 */
-		public function create_blank( $title = '' ) {
-			$inner_blocks = Gutena_Forms_Templates_Block_Builder::with_form_footer(
-				Gutena_Forms_Templates_Block_Builder::blank_fields()
+		public function create_blank( $title = '', $layout_mode = 'basic' ) {
+			$layout_mode = 'modern' === $layout_mode ? 'modern' : 'basic';
+
+			$fields = 'modern' === $layout_mode
+				? Gutena_Forms_Templates_Block_Builder::modern_blank_fields()
+				: Gutena_Forms_Templates_Block_Builder::blank_fields();
+
+			$inner_blocks = Gutena_Forms_Templates_Block_Builder::with_form_footer( $fields );
+
+			$form_attrs = array(
+				'formLayoutMode'        => $layout_mode,
+				'inputBottomBorderOnly' => 'modern' === $layout_mode,
+				'inputBorderRadius'     => 'modern' === $layout_mode ? '0' : '8px',
+				'style'                 => array(
+					'spacing' => array(
+						'blockGap' => '2rem',
+						'padding'  => array(
+							'top'    => '2rem',
+							'bottom' => '5rem',
+						),
+					),
+				),
 			);
 
 			return $this->create_from_blocks(
 				__( 'Untitled Form', 'gutena-forms' ) === $title || empty( $title ) ? __( 'Untitled Form', 'gutena-forms' ) : $title,
-				array( 'style' => array( 'spacing' => array( 'blockGap' => '2rem', 'padding' => array( 'top' => '2rem', 'bottom' => '5rem' ) ) ) ),
+				$form_attrs,
 				$inner_blocks
 			);
 		}

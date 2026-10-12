@@ -198,8 +198,9 @@ if ( ! class_exists( 'Gutena_Forms_Templates_Endpoints' ) ) :
 		 * @return WP_REST_Response|WP_Error
 		 */
 		public function create_blank( $request ) {
-			$title  = sanitize_text_field( (string) $request->get_param( 'title' ) );
-			$result = $this->model->create_blank( $title );
+			$title       = sanitize_text_field( (string) $request->get_param( 'title' ) );
+			$layout_mode = sanitize_key( (string) $request->get_param( 'layout_mode' ) );
+			$result      = $this->model->create_blank( $title, $layout_mode );
 
 			if ( is_wp_error( $result ) ) {
 				return $result;

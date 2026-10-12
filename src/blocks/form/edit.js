@@ -1,10 +1,24 @@
 import { __ } from '@wordpress/i18n';
 import { get } from 'lodash';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useLayoutEffect, useRef, useState } from '@wordpress/element';
 import {
 	gfIsEmpty,
 	getInnerBlocksbyNameAttr,
 } from '../../shared/utils/helper';
+import { getFormRootAllowedBlocks } from '../../shared/constants/form-allowed-blocks';
+import {
+	getBasicBlankFormAttributes,
+	getBasicBlankInnerTemplate,
+} from '../../shared/constants/default-form-inner-template';
+import {
+	getFormLayoutClassSuffix,
+	getFormLayoutStyleAttributes,
+} from '../../shared/form/form-layout-presets';
+import {
+	convertBlocksForLayoutMode,
+	detectLegacyCoreColumns,
+	hasLayoutFieldBlocks,
+} from '../../shared/form/convert-form-layout-mode';
 import {
 	InspectorControls,
 	__experimentalBlockVariationPicker,
@@ -26,6 +40,9 @@ import {
 	ToggleControl,
 	RangeControl,
 	SelectControl,
+	RadioControl,
+	Button,
+	__experimentalConfirmDialog as ConfirmDialog,
 	__experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
 } from '@wordpress/components';
@@ -33,10 +50,8 @@ import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
 } from '@wordpress/blocks';
-import { applyFilters } from '@wordpress/hooks';
 import RangeControlUnit from '../../shared/components/RangeControlUnit';
 import './editor.scss';
-import variations from './variations';
 import GoogleRecaptchaSettings from './settings/google-recaptcha-settings';
 import CloudflareSettings from './settings/cloudflare-settings';
 import HoneypotSettings from './settings/honeypot-settings';
@@ -128,6 +143,20 @@ const Placeholder = ( { clientId, name, setAttributes } ) => {
 					}
 				} }
 				allowSkip
+				onSkip={ () => {
+					const blankAttrs = getBasicBlankFormAttributes();
+					setAttributes( {
+						...blankAttrs,
+						...getFormLayoutStyleAttributes( 'basic' ),
+					} );
+					replaceInnerBlocks(
+						clientId,
+						createBlocksFromInnerBlocksTemplate(
+							getBasicBlankInnerTemplate()
+						),
+						true
+					);
+				} }
 			/>
 		</div>
 	);
@@ -165,12 +194,18 @@ export default function Edit( props ) {
 		adminEmailSubject,
 		emailNotifyAdmin,
 		messages = {},
+		formLayoutMode = 'basic',
 		formStyle,
 		style,
 		recaptcha,
 		cloudflareTurnstile,
 		honeypot,
 	} = attributes;
+
+	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
+	const defaultSeedRef = useRef( false );
+	const [ pendingLayoutMode, setPendingLayoutMode ] = useState( formLayoutMode );
+	const [ isLayoutConfirmOpen, setIsLayoutConfirmOpen ] = useState( false );
 
 	const { getBlock } = useSelect( blockEditorStore );
 
@@ -396,11 +431,11 @@ export default function Edit( props ) {
 	}, [] );
 
 	//Check Inner Blocks
-	const hasInnerBlocks = useSelect(
-		( select ) =>
-			select( blockEditorStore ).getBlocks( clientId ).length > 0,
+	const innerBlocks = useSelect(
+		( select ) => select( blockEditorStore ).getBlocks( clientId ),
 		[ clientId ]
 	);
+	const hasInnerBlocks = innerBlocks.length > 0;
 
 	//Check if existing forms block is present
 	const hasExistingFormsBlock = useSelect(
@@ -420,6 +455,35 @@ export default function Edit( props ) {
 		},
 		[ clientId ]
 	);
+
+	useLayoutEffect( () => {
+		if ( defaultSeedRef.current ) {
+			return;
+		}
+		if (
+			! gutenaFormsBlock?.is_gutena_forms_post_type ||
+			hasExistingFormsBlock ||
+			hasInnerBlocks
+		) {
+			return;
+		}
+		defaultSeedRef.current = true;
+		replaceInnerBlocks(
+			clientId,
+			createBlocksFromInnerBlocksTemplate( getBasicBlankInnerTemplate() ),
+			false
+		);
+		setAttributes( {
+			...getBasicBlankFormAttributes(),
+			...getFormLayoutStyleAttributes( 'basic' ),
+		} );
+	}, [
+		clientId,
+		hasExistingFormsBlock,
+		hasInnerBlocks,
+		replaceInnerBlocks,
+		setAttributes,
+	] );
 
 	//Get Author Email
 	const currentUser = useSelect( ( select ) => {
@@ -450,23 +514,28 @@ export default function Edit( props ) {
 	}, [ currentUser ] );
 
 	//Template
-	const TEMPLATE =
-		! Array.isArray( variations ) ||
-		variations.length === 0 ||
-		gfIsEmpty( variations[ 0 ]?.innerBlocks )
-			? [
-					[
-						'gutena/text-field',
-						{
-							nameAttr: 'f_0',
-							isRequired: true,
-							fieldName: __( 'Name', 'gutena-forms' ),
-							fieldType: 'text',
-							placeholder: __( 'Enter your name', 'gutena-forms' ),
-						},
-					],
-			  ]
-			: variations[ 0 ].innerBlocks;
+	const TEMPLATE = getBasicBlankInnerTemplate();
+
+	const applyFormLayoutMode = ( targetMode ) => {
+		const styleAttrs = getFormLayoutStyleAttributes( targetMode );
+		const shouldRestructureBlocks =
+			targetMode === 'modern' && ! hasLayoutFieldBlocks( innerBlocks );
+
+		if ( shouldRestructureBlocks ) {
+			const converted = convertBlocksForLayoutMode(
+				targetMode,
+				innerBlocks
+			);
+			replaceInnerBlocks( clientId, converted, false );
+		}
+
+		setAttributes( {
+			formLayoutMode: targetMode,
+			...styleAttrs,
+		} );
+		setPendingLayoutMode( targetMode );
+		setIsLayoutConfirmOpen( false );
+	};
 
 	//Form Styles : local css variable for forms inner blocks styles
 	useEffect( () => {
@@ -666,6 +735,10 @@ export default function Edit( props ) {
 			formClassName += gfIsEmpty( placeholderTypography?.fontFamily )
 				? ''
 				: ' has-placeholder-font-family';
+			const layoutClass = getFormLayoutClassSuffix(
+				formLayoutMode === 'modern' ? 'modern' : 'basic'
+			);
+			formClassName += ' ' + layoutClass;
 			setAttributes( { formClasses: formClassName } );
 		}
 
@@ -682,46 +755,10 @@ export default function Edit( props ) {
 		afterSubmitAction,
 		labelTypography,
 		placeholderTypography,
+		formLayoutMode,
 	] );
 
-	const PRO_STANDALONE_BLOCK_NAMES = [
-		'gutena/url-field',
-		'gutena/phone-field',
-		'gutena/password-field',
-		'gutena/hidden-field',
-		'gutena/date-field',
-		'gutena/time-field',
-		'gutena/country-field',
-		'gutena/state-field',
-		'gutena/file-upload-field',
-		'gutena/rating-field',
-	];
-
-	const allowedProBlocks =
-		typeof gutenaFormsBlock !== 'undefined' && gutenaFormsBlock?.is_pro
-			? applyFilters(
-					'gutena_forms__allowed_inner_blocks',
-					PRO_STANDALONE_BLOCK_NAMES
-			  )
-			: [];
-
-	const ALLOWED_BLOCKS = [
-		'core/columns',
-		'core/group',
-		'core/image',
-		'core/paragraph',
-		'gutena/text-field',
-		'gutena/optin-field',
-		'gutena/dropdown-field',
-		'gutena/email-field',
-		'gutena/number-field',
-		'gutena/textarea-field',
-		'gutena/range-field',
-		'gutena/radio-field',
-		'gutena/checkbox-field',
-		'core/buttons',
-		...allowedProBlocks,
-	];
+	const ALLOWED_BLOCKS = getFormRootAllowedBlocks();
 
 	const blockProps = useBlockProps( {
 		className: formClasses,
@@ -729,9 +766,32 @@ export default function Edit( props ) {
 
 	let showFormNameField = '1' === gutenaFormsBlock.is_gutena_forms_post_type || 1 === gutenaFormsBlock.is_gutena_forms_post_type ? { display: 'none' } : {};
 
+	const layoutConfirmMessage =
+		pendingLayoutMode === 'modern'
+			? __(
+					'Stacked fields may be grouped into layout rows. Existing Layout fields stay as they are. You can undo with Ctrl+Z.',
+					'gutena-forms'
+			  )
+			: __(
+					'Input style will switch to boxed fields. Layout fields you added will stay in place. You can undo with Ctrl+Z.',
+					'gutena-forms'
+			  );
+
 	return (
 		<>
 			<style>{ formStyle }</style>
+			<ConfirmDialog
+				isOpen={ isLayoutConfirmOpen }
+				onConfirm={ () =>
+					applyFormLayoutMode( pendingLayoutMode )
+				}
+				onCancel={ () => {
+					setIsLayoutConfirmOpen( false );
+					setPendingLayoutMode( formLayoutMode );
+				} }
+			>
+				{ layoutConfirmMessage }
+			</ConfirmDialog>
 			{ ! hasExistingFormsBlock && (
 				<InspectorControls>
 					<PanelBody title="Form settings" initialOpen={ true }>
@@ -761,6 +821,45 @@ export default function Edit( props ) {
 								setAttributes( { showLabel } )
 							}
 						/>
+						<RadioControl
+							label={ __( 'Form layout', 'gutena-forms' ) }
+							help={ __(
+								'Basic uses boxed inputs. Modern uses underline inputs and can pair stacked fields into layout rows. Existing Layout fields are kept in both modes.',
+								'gutena-forms'
+							) }
+							selected={ pendingLayoutMode }
+							options={ [
+								{
+									label: __( 'Basic', 'gutena-forms' ),
+									value: 'basic',
+								},
+								{
+									label: __( 'Modern', 'gutena-forms' ),
+									value: 'modern',
+								},
+							] }
+							onChange={ ( value ) =>
+								setPendingLayoutMode( value )
+							}
+						/>
+						{ pendingLayoutMode !== formLayoutMode && (
+							<Button
+								variant="primary"
+								onClick={ () =>
+									setIsLayoutConfirmOpen( true )
+								}
+							>
+								{ __( 'Apply layout', 'gutena-forms' ) }
+							</Button>
+						) }
+						{ detectLegacyCoreColumns( innerBlocks ) && (
+							<p className="gf-text-muted">
+								{ __(
+									'This form uses WordPress columns. Layout conversion only affects stacked fields at the form root.',
+									'gutena-forms'
+								) }
+							</p>
+						) }
 						<p>
 							<span className="block-editor-block-card__title">
 								{ __( 'Note : ', 'gutena-forms' ) }
@@ -1308,7 +1407,8 @@ export default function Edit( props ) {
 				/>
 				</InspectorControls>
 			) }
-			{ hasInnerBlocks ? (
+			{ hasInnerBlocks ||
+			gutenaFormsBlock.is_gutena_forms_post_type ? (
 				<form
 					method="post"
 					encType="multipart/form-data"
@@ -1323,15 +1423,7 @@ export default function Edit( props ) {
 					</div>
 				</form>
 			) : (
-				gutenaFormsBlock.is_gutena_forms_post_type ? (
-					<div { ...blockProps }>
-						<p style={ { padding: '24px', textAlign: 'center', color: '#50575e' } }>
-							{ __( 'Loading form...', 'gutena-forms' ) }
-						</p>
-					</div>
-				) : (
-					<Placeholder { ...props } />
-				)
+				<Placeholder { ...props } />
 			) }
 		</>
 	);

@@ -225,6 +225,24 @@ if ( ! class_exists( 'Gutena_Forms_Templates_Block_Serializer' ) ) :
 						'after'  => array( '</div>' ),
 					);
 
+				case 'gutena/layout-field':
+					$preset        = isset( $attrs['preset'] ) ? $attrs['preset'] : '50-50';
+					$display_ratio = isset( $attrs['displayRatio'] ) ? $attrs['displayRatio'] : '';
+					$wrapper       = self::wrapper_attributes( $block_name, $attrs, 'is-preset-' . $preset );
+					return array(
+						'before' => array(
+							'<div ' . $wrapper . ' data-preset="' . esc_attr( $preset ) . '" data-display-ratio="' . esc_attr( $display_ratio ) . '">',
+						),
+						'after'  => array( '</div>' ),
+					);
+
+				case 'gutena/layout-column':
+					$wrapper = self::wrapper_attributes( $block_name, $attrs, 'wp-block-gutena-layout-column' );
+					return array(
+						'before' => array( '<div ' . $wrapper . '>' ),
+						'after'  => array( '</div>' ),
+					);
+
 				case 'core/group':
 					$wrapper = self::wrapper_attributes( $block_name, $attrs );
 					return array(
