@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	//Check Empty
 	const isEmpty = ( data ) => {
-		return 'undefined' === typeof data || null === data || '' == data;
+		return 'undefined' === typeof data || null === data || data === '';
 	};
 
 	//Check class
@@ -46,9 +46,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	//validate Email
 	const validateEmail = ( email ) => {
-		return email.match(
-			/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-		);
+		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test( String( email ) );
 	};
 
 	/**
@@ -149,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			let grecaptcha_enable  = gutena_form_0.querySelector(
 				'input[name="recaptcha_enable"]'
 			);
-			if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
+			if ( ! isEmpty( grecaptcha_enable ) && grecaptcha_enable.value ) {
 				//check if grecaptcha is defined or not
 				if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
 					//check if grecaptcha script is loading or not
@@ -184,115 +182,129 @@ document.addEventListener("DOMContentLoaded", function(){
 		// function to handle turnstile success
 	}
 
-	const form_sumbit = () => {
-		let submitButton = document.querySelectorAll(
-			'.wp-block-gutena-forms .gutena-forms-submit-button'
-		);
-		if ( 0 < submitButton.length ) {
-			for ( let i = 0; i < submitButton.length; i++ ) {
-				submitButton[ i ].addEventListener( 'click', function ( e ) {
-					e.preventDefault();
-					let gutena_forms = getParents(
-						this,
-						'.wp-block-gutena-forms'
-					);
+	const resolve_submit_control = ( el ) => {
+		if ( ! el || ! el.closest ) {
+			return null;
+		}
+		if ( el.classList.contains( 'wp-block-button' ) ) {
+			return el;
+		}
+		if ( el.classList.contains( 'wp-block-button__link' ) ) {
+			return el.closest( '.wp-block-button' );
+		}
+		return el.closest( '.wp-block-button' );
+	};
 
-					if ( 'undefined' === typeof gutena_forms ) {
-						console.log( 'Form not defined' );
-						return;
-					}
-					gutena_forms = gutena_forms[ 0 ];
+	const resolve_submit_btn_link = ( control ) => {
+		if ( ! control ) {
+			return null;
+		}
+		if ( control.classList.contains( 'wp-block-button__link' ) ) {
+			return control;
+		}
+		return control.querySelector( '.wp-block-button__link' );
+	};
 
-					/*****************************
-                     Form Validation :START
-                     *****************************/
-					let form_fields = gutena_forms.querySelectorAll(
-						'.gutena-forms-field'
-					);
-					if ( 0 === form_fields.length ) {
-						console.log( 'No input fields found' );
-						return;
-					}
+	const set_submit_control_disabled = ( control, link, disabled ) => {
+		if ( control && 'undefined' !== typeof control.disabled ) {
+			control.disabled = disabled;
+		}
+		if ( link && 'undefined' !== typeof link.disabled ) {
+			link.disabled = disabled;
+		}
+	};
 
-					let formCheck = true;
-					let error_field = form_fields[ 0 ];
+	const process_gutena_form_submit = ( gutena_forms, submitControlEl ) => {
+		if ( isEmpty( gutena_forms ) ) {
+			return;
+		}
 
-					//Check for validation
-					for ( let j = 0; j < form_fields.length; j++ ) {
-						//Validate form field
-						if ( false === field_validation( form_fields[ j ] ) ) {
-							//get first error field for scroll into view
-							if ( true === formCheck ) {
-								error_field = form_fields[ j ];
-							}
-							formCheck = false;
-						}
-					}
+		let form_fields = gutena_forms.querySelectorAll( '.gutena-forms-field' );
+		if ( 0 === form_fields.length ) {
+			console.log( 'No input fields found' );
+			return;
+		}
 
-					//exit and scroll to error field
-					if ( false === formCheck ) {
-						//Show error message at the form bottom
-						gutena_forms.classList.add( 'display-error-message' );
-						//scroll to element
-						error_field.scrollIntoView( {
-							behavior: 'smooth',
-						} );
+		let formCheck = true;
+		let error_field = form_fields[ 0 ];
 
-						return;
-					}
-
-					/*****************************
-                     Form Validation :END
-                     *****************************/
-					gutena_forms.classList.add( 'form-progress' );
-					let submitBtnLink = this.querySelector(
-						'.wp-block-button__link'
-					);
-
-					let submitBtnLinkHtml = submitBtnLink.innerHTML;
-					this.disabled = true;
-					submitBtnLink.innerHTML =
-						'<div class="gutena-forms-btn-progress"><div></div><div></div><div></div><div></div></div>';
-					let form_data = new FormData( gutena_forms );
-					form_data.append( 'nonce', gutenaFormsBlock.nonce );
-					form_data.append(
-						'action',
-						gutenaFormsBlock.submit_action
-					);
-
-					//Hide error before submit
-					gutena_forms.classList.remove( 'display-error-message' );
-					gutena_forms.classList.remove( 'display-success-message' );
-
-
-					//Google recaptcha
-					const formRecaptcha = getFormRecaptchaConfig( gutena_forms );
-					if ( ! isEmpty( formRecaptcha.type ) && 'v3' === formRecaptcha.type && ! isEmpty( formRecaptcha.siteKey ) ) {
-						let grecaptcha_enable  = gutena_forms.querySelector(
-							'input[name="recaptcha_enable"]'
-						);
-						if ( ! isEmpty( grecaptcha_enable ) && 0 != grecaptcha_enable.length && grecaptcha_enable.value ) {
-							if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
-								console.log("grecaptcha not defined");
-								save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
-							} else {
-								grecaptcha.ready(function() {
-									grecaptcha.execute( formRecaptcha.siteKey, {action: 'submit'}).then( function( token ) {
-										form_data.append('g-recaptcha-response', token);
-										save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
-									});
-								});
-							}
-						} else {
-							save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
-						}
-					} else {
-						//recaptcha not enabled or configured
-						save_gutena_forms( gutena_forms,  form_data, submitButton[ i ], submitBtnLink, submitBtnLinkHtml  );
-					}
-				} );
+		for ( let j = 0; j < form_fields.length; j++ ) {
+			if ( false === field_validation( form_fields[ j ] ) ) {
+				if ( true === formCheck ) {
+					error_field = form_fields[ j ];
+				}
+				formCheck = false;
 			}
 		}
+
+		if ( false === formCheck ) {
+			gutena_forms.classList.add( 'display-error-message' );
+			error_field.scrollIntoView( { behavior: 'smooth' } );
+			return;
+		}
+
+		const submitControl = resolve_submit_control( submitControlEl ) ||
+			gutena_forms.querySelector( '.gutena-forms-submit-button' ) ||
+			gutena_forms.querySelector( '.wp-block-button' );
+		const submitBtnLink = resolve_submit_btn_link( submitControl );
+
+		if ( isEmpty( submitBtnLink ) ) {
+			return;
+		}
+
+		gutena_forms.classList.add( 'form-progress' );
+		const submitBtnLinkHtml = submitBtnLink.innerHTML;
+		set_submit_control_disabled( submitControl, submitBtnLink, true );
+		submitBtnLink.innerHTML =
+			'<div class="gutena-forms-btn-progress"><div></div><div></div><div></div><div></div></div>';
+
+		let form_data = new FormData( gutena_forms );
+		form_data.append( 'nonce', gutenaFormsBlock.nonce );
+		form_data.append( 'action', gutenaFormsBlock.submit_action );
+
+		gutena_forms.classList.remove( 'display-error-message' );
+		gutena_forms.classList.remove( 'display-success-message' );
+
+		const formRecaptcha = getFormRecaptchaConfig( gutena_forms );
+		const finishSubmit = () => {
+			save_gutena_forms(
+				gutena_forms,
+				form_data,
+				submitControl || submitBtnLink,
+				submitBtnLink,
+				submitBtnLinkHtml
+			);
+		};
+
+		if ( ! isEmpty( formRecaptcha.type ) && 'v3' === formRecaptcha.type && ! isEmpty( formRecaptcha.siteKey ) ) {
+			let grecaptcha_enable = gutena_forms.querySelector( 'input[name="recaptcha_enable"]' );
+			if ( ! isEmpty( grecaptcha_enable ) && grecaptcha_enable.value ) {
+				if ( 'undefined' === typeof grecaptcha || null === grecaptcha ) {
+					console.log( 'grecaptcha not defined' );
+					finishSubmit();
+				} else {
+					grecaptcha.ready( function () {
+						grecaptcha.execute( formRecaptcha.siteKey, { action: 'submit' } ).then( function ( token ) {
+							form_data.append( 'g-recaptcha-response', token );
+							finishSubmit();
+						} );
+					} );
+				}
+			} else {
+				finishSubmit();
+			}
+		} else {
+			finishSubmit();
+		}
+	};
+
+	const form_sumbit = () => {
+		document.querySelectorAll( 'form.wp-block-gutena-forms' ).forEach( ( gutena_forms ) => {
+			gutena_forms.addEventListener( 'submit', function ( ev ) {
+				ev.preventDefault();
+				process_gutena_form_submit( gutena_forms, ev.submitter );
+			} );
+		} );
 	};
 
 	const save_gutena_forms = ( gutena_forms,  form_data, submitButton, submitBtnLink, submitBtnLinkHtml ) => {
@@ -303,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		} )
 		.then( ( response ) => response.json() )
 		.then( ( response ) => {
-			submitButton.disabled = false;
+			set_submit_control_disabled( submitButton, submitBtnLink, false );
 			submitBtnLink.innerHTML = submitBtnLinkHtml;
 			gutena_forms.classList.remove( 'form-progress' );
 			if (
@@ -548,14 +560,12 @@ document.addEventListener("DOMContentLoaded", function(){
 		) {
 			field_group.classList.add( 'display-error' );
 
-			const invalidUrlMsg =
+			errorHTML.innerHTML =
 				! isEmpty( customMessages.invalid_url_msg )
 					? customMessages.invalid_url_msg
 					: ( ! isEmpty( gutenaFormsBlock.invalid_url_msg )
 						? gutenaFormsBlock.invalid_url_msg
 						: 'Please enter a valid URL' );
-
-			errorHTML.innerHTML = invalidUrlMsg;
 
 			return false;
 		}
