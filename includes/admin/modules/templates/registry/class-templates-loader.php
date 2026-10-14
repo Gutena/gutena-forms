@@ -10,7 +10,10 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'Gutena_Forms_Templates_Loader' ) ) :
 	/**
-	 * Loads template class files and returns the manifest.
+	 * Loads free-tier template class files and returns the manifest.
+	 *
+	 * Pro templates are appended via the gutena_forms_template_classes filter
+	 * (see Gutena_Forms_Pro_Templates_Loader in Gutena Forms Pro).
 	 *
 	 * @since 2.2.0
 	 */
@@ -23,20 +26,9 @@ if ( ! class_exists( 'Gutena_Forms_Templates_Loader' ) ) :
 		 * @var string[]
 		 */
 		private static $template_files = array(
-			'class-template-job-application.php',
-			'class-template-volunteer-application.php',
-			'class-template-appointment-request.php',
-			'class-template-service-booking-request.php',
 			'class-template-event-rsvp.php',
-			'class-template-online-event-registration.php',
-			'class-template-lead-capture.php',
-			'class-template-quote-request.php',
 			'class-template-newsletter-signup.php',
-			'class-template-affiliate-signup.php',
-			'class-template-demo-request.php',
 			'class-template-maintenance-request.php',
-			'class-template-beta-access-request.php',
-			'class-template-customer-satisfaction-survey.php',
 			'class-template-product-feedback.php',
 		);
 
@@ -66,20 +58,9 @@ if ( ! class_exists( 'Gutena_Forms_Templates_Loader' ) ) :
 			self::load_files();
 
 			$classes = array(
-				'Gutena_Forms_Template_Job_Application',
-				'Gutena_Forms_Template_Volunteer_Application',
-				'Gutena_Forms_Template_Appointment_Request',
-				'Gutena_Forms_Template_Service_Booking_Request',
 				'Gutena_Forms_Template_Event_Rsvp',
-				'Gutena_Forms_Template_Online_Event_Registration',
-				'Gutena_Forms_Template_Lead_Capture',
-				'Gutena_Forms_Template_Quote_Request',
 				'Gutena_Forms_Template_Newsletter_Signup',
-				'Gutena_Forms_Template_Affiliate_Signup',
-				'Gutena_Forms_Template_Demo_Request',
 				'Gutena_Forms_Template_Maintenance_Request',
-				'Gutena_Forms_Template_Beta_Access_Request',
-				'Gutena_Forms_Template_Customer_Satisfaction_Survey',
 				'Gutena_Forms_Template_Product_Feedback',
 			);
 

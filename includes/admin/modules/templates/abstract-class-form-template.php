@@ -12,6 +12,9 @@ if ( ! class_exists( 'Gutena_Forms_Abstract_Form_Template' ) ) :
 	/**
 	 * Base implementation for form template classes.
 	 *
+	 * Free-plugin templates must use only free field builders and return true from is_free().
+	 * Pro-plugin templates must use is_free() false and live under gutena-forms-pro.
+	 *
 	 * @since 2.2.0
 	 */
 	abstract class Gutena_Forms_Abstract_Form_Template implements Gutena_Forms_Form_Template_Interface {

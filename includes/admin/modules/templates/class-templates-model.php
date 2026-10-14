@@ -59,7 +59,8 @@ if ( ! class_exists( 'Gutena_Forms_Templates_Model' ) ) :
 		 * Create a blank form with default fields.
 		 *
 		 * @since 2.2.0
-		 * @param string $title Optional post title.
+		 * @param string $title       Optional post title.
+		 * @param string $layout_mode Optional. 'basic' or 'modern'.
 		 * @return array|WP_Error
 		 */
 		public function create_blank( $title = '', $layout_mode = 'basic' ) {
@@ -111,12 +112,15 @@ if ( ! class_exists( 'Gutena_Forms_Templates_Model' ) ) :
 				);
 			}
 
-			if ( empty( $template['is_free'] ) && ! is_gutena_forms_pro() ) {
-				return new WP_Error(
-					'gutena_forms_template_pro_required',
-					__( 'This template requires Gutena Forms Pro.', 'gutena-forms' ),
-					array( 'status' => 403 )
-				);
+			if ( empty( $template['is_free'] ) ) {
+				$pro_ready = defined( 'GUTENA_FORMS__PRO_LOADED' ) && GUTENA_FORMS__PRO_LOADED;
+				if ( ! $pro_ready ) {
+					return new WP_Error(
+						'gutena_forms_template_pro_required',
+						__( 'This template requires Gutena Forms Pro.', 'gutena-forms' ),
+						array( 'status' => 403 )
+					);
+				}
 			}
 
 			return $this->create_from_blocks(
