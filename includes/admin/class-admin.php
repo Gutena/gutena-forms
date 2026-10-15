@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Admin Area
@@ -83,6 +84,7 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/auto-responder/class-auto-responder.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/integrations/class-inegrations.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/mcp/class-mcp.php';
+			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/ai/class-ai-settings.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/modules/settings-migrator/class-settings-migrator.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'vendor/smtp/class-smtp.php';
 			include_once GUTENA_FORMS_DIR_PATH . 'includes/admin/rest-api/class-rest-api-controller.php';
@@ -343,25 +345,37 @@ if ( ! class_exists( 'Gutena_Forms_Admin' ) && class_exists( 'Gutena_Forms' ) ) 
 			}
 		}
 
-		/**
-		 * Redirect old screen to new dashboard
-		 */
-		public function redirect_when_old_screen() {
-			if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) {
-				global $current_screen;
-				if ( ! is_null( $current_screen ) && 'edit-gutena_forms' === $current_screen->id ) {
-					wp_safe_redirect(
-						add_query_arg(
-							array(
-								'page' => 'gutena-forms#/settings/forms',
-							),
-							admin_url( 'admin.php' )
-						)
-					);
-					exit;
-				}
+	/**
+	 * Redirect old screen to new dashboard
+	 */
+	public function redirect_when_old_screen() {
+		if ( isset( $_GET['post_type'] ) && 'gutena_forms' === sanitize_text_field( wp_unslash( $_GET['post_type'] ) ) ) {
+			global $pagenow, $current_screen;
+			// Redirect "Add New" (post-new.php) to the dashboard create screen.
+			if ( 'post-new.php' === $pagenow ) {
+				wp_safe_redirect(
+					add_query_arg(
+						array(
+							'page' => 'gutena-forms#/create',
+						),
+						admin_url( 'admin.php' )
+					)
+				);
+				exit;
+			}
+			if ( ! is_null( $current_screen ) && 'edit-gutena_forms' === $current_screen->id ) {
+				wp_safe_redirect(
+					add_query_arg(
+						array(
+							'page' => 'gutena-forms#/settings/forms',
+						),
+						admin_url( 'admin.php' )
+					)
+				);
+				exit;
 			}
 		}
+	}
 
 		/**
 		 * Get and check if provided notice id is dismissed or not

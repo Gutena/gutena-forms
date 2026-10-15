@@ -53,7 +53,7 @@ const GutenaFormsCreateEntry = () => {
 	};
 
 	const handleAiStub = () => {
-		toast.info( __( 'Coming soon', 'gutena-forms' ) );
+		navigate( '/create/ai' );
 	};
 
 	return (
@@ -82,8 +82,6 @@ const GutenaFormsCreateEntry = () => {
 					title={ __( 'Create Using AI', 'gutena-forms' ) }
 					description={ __( 'Generate a form with AI assistance.', 'gutena-forms' ) }
 					onClick={ handleAiStub }
-					disabled={ true }
-					className="is-coming-soon"
 				/>
 			</div>
 		</div>

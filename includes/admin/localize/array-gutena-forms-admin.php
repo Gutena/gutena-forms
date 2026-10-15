@@ -324,4 +324,12 @@ return array(
 			)
 		),
 	),
+	'aiPromptChips'           => array(
+		__( 'Newsletter', 'gutena-forms' )      => __( 'Create a newsletter subscription form to collect names and email addresses from visitors who want to receive updates and promotions.', 'gutena-forms' ),
+		__( 'Consultation', 'gutena-forms' )    => __( 'Create a consultation booking form to collect names, email addresses, phone numbers, preferred dates, and a short message about the consultation topic.', 'gutena-forms' ),
+		__( 'Reservation', 'gutena-forms' )     => __( 'Create a reservation form to collect guest names, contact details, number of guests, preferred date and time, and special requests.', 'gutena-forms' ),
+		__( 'Appointment', 'gutena-forms' )     => __( 'Create an appointment scheduling form to collect names, email addresses, phone numbers, preferred appointment date and time, and the reason for the appointment.', 'gutena-forms' ),
+		__( 'Customer Feedback', 'gutena-forms' ) => __( 'Create a customer feedback form to collect names, email addresses, a rating of the service, and detailed comments about their experience.', 'gutena-forms' ),
+		__( 'Donation', 'gutena-forms' )        => __( 'Create a donation form to collect donor names, email addresses, donation amounts, payment methods, and an optional message of support.', 'gutena-forms' ),
+	),
 );

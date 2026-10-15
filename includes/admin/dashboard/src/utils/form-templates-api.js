@@ -94,3 +94,33 @@ export async function gutenaFormsCreateBlankForm( title = '' ) {
 
 	throw new Error( response.message || 'Gutena Forms CreateBlankForm Error' );
 }
+
+/**
+ * Create a form from an AI prompt.
+ *
+ * Sends the user's prompt to the middle server (via the local REST endpoint),
+ * which returns the edit URL of the newly created draft form.
+ *
+ * On failure, throws an Error preserving the server error code + message
+ * (e.g. `limit_reached`, `invalid_prompt`, `network_error`, `server_error`).
+ *
+ * @param {string} prompt The user's prompt describing the form.
+ * @returns {Promise<Object>} Resolves with `{ post_id, form_id, edit_url }`.
+ */
+export async function gutenaFormsCreateFromAI( prompt ) {
+	const response = await apiFetch( {
+		method: 'POST',
+		path: `${ GutenaFormsRestConfiguration.namespace }forms/create-from-ai`,
+		data: { prompt },
+	} );
+
+	if ( 'success' === response.status && response.data ) {
+		return response.data;
+	}
+
+	const err = new Error( response.message || 'Gutena Forms CreateFromAI Error' );
+	if ( response.code ) {
+		err.code = response.code;
+	}
+	throw err;
+}

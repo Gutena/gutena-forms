@@ -4,6 +4,7 @@ import GutenaFormsPageLayout from '../layouts/gutena-forms-page-layout';
 import GutenaFormsDashboard from './gutena-forms-dashboard';
 import GuennaFormsKnowledgeBase from './gutena-forms-knowledge-base';
 import GutenaFormsCreateEntry from './gutena-forms-create-entry';
+import GutenaFormsCreateAi from './gutena-forms-create-ai';
 import GutenaFormsTemplateLibrary from './gutena-forms-template-library';
 
 const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
@@ -20,6 +21,10 @@ const GutenaFormsBody = ( { showProPopupHandler, setActiveMenu } ) => {
 			<Route
 				path={ '/create' }
 				element={ <GutenaFormsCreateEntry /> }
+			/>
+			<Route
+				path={ '/create/ai' }
+				element={ <GutenaFormsCreateAi /> }
 			/>
 			<Route
 				path={ '/templates' }
